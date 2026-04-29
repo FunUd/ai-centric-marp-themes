@@ -1,0 +1,794 @@
+/* @theme azure-clarity */
+
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   CSS Variables — テーマカラーの変更はここだけでOK
+   ============================================================ */
+:root {
+  --ac-primary: #2C7BE5;
+  --ac-primary-dark: #1B5FC0;
+  --ac-primary-light: #D0EBFF;
+  --ac-primary-pale: #EDF5FF;
+  --ac-accent: #1B4F72;
+  --ac-text: #1A1A2E;
+  --ac-text-sub: #5A6C7D;
+  --ac-white: #FFFFFF;
+  --ac-bg: #FAFCFF;
+  --ac-border: #B8D4E8;
+  --ac-border-light: #E0ECF5;
+  --ac-success: #27AE60;
+  --ac-warning: #F39C12;
+  --ac-danger: #E74C3C;
+  --ac-shadow: rgba(44, 123, 229, 0.08);
+  --ac-radius: 0px;
+  --ac-radius-lg: 0px;
+}
+
+/* ============================================================
+   Base Slide
+   ============================================================ */
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 60px 70px 50px 70px;
+  background: var(--ac-white);
+  color: var(--ac-text);
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+/* ============================================================
+   Typography
+   ============================================================ */
+section h1 {
+  color: var(--ac-accent);
+  font-size: 38px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--ac-primary);
+  line-height: 1.3;
+}
+
+section h2 {
+  color: var(--ac-accent);
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+section h3 {
+  color: var(--ac-primary-dark);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+section h4 {
+  color: var(--ac-primary);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+section h5,
+section h6 {
+  color: var(--ac-text-sub);
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+section p {
+  margin: 0 0 16px 0;
+}
+
+section a {
+  color: var(--ac-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ac-primary-light);
+}
+
+section a:hover {
+  border-bottom-color: var(--ac-primary);
+}
+
+/* ============================================================
+   Lists
+   ============================================================ */
+section ul,
+section ol {
+  margin: 0 0 16px 0;
+  padding-left: 1.5em;
+}
+
+section ul li,
+section ol li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+section ul li::marker {
+  color: var(--ac-primary);
+}
+
+section ol li::marker {
+  color: var(--ac-primary);
+  font-weight: 600;
+}
+
+/* グループ名付き箇条書き */
+section ul ul,
+section ol ol,
+section ul ol,
+section ol ul {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-size: 0.92em;
+  color: var(--ac-text);
+}
+
+/* ============================================================
+   Table
+   ============================================================ */
+section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 20px;
+}
+
+section table thead th {
+  background: var(--ac-primary);
+  color: var(--ac-white);
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  border: none;
+}
+
+section table thead th:first-child {
+  border-radius: var(--ac-radius) 0 0 0;
+}
+
+section table thead th:last-child {
+  border-radius: 0 var(--ac-radius) 0 0;
+}
+
+section table tbody td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ac-border-light);
+}
+
+section table tbody tr:nth-child(even) {
+  background: var(--ac-primary-pale);
+}
+
+section table tbody tr:hover {
+  background: var(--ac-primary-light);
+}
+
+/* ============================================================
+   Code & Blockquote
+   ============================================================ */
+section code {
+  background: var(--ac-primary-pale);
+  color: var(--ac-primary-dark);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+section pre {
+  background: #1E293B;
+  border-radius: var(--ac-radius);
+  padding: 20px 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+section pre code {
+  background: transparent;
+  color: #E2E8F0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Syntax Highlighting (Dark Theme for pre)
+   ============================================================ */
+section pre code .hljs-keyword,
+section pre code .hljs-selector-tag,
+section pre code .hljs-tag {
+  color: #c678dd;
+}
+
+section pre code .hljs-built_in,
+section pre code .hljs-type {
+  color: #e5c07b;
+}
+
+section pre code .hljs-literal,
+section pre code .hljs-number {
+  color: #d19a66;
+}
+
+section pre code .hljs-string,
+section pre code .hljs-regexp,
+section pre code .hljs-addition {
+  color: #98c379;
+}
+
+section pre code .hljs-name,
+section pre code .hljs-class,
+section pre code .hljs-title {
+  color: #e06c75;
+}
+
+section pre code .hljs-attr,
+section pre code .hljs-attribute {
+  color: #d19a66;
+}
+
+section pre code .hljs-symbol,
+section pre code .hljs-bullet {
+  color: #61aeee;
+}
+
+section pre code .hljs-comment,
+section pre code .hljs-quote,
+section pre code .hljs-deletion {
+  color: #7f848e;
+  font-style: italic;
+}
+
+section blockquote {
+  border-left: 4px solid var(--ac-primary);
+  background: var(--ac-primary-pale);
+  margin: 16px 0;
+  padding: 16px 24px;
+  border-radius: 0 var(--ac-radius) var(--ac-radius) 0;
+  color: var(--ac-accent);
+  font-size: 22px;
+}
+
+section blockquote p {
+  margin: 0;
+}
+
+/* ============================================================
+   Text Emphasis
+   ============================================================ */
+section strong {
+  color: var(--ac-primary-dark);
+  font-weight: 700;
+}
+
+section em {
+  color: var(--ac-text-sub);
+  font-style: italic;
+}
+
+section mark {
+  background: linear-gradient(transparent 60%, #66e8ff 60%);
+  padding: 0 4px;
+}
+
+/* ============================================================
+   Images
+   ============================================================ */
+section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--ac-radius);
+}
+
+section img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+
+section img[alt~="shadow"] {
+  box-shadow: 0 8px 24px var(--ac-shadow);
+}
+
+/* ============================================================
+   Header & Footer
+   ============================================================ */
+header {
+  position: absolute;
+  top: 16px;
+  left: 75px;
+  right: 75px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ac-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ac-border-light);
+}
+
+footer {
+  position: absolute;
+  bottom: 16px;
+  left: 75px;
+  right: 75px;
+  font-size: 12px;
+  color: var(--ac-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ============================================================
+   Pagination (section::after)
+   ============================================================ */
+section::after {
+  position: absolute;
+  bottom: 18px;
+  right: 30px;
+  font-size: 13px;
+  color: var(--ac-text-sub);
+  font-weight: 500;
+  background: var(--ac-primary-pale);
+  padding: 3px 12px;
+  border-radius: 12px;
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+}
+
+/* ============================================================
+   Utility: Header / Footer / Pagination control
+   ============================================================ */
+section.no-header header {
+  display: none;
+}
+
+section.no-footer footer {
+  display: none;
+}
+
+section.no-pagination::after {
+  display: none;
+}
+
+section.pagination-left::after {
+  right: auto;
+  left: 30px;
+}
+
+/* with-header: ヘッダーが表示される場合にpaddingを調整 */
+section.with-header {
+  padding-top: 80px;
+}
+
+/* ============================================================
+   Cover Slide — 表紙
+   ============================================================ */
+section.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--ac-white) 0%, var(--ac-primary-pale) 40%, var(--ac-primary-light) 100%);
+  padding: 80px;
+}
+
+
+section.cover h1 {
+  font-size: 52px;
+  color: var(--ac-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(27, 79, 114, 0.08);
+}
+
+section.cover h2 {
+  font-size: 28px;
+  color: var(--ac-primary);
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+
+section.cover p {
+  color: var(--ac-text-sub);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+/* cover + subtitle: サブタイトル強調 */
+section.cover.subtitle h2 {
+  font-weight: 500;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--ac-border);
+  margin-bottom: 24px;
+}
+
+/* cover + meta: メタ情報エリアの装飾 */
+section.cover.meta p {
+  background: rgba(44, 123, 229, 0.06);
+  display: inline-block;
+  padding: 4px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+/* 装飾用の円 */
+section.cover::after {
+  content: '' !important;
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ac-primary-light) 0%, transparent 70%);
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* ============================================================
+   TOC — 目次
+   ============================================================ */
+section.toc {
+  padding-top: 60px;
+}
+
+section.toc h1 {
+  font-size: 34px;
+  margin-bottom: 32px;
+}
+
+section.toc ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding-left: 0;
+  columns: 2;
+  column-gap: 48px;
+}
+
+section.toc ol li {
+  counter-increment: toc-counter;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: var(--ac-radius);
+  background: var(--ac-primary-pale);
+  border-left: 3px solid var(--ac-primary);
+  font-size: 20px;
+  break-inside: avoid;
+  transition: background 0.2s;
+}
+
+section.toc ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--ac-primary);
+  font-weight: 700;
+  font-size: 22px;
+  margin-right: 12px;
+}
+
+/* ============================================================
+   2-Column Layout
+   ============================================================ */
+section.cols-2>div.columns,
+section.cols-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
+   3-Column Layout
+   ============================================================ */
+section.cols-3>div.columns,
+section.cols-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+  height: calc(100% - 80px);
+}
+
+/* カラムカードスタイル */
+section.cols-2 .col,
+section.cols-3 .col {
+  background: var(--ac-primary-pale);
+  border-radius: var(--ac-radius-lg);
+  padding: 24px;
+  border: 1px solid var(--ac-border-light);
+  height: 100%;
+}
+
+section.cols-2 .col h3,
+section.cols-3 .col h3 {
+  color: var(--ac-primary);
+  font-size: 22px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ac-primary-light);
+}
+
+/* ============================================================
+   4-Quadrant Grid (2x2)
+   ============================================================ */
+section.grid-quadrant>div.grid,
+section.grid-quadrant>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100% - 80px);
+}
+
+section.grid-quadrant .cell {
+  background: var(--ac-primary-pale);
+  border-radius: var(--ac-radius-lg);
+  padding: 20px 24px;
+  border: 1px solid var(--ac-border-light);
+  overflow: hidden;
+}
+
+section.grid-quadrant .cell h3 {
+  color: var(--ac-primary);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+section.grid-quadrant .cell p,
+section.grid-quadrant .cell li {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Timetable
+   ============================================================ */
+section.timetable table {
+  font-size: 18px;
+}
+
+section.timetable table thead th:first-child {
+  width: 140px;
+}
+
+section.timetable table tbody td:first-child {
+  font-weight: 600;
+  color: var(--ac-primary);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Steps — ステップ表示
+   ============================================================ */
+section.steps ol {
+  list-style: none;
+  padding: 0;
+  counter-reset: step-counter;
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+section.steps ol li {
+  counter-increment: step-counter;
+  flex: 1;
+  background: var(--ac-primary-pale);
+  border-radius: var(--ac-radius-lg);
+  padding: 24px 20px 20px;
+  position: relative;
+  border-top: 4px solid var(--ac-primary);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+section.steps ol li::before {
+  content: 'STEP ' counter(step-counter);
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ac-white);
+  background: var(--ac-primary);
+  padding: 3px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  display: inline-block;
+  letter-spacing: 0.1em;
+}
+
+section.steps ol li strong {
+  display: block;
+  font-size: 20px;
+  color: var(--ac-accent);
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   Profile — 経歴紹介
+   ============================================================ */
+section.profile {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 40px;
+  padding-top: 60px;
+}
+
+section.profile img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--ac-primary-light);
+  box-shadow: 0 8px 24px var(--ac-shadow);
+  flex-shrink: 0;
+}
+
+section.profile h1 {
+  font-size: 32px;
+  margin-bottom: 4px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+section.profile h2 {
+  font-size: 18px;
+  color: var(--ac-primary);
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+section.profile ul {
+  font-size: 19px;
+}
+
+/* ============================================================
+   Key Message — 強調メッセージ
+   ============================================================ */
+section.key-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--ac-primary-pale), var(--ac-primary-light));
+}
+
+section.key-message blockquote {
+  border: none;
+  background: transparent;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--ac-accent);
+  line-height: 1.4;
+  max-width: 900px;
+  padding: 0;
+}
+
+section.key-message blockquote p {
+  margin: 0;
+}
+
+section.key-message p {
+  color: var(--ac-text-sub);
+  font-size: 22px;
+  margin-top: 24px;
+}
+
+/* ============================================================
+   Timeline — タイムライン
+   ============================================================ */
+section.timeline ol {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  margin-left: 24px;
+}
+
+section.timeline ol::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--ac-primary), var(--ac-primary-light));
+  border-radius: 3px;
+}
+
+section.timeline ol li {
+  position: relative;
+  padding-left: 36px;
+  padding-bottom: 12px;
+  margin-bottom: 0;
+  font-size: 19px;
+}
+
+section.timeline ol li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+  background: var(--ac-primary);
+  border-radius: 50%;
+  border: 3px solid var(--ac-white);
+  box-shadow: 0 0 0 3px var(--ac-primary-light);
+}
+
+section.timeline ol li strong {
+  display: block;
+  color: var(--ac-primary);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* ============================================================
+   Highlight colors utility
+   ============================================================ */
+section .text-primary {
+  color: var(--ac-primary);
+}
+
+section .text-accent {
+  color: var(--ac-accent);
+}
+
+section .text-success {
+  color: var(--ac-success);
+}
+
+section .text-warning {
+  color: var(--ac-warning);
+}
+
+section .text-danger {
+  color: var(--ac-danger);
+}
+
+section .text-sub {
+  color: var(--ac-text-sub);
+}
+
+section .text-large {
+  font-size: 1.3em;
+}
+
+section .text-small {
+  font-size: 0.85em;
+}
+
+section .bg-pale {
+  background: var(--ac-primary-pale);
+  padding: 16px;
+  border-radius: var(--ac-radius);
+}
+
+section .bg-light {
+  background: var(--ac-primary-light);
+  padding: 16px;
+  border-radius: var(--ac-radius);
+}

@@ -1,0 +1,6 @@
+{
+  "markdown.marp.themes": [
+    "./themes/azure-clarity.css"
+  ],
+  "markdown.marp.enableHtml": true
+}
