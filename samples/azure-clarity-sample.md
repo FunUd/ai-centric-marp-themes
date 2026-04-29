@@ -368,7 +368,7 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 スケーラブルなインフラを実現。
 </div>
 
-![width:120px](./assets/sample_image.jpg)
+![width:200px](./assets/sample_image.jpg)
 </div>
 
 <div class="cell side">
@@ -378,7 +378,7 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 最新のアルゴリズムを統合。
 </div>
 
-![width:120px](./assets/sample_image.jpg)
+![width:200px](./assets/sample_image.jpg)
 </div>
 
 <div class="cell side">
@@ -388,7 +388,7 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 リアルタイムでの可視化を提供。
 </div>
 
-![width:120px](./assets/sample_image.jpg)
+![width:200px](./assets/sample_image.jpg)
 </div>
 
 <div class="cell side">
@@ -398,7 +398,7 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 直感的な操作性を追求。
 </div>
 
-![width:120px](./assets/sample_image.jpg)
+![width:200px](./assets/sample_image.jpg)
 </div>
 </div>
 
