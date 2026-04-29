@@ -270,7 +270,7 @@ services:
 
 # 画像の扱い：1枚のケース
 
-![center shadow width:800px](C:\Users\Yudai\.gemini\antigravity\brain\d56271ee-bb82-4883-9f3f-bd2359bfbb7d\business_hero_1777419106448.png)
+![center shadow width:600px](./assets/sample_image.jpg)
 
 中央寄せ (`center`) とドロップシャドウ (`shadow`) を適用した例です。
 
@@ -285,7 +285,7 @@ services:
 
 ### セキュリティ
 
-![width:100%](C:\Users\Yudai\.gemini\antigravity\brain\d56271ee-bb82-4883-9f3f-bd2359bfbb7d\feature_security_1777419118035.png)
+![width:100%](./assets/sample_image.jpg)
 
 堅牢なセキュリティ基盤を提供します。
 
@@ -294,7 +294,7 @@ services:
 
 ### パフォーマンス
 
-![width:100%](C:\Users\Yudai\.gemini\antigravity\brain\d56271ee-bb82-4883-9f3f-bd2359bfbb7d\feature_performance_1777419166154.png)
+![width:100%](./assets/sample_image.jpg)
 
 最高速の処理能力を実現します。
 
@@ -305,7 +305,7 @@ services:
 
 # テキストと画像の共存
 
-![bg right:45% shadow](C:\Users\Yudai\.gemini\antigravity\brain\d56271ee-bb82-4883-9f3f-bd2359bfbb7d\office_work_1777419181996.png)
+![bg right:45% shadow](./assets/sample_image.jpg)
 
 Marpの `bg` ディレクティブを使用することで、テキストと画像を左右に分割して配置できます。
 
@@ -322,33 +322,44 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 # 4象限画像グリッド
 
 <div class="grid">
-<div class="cell">
+<div class="cell side">
+<div>
 
 ### クラウド基盤
-![width:120px center](C:\Users\Yudai\.gemini\antigravity\brain\d56271ee-bb82-4883-9f3f-bd2359bfbb7d\quad_cloud_1777419194941.png)
 スケーラブルなインフラを実現。
-
 </div>
-<div class="cell">
+
+![width:120px](./assets/sample_image.jpg)
+</div>
+
+<div class="cell side">
+<div>
 
 ### AI最適化
-![width:120px center](C:\Users\Yudai\.gemini\antigravity\brain\d56271ee-bb82-4883-9f3f-bd2359bfbb7d\quad_ai_1777419210548.png)
 最新のアルゴリズムを統合。
-
 </div>
-<div class="cell">
+
+![width:120px](./assets/sample_image.jpg)
+</div>
+
+<div class="cell side">
+<div>
 
 ### データ分析
-(画像生成制限のためテキストのみ)
 リアルタイムでの可視化を提供。
-
 </div>
-<div class="cell">
+
+![width:120px](./assets/sample_image.jpg)
+</div>
+
+<div class="cell side">
+<div>
 
 ### ユーザー体験
-(画像生成制限のためテキストのみ)
 直感的な操作性を追求。
+</div>
 
+![width:120px](./assets/sample_image.jpg)
 </div>
 </div>
 

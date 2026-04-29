@@ -562,6 +562,23 @@ section.grid-quadrant .cell li {
   line-height: 1.5;
 }
 
+/* 象限内での左右分割レイアウト */
+section.grid-quadrant .cell.side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+section.grid-quadrant .cell.side > div:first-child {
+  flex: 1;
+}
+
+section.grid-quadrant .cell.side img {
+  max-width: 140px;
+  height: auto;
+  flex-shrink: 0;
+}
+
 /* ============================================================
    Timetable
    ============================================================ */
