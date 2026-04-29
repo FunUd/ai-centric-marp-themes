@@ -32,7 +32,7 @@
 section {
   width: 1280px;
   height: 720px;
-  padding: 60px 70px 50px 70px;
+  padding: 45px 70px 50px 70px;
   background: var(--ac-white);
   color: var(--ac-text);
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
@@ -375,9 +375,9 @@ section.pagination-left::after {
   left: 30px;
 }
 
-/* with-header: ヘッダーが表示される場合にpaddingを調整 */
+section:has(header),
 section.with-header {
-  padding-top: 80px;
+  padding-top: 85px;
 }
 
 /* ============================================================
@@ -451,7 +451,11 @@ section.cover::after {
    TOC — 目次
    ============================================================ */
 section.toc {
-  padding-top: 60px;
+  padding-top: 45px;
+}
+
+section.toc:has(header) {
+  padding-top: 85px;
 }
 
 section.toc ol {
@@ -464,12 +468,12 @@ section.toc ol {
 
 section.toc ol li {
   counter-increment: toc-counter;
-  padding: 12px 0;
+  padding: 8px 0;
   margin-bottom: 0;
   border-radius: 0;
   background: transparent;
   border-left: none;
-  border-bottom: 1px solid var(--ac-border-light);
+  border-bottom: none;
   font-size: 20px;
   break-inside: avoid;
   display: flex;
@@ -490,7 +494,7 @@ section.toc ol li::before {
 section.toc-focus {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 section.toc-focus ol {
@@ -501,8 +505,8 @@ section.toc-focus ol {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 850px;
+  margin: 40px auto 0;
 }
 
 section.toc-focus ol li {
@@ -709,7 +713,11 @@ section.profile {
   flex-direction: row;
   align-items: flex-start;
   gap: 40px;
-  padding-top: 60px;
+  padding-top: 45px;
+}
+
+section.profile:has(header) {
+  padding-top: 85px;
 }
 
 section.profile img {
