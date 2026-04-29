@@ -503,16 +503,16 @@ section.toc-focus ol {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   max-width: 850px;
-  margin: 40px auto 0;
+  margin: 20px auto 0;
 }
 
 section.toc-focus ol li {
   counter-increment: toc-counter;
   background: transparent;
-  padding: 20px 0;
+  padding: 15px 0;
   font-size: 28px;
   font-weight: 600;
   color: var(--ac-accent);
@@ -532,11 +532,11 @@ section.toc-focus ol li:last-child {
 section.toc-focus ol li::before {
   content: counter(toc-counter, decimal-leading-zero);
   color: var(--ac-primary);
-  font-size: 40px;
+  font-size: 36px;
   font-weight: 300;
   margin-right: 32px;
   width: 60px;
-  height: 60px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
