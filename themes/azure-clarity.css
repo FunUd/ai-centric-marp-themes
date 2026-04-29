@@ -488,6 +488,69 @@ section.toc ol li::before {
 }
 
 /* ============================================================
+   TOC Focus — 目次 (少項目向け)
+   ============================================================ */
+section.toc-focus {
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+section.toc-focus h1 {
+  font-size: 38px;
+  margin-bottom: 48px;
+  text-align: center;
+  border-bottom: none;
+  width: 100%;
+}
+
+section.toc-focus ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 800px;
+}
+
+section.toc-focus ol li {
+  counter-increment: toc-counter;
+  background: var(--ac-white);
+  border-radius: var(--ac-radius-lg);
+  padding: 24px 32px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ac-accent);
+  display: flex;
+  align-items: center;
+  border-left: 6px solid var(--ac-primary);
+  border: 1px solid var(--ac-border-light);
+  border-left-width: 6px;
+  box-shadow: 0 4px 12px var(--ac-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  break-inside: avoid;
+}
+
+section.toc-focus ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--ac-primary);
+  font-size: 28px;
+  font-weight: 700;
+  margin-right: 24px;
+  background: var(--ac-primary-pale);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ============================================================
    2-Column Layout
    ============================================================ */
 section.cols-2>div.columns,
@@ -618,11 +681,13 @@ section.steps ol li {
   border-top: 4px solid var(--ac-primary);
   font-size: 18px;
   line-height: 1.5;
+  margin: 0;
 }
 
 section.steps ol li::before {
   content: 'STEP ' counter(step-counter);
   display: block;
+  width: max-content;
   font-size: 12px;
   font-weight: 700;
   color: var(--ac-white);
@@ -630,7 +695,6 @@ section.steps ol li::before {
   padding: 3px 12px;
   border-radius: 12px;
   margin-bottom: 10px;
-  display: inline-block;
   letter-spacing: 0.1em;
 }
 
