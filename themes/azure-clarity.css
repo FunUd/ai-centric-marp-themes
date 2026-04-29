@@ -594,6 +594,27 @@ section.cols-3 .col h3 {
 }
 
 /* ============================================================
+   Split Layout (背景・枠線なしのシンプルな分割レイアウト)
+   ============================================================ */
+section.split-2>div.columns,
+section.split-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+  height: calc(100% - 80px);
+}
+
+section.split-3>div.columns,
+section.split-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
    4-Quadrant Grid (2x2)
    ============================================================ */
 section.grid-quadrant>div.grid,
