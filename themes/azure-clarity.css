@@ -799,8 +799,116 @@ section.key-message blockquote p {
 section.key-message p {
   color: var(--ac-text-sub);
   font-size: 22px;
-  margin-top: 24px;
 }
+
+/* ============================================================
+   Content Density Utilities — 文字をぎっしり詰め込むためのクラス
+   ============================================================ */
+
+/* 標準的な「少し詰め込みたい」ケース */
+section.dense {
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+section.dense h1 {
+  font-size: 32px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom-width: 2px;
+}
+
+section.dense h2 {
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+section.dense h3 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+section.dense p,
+section.dense ul,
+section.dense ol {
+  margin-bottom: 12px;
+}
+
+section.dense li {
+  margin-bottom: 4px;
+}
+
+section.dense table {
+  font-size: 18px;
+}
+
+section.dense pre code {
+  font-size: 16px;
+}
+
+section.dense blockquote {
+  font-size: 19px;
+  padding: 12px 20px;
+}
+
+/* 限界まで「ぎっしり詰め込みたい」ケース (設計詳細など) */
+section.extra-dense {
+  font-size: 17px;
+  line-height: 1.5;
+  padding: 35px 60px 40px 60px;
+}
+
+section.extra-dense h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom-width: 2px;
+}
+
+section.extra-dense h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+section.extra-dense h3 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+
+section.extra-dense p,
+section.extra-dense ul,
+section.extra-dense ol {
+  margin-bottom: 8px;
+}
+
+section.extra-dense li {
+  margin-bottom: 2px;
+}
+
+section.extra-dense table {
+  font-size: 15px;
+}
+
+section.extra-dense pre code {
+  font-size: 14px;
+}
+
+section.extra-dense blockquote {
+  font-size: 16px;
+  padding: 10px 16px;
+}
+
+/* ヘッダーがある場合のパディング調整 */
+section.dense:has(header),
+section.dense.with-header {
+  padding-top: 75px;
+}
+
+section.extra-dense:has(header),
+section.extra-dense.with-header {
+  padding-top: 70px;
+}
+
 
 /* ============================================================
    Timeline — タイムライン
