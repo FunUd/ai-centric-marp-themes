@@ -1,0 +1,1717 @@
+/* @theme prism-edge */
+
+@import 'default';
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ============================================================
+   CSS Variables
+   ============================================================ */
+:root {
+  --pe-primary: #4F46E5;
+  --pe-primary-dark: #312E81;
+  --pe-primary-light: #C7D2FE;
+  --pe-primary-pale: #E0E7FF;
+  --pe-accent: #0F172A;
+  --pe-text: #0F172A;
+  --pe-text-sub: #64748B;
+  --pe-white: #FFFFFF;
+  --pe-bg: #F8FAFC;
+  --pe-border: #CBD5E1;
+  --pe-border-light: #E2E8F0;
+  --pe-success: #10B981;
+  --pe-warning: #F59E0B;
+  --pe-danger: #EF4444;
+  --pe-shadow: rgba(79, 70, 229, 0.08);
+  --pe-radius: 0px;
+  --pe-radius-lg: 0px;
+  --pe-cyan: #06B6D4;
+  --pe-magenta: #EC4899;
+  --pe-dark: #020617;
+}
+
+/* ============================================================
+   Base Slide
+   ============================================================ */
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 45px 70px 50px 70px;
+  background: var(--pe-bg);
+  color: var(--pe-text);
+  font-family: 'Space Grotesk', 'Noto Sans JP', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+section h1 {
+  color: var(--pe-accent);
+  font-size: 38px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--pe-primary);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+section h2 {
+  color: var(--pe-accent);
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+section h3 {
+  color: var(--pe-primary-dark);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+section h4 {
+  color: var(--pe-primary);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+section h5,
+section h6 {
+  color: var(--pe-text-sub);
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+section p {
+  margin: 0 0 16px 0;
+}
+
+section a {
+  color: var(--pe-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--pe-primary-light);
+}
+
+section a:hover {
+  border-bottom-color: var(--pe-primary);
+}
+
+/* ============================================================
+   Lists
+   ============================================================ */
+section ul,
+section ol {
+  margin: 0 0 16px 0;
+  padding-left: 1.5em;
+}
+
+section ul li,
+section ol li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+section ul li::marker {
+  color: var(--pe-primary);
+}
+
+section ol li::marker {
+  color: var(--pe-primary);
+  font-weight: 600;
+}
+
+section ul ul,
+section ol ol,
+section ul ol,
+section ol ul {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-size: 0.92em;
+  color: var(--pe-text);
+}
+
+/* ============================================================
+   Table
+   ============================================================ */
+section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 20px;
+}
+
+section table thead th {
+  background: var(--pe-primary);
+  color: var(--pe-white);
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  border: none;
+}
+
+section table thead th:first-child {
+  border-radius: var(--pe-radius) 0 0 0;
+}
+
+section table thead th:last-child {
+  border-radius: 0 var(--pe-radius) 0 0;
+}
+
+section table tbody td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--pe-border-light);
+}
+
+section table tbody tr:nth-child(even) {
+  background: var(--pe-primary-pale);
+}
+
+section table tbody tr:hover {
+  background: var(--pe-primary-light);
+}
+
+/* ============================================================
+   Code & Blockquote
+   ============================================================ */
+section code {
+  background: var(--pe-primary-pale);
+  color: var(--pe-primary-dark);
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 0.88em;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-weight: 500;
+}
+
+section pre {
+  background: var(--pe-dark);
+  border-radius: var(--pe-radius);
+  padding: 20px 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+section pre code {
+  background: transparent;
+  color: #E2E8F0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Syntax Highlighting (Dark Theme for pre)
+   ============================================================ */
+section pre code .hljs-keyword,
+section pre code .hljs-selector-tag,
+section pre code .hljs-tag {
+  color: #c678dd;
+}
+
+section pre code .hljs-built_in,
+section pre code .hljs-type {
+  color: #e5c07b;
+}
+
+section pre code .hljs-literal,
+section pre code .hljs-number {
+  color: #d19a66;
+}
+
+section pre code .hljs-string,
+section pre code .hljs-regexp,
+section pre code .hljs-addition {
+  color: #98c379;
+}
+
+section pre code .hljs-name,
+section pre code .hljs-class,
+section pre code .hljs-title {
+  color: #e06c75;
+}
+
+section pre code .hljs-attr,
+section pre code .hljs-attribute {
+  color: #d19a66;
+}
+
+section pre code .hljs-symbol,
+section pre code .hljs-bullet {
+  color: #61aeee;
+}
+
+section pre code .hljs-comment,
+section pre code .hljs-quote,
+section pre code .hljs-deletion {
+  color: #7f848e;
+  font-style: italic;
+}
+
+section blockquote {
+  border-left: 4px solid var(--pe-primary);
+  background: var(--pe-primary-pale);
+  margin: 16px 0;
+  padding: 16px 24px;
+  border-radius: 0 var(--pe-radius) var(--pe-radius) 0;
+  color: var(--pe-accent);
+  font-size: 22px;
+}
+
+section blockquote p {
+  margin: 0;
+}
+
+/* ============================================================
+   Text Emphasis
+   ============================================================ */
+section strong {
+  color: var(--pe-primary-dark);
+  font-weight: 700;
+}
+
+section em {
+  color: var(--pe-text-sub);
+  font-style: italic;
+}
+
+section mark {
+  background: linear-gradient(transparent 60%, var(--pe-cyan) 60%);
+  padding: 0 4px;
+  color: inherit;
+}
+
+/* ============================================================
+   Images
+   ============================================================ */
+section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--pe-radius);
+}
+
+section img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+
+section img[alt~="shadow"] {
+  box-shadow: 0 8px 24px var(--pe-shadow);
+}
+
+/* ============================================================
+   Header & Footer
+   ============================================================ */
+header {
+  position: absolute;
+  top: 16px;
+  left: 75px;
+  right: 75px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pe-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--pe-border-light);
+}
+
+footer {
+  position: absolute;
+  bottom: 16px;
+  left: 75px;
+  right: 75px;
+  font-size: 12px;
+  color: var(--pe-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ============================================================
+   Pagination (section::after)
+   ============================================================ */
+section::after {
+  position: absolute;
+  bottom: 18px;
+  right: 30px;
+  font-size: 13px;
+  color: var(--pe-text-sub);
+  font-weight: 500;
+  background: var(--pe-primary-pale);
+  padding: 3px 12px;
+  border-radius: var(--pe-radius);
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+}
+
+/* ============================================================
+   Utility: Header / Footer / Pagination control
+   ============================================================ */
+section.no-header header {
+  display: none;
+}
+
+section.no-footer footer {
+  display: none;
+}
+
+section.no-pagination::after {
+  display: none;
+}
+
+section.pagination-left::after {
+  right: auto;
+  left: 30px;
+}
+
+section:has(header),
+section.with-header {
+  padding-top: 85px;
+}
+
+/* ============================================================
+   Cover Slide — 表紙
+   ============================================================ */
+section.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--pe-bg);
+  padding: 80px;
+}
+
+section.cover h1 {
+  font-size: 52px;
+  color: var(--pe-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  letter-spacing: -0.03em;
+}
+
+section.cover h2 {
+  font-size: 28px;
+  color: var(--pe-primary);
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+
+section.cover p {
+  color: var(--pe-text-sub);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+/* cover + subtitle */
+section.cover.subtitle h2 {
+  font-weight: 500;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--pe-border);
+  margin-bottom: 24px;
+}
+
+/* cover + meta */
+section.cover.meta p {
+  background: var(--pe-primary-pale);
+  display: inline-block;
+  padding: 4px 20px;
+  border-radius: var(--pe-radius);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--pe-primary-dark);
+}
+
+/* cover decoration circle */
+section.cover::after {
+  content: '' !important;
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pe-primary-light) 0%, transparent 70%);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* ============================================================
+   Advanced Cover Designs
+   ============================================================ */
+
+/* Cover Wave — SVG wave at bottom */
+section.cover-wave {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--pe-bg);
+  padding: 80px;
+}
+
+section.cover-wave::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 240px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234F46E5' fill-opacity='0.12' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='%2306B6D4' fill-opacity='0.08' d='M0,256L48,245.3C96,235,192,213,288,208C384,203,480,213,576,234.7C672,256,768,288,864,277.3C960,267,1056,213,1152,202.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+section.cover-wave h1 {
+  font-size: 56px;
+  color: var(--pe-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  letter-spacing: -0.03em;
+}
+
+section.cover-wave h2 {
+  font-size: 28px;
+  color: var(--pe-primary);
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+
+section.cover-wave p {
+  color: var(--pe-text-sub);
+  font-size: 18px;
+}
+
+/* Cover Diagonal — diagonal split background */
+section.cover-diagonal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  background: var(--pe-bg);
+  padding: 80px;
+}
+
+section.cover-diagonal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(160deg, var(--pe-primary) 0%, var(--pe-primary-dark) 100%);
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+  z-index: 0;
+}
+
+section.cover-diagonal h1 {
+  font-size: 56px;
+  color: var(--pe-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  max-width: 50%;
+  letter-spacing: -0.03em;
+}
+
+section.cover-diagonal h2 {
+  font-size: 24px;
+  color: var(--pe-primary);
+  font-weight: 400;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+  max-width: 45%;
+}
+
+section.cover-diagonal p {
+  color: var(--pe-text-sub);
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+  max-width: 45%;
+}
+
+/* Cover Noir — dark with complex gradient */
+section.cover-noir {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(79, 70, 229, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 60%),
+    var(--pe-dark);
+  color: #F1F5F9;
+  padding: 80px;
+}
+
+section.cover-noir h1 {
+  font-size: 56px;
+  color: #FFFFFF;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  letter-spacing: -0.03em;
+}
+
+section.cover-noir h2 {
+  font-size: 28px;
+  color: var(--pe-primary-light);
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+
+section.cover-noir p {
+  color: #94A3B8;
+  font-size: 18px;
+}
+
+/* Cover Aurora — aurora-like flowing gradient */
+section.cover-aurora {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(79,70,229,0.15) 0%, rgba(236,72,153,0.1) 50%, rgba(6,182,212,0.15) 100%),
+    var(--pe-bg);
+  padding: 80px;
+  position: relative;
+}
+
+section.cover-aurora::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(79,70,229,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(236,72,153,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(6,182,212,0.08) 0%, transparent 40%);
+  animation: aurora-rotate 20s linear infinite;
+  z-index: 0;
+}
+
+@keyframes aurora-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+section.cover-aurora h1 {
+  font-size: 56px;
+  color: var(--pe-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.03em;
+}
+
+section.cover-aurora h2 {
+  font-size: 28px;
+  color: var(--pe-primary);
+  font-weight: 400;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+section.cover-aurora p {
+  color: var(--pe-text-sub);
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Hero — giant typography slide
+   ============================================================ */
+section.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--pe-bg);
+  padding: 80px;
+}
+
+section.hero h1 {
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--pe-accent);
+  border-bottom: none;
+  margin-bottom: 24px;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+section.hero h2 {
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--pe-primary);
+  margin-bottom: 16px;
+}
+
+section.hero p {
+  font-size: 24px;
+  color: var(--pe-text-sub);
+}
+
+/* ============================================================
+   Title Only — minimal title slide
+   ============================================================ */
+section.title-only {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--pe-bg);
+  padding: 80px 100px;
+}
+
+section.title-only h1 {
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--pe-accent);
+  border-bottom: none;
+  margin: 0;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+}
+
+/* ============================================================
+   Accent Left — bold left accent border
+   ============================================================ */
+section.accent-left {
+  padding-left: 90px;
+}
+
+section.accent-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+  z-index: 10;
+}
+
+/* ============================================================
+   TOC — 目次
+   ============================================================ */
+section.toc {
+  padding-top: 45px;
+}
+
+section.toc:has(header) {
+  padding-top: 85px;
+}
+
+section.toc ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding-left: 0;
+  columns: 2;
+  column-gap: 60px;
+}
+
+section.toc ol li {
+  counter-increment: toc-counter;
+  padding: 8px 0;
+  margin-bottom: 0;
+  border-radius: 0;
+  background: transparent;
+  border-left: none;
+  border-bottom: none;
+  font-size: 20px;
+  break-inside: avoid;
+  display: flex;
+  align-items: center;
+}
+
+section.toc ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--pe-primary);
+  font-weight: 700;
+  font-size: 18px;
+  margin-right: 16px;
+}
+
+/* ============================================================
+   TOC Focus — 目次 (少項目向け)
+   ============================================================ */
+section.toc-focus {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+section.toc-focus ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 850px;
+  margin: 20px auto 0;
+}
+
+section.toc-focus ol li {
+  counter-increment: toc-counter;
+  background: transparent;
+  padding: 15px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--pe-accent);
+  display: flex;
+  align-items: center;
+  border: none;
+  border-bottom: 1px solid var(--pe-border-light);
+  box-shadow: none;
+  transition: all 0.3s ease;
+  border-radius: 0;
+}
+
+section.toc-focus ol li:last-child {
+  border-bottom: none;
+}
+
+section.toc-focus ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--pe-primary);
+  font-size: 36px;
+  font-weight: 300;
+  margin-right: 32px;
+  width: 60px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border-right: 2px solid var(--pe-primary-light);
+  border-radius: 0;
+}
+
+section.toc-focus ol li:hover {
+  background: linear-gradient(90deg, var(--pe-primary-pale) 0%, transparent 100%);
+  padding-left: 16px;
+}
+
+/* ============================================================
+   2-Column Layout
+   ============================================================ */
+section.cols-2>div.columns,
+section.cols-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
+   3-Column Layout
+   ============================================================ */
+section.cols-3>div.columns,
+section.cols-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* Column cards — sharp, no rounded corners */
+section.cols-2 .col,
+section.cols-3 .col {
+  background: var(--pe-primary-pale);
+  border-radius: var(--pe-radius-lg);
+  padding: 24px;
+  border: 1px solid var(--pe-border-light);
+  height: 100%;
+}
+
+section.cols-2 .col h3,
+section.cols-3 .col h3 {
+  color: var(--pe-primary);
+  font-size: 22px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--pe-primary-light);
+}
+
+/* ============================================================
+   Split Layout
+   ============================================================ */
+section.split-2>div.columns,
+section.split-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+section.split-3>div.columns,
+section.split-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
+   Split Asym — asymmetric split (65:35)
+   ============================================================ */
+section.split-asym>div.columns,
+section.split-asym>.columns {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 40px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+section.split-asym-reverse>div.columns,
+section.split-asym-reverse>.columns {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 40px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
+   4-Quadrant Grid (2x2)
+   ============================================================ */
+section.grid-quadrant>div.grid,
+section.grid-quadrant>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100% - 80px);
+}
+
+section.grid-quadrant .cell {
+  background: var(--pe-primary-pale);
+  border-radius: var(--pe-radius-lg);
+  padding: 20px 24px;
+  border: 1px solid var(--pe-border-light);
+  overflow: hidden;
+}
+
+section.grid-quadrant .cell h3 {
+  color: var(--pe-primary);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+section.grid-quadrant .cell p,
+section.grid-quadrant .cell li {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+section.grid-quadrant .cell.side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+section.grid-quadrant .cell.side>div:first-child {
+  flex: 1;
+}
+
+section.grid-quadrant .cell.side img {
+  max-width: 140px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Sharp Grid — border-only grid (no backgrounds)
+   ============================================================ */
+section.grid-sharp>div.grid,
+section.grid-sharp>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  height: calc(100% - 80px);
+}
+
+section.grid-sharp .cell {
+  background: transparent;
+  border-radius: 0;
+  padding: 24px 28px;
+  border-right: 1px solid var(--pe-border-light);
+  border-bottom: 1px solid var(--pe-border-light);
+  overflow: hidden;
+}
+
+section.grid-sharp .cell:nth-child(2n) {
+  border-right: none;
+}
+
+section.grid-sharp .cell:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+section.grid-sharp .cell h3 {
+  color: var(--pe-primary);
+  font-size: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Timetable
+   ============================================================ */
+section.timetable table {
+  font-size: 18px;
+}
+
+section.timetable table thead th:first-child {
+  width: 140px;
+}
+
+section.timetable table tbody td:first-child {
+  font-weight: 600;
+  color: var(--pe-primary);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Steps
+   ============================================================ */
+section.steps ol {
+  list-style: none;
+  padding: 0;
+  counter-reset: step-counter;
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+section.steps ol li {
+  counter-increment: step-counter;
+  flex: 1;
+  background: var(--pe-primary-pale);
+  border-radius: var(--pe-radius-lg);
+  padding: 24px 20px 20px;
+  position: relative;
+  border-top: 4px solid var(--pe-primary);
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+section.steps ol li::before {
+  content: 'STEP ' counter(step-counter);
+  display: block;
+  width: max-content;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pe-white);
+  background: var(--pe-primary);
+  padding: 3px 12px;
+  border-radius: var(--pe-radius);
+  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+}
+
+section.steps ol li strong {
+  display: block;
+  font-size: 20px;
+  color: var(--pe-accent);
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   Profile
+   ============================================================ */
+section.profile {
+  padding-top: 45px;
+}
+
+section.profile:has(header) {
+  padding-top: 85px;
+}
+
+section.profile .profile-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 48px;
+  width: 100%;
+}
+
+section.profile .profile-image {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+section.profile .profile-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--pe-primary-light);
+  box-shadow: 0 8px 24px var(--pe-shadow);
+}
+
+section.profile .profile-content {
+  flex: 1;
+  min-width: 0;
+}
+
+section.profile h1 {
+  font-size: 32px;
+  margin-bottom: 4px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+section.profile h2 {
+  font-size: 18px;
+  color: var(--pe-primary);
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+section.profile ul {
+  font-size: 19px;
+}
+
+/* ============================================================
+   Key Message
+   ============================================================ */
+section.key-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--pe-primary-pale), var(--pe-primary-light));
+}
+
+section.key-message blockquote {
+  border: none;
+  background: transparent;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--pe-accent);
+  line-height: 1.4;
+  max-width: 900px;
+  padding: 0;
+}
+
+section.key-message blockquote p {
+  margin: 0;
+}
+
+section.key-message p {
+  color: var(--pe-text-sub);
+  font-size: 22px;
+}
+
+/* ============================================================
+   Background Patterns
+   ============================================================ */
+
+/* Subtle grid background */
+section.bg-grid {
+  background:
+    linear-gradient(var(--pe-border-light) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pe-border-light) 1px, transparent 1px),
+    var(--pe-bg);
+  background-size: 40px 40px;
+}
+
+/* Noise texture background via CSS gradients */
+section.bg-noise {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(79,70,229,0.03) 0%, transparent 20%),
+    radial-gradient(circle at 80% 80%, rgba(6,182,212,0.03) 0%, transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(236,72,153,0.02) 0%, transparent 25%),
+    var(--pe-bg);
+}
+
+/* ============================================================
+   Glass Panel — frosted glass effect (sharp edges)
+   ============================================================ */
+section .glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+}
+
+/* ============================================================
+   Gradient Text
+   ============================================================ */
+section .gradient-text {
+  background: linear-gradient(135deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   Underline Accent — decorative gradient underline
+   ============================================================ */
+section .underline-accent {
+  position: relative;
+  display: inline-block;
+}
+
+section .underline-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+}
+
+/* ============================================================
+   Content Density Utilities
+   ============================================================ */
+section.dense {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+section.dense h1 {
+  font-size: 30px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom-width: 2px;
+}
+
+section.dense h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+section.dense h3 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+section.dense p,
+section.dense ul,
+section.dense ol {
+  margin-bottom: 10px;
+}
+
+section.dense li {
+  margin-bottom: 2px;
+}
+
+section.dense table {
+  font-size: 16px;
+}
+
+section.dense pre code {
+  font-size: 15px;
+}
+
+section.dense blockquote {
+  font-size: 17px;
+  padding: 10px 18px;
+}
+
+section.extra-dense {
+  font-size: 15px;
+  line-height: 1.4;
+  padding: 30px 50px 35px 50px;
+}
+
+section.extra-dense h1 {
+  font-size: 26px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom-width: 2px;
+}
+
+section.extra-dense h2 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+section.extra-dense h3 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+section.extra-dense p,
+section.extra-dense ul,
+section.extra-dense ol {
+  margin-bottom: 8px;
+}
+
+section.extra-dense li {
+  margin-bottom: 1px;
+}
+
+section.extra-dense table {
+  font-size: 14px;
+}
+
+section.extra-dense pre code {
+  font-size: 13px;
+}
+
+section.extra-dense blockquote {
+  font-size: 14px;
+  padding: 8px 14px;
+}
+
+section.dense:has(header),
+section.dense.with-header {
+  padding-top: 75px;
+}
+
+section.extra-dense:has(header),
+section.extra-dense.with-header {
+  padding-top: 70px;
+}
+
+/* ============================================================
+   Timeline
+   ============================================================ */
+section.timeline ol {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  margin-left: 24px;
+}
+
+section.timeline ol::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--pe-primary), var(--pe-cyan));
+  border-radius: 3px;
+}
+
+section.timeline ol li {
+  position: relative;
+  padding-left: 36px;
+  padding-bottom: 12px;
+  margin-bottom: 0;
+  font-size: 19px;
+}
+
+section.timeline ol li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+  background: var(--pe-primary);
+  border-radius: 50%;
+  border: 3px solid var(--pe-white);
+  box-shadow: 0 0 0 3px var(--pe-primary-light);
+}
+
+section.timeline ol li strong {
+  display: block;
+  color: var(--pe-primary);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* ============================================================
+   Checklist
+   ============================================================ */
+section.checklist ul,
+section .checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+section.checklist ul li,
+section .checklist li {
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+section.checklist ul li::before,
+section .checklist li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: var(--pe-white);
+  background: var(--pe-success);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--pe-radius);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ============================================================
+   Callouts (Alerts)
+   ============================================================ */
+section .callout {
+  padding: 18px 24px;
+  margin: 16px 0;
+  background: linear-gradient(135deg, var(--pe-primary-pale) 0%, rgba(199,210,254,0.3) 100%);
+  font-size: 0.95em;
+  position: relative;
+}
+
+section .callout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(180deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+}
+
+section .callout h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--pe-primary-dark);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+section .callout p:last-child {
+  margin-bottom: 0;
+}
+
+section .callout.info {
+  background: linear-gradient(135deg, var(--pe-primary-pale) 0%, rgba(199,210,254,0.3) 100%);
+}
+
+section .callout.info::before {
+  background: linear-gradient(180deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+}
+
+section .callout.info h4 {
+  color: var(--pe-primary-dark);
+}
+
+section .callout.success {
+  background: linear-gradient(135deg, #ecfdf5 0%, rgba(16,185,129,0.12) 100%);
+}
+
+section .callout.success::before {
+  background: linear-gradient(180deg, var(--pe-success) 0%, #34d399 100%);
+}
+
+section .callout.success h4 {
+  color: #047857;
+}
+
+section .callout.warning {
+  background: linear-gradient(135deg, #fffbeb 0%, rgba(245,158,11,0.12) 100%);
+}
+
+section .callout.warning::before {
+  background: linear-gradient(180deg, var(--pe-warning) 0%, #fbbf24 100%);
+}
+
+section .callout.warning h4 {
+  color: #b45309;
+}
+
+section .callout.danger {
+  background: linear-gradient(135deg, #fef2f2 0%, rgba(239,68,68,0.12) 100%);
+}
+
+section .callout.danger::before {
+  background: linear-gradient(180deg, var(--pe-danger) 0%, #f87171 100%);
+}
+
+section .callout.danger h4 {
+  color: #b91c1c;
+}
+
+/* ============================================================
+   Badges / Tags
+   ============================================================ */
+section .badge {
+  display: inline-block;
+  padding: 5px 14px;
+  font-size: 0.72em;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: var(--pe-radius);
+  background: linear-gradient(135deg, var(--pe-primary-light) 0%, rgba(199,210,254,0.6) 100%);
+  color: var(--pe-primary-dark);
+  border: 1px solid rgba(79,70,229,0.15);
+  letter-spacing: 0.02em;
+}
+
+section .badge.primary {
+  background: linear-gradient(135deg, var(--pe-primary) 0%, #6366f1 100%);
+  color: var(--pe-white);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(79,70,229,0.25);
+}
+
+section .badge.success {
+  background: linear-gradient(135deg, var(--pe-success) 0%, #34d399 100%);
+  color: var(--pe-white);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+}
+
+section .badge.warning {
+  background: linear-gradient(135deg, var(--pe-warning) 0%, #fbbf24 100%);
+  color: var(--pe-white);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.25);
+}
+
+section .badge.danger {
+  background: linear-gradient(135deg, var(--pe-danger) 0%, #f87171 100%);
+  color: var(--pe-white);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.25);
+}
+
+/* ============================================================
+   Alignment Utilities
+   ============================================================ */
+
+/* Horizontal Alignment */
+section.text-left,
+section .text-left,
+section.align-left,
+section .align-left {
+  text-align: left;
+}
+
+section.text-center,
+section .text-center,
+section.align-center,
+section .align-center {
+  text-align: center;
+}
+
+section.text-right,
+section .text-right,
+section.align-right,
+section .align-right {
+  text-align: right;
+}
+
+/* Vertical Alignment */
+section.v-top,
+section .v-top,
+section.v-center,
+section .v-center,
+section.v-middle,
+section .v-middle,
+section.v-bottom,
+section .v-bottom {
+  display: flex !important;
+  flex-direction: column;
+}
+
+section.v-top,
+section .v-top {
+  justify-content: flex-start;
+}
+
+section.v-center,
+section .v-center,
+section.v-middle,
+section .v-middle {
+  justify-content: center;
+}
+
+section.v-bottom,
+section .v-bottom {
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   Highlight colors utility
+   ============================================================ */
+section .text-primary {
+  color: var(--pe-primary);
+}
+
+section .text-accent {
+  color: var(--pe-accent);
+}
+
+section .text-success {
+  color: var(--pe-success);
+}
+
+section .text-warning {
+  color: var(--pe-warning);
+}
+
+section .text-danger {
+  color: var(--pe-danger);
+}
+
+section .text-sub {
+  color: var(--pe-text-sub);
+}
+
+section .text-cyan {
+  color: var(--pe-cyan);
+}
+
+section .text-magenta {
+  color: var(--pe-magenta);
+}
+
+section .text-large {
+  font-size: 1.3em;
+}
+
+section .text-small {
+  font-size: 0.85em;
+}
+
+section .bg-pale {
+  background: var(--pe-primary-pale);
+  padding: 16px;
+  border-radius: var(--pe-radius);
+}
+
+section .bg-light {
+  background: var(--pe-primary-light);
+  padding: 16px;
+  border-radius: var(--pe-radius);
+}
+
+section .bg-dark {
+  background: var(--pe-dark);
+  color: #F1F5F9;
+  padding: 16px;
+  border-radius: var(--pe-radius);
+}
+
+/* ============================================================
+   Stat Number — big metric display
+   ============================================================ */
+section .stat-number {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+section .stat-label {
+  font-size: 18px;
+  color: var(--pe-text-sub);
+  font-weight: 500;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   Section Number — large decorative number for headings
+   ============================================================ */
+section .section-number {
+  font-size: 110px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--pe-primary);
+  opacity: 0.12;
+  position: absolute;
+  top: 40px;
+  left: 70px;
+  z-index: 0;
+  letter-spacing: -0.04em;
+}
+
+/* ============================================================
+   Highlight Box — vivid marker-like background
+   ============================================================ */
+section .highlight-box {
+  background: linear-gradient(135deg, rgba(79,70,229,0.12) 0%, rgba(6,182,212,0.08) 100%);
+  border-left: 4px solid var(--pe-primary);
+  padding: 16px 20px;
+  margin: 12px 0;
+  position: relative;
+}
+
+/* ============================================================
+   Large Quote — editorial blockquote style
+   ============================================================ */
+section .quote-large {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--pe-accent);
+  border-left: 4px solid var(--pe-primary);
+  padding-left: 24px;
+  margin: 24px 0;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
