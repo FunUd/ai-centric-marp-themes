@@ -35,6 +35,28 @@ Marp (Markdown Presentation Ecosystem) converts Markdown into slide decks. It co
 
 Every Marp file starts with a YAML front-matter declaring `marp: true`, followed by Markdown content. Slides are separated by `---` (horizontal rule).
 
+### File Organization
+
+To keep the workspace clean and maintainable, always organize your presentation files as follows:
+
+1.  **Base Directory**: All presentations should reside in the `slides/` directory.
+2.  **Project Folder**: Create a dedicated subfolder for each individual slide deck (e.g., `slides/project-name/`).
+3.  **Files**:
+    *   Place the Markdown file (`.md`) directly inside the project folder.
+    *   Create an `assets/` subfolder for all images, icons, and diagrams.
+
+**Example Structure:**
+```text
+slides/
+└── marketing-plan/
+    ├── marketing-plan.md
+    └── assets/
+        ├── logo.svg
+        └── overview-diagram.drawio.svg
+```
+
+---
+
 ```markdown
 ---
 marp: true
