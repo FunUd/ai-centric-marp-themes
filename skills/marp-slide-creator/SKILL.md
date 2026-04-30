@@ -267,10 +267,10 @@ Use the browser tool to:
 
 #### Step 4: Fix Issues & Re-Preview
 
-After identifying problems:
-1. Edit the Markdown file to fix issues
-2. Re-run the Marp CLI to regenerate HTML
-3. Refresh the browser to verify fixes
+After identifying problems (especially content overflow):
+1. **Refine Content**: First, try to make the text more concise. Remove redundant words, use bullet points instead of sentences, and focus on the core message.
+2. **Adjust Layout**: If refinement isn't enough, apply technical solutions like reducing font size or splitting slides (see Section 5).
+3. **Edit & Verify**: Update the Markdown file, re-run the Marp CLI, and refresh the browser to verify the fix.
 
 #### Step 5: Clean Up
 
@@ -312,9 +312,18 @@ Marp for VS Code has an experimental diagnostic for content overflow:
 
 ## 5. Content Overflow Solutions
 
-When content doesn't fit within a slide, use these techniques in order of preference:
+When content doesn't fit within a slide, use these techniques in order of preference (starting with the most "design-friendly" approach):
 
-### 5.1 Use the `style` Directive to Reduce Font Size (Per-Slide)
+### 5.1 Content Refinement (Editing for Conciseness)
+
+Before reaching for technical hacks, always try to "edit down" the content. This is the best way to maintain professional quality and readability.
+
+- **Bulletize**: Convert long paragraphs into short, punchy bullet points.
+- **Remove Redundancy**: Eliminate filler words ("In order to", "Basically", "As we can see").
+- **Core Message**: Stick to "1 slide = 1 message". If you have too many points, move secondary information to presenter notes or a separate slide.
+- **Active Voice**: Use active voice to shorten sentences (e.g., "The team designed the system" vs. "The system was designed by the team").
+
+### 5.2 Use the `style` Directive to Reduce Font Size (Per-Slide)
 
 Apply inline `<style>` scoped to a single slide using the `scoped` attribute. This is the most targeted approach:
 
@@ -333,7 +342,7 @@ section li { font-size: 18px; line-height: 1.4; }
 ...
 ```
 
-### 5.2 Use the Front-matter `style` Directive (Global)
+### 5.3 Use the Front-matter `style` Directive (Global)
 
 For deck-wide font size adjustment:
 
@@ -347,7 +356,7 @@ style: |
 ---
 ```
 
-### 5.3 Use CSS Utility Classes
+### 5.4 Use CSS Utility Classes
 
 If the theme provides utility classes like `text-small` or `text-large`:
 
@@ -360,7 +369,7 @@ If the theme provides utility classes like `text-small` or `text-large`:
 </div>
 ```
 
-### 5.4 Split Content Across Multiple Slides
+### 5.5 Split Content Across Multiple Slides
 
 When content is truly too much for one slide, break it into parts:
 
@@ -378,7 +387,7 @@ When content is truly too much for one slide, break it into parts:
 - Second half of points...
 ```
 
-### 5.5 Image Size Adjustments
+### 5.6 Image Size Adjustments
 
 When images overflow or dominate the slide:
 
@@ -393,7 +402,7 @@ When images overflow or dominate the slide:
 ![bg right:45%](large-image.jpg)
 ```
 
-### 5.6 Table Overflow
+### 5.7 Table Overflow
 
 For tables with too many columns or rows:
 
@@ -408,7 +417,7 @@ section table td, section table th { padding: 6px 10px; }
 | ...  | ...  | ...  | ...  | ...  |
 ```
 
-### 5.7 Code Block Overflow
+### 5.8 Code Block Overflow
 
 For long code blocks:
 
@@ -422,11 +431,11 @@ section pre code { font-size: 14px; line-height: 1.3; }
 
 | Situation                     | Best Solution                                   |
 |------------------------------|------------------------------------------------|
-| Bullet points overflow        | Reduce font-size via `<style scoped>`, or split |
-| Table too wide               | Reduce table font-size, or use abbreviations     |
+| Text/Bullets overflow        | **1. Refine text (conciseness)**, 2. `<style scoped>`, 3. Split |
+| Table too wide               | 1. Abbreviations/Refinement, 2. Reduce font-size |
 | Image too large              | Use `width:` keyword to resize                   |
 | Code block too long          | Reduce code font-size, or truncate example        |
-| Mixed content overflow       | Combine `<style scoped>` + image resize           |
+| Mixed content overflow       | Refine text + combine `<style scoped>` + resize  |
 | Content fundamentally too much| Split across 2+ slides                           |
 
 ---
@@ -436,7 +445,7 @@ section pre code { font-size: 14px; line-height: 1.3; }
 Use this checklist when reviewing each slide:
 
 ### Layout & Readability
-- [ ] All text is fully visible within the slide boundaries
+- [ ] All text is fully visible within the slide boundaries (no overflow/cutoff)
 - [ ] Images do not overlap with text
 - [ ] Consistent margins and padding across slides
 - [ ] Slide is not too sparse (wasted space) or too dense (crowded)
@@ -463,7 +472,8 @@ Use this checklist when reviewing each slide:
 
 ### Content
 - [ ] Each slide conveys a single main idea
-- [ ] Bullet points are concise (not paragraphs)
+- [ ] Bullet points are concise (not full paragraphs)
+- [ ] Text is refined to fit the slide perfectly while maintaining clarity
 - [ ] Tables have clear headers
 - [ ] Images serve a purpose (not decorative filler)
 
