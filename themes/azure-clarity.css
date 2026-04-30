@@ -559,7 +559,9 @@ section.cols-2>.columns {
   grid-template-columns: 1fr 1fr;
   gap: 32px;
   align-items: stretch;
-  height: calc(100% - 80px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* ============================================================
@@ -571,7 +573,9 @@ section.cols-3>.columns {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 24px;
   align-items: stretch;
-  height: calc(100% - 80px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* カラムカードスタイル */
@@ -582,6 +586,7 @@ section.cols-3 .col {
   padding: 24px;
   border: 1px solid var(--ac-border-light);
   height: 100%;
+  overflow: hidden;
 }
 
 section.cols-2 .col h3,
