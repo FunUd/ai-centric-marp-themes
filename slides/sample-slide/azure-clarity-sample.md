@@ -605,3 +605,27 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 
 # ご清聴ありがとうございました
 
+---
+
+<!-- _class: profile -->
+
+# プロフィール
+
+<div class="profile-layout">
+<div class="profile-image">
+
+![width:200px](./assets/sample_image.jpg)
+
+</div>
+<div class="profile-content">
+
+## 山田 太郎 (Taro Yamada)
+**シニアエンジニア / プロジェクトリード**
+
+- **所属**: テクノロジー推進部
+- **専門**: クラウドアーキテクチャ、AI/MLシステム設計
+- **経歴**: 大手SIer → スタートアップ → 現職（在籍5年）
+- **資格**: AWS Solutions Architect、Azure Solutions Architect Expert
+
+</div>
+</div>

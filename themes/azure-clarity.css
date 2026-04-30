@@ -730,10 +730,6 @@ section.steps ol li strong {
    Profile — 経歴紹介
    ============================================================ */
 section.profile {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 40px;
   padding-top: 45px;
 }
 
@@ -741,14 +737,37 @@ section.profile:has(header) {
   padding-top: 85px;
 }
 
-section.profile img {
+/* 明示的な左右カラム構造: <div class="profile-layout"> で囲む */
+section.profile .profile-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 48px;
+  width: 100%;
+}
+
+/* 左カラム：画像エリア */
+section.profile .profile-image {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+section.profile .profile-image img {
   width: 200px;
   height: 200px;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid var(--ac-primary-light);
   box-shadow: 0 8px 24px var(--ac-shadow);
-  flex-shrink: 0;
+}
+
+/* 右カラム：テキストエリア */
+section.profile .profile-content {
+  flex: 1;
+  min-width: 0;
 }
 
 section.profile h1 {
