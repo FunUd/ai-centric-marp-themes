@@ -558,7 +558,7 @@ section.cols-2>.columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
-  align-items: start;
+  align-items: stretch;
   height: calc(100% - 80px);
 }
 
@@ -570,7 +570,7 @@ section.cols-3>.columns {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
   height: calc(100% - 80px);
 }
 
@@ -601,7 +601,7 @@ section.split-2>.columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
-  align-items: start;
+  align-items: stretch;
   height: calc(100% - 80px);
 }
 
@@ -610,7 +610,7 @@ section.split-3>.columns {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
   height: calc(100% - 80px);
 }
 
@@ -851,6 +851,139 @@ section.timeline ol li strong {
   font-weight: 600;
   margin-bottom: 2px;
 }
+
+/* ============================================================
+   Checklist — チェックリスト
+   ============================================================ */
+section.checklist ul, section .checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+section.checklist ul li, section .checklist li {
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+section.checklist ul li::before, section .checklist li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: var(--ac-white);
+  background: var(--ac-success);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ac-radius);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ============================================================
+   Callouts (Alerts)
+   ============================================================ */
+section .callout {
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-left: 6px solid var(--ac-primary);
+  background: var(--ac-primary-pale);
+  border-radius: 0 var(--ac-radius) var(--ac-radius) 0;
+  font-size: 0.95em;
+}
+
+section .callout h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: inherit;
+}
+
+section .callout p:last-child {
+  margin-bottom: 0;
+}
+
+section .callout.info {
+  border-left-color: var(--ac-primary);
+  background: var(--ac-primary-pale);
+}
+
+section .callout.success {
+  border-left-color: var(--ac-success);
+  background: #f0f9f4;
+}
+section .callout.success h4 { color: #1e8449; }
+
+section .callout.warning {
+  border-left-color: var(--ac-warning);
+  background: #fff8f0;
+}
+section .callout.warning h4 { color: #d68910; }
+
+section .callout.danger {
+  border-left-color: var(--ac-danger);
+  background: #fdf2f1;
+}
+section .callout.danger h4 { color: #cb4335; }
+
+/* ============================================================
+   Badges / Tags
+   ============================================================ */
+section .badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.65em;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: var(--ac-radius);
+  background-color: var(--ac-primary-light);
+  color: var(--ac-primary-dark);
+}
+
+section .badge.primary { background-color: var(--ac-primary); color: var(--ac-white); }
+section .badge.success { background-color: var(--ac-success); color: var(--ac-white); }
+section .badge.warning { background-color: var(--ac-warning); color: var(--ac-white); }
+section .badge.danger { background-color: var(--ac-danger); color: var(--ac-white); }
+
+/* ============================================================
+   Alignment Utilities
+   ============================================================ */
+
+/* Horizontal Alignment */
+section.text-left, section .text-left,
+section.align-left, section .align-left { 
+  text-align: left; 
+}
+
+section.text-center, section .text-center,
+section.align-center, section .align-center { 
+  text-align: center; 
+}
+
+section.text-right, section .text-right,
+section.align-right, section .align-right { 
+  text-align: right; 
+}
+
+/* Vertical Alignment */
+section.v-top, section .v-top,
+section.v-center, section .v-center,
+section.v-middle, section .v-middle,
+section.v-bottom, section .v-bottom {
+  display: flex !important;
+  flex-direction: column;
+}
+
+section.v-top, section .v-top { justify-content: flex-start; }
+section.v-center, section .v-center,
+section.v-middle, section .v-middle { justify-content: center; }
+section.v-bottom, section .v-bottom { justify-content: flex-end; }
 
 /* ============================================================
    Highlight colors utility

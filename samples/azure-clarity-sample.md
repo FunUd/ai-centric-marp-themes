@@ -27,12 +27,14 @@ footer: "© 2026 Your Company"
 2. テーブル表示
 3. 2カラムレイアウト
 4. 3カラムレイアウト
-5. 4象限グリッド
-6. ステップ表示
-7. タイムライン
-8. チェックリスト
-9. キーメッセージ
-10. コードブロック
+5. カラム内の配置指定
+6. 4象限グリッド
+7. ステップ表示
+8. タイムライン
+9. チェックリスト
+10. コールアウトとバッジ
+11. キーメッセージ
+12. コードブロック
 
 ---
 
@@ -168,6 +170,69 @@ footer: "© 2026 Your Company"
 
 ---
 
+<!-- _class: cols-2 -->
+
+# カラム内の配置指定 (cols)
+
+<div class="columns">
+<div class="col v-center text-center">
+
+### 中央揃え
+`v-center text-center`
+
+垂直・水平ともに中央に配置されます。カード形式のレイアウトで視覚的に強調したい場合に最適です。
+
+</div>
+<div class="col v-bottom text-right">
+
+### 右下揃え
+`v-bottom text-right`
+
+垂直方向は下、水平方向は右に寄せられます。補足情報や注釈を配置する際などに活用できます。
+
+</div>
+</div>
+
+---
+
+<!-- _class: split-2 -->
+
+# カラム内の配置指定 (split)
+
+<div class="columns">
+<div class="v-middle text-center">
+
+### 中央配置
+`v-middle text-center`
+
+背景色や枠線がない `split` レイアウトでも、自由な位置指定が可能です。
+
+</div>
+<div class="v-top text-left">
+
+### 通常配置
+(デフォルト)
+
+上寄せ・左寄せの標準的な配置です。他のカラムとの対比で位置を調整したい場合に便利です。
+
+</div>
+</div>
+
+---
+
+<!-- _class: v-center text-center -->
+
+# スライド全体の中央揃え
+
+`_class: v-center text-center`
+
+このスライドのように、タイトルを含めたコンテンツ全体をスライドの中央に配置することも可能です。
+
+特定のメッセージを強く印象付けたいスライドや、
+セクションの合間のスライドに適しています。
+
+---
+
 <!-- _class: grid-quadrant -->
 
 
@@ -258,6 +323,48 @@ footer: "© 2026 Your Company"
    正式リリース、全社展開完了
 5. **2026年 Q1**
    機能拡張版リリース、海外展開開始
+
+---
+
+<!-- _class: checklist -->
+
+# チェックリスト
+
+リリース前の最終確認項目です。
+
+- 要件定義書のレビュー完了
+- 全体テストカバレッジ 80% 以上
+- パフォーマンス要件のクリア
+- ユーザーマニュアルの作成と承認
+- セキュリティ診断の実施と指摘事項の改修
+
+※ `checklist` クラスをスライドに付与するだけで、通常の箇条書きがチェックマーク付きのデザインになります。
+
+---
+
+# コールアウトとバッジ
+
+汎用的に使えるハイライト要素です。新機能 <span class="badge danger">NEW</span> や、状態 <span class="badge success">完了</span> を表現できます。
+
+<div class="callout info">
+<h4>ℹ️ Information</h4>
+標準のコールアウトです。補足情報やヒントを記載するのに適しています。
+</div>
+
+<div class="callout success">
+<h4>✅ Success</h4>
+成功や完了を伝えるメッセージです。ポジティブな結果を強調します。
+</div>
+
+<div class="callout warning">
+<h4>⚠️ Warning</h4>
+注意喚起です。仕様の制限や、気をつけるべきポイントを記載します。
+</div>
+
+<div class="callout danger">
+<h4>🚨 Danger</h4>
+重大な警告です。非推奨の操作や、エラー状態を表現するのに使用します。
+</div>
 
 ---
 
