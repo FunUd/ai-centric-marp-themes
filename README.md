@@ -199,8 +199,10 @@ ai-centric-marp-themes/
 │       └── assets/
 ├── skills/
 │   ├── azure-clarity-theme-expert/SKILL.md
+│   ├── marp-slide-creator/SKILL.md
 │   ├── prism-edge-theme-expert/SKILL.md
-│   └── sharp-professional-theme-expert/
+│   ├── slide-content-designer/SKILL.md
+│   └── warm-sunnyday-theme-expert/SKILL.md
 └── README.md
 ```
 
