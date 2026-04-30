@@ -15,7 +15,8 @@ A comprehensive guide for creating high-quality Marp presentations using AI. Thi
 4. [Preview & Feedback Loop](#4-preview--feedback-loop)
 5. [Content Overflow Solutions](#5-content-overflow-solutions)
 6. [Quality Checklist](#6-quality-checklist)
-7. [Export & Delivery](#7-export--delivery)
+7. [Visual Aids & Diagrams](#7-visual-aids--diagrams)
+8. [Export & Delivery](#8-export--delivery)
 
 ---
 
@@ -429,6 +430,8 @@ Use this checklist when reviewing each slide:
 - [ ] Background images have appropriate contrast with text
 - [ ] Tables are properly aligned and styled
 - [ ] Code blocks have syntax highlighting
+- [ ] No unnatural empty spaces (use visual aids to fill gaps)
+- [ ] Diagrams/Icons are used to aid understanding where appropriate
 
 ### Structural
 - [ ] First slide is a cover/title slide
@@ -444,7 +447,36 @@ Use this checklist when reviewing each slide:
 
 ---
 
-## 7. Export & Delivery
+## 7. Visual Aids & Diagrams
+
+To enhance the visual quality and understanding of slides, follow these guidelines for creating and using visual aids:
+
+### 7.1 SVG Icons and Images
+
+When a slide has unnatural empty space or a concept is better explained visually, create an SVG and place it in the `assets/` directory.
+
+- **Usage Cases**:
+  - Filling large empty areas that make the slide look unbalanced.
+  - Representing abstract concepts with simple icons.
+  - Creating custom illustrations that match the theme's color palette.
+- **Organization**: Always store generated assets in the `assets/` folder relative to the markdown file.
+
+### 7.2 Editable Diagrams (.drawio.svg)
+
+For complex diagrams (architecture, workflows, flowcharts) that may require manual refinement by the user:
+
+- **Format**: Use `.drawio.svg`. This allows the image to be rendered as an SVG in the slide but remains editable using the Draw.io / diagrams.net editor (or VS Code extension).
+- **Benefit**: Users can "Save as" or edit the file directly to fix small details or translations without needing to recreate the diagram from scratch.
+
+### 7.3 Design Best Practices
+
+- **Consistency**: Use colors from the theme (e.g., Azure blue, dark greys) for all generated visual aids.
+- **Simplicity**: Prefer clean, flat designs over complex or cluttered images.
+- **Alignment**: Use Marp's background image keywords (`bg right`, `bg left`) to integrate diagrams seamlessly with text.
+
+---
+
+## 8. Export & Delivery
 
 ### Export via Marp CLI
 
