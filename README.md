@@ -31,6 +31,17 @@ paginate: true
 ---
 ```
 
+<details>
+<summary>📸 スライドプレビュー</summary>
+
+![Azure Clarity Cover](assets/screenshots/azure-clarity-cover.png)
+![Azure Clarity TOC](assets/screenshots/azure-clarity-toc.png)
+![Azure Clarity Columns](assets/screenshots/azure-clarity-cols.png)
+![Azure Clarity Grid](assets/screenshots/azure-clarity-grid.png)
+![Azure Clarity Timeline](assets/screenshots/azure-clarity-timeline.png)
+
+</details>
+
 ### Prism Edge
 
 A striking, modern theme with advanced cover designs and bold visuals.
@@ -47,6 +58,17 @@ paginate: true
 ---
 ```
 
+<details>
+<summary>📸 スライドプレビュー</summary>
+
+![Prism Edge Cover Wave](assets/screenshots/prism-edge-cover-wave.png)
+![Prism Edge Cover Diagonal](assets/screenshots/prism-edge-cover-diagonal.png)
+![Prism Edge Cover Noir](assets/screenshots/prism-edge-cover-noir.png)
+![Prism Edge Columns](assets/screenshots/prism-edge-cols.png)
+![Prism Edge Grid](assets/screenshots/prism-edge-grid.png)
+
+</details>
+
 ### Warm Sunnyday
 
 A welcoming, warm-toned theme with rounded corners and soft aesthetics.
@@ -62,6 +84,17 @@ theme: warm-sunnyday
 paginate: true
 ---
 ```
+
+<details>
+<summary>📸 スライドプレビュー</summary>
+
+![Warm Sunnyday Cover](assets/screenshots/warm-sunnyday-cover.png)
+![Warm Sunnyday Profile](assets/screenshots/warm-sunnyday-profile.png)
+![Warm Sunnyday Columns](assets/screenshots/warm-sunnyday-cols.png)
+![Warm Sunnyday Steps](assets/screenshots/warm-sunnyday-steps.png)
+![Warm Sunnyday Callouts](assets/screenshots/warm-sunnyday-callouts.png)
+
+</details>
 
 ---
 
