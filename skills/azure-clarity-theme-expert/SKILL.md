@@ -75,12 +75,56 @@ Used when you need to pack a lot of information into one slide, such as system c
 - **Very high / Design details (Font size 17px)**: `<!-- _class: extra-dense -->`
   - Ideal for handouts that serve as documentation.
 
-### 6. Appealing with a Strong Message
+### 6. Profile / Self-Introduction Slide
+Used for presenter introductions or team member profiles.
+
+- **Class to use**: `<!-- _class: profile -->`
+- **Structure**: Wrap the entire content in `<div class="profile-layout">`, then split into `<div class="profile-image">` (left) and `<div class="profile-content">` (right).
+  ```html
+  <div class="profile-layout">
+    <div class="profile-image">
+      ![](path/to/photo.jpg)
+      Optional caption
+    </div>
+    <div class="profile-content">
+
+  # Name
+  ## Title / Role
+
+  - Career item 1
+  - Career item 2
+    </div>
+  </div>
+  ```
+- **Features**:
+  - Profile photo is automatically displayed as a circle (200×200px).
+  - `h1` renders as a large name (32px, no underline).
+  - `h2` renders as a subdued role/title in primary color (18px).
+  - `ul` is slightly smaller (19px) for a clean list of career items.
+
+### 7. Appealing with a Strong Message
 Used when you want to convey a single message powerfully across the entire slide.
 
 - **Class to use**: `<!-- _class: key-message no-pagination -->`
 - **Concurrent directives**: `<!-- _header: "" -->`, `<!-- _footer: "" -->`
 - **Structure**: Write the main message in `> blockquote` and supplementary info in a normal paragraph `p`.
+
+---
+
+## 🔧 Header / Footer / Pagination Utilities
+
+Control the visibility of header, footer, and page numbers per slide using these utility classes.
+
+| Class / Directive | Effect |
+|---|---|
+| `<!-- _class: no-header -->` | Hides the header on that slide |
+| `<!-- _class: no-footer -->` | Hides the footer on that slide |
+| `<!-- _class: no-pagination -->` | Hides the page number on that slide |
+| `<!-- _class: pagination-left -->` | Moves the page number to the bottom-left |
+| `<!-- _class: with-header -->` | Adds top padding (85px) to avoid content overlapping the header (use when `header` directive is set but the class isn't auto-detected) |
+
+- These can be combined with other layout classes: `<!-- _class: cover no-pagination no-header no-footer -->`
+- `section:has(header)` and `section.with-header` both apply the same top-padding rule, so `with-header` is a fallback for environments that don't support `:has()`.
 
 ---
 
