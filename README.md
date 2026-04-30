@@ -32,13 +32,15 @@ paginate: true
 ```
 
 <details>
-<summary>📸 スライドプレビュー</summary>
+<summary>📸 Slides Preview</summary>
 
 ![Azure Clarity Cover](assets/screenshots/azure-clarity-cover.png)
 ![Azure Clarity TOC](assets/screenshots/azure-clarity-toc.png)
 ![Azure Clarity Columns](assets/screenshots/azure-clarity-cols.png)
 ![Azure Clarity Grid](assets/screenshots/azure-clarity-grid.png)
 ![Azure Clarity Timeline](assets/screenshots/azure-clarity-timeline.png)
+![Azure Clarity Callout](assets/screenshots/azure-clarity-callout.png)
+![Azure Clarity Step](assets/screenshots/azure-clarity-step.png)
 
 </details>
 
@@ -59,13 +61,15 @@ paginate: true
 ```
 
 <details>
-<summary>📸 スライドプレビュー</summary>
+<summary>📸 Slides Preview</summary>
 
 ![Prism Edge Cover Wave](assets/screenshots/prism-edge-cover-wave.png)
 ![Prism Edge Cover Diagonal](assets/screenshots/prism-edge-cover-diagonal.png)
 ![Prism Edge Cover Noir](assets/screenshots/prism-edge-cover-noir.png)
 ![Prism Edge Columns](assets/screenshots/prism-edge-cols.png)
 ![Prism Edge Grid](assets/screenshots/prism-edge-grid.png)
+![Prism Edge gradnum](assets/screenshots/prism-edge-gradnum.png)
+![Prism Edge statnum](assets/screenshots/prism-edge-statnum.png)
 
 </details>
 
@@ -86,7 +90,7 @@ paginate: true
 ```
 
 <details>
-<summary>📸 スライドプレビュー</summary>
+<summary>📸 Slides Preview</summary>
 
 ![Warm Sunnyday Cover](assets/screenshots/warm-sunnyday-cover.png)
 ![Warm Sunnyday Profile](assets/screenshots/warm-sunnyday-profile.png)
