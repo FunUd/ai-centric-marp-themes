@@ -342,6 +342,8 @@ footer: "© 2026 Your Company"
 
 ---
 
+<!-- _class: dense -->
+
 # コールアウトとバッジ
 
 汎用的に使えるハイライト要素です。新機能 <span class="badge danger">NEW</span> や、状態 <span class="badge success">完了</span> を表現できます。
@@ -413,28 +415,25 @@ services:
 
 ### 活用シーン
 - 複数の要件定義を一覧表示したい場合
-- 複雑なアーキテクチャの構成要素を列挙する場合
 - 1つのトピックに対して補足説明が多い場合
 
 > 引用ブロックのサイズも自動的に調整されます。
 > これにより、デザインの統一感を保ったまま情報密度を高めることが可能です。
 
 - **技術スタックの例**
-  - フロントエンド: React, TypeScript, Next.js
-  - バックエンド: Node.js, Python, Go
-  - インフラ: Azure, AWS, GCP
-  - データベース: PostgreSQL, Cosmos DB, Redis
+  - フロントエンド: React, TypeScript, Next.js / バックエンド: Node.js, Python, Go
+  - インフラ: Azure, AWS, GCP / データベース: PostgreSQL, Cosmos DB, Redis
 
 ---
 
-<!-- _class: extra-dense -->
+<!-- _class: extra-dense split-2 -->
 
-# 設計詳細・高密度スライド（extra-dense）
+# 設計詳細 (1/2)：システム構成
 
-`_class: extra-dense` は、さらに情報量を増やしたい場合に最適です。設計書の抜粋や、細かい仕様を伝える必要があるケースで威力を発揮します。
+`_class: extra-dense` は、さらに情報量を増やしたい場合に最適です。
 
 <div class="columns">
-<div class="col">
+<div>
 
 ### システム要件詳細
 1. **可用性**: 年間稼働率 99.99% 以上を目標とする
@@ -447,7 +446,7 @@ services:
    - WAFによる脆弱性対策
 
 </div>
-<div class="col">
+<div>
 
 ### データ構造
 - **User Entity**:
@@ -463,15 +462,27 @@ services:
 </div>
 </div>
 
-### 補足事項
-フォントサイズを **17px** まで落とし、スライドのパディングも最小限に設定しています。
+---
+
+<!-- _class: extra-dense -->
+
+# 設計詳細 (2/2)：詳細仕様
+
 通常のスライドとしては文字が多すぎますが、ドキュメント的な役割を果たすスライド（配布資料など）において、情報の網羅性を担保するために使用してください。
 
+### 導入テクノロジー
 | 項目 | 詳細仕様 | 備考 |
 |------|----------|------|
 | 認証 | Azure AD B2C | 外部IDP連携を含む |
 | 監視 | Azure Monitor | Application Insightsを併用 |
 | CI/CD | GitHub Actions | 自動テストとセキュリティスキャン |
+| DB | Cosmos DB | グローバル分散構成 |
+| Cache | Redis | セッション管理に使用 |
+
+### 運用保守体制
+- 24時間365日の監視・通報体制
+- 月次のセキュリティパッチ適用
+- 半年ごとの災害復旧（DR）テスト
 
 ---
 
