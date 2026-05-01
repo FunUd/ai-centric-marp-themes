@@ -68,6 +68,24 @@ Used for SWOT analysis, priority matrices, etc.
   ```
 - **Combining Images and Text**: If you want to split left/right within a quadrant, use `<div class="cell side">`.
 
+### 4-2. Sharp Grid (Border-Only Grid)
+A minimalist grid layout with borders only and no background colors.
+
+- **Class to use**: `<!-- _class: grid-sharp -->`
+- **Structure**: Same as `grid-quadrant`
+  ```html
+  <div class="grid">
+    <div class="cell">Cell 1 content</div>
+    <div class="cell">Cell 2 content</div>
+    <div class="cell">Cell 3 content</div>
+    <div class="cell">Cell 4 content</div>
+  </div>
+  ```
+- **Features**:
+  - Transparent background with border-only design
+  - Clean, professional appearance
+  - Ideal for technical diagrams or minimalist presentations
+
 ### 5. Information Density Control (High-Density Slides)
 Used when you need to pack a lot of information into one slide, such as system configurations or requirement definitions.
 

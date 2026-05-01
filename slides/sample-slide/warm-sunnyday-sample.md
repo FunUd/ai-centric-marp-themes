@@ -133,6 +133,51 @@ footer: "© 2026 Your Name"
 
 ---
 
+<!-- _class: grid-sharp -->
+
+# 私の好きなもの4選
+
+<div class="grid">
+<div class="cell">
+
+### 📚 読書
+
+- ビジネス書
+- SF小説
+- 技術書
+
+</div>
+<div class="cell">
+
+### 🎮 ゲーム
+
+- RPG
+- パズルゲーム
+- ボードゲーム
+
+</div>
+<div class="cell">
+
+### 🍜 グルメ
+
+- ラーメン巡り
+- カフェ探索
+- 料理
+
+</div>
+<div class="cell">
+
+### 🎵 音楽
+
+- J-POP
+- ジャズ
+- アニソン
+
+</div>
+</div>
+
+---
+
 <!-- _class: steps -->
 
 # さいごに：これからの意気込み

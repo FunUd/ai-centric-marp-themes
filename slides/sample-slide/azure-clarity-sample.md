@@ -279,6 +279,52 @@ footer: "© 2026 Your Company"
 
 ---
 
+<!-- _class: grid-sharp -->
+
+
+# シャープグリッド（ボーダーのみ）
+
+<div class="grid">
+<div class="cell">
+
+### フロントエンド
+
+- React / TypeScript
+- Tailwind CSS
+- Vite
+
+</div>
+<div class="cell">
+
+### バックエンド
+
+- Node.js / Express
+- PostgreSQL
+- Redis
+
+</div>
+<div class="cell">
+
+### インフラ
+
+- AWS ECS
+- CloudFront
+- RDS
+
+</div>
+<div class="cell">
+
+### 監視・運用
+
+- CloudWatch
+- Datadog
+- PagerDuty
+
+</div>
+</div>
+
+---
+
 <!-- _class: timetable -->
 
 # タイムテーブル

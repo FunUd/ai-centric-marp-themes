@@ -99,6 +99,24 @@ Perfect for quick questions like "Dogs or Cats?", "Favorite food?".
   ```
 - **Combining Images and Text**: Use `<div class="cell side">` to split left/right within a quadrant.
 
+### 5-2. Sharp Grid (Border-Only Grid)
+A minimalist grid layout with borders only and no background colors.
+
+- **Class to use**: `<!-- _class: grid-sharp -->`
+- **Structure**: Same as `grid-quadrant`
+  ```html
+  <div class="grid">
+    <div class="cell">Cell 1 content</div>
+    <div class="cell">Cell 2 content</div>
+    <div class="cell">Cell 3 content</div>
+    <div class="cell">Cell 4 content</div>
+  </div>
+  ```
+- **Features**:
+  - Transparent background with border-only design
+  - Clean, minimalist appearance
+  - Great for simple comparisons or structured information
+
 ### 6. Step-by-Step Process
 Show a sequence of steps in a horizontal card layout.
 

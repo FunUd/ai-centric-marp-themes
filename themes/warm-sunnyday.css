@@ -669,6 +669,42 @@ section.grid-quadrant .cell.side img {
 }
 
 /* ============================================================
+   Sharp Grid — border-only grid (no backgrounds)
+   ============================================================ */
+section.grid-sharp>div.grid,
+section.grid-sharp>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  height: calc(100% - 80px);
+}
+
+section.grid-sharp .cell {
+  background: transparent;
+  border-radius: 0;
+  padding: 24px 28px;
+  border-right: 1px solid var(--ac-border-light);
+  border-bottom: 1px solid var(--ac-border-light);
+  overflow: hidden;
+}
+
+section.grid-sharp .cell:nth-child(2n) {
+  border-right: none;
+}
+
+section.grid-sharp .cell:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+section.grid-sharp .cell h3 {
+  color: var(--ac-primary);
+  font-size: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* ============================================================
    Timetable
    ============================================================ */
 section.timetable table {
