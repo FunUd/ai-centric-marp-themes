@@ -257,6 +257,10 @@ Slide dimensions: **1280 x 720 px** (16:9)
 
 ---
 
+## Third-party Assets
+
+- SVG icons in `skills/marp-svg-icon-placer/references/icons/`: [Phosphor Icons](https://phosphoricons.com/) — [MIT License](https://github.com/phosphor-icons/core/blob/main/LICENSE)
+
 ## License
 
 MIT License — Copyright (c) 2026 FunUd
