@@ -220,6 +220,9 @@ Apply CSS filters via alt text keywords:
 
 ## 4. Preview & Feedback Loop
 
+> **⚠️ MANDATORY: Preview confirmation is a required step, not optional.**
+> Slide creation is NOT complete until every slide has been visually verified in a browser. If the browser tool fails, try an alternative method (e.g., different port, different server command). Do NOT skip this step or declare the task done without completing it.
+
 This section is critical for AI-driven slide creation. It enables the AI to see the rendered output and iterate autonomously.
 
 ### Prerequisites
@@ -483,15 +486,7 @@ Use this checklist when reviewing each slide:
 
 To enhance the visual quality and understanding of slides, follow these guidelines for creating and using visual aids:
 
-### 7.1 SVG Icons and Images
 
-When a slide has unnatural empty space or a concept is better explained visually, create an SVG and place it in the `assets/` directory.
-
-- **Usage Cases**:
-  - Filling large empty areas that make the slide look unbalanced.
-  - Representing abstract concepts with simple icons.
-  - Creating custom illustrations that match the theme's color palette.
-- **Organization**: Always store generated assets in the `assets/` folder relative to the markdown file.
 
 ### 7.2 Editable Diagrams (.drawio.svg)
 
@@ -549,6 +544,18 @@ npx -y @marp-team/marp-cli --no-stdin --pdf-outlines slides.md -o output.pdf
 ---
 
 ## Quick Reference: Common Patterns
+### 7.1 SVG Icons and Images
+
+After drafting all slides, review every slide for unnatural empty space or text-only layouts. Any such slide MUST have an icon or visual element added before the task is considered complete.
+
+When a slide has unnatural empty space or a concept is better explained visually, use an icon from the `marp-svg-icon-placer` skill catalog, or create a custom SVG and place it in the `assets/` directory.
+
+- **Usage Cases**:
+  - Filling large empty areas that make the slide look unbalanced.
+  - Representing abstract concepts with simple icons.
+  - Creating custom illustrations that match the theme's color palette.
+- **Organization**: Always store generated assets in the `assets/` folder relative to the markdown file.
+- **Icon Source**: Always check `marp-svg-icon-placer` skill catalog first before generating new SVGs.
 
 ### Cover Slide
 ```markdown
