@@ -279,13 +279,28 @@ After identifying problems (especially content overflow):
 
 After review is complete:
 1. Stop the local server
-2. Delete the temporary `preview.html` file
+2. Delete the temporary `preview.html` file (and any other preview files such as `.pdf`, `.pptx`)
+3. Delete all screenshots taken during the review process
+
+**Important**: Always clean up preview files and screenshots after completing the review. These are temporary artifacts and should not be committed to the repository.
 
 ### Automated Preview Workflow (Summary)
 
 ```
 Edit .md → Run Marp CLI → Start server → Browser screenshot → Evaluate → Fix → Repeat
 ```
+
+### When Preview is Not Possible
+
+If you have exhausted all available methods to preview the slides (e.g., browser tool unavailable, server issues, CLI errors) and cannot visually verify the output:
+
+1. **Document the Issue**: Note which preview methods were attempted and why they failed
+2. **Report to User**: Inform the user that visual verification could not be completed and explain the situation
+3. **Provide Alternatives**: Suggest that the user manually preview the slides using VSCode's Marp extension or by running the Marp CLI commands provided
+4. **Quality Check**: Perform a thorough text-based review of the Markdown to ensure proper syntax, structure, and content organization
+
+**Example Report**:
+> "I was unable to visually preview the slides due to [specific reason]. I have completed the Markdown file following Marp best practices and syntax. Please preview the slides using the Marp for VS Code extension or by running: `npx -y @marp-team/marp-cli --theme themes/azure-clarity.css slides/your-deck/your-deck.md -o preview.html` and opening the HTML file in your browser."
 
 ### VSCode Integration (For Human Users)
 
