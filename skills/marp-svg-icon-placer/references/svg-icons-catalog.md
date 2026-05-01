@@ -256,3 +256,77 @@ Search this file to find the best icon for your use case.
 - **Use cases**: Gradual growth, stepping up, career, sequence, leveling up
 
 - **Icon Path**: `icons/stairs.svg`
+
+## 5. Engineering & Development (Extended)
+
+### Binary
+- **What it looks like**: An icon depicting binary digits (0 and 1) arranged in a pattern.
+- **Use cases**: Binary data, low-level programming, bit manipulation, encoding, digital systems
+
+- **Icon Path**: `icons/binary.svg`
+
+### Bug
+- **What it looks like**: An icon depicting an insect (bug) representing a software defect.
+- **Use cases**: Bug report, debugging, defect tracking, QA, issue management, troubleshooting
+
+- **Icon Path**: `icons/bug.svg`
+
+### Chart Line
+- **What it looks like**: An icon depicting a line graph with data points connected by a line.
+- **Use cases**: Trends, time-series data, performance tracking, analytics, metrics over time
+
+- **Icon Path**: `icons/chart-line.svg`
+
+### Chart Line Down
+- **What it looks like**: An icon depicting a downward-sloping line graph.
+- **Use cases**: Decline, decrease, negative trend, cost reduction, falling metrics, regression
+
+- **Icon Path**: `icons/chart-line-down.svg`
+
+### Chart Line Up
+- **What it looks like**: An icon depicting an upward-sloping line graph.
+- **Use cases**: Growth, increase, positive trend, improvement, rising metrics, progress
+
+- **Icon Path**: `icons/chart-line-up.svg`
+
+### Chats Circle
+- **What it looks like**: An icon depicting multiple speech bubbles arranged in a circle.
+- **Use cases**: Group discussion, multi-party chat, community, forum, collaborative communication
+
+- **Icon Path**: `icons/chats-circle.svg`
+
+### Coffee (Break)
+- **What it looks like**: An icon depicting a steaming coffee cup.
+- **Use cases**: Break time, casual section, intermission, relaxation, informal topic, Q&A break
+
+- **Icon Path**: `icons/coffee.svg`
+
+### Desktop
+- **What it looks like**: An icon depicting a desktop computer monitor.
+- **Use cases**: Desktop app, PC environment, screen display, workstation, on-premise
+
+- **Icon Path**: `icons/desktop.svg`
+
+### File
+- **What it looks like**: An icon depicting a single document file.
+- **Use cases**: File, document, page, attachment, single resource, content item
+
+- **Icon Path**: `icons/file.svg`
+
+### Link (Reference)
+- **What it looks like**: An icon depicting a chain link symbol.
+- **Use cases**: Reference link, external resource, URL, hyperlink, source citation, related page
+
+- **Icon Path**: `icons/link.svg`
+
+### Smiley
+- **What it looks like**: An icon depicting a smiling face emoji.
+- **Use cases**: Positive feedback, satisfaction, user sentiment, happiness, good outcome
+
+- **Icon Path**: `icons/smiley.svg`
+
+### Smiley Sad
+- **What it looks like**: An icon depicting a sad face emoji.
+- **Use cases**: Negative feedback, dissatisfaction, user pain point, problem, bad outcome
+
+- **Icon Path**: `icons/smiley-sad.svg`
