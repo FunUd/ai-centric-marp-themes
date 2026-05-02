@@ -55,6 +55,35 @@ slides/
         └── overview-diagram.drawio.svg
 ```
 
+### Creating a New Project (Cross-Platform)
+
+> **⚠️ IMPORTANT: Never use shell-specific commands** (PowerShell `New-Item`/`Copy-Item`, Bash `mkdir`/`cp`) to create directories or copy files. These commands fail when the shell environment differs from expectations (e.g., Git Bash vs PowerShell vs CMD). Always use the Python setup script instead.
+
+Use `skills/scripts/setup-slide-project.py` for all project setup tasks. It works identically on Windows, macOS, and Linux regardless of the active shell.
+
+```python
+# Create project directory structure only
+python skills/scripts/setup-slide-project.py my-presentation
+
+# Create project and copy specific icons
+python skills/scripts/setup-slide-project.py my-presentation --copy-icons lightbulb.svg gear.svg
+
+# Create project and copy ALL icons
+python skills/scripts/setup-slide-project.py my-presentation --copy-icons all
+
+# List all available icons
+python skills/scripts/setup-slide-project.py my-presentation --list-icons
+```
+
+This creates:
+```text
+slides/
+└── my-presentation/
+    ├── (place my-presentation.md here)
+    └── assets/
+        └── (icons copied here if --copy-icons used)
+```
+
 ---
 
 ```markdown
@@ -633,6 +662,18 @@ When a slide has unnatural empty space or a concept is better explained visually
   - Creating custom illustrations that match the theme's color palette.
 - **Organization**: Always store generated assets in the `assets/` folder relative to the markdown file.
 - **Icon Source**: Always check `marp-svg-icon-placer` skill catalog first before generating new SVGs.
+
+**Copying icons to a project (cross-platform):**
+
+> **⚠️ Never use shell commands** (`Copy-Item`, `cp`, etc.) to copy icons. Use the Python script instead.
+
+```python
+# Copy specific icons
+python skills/scripts/setup-slide-project.py <project-name> --copy-icons lightbulb.svg gear.svg
+
+# List all available icons first
+python skills/scripts/setup-slide-project.py <project-name> --list-icons
+```
 
 ### Cover Slide
 ```markdown
