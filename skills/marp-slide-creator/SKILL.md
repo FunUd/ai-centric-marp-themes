@@ -252,7 +252,7 @@ Apply CSS filters via alt text keywords:
 > **⚠️ MANDATORY: Preview confirmation is a required step, not optional.**
 > Slide creation is NOT complete until every slide has been visually verified. Do NOT skip this step or declare the task done without completing it.
 
-This section is critical for AI-driven slide creation. It enables the AI to see the rendered output and iterate autonomously.
+This section is critical for AI-driven slide creation. It enables the AI to see the rendered output and iterate autonomously using a **two-stage feedback loop**.
 
 ### Prerequisites
 
@@ -260,11 +260,50 @@ This section is critical for AI-driven slide creation. It enables the AI to see 
 - **Python 3.10+** and **Playwright**: `pip install playwright` then `playwright install chromium`
 - **VSCode Extension**: `marp-team.marp-vscode` (for human users' live preview)
 
-### Method: DOM Metrics Extraction
+### Two-Stage Feedback Loop
 
-The primary review method is **Playwright-based DOM extraction**. It converts rendered slide layouts into structured text data (JSON) that any AI model can analyze — including text-only models without image support.
+AI should use both methods in sequence for optimal autonomous improvement:
 
-Export your slides to HTML, run the extractor, and review the per-slide metrics and auto-detected risk flags.
+**Stage 1: getDiagnostics (Fast, Immediate)**
+- Detects content overflow instantly without export
+- Runs directly on the Markdown file
+- Catches obvious issues before heavy processing
+
+**Stage 2: DOM Metrics Extraction (Detailed, Visual)**
+- Detects image loading failures, layout issues, element positioning
+- Requires HTML export + Playwright
+- Provides comprehensive visual analysis
+
+### Recommended Workflow
+
+```
+1. Edit Markdown
+2. Run getDiagnostics (immediate check)
+3. If issues found → fix → return to step 2
+4. If no issues → Export HTML → Run DOM Extractor
+5. Analyze DOM metrics and risk flags
+6. If issues found → fix → return to step 1
+7. Task complete
+```
+
+### Stage 1: getDiagnostics
+
+Use the `getDiagnostics` tool to check for content overflow immediately after editing:
+
+```
+getDiagnostics(paths=["slides/my-deck/my-deck.md"])
+```
+
+This leverages the Marp for VS Code extension's built-in diagnostic (`markdown.marp.diagnostics.slideContentOverflow`) and returns warnings instantly. If any overflow warnings appear, fix them before proceeding to Stage 2.
+
+**Advantages:**
+- No export needed
+- Instant results
+- Catches the most common issue (overflow) immediately
+
+### Stage 2: DOM Metrics Extraction
+
+After getDiagnostics passes with no warnings, proceed to detailed visual analysis using Playwright-based DOM extraction. It converts rendered slide layouts into structured text data (JSON) that any AI model can analyze — including text-only models without image support.
 
 #### Step 1: Export HTML
 
@@ -340,26 +379,30 @@ Beyond auto-flags, inspect the `elements` array for:
 - **Missing images**: `image_count` is 0 where an image was expected
 - **Font size anomalies**: `height` is unexpectedly large for a short `text_preview` (indicates oversized text)
 
-#### Step 4: Fix Issues & Re-Export
+#### Step 4: Fix Issues & Re-Iterate
 
-After identifying problems, apply fixes as follows:
+After identifying problems from either stage:
 1. Refine content (Section 5.1)
 2. Adjust layout (Section 5)
-3. Re-export HTML and re-run the extractor
+3. Return to Stage 1 (getDiagnostics)
 
-#### Feedback Loop Summary
+#### Complete Feedback Loop Summary
 
 ```
-Edit .md → Export HTML (Marp CLI) → Run DOM Extractor (Playwright) →
-Read JSON → Evaluate metrics & flags → Fix → Repeat → Clean up
+Edit .md
+  ↓
+Stage 1: getDiagnostics (immediate)
+  ↓ (if issues) → Fix → Loop back
+  ↓ (if clean)
+Stage 2: Export HTML → Run DOM Extractor (Playwright)
+  ↓
+Read JSON → Evaluate metrics & flags
+  ↓ (if issues) → Fix → Loop back to Stage 1
+  ↓ (if clean)
+Task Complete
 ```
 
-### Slide Content Overflow Diagnostic
-
-Marp for VS Code has an experimental diagnostic for content overflow:
-- Setting: `markdown.marp.diagnostics.slideContentOverflow`
-- Warns when slide content overflows the safe area defined by slide padding
-- Only available while the Markdown preview is open
+**Key Principle:** Always run getDiagnostics first. It catches overflow issues instantly without the overhead of HTML export and Playwright. Only proceed to DOM extraction after getDiagnostics is clean.
 
 ---
 

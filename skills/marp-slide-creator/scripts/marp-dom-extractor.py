@@ -89,7 +89,12 @@ def extract_slide_metrics(html_path: Path) -> list[dict[str, Any]]:
             flags: list[str] = []
 
             # Slide overflow: total content height exceeds slide height
-            if elements:
+            # Skip if the slide itself clips overflow (Marp themes typically do this)
+            slide_overflow = slide.evaluate(
+                "el => window.getComputedStyle(el).overflow"
+            )
+            slide_clips = slide_overflow in ("hidden", "clip", "scroll", "auto")
+            if elements and not slide_clips:
                 max_bottom = max(el["top"] + el["height"] for el in elements)
                 if max_bottom > slide_h + 5:  # 5px tolerance
                     flags.append(
