@@ -59,20 +59,11 @@ slides/
 
 > **⚠️ IMPORTANT: Never use shell-specific commands** (PowerShell `New-Item`/`Copy-Item`, Bash `mkdir`/`cp`) to create directories or copy files. These commands fail when the shell environment differs from expectations (e.g., Git Bash vs PowerShell vs CMD). Always use the Python setup script instead.
 
-Use `skills/marp-slide-creator/scripts/setup-slide-project.py` for all project setup tasks. It works identically on Windows, macOS, and Linux regardless of the active shell.
+Use `skills/marp-slide-creator/scripts/setup-slide-project.py` to create the project structure. It works identically on Windows, macOS, and Linux regardless of the active shell.
 
 ```python
-# Create project directory structure only
+# Create project directory structure
 python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation
-
-# Create project and copy specific icons
-python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --copy-icons lightbulb.svg gear.svg
-
-# Create project and copy ALL icons
-python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --copy-icons all
-
-# List all available icons
-python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --list-icons
 ```
 
 This creates:
@@ -81,7 +72,19 @@ slides/
 └── my-presentation/
     ├── (place my-presentation.md here)
     └── assets/
-        └── (icons copied here if --copy-icons used)
+```
+
+To copy icons to the project, use the `marp-svg-icon-placer` skill's copy script:
+
+```python
+# Copy specific icons
+python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation lightbulb.svg gear.svg
+
+# Copy ALL icons
+python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation all
+
+# List all available icons
+python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
 ```
 
 ---
@@ -712,10 +715,13 @@ When a slide has unnatural empty space or a concept is better explained visually
 
 ```python
 # Copy specific icons
-python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name> --copy-icons lightbulb.svg gear.svg
+python skills/marp-svg-icon-placer/scripts/copy-icons.py <project-name> lightbulb.svg gear.svg
+
+# Copy all icons
+python skills/marp-svg-icon-placer/scripts/copy-icons.py <project-name> all
 
 # List all available icons first
-python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name> --list-icons
+python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
 ```
 
 ### Cover Slide

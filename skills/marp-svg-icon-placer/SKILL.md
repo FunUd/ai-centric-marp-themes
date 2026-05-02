@@ -14,10 +14,34 @@ This skill helps you appropriately place SVG icons into Marp presentations (`.md
 - **DO NOT** modify the `svg-icons-catalog.md` file or the SVG files in the `icons/` directory. They are read-only catalogs for your reference.
 
 ## 2. Copy Icon to Slide Assets
-- Once an icon is selected, copy the SVG file from `references/icons/` to the slide's `assets/` directory:
-  - Target path: `slides/[slide-name]/assets/[icon-name].svg`
-  - If the `assets/` directory doesn't exist, create it first.
-  - Example: Copy `references/icons/target.svg` → `slides/my-presentation/assets/target.svg`
+
+> **⚠️ IMPORTANT: Never use shell commands** (`Copy-Item`, `cp`, etc.) to copy icons. Use the Python script instead for cross-platform compatibility.
+
+### Using the Copy Script (Recommended)
+
+```python
+# Copy specific icons to a project
+python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation lightbulb.svg gear.svg
+
+# Copy all icons to a project
+python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation all
+
+# List all available icons
+python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
+```
+
+The script will:
+- Copy icons from `skills/marp-svg-icon-placer/references/icons/` to `slides/[project-name]/assets/`
+- Verify the project's assets directory exists
+- Handle file paths correctly on Windows, macOS, and Linux
+
+### Manual Copy (Alternative)
+
+If you need to copy manually:
+- Source: `skills/marp-svg-icon-placer/references/icons/[icon-name].svg`
+- Target: `slides/[slide-name]/assets/[icon-name].svg`
+- If the `assets/` directory doesn't exist, create it first.
+- Example: Copy `references/icons/target.svg` → `slides/my-presentation/assets/target.svg`
 
 ## 3. Customize the Icon (Optional)
 - If you need to customize the icon (color, size adjustments), edit the copied SVG file in the slide's `assets/` directory:
