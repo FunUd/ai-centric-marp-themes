@@ -228,107 +228,102 @@ This section is critical for AI-driven slide creation. It enables the AI to see 
 ### Prerequisites
 
 - **Marp CLI**: Available via `npx @marp-team/marp-cli`
+- **Python 3.10+** and **Playwright**: `pip install playwright` then `playwright install chromium`
 - **VSCode Extension**: `marp-team.marp-vscode` (for human users' live preview)
 
-### Primary Method: PNG Export (Recommended)
+### Method: DOM Metrics Extraction
 
-The most reliable approach is to export all slides as PNG images using Marp CLI's `--images png` flag. This requires **no server, no browser tool**, and produces files the AI can read directly.
+The primary review method is **Playwright-based DOM extraction**. It converts rendered slide layouts into structured text data (JSON) that any AI model can analyze — including text-only models without image support.
 
-#### Step 1: Export All Slides as PNG
+Export your slides to HTML, run the extractor, and review the per-slide metrics and auto-detected risk flags.
 
-```powershell
-npx -y @marp-team/marp-cli --no-stdin --theme <path-to-theme.css> --images png --image-scale 1 <path-to-slide.md> -o <slides-dir>/assets/preview.png
-```
-
-Marp CLI will output one PNG per slide, named sequentially:
-`preview.001.png`, `preview.002.png`, `preview.003.png`, ...
-
-**Example:**
-```powershell
-npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css --images png --image-scale 1 slides/my-deck/my-deck.md -o slides/my-deck/assets/preview.png
-```
-
-**Key flags:**
-- `--images png`: Export every slide as a PNG file
-- `--image-scale 1`: Use 1× scale (default 2× is unnecessarily large for review)
-- `--no-stdin`: Prevents CLI from waiting for stdin (required in automated environments)
-- `--allow-local-files`: Required when the slide references local images or SVGs
-- `-o`: Base output path; CLI appends `.001.png`, `.002.png`, etc.
-
-> **Note**: If the slide uses local image files (e.g., `assets/icon.svg`), add `--allow-local-files` to the command. Without it, local assets will be blocked and appear missing in the output.
-
-#### Step 2: Read and Evaluate Each PNG
-
-Use the `readFile` tool (or equivalent image-reading tool) to load each PNG and evaluate it against the Quality Checklist (Section 6). No server or browser required.
-
-```
-slides/my-deck/assets/preview.001.png  ← Slide 1
-slides/my-deck/assets/preview.002.png  ← Slide 2
-...
-```
-
-#### Step 3: Fix Issues & Re-Export
-
-After identifying problems:
-1. **Refine Content**: Make text more concise first (see Section 5.1).
-2. **Adjust Layout**: Apply technical fixes if needed (see Section 5).
-3. **Re-export**: Re-run the PNG export command and re-read the updated images.
-
-#### Step 4: Clean Up
-
-After review is complete, delete all preview PNGs:
+#### Step 1: Export HTML
 
 ```powershell
-# Delete all preview PNGs (PowerShell)
-Remove-Item slides/my-deck/assets/preview.*.png
+npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/assets/preview.html
 ```
 
-**Important**: Preview PNGs are temporary artifacts. Always delete them before finishing.
+> **Note**: Unlike PNG, the `--allow-local-files` flag is not required for the HTML export itself. However, when Playwright opens the HTML file, local image paths inside must resolve correctly (use relative paths from the HTML file's directory).
 
-### Automated Preview Script
-
-For convenience, a reusable script is available at `scripts/preview.ps1`. Run it from the workspace root:
+#### Step 2: Run the DOM Extractor Script
 
 ```powershell
-# Usage: .\scripts\preview.ps1 -SlidePath <md-file> -Theme <css-file>
-.\scripts\preview.ps1 -SlidePath slides/my-deck/my-deck.md -Theme themes/azure-clarity.css
+python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/assets/preview.html -o slides/my-deck/assets/dom-metrics.json
 ```
 
-The script exports PNGs, lists them for review, and prompts for cleanup when done.
+The script (`skills/marp-slide-creator/scripts/marp-dom-extractor.py`) will:
+1. Launch a headless Chromium browser
+2. Load the HTML file
+3. Iterate every `<section>` (slide)
+4. Measure each element's position, size, text density, and overflow state
+5. Output a JSON file with per-slide metrics and risk flags
 
-### Feedback Loop Summary
+#### Step 3: Read and Analyze the JSON
+
+Load `dom-metrics.json` and evaluate each slide against the Quality Checklist (Section 6). The JSON contains:
+
+```json
+[
+  {
+    "slide": 1,
+    "slide_size": {"width": 1280, "height": 720},
+    "metrics": {
+      "char_count": 245,
+      "line_count": 8,
+      "element_count": 5,
+      "image_count": 1
+    },
+    "elements": [
+      {
+        "tag": "h1",
+        "text_preview": "Slide Title",
+        "top": 40,
+        "left": 40,
+        "width": 600,
+        "height": 60,
+        "overflow_style": "visible",
+        "clipped": false
+      }
+    ],
+    "risk_flags": []
+  }
+]
+```
+
+#### Auto-Detected Risk Flags
+
+The extractor automatically flags the following issues:
+
+| Flag | Meaning | Threshold |
+|------|---------|-----------|
+| `CONTENT_OVERFLOW` | Content extends past slide bottom | content bottom > slide height + 5px |
+| `DENSE_TEXT` | Slide may have too much text | char count > 600 |
+| `MANY_LINES` | High line count risk | line count > 20 |
+| `IMAGE_NO_SRC` | Image tag has no src | any `<img>` without `src` |
+| `IMAGE_BROKEN` | Image failed to load | `naturalWidth == 0` |
+
+#### Manual Checks from Element Data
+
+Beyond auto-flags, inspect the `elements` array for:
+- **Element overlap**: Two elements with overlapping `top`/`height` ranges and same `left`/`width`
+- **Text truncation**: `overflow_style` is `hidden` or `scroll`, or `clipped: true`
+- **Unbalanced layout**: Single column `width` much smaller than slide width with lots of whitespace
+- **Missing images**: `image_count` is 0 where an image was expected
+- **Font size anomalies**: `height` is unexpectedly large for a short `text_preview` (indicates oversized text)
+
+#### Step 4: Fix Issues & Re-Export
+
+After identifying problems, apply fixes as follows:
+1. Refine content (Section 5.1)
+2. Adjust layout (Section 5)
+3. Re-export HTML and re-run the extractor
+
+#### Feedback Loop Summary
 
 ```
-Edit .md → Export PNGs (Marp CLI) → Read PNGs → Evaluate → Fix → Repeat → Clean up
+Edit .md → Export HTML (Marp CLI) → Run DOM Extractor (Playwright) →
+Read JSON → Evaluate metrics & flags → Fix → Repeat → Clean up
 ```
-
-No server. No browser. No manual navigation. Just files.
-
-### When PNG Export Fails
-
-If Marp CLI itself fails (missing Node.js, network issues with npx, etc.):
-
-1. **Report to User**: Explain what failed and provide the exact command to run manually.
-2. **Text-Based Review**: Perform a thorough Markdown review for syntax, structure, and content organization.
-3. **Suggest VSCode Preview**: Ask the user to verify using the Marp for VS Code extension.
-
-**Example Report**:
-> "PNG export failed due to [specific reason]. Please run the following command manually and check the output: `npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css --images png slides/your-deck/your-deck.md -o slides/your-deck/assets/preview.png`"
-
-### VSCode Integration (For Human Users)
-
-1. Install the "Marp for VS Code" extension (`marp-team.marp-vscode`)
-2. Configure `.vscode/settings.json`:
-   ```json
-   {
-     "markdown.marp.themes": [
-       "./themes/azure-clarity.css"
-     ],
-     "markdown.marp.enableHtml": true
-   }
-   ```
-3. Open the `.md` file and use VSCode's built-in Markdown preview (`Ctrl+Shift+V`)
-4. The preview updates in real-time as you edit
 
 ### Slide Content Overflow Diagnostic
 

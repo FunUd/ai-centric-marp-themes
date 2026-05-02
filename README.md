@@ -212,7 +212,10 @@ ai-centric-marp-themes/
 │       └── assets/
 ├── skills/
 │   ├── azure-clarity-theme-expert/SKILL.md
-│   ├── marp-slide-creator/SKILL.md
+│   ├── marp-slide-creator/
+│   │   ├── SKILL.md
+│   │   └── scripts/
+│   │       └── marp-dom-extractor.py  # Playwright DOM metrics extractor for text-only AI review
 │   ├── marp-svg-icon-placer/SKILL.md
 │   ├── prism-edge-theme-expert/SKILL.md
 │   ├── slide-content-designer/SKILL.md
@@ -223,6 +226,7 @@ ai-centric-marp-themes/
 - **`themes/`** — Theme CSS files ready to use with Marp.
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
+- **`skills/marp-slide-creator/scripts/`** — Playwright-based DOM extractor for AI-driven slide layout review without image parsing.
 
 ---
 
@@ -268,6 +272,17 @@ No build step required — changes are live on save.
 - [Marp CLI](https://github.com/marp-team/marp-cli) v2.x+
 
 Slide dimensions: **1280 x 720 px** (16:9)
+
+### Optional: Playwright (for AI DOM-based review)
+
+If you want AI models without image support to review slide layouts, install the Playwright-based DOM extractor:
+
+```bash
+pip install playwright
+playwright install chromium
+```
+
+This enables the alternative text-only review pipeline described in `skills/marp-slide-creator/SKILL.md`.
 
 ---
 
