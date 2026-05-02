@@ -18,7 +18,7 @@ This rule applies even when the topic, structure, and content seem clear from th
 
 Before writing any slide content, you MUST:
 1. Present a proposed outline (section titles + slide count per section + estimated time per section)
-2. Ask the user: "この構成でよろしいですか？修正があればお知らせください。" (or equivalent in the user's language)
+2. Ask the user: "Does this structure work for you? Let me know if you'd like any changes." (or equivalent in the user's language)
 3. Wait for explicit approval before proceeding.
 
 Skipping this step — for any reason, including a seemingly detailed request — is not allowed.
