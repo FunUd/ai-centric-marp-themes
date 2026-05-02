@@ -171,16 +171,13 @@ Add a **giant faded number** behind your slide content for editorial section div
 
 - **Structure**: `<div class="section-number">01</div>` placed before your content.
 - The number is rendered at **120px**, semi-transparent, and positioned behind the text.
-- **Important**: Add `padding-left: 160px` to your content to avoid overlap.
 - Example:
   ```markdown
   <!-- _class: with-header -->
 
-  # <div style="padding-left: 160px;">Strategy</div>
+  # Strategy
 
   <div class="section-number">01</div>
-
-  <div style="padding-left: 160px;">
 
   Content here stays clear of the decorative number.
 
