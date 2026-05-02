@@ -1,6 +1,6 @@
 ---
 name: marp-slide-creator
-description: Create, edit, and troubleshoot Marp presentation slides with professional quality. Use this skill whenever the user asks to create slides, presentations, or decks in Marp Markdown, or when they want to fix layout issues, preview slides, adjust content overflow, or improve slide design. Also use when the user mentions Marp, slide deck, presentation markdown, or wants to convert slides to PDF/PPTX. This skill enables AI to autonomously preview, evaluate, and iterate on slide quality.
+description: ALWAYS activate this skill when creating or editing any Marp slides. Create, edit, and troubleshoot Marp presentation slides with professional quality. Use this skill whenever the user asks to create slides, presentations, or decks in Marp Markdown, or when they want to fix layout issues, preview slides, adjust content overflow, or improve slide design. Also use when the user mentions Marp, slide deck, presentation markdown, or wants to convert slides to PDF/PPTX. This skill enables AI to autonomously preview, evaluate, and iterate on slide quality.
 ---
 
 # Marp Slide Creator
@@ -287,11 +287,11 @@ Remove-Item slides/my-deck/assets/preview.*.png
 
 ### Automated Preview Script
 
-For convenience, a reusable script is available at `skills/marp-slide-creator/scripts/preview.ps1`. Run it from the workspace root:
+For convenience, a reusable script is available at `scripts/preview.ps1`. Run it from the workspace root:
 
 ```powershell
-# Usage: .\skills\marp-slide-creator\scripts\preview.ps1 -SlidePath <md-file> -Theme <css-file>
-.\skills\marp-slide-creator\scripts\preview.ps1 -SlidePath slides/my-deck/my-deck.md -Theme themes/azure-clarity.css
+# Usage: .\scripts\preview.ps1 -SlidePath <md-file> -Theme <css-file>
+.\scripts\preview.ps1 -SlidePath slides/my-deck/my-deck.md -Theme themes/azure-clarity.css
 ```
 
 The script exports PNGs, lists them for review, and prompts for cleanup when done.

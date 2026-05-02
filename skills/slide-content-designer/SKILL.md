@@ -1,6 +1,6 @@
 ---
 name: slide-content-designer
-description: Guide users through planning, structuring, and drafting presentation slide content. Focuses on extracting the core message, reverse-engineering the structure, calculating slide counts, and applying best practices like '1 slide = 1 message' and MECE principles.
+description: ALWAYS activate this skill when creating or editing any presentation slides. Guide users through planning, structuring, and drafting presentation slide content. Focuses on extracting the core message, reverse-engineering the structure, calculating slide counts, and applying best practices like '1 slide = 1 message' and MECE principles.
 ---
 
 # Slide Content Designer
@@ -11,9 +11,23 @@ Use this skill when a user wants to create a presentation, outline a talk, or ne
 
 > **Note:** This skill focuses on the *content, structure, and general design principles*. For Marp-specific Markdown generation or styling, rely on the `marp-slide-creator` skill after the content outline is finalized.
 
+## MANDATORY: Always Confirm Before Writing
+
+**DO NOT generate any slides until you have explicitly confirmed the outline with the user.**
+This rule applies even when the topic, structure, and content seem clear from the user's request.
+
+Before writing any slide content, you MUST:
+1. Present a proposed outline (section titles + slide count per section + estimated time per section)
+2. Ask the user: "この構成でよろしいですか？修正があればお知らせください。" (or equivalent in the user's language)
+3. Wait for explicit approval before proceeding.
+
+Skipping this step — for any reason, including a seemingly detailed request — is not allowed.
+
 ## 1. Discovery & Brainstorming
 
-If the user's slide structure, topic, or main message is vague, **do not start writing slides immediately**. Instead, initiate a brainstorming session.
+Even when the user's request appears detailed, **do not start writing slides immediately**. First, clarify any open questions, then present the outline for approval (see MANDATORY section above).
+
+If the topic or core message is genuinely unclear, initiate a brainstorming session:
 
 1.  **Define the Audience:** Ask the user who the target audience is (e.g., junior engineers, tech leads, business executives).
 2.  **Extract the Core Message:** Work with the user to distill the absolute most important takeaway into a single, concise sentence. Ask: *"What is the one thing you want the audience to remember after this talk?"*
@@ -53,4 +67,5 @@ Even when just drafting text, keep these visual design principles in mind to ens
 1.  **Ask & Clarify:** Time limit? Audience? Core message?
 2.  **Brainstorm (if needed):** Help the user find their core message.
 3.  **Outline:** Propose a section-by-section outline and slide count based on the time limit.
-4.  **Draft:** Generate the slide text applying "1 Slide = 1 Message" and MECE.
+4.  **WAIT for approval:** Present the outline and explicitly ask for confirmation. Do not proceed until the user approves.
+5.  **Draft:** Generate the slide text applying "1 Slide = 1 Message" and MECE.
