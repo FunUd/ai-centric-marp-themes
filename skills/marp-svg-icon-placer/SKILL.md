@@ -92,6 +92,14 @@ Card description text here.
 - Place the image on its own line with blank lines above and below.
 
 ### Pattern D: Background Image with Text Overlay
+
+> **⚠️ IMPORTANT: Do NOT use catalog icons for backgrounds**
+> 
+> Icons from this catalog are NOT suitable for `bg` usage or any large-scale display that covers more than 30% of the slide area. For backgrounds and large decorative images:
+> - Create them using `.drawio.svg` format instead
+> - If that's not feasible, ask the user to provide appropriate background images
+> - Catalog icons are designed for small inline/decorative use only
+
 For large decorative icons, use Marp's `bg` directive.
 
 ```markdown
