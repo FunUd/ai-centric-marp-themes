@@ -221,7 +221,7 @@ Apply CSS filters via alt text keywords:
 ## 4. Preview & Feedback Loop
 
 > **⚠️ MANDATORY: Preview confirmation is a required step, not optional.**
-> Slide creation is NOT complete until every slide has been visually verified in a browser. If the browser tool fails, try an alternative method (e.g., different port, different server command). Do NOT skip this step or declare the task done without completing it.
+> Slide creation is NOT complete until every slide has been visually verified. Do NOT skip this step or declare the task done without completing it.
 
 This section is critical for AI-driven slide creation. It enables the AI to see the rendered output and iterate autonomously.
 
@@ -229,82 +229,93 @@ This section is critical for AI-driven slide creation. It enables the AI to see 
 
 - **Marp CLI**: Available via `npx @marp-team/marp-cli`
 - **VSCode Extension**: `marp-team.marp-vscode` (for human users' live preview)
-- **Browser tool**: For AI to visually inspect rendered slides
 
-### Step-by-Step: AI Self-Review Process
+### Primary Method: PNG Export (Recommended)
 
-The AI can preview Marp slides by converting them to HTML and opening in a browser. Follow this workflow:
+The most reliable approach is to export all slides as PNG images using Marp CLI's `--images png` flag. This requires **no server, no browser tool**, and produces files the AI can read directly.
 
-#### Step 1: Generate HTML Preview
+#### Step 1: Export All Slides as PNG
 
 ```powershell
-npx -y @marp-team/marp-cli --no-stdin --theme <path-to-theme.css> <path-to-slide.md> -o <output-path>/preview.html
+npx -y @marp-team/marp-cli --no-stdin --theme <path-to-theme.css> --images png --image-scale 1 <path-to-slide.md> -o <slides-dir>/assets/preview.png
 ```
+
+Marp CLI will output one PNG per slide, named sequentially:
+`preview.001.png`, `preview.002.png`, `preview.003.png`, ...
 
 **Example:**
 ```powershell
-npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css samples/azure-clarity-sample.md -o preview.html
+npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css --images png --image-scale 1 slides/my-deck/my-deck.md -o slides/my-deck/assets/preview.png
 ```
 
-**Important flags:**
-- `--no-stdin`: Prevents CLI from waiting for stdin input (required in automated environments)
-- `--theme`: Path to custom theme CSS file
-- `-o`: Output file path
+**Key flags:**
+- `--images png`: Export every slide as a PNG file
+- `--image-scale 1`: Use 1× scale (default 2× is unnecessarily large for review)
+- `--no-stdin`: Prevents CLI from waiting for stdin (required in automated environments)
+- `--allow-local-files`: Required when the slide references local images or SVGs
+- `-o`: Base output path; CLI appends `.001.png`, `.002.png`, etc.
 
-#### Step 2: Serve and Open in Browser
+> **Note**: If the slide uses local image files (e.g., `assets/icon.svg`), add `--allow-local-files` to the command. Without it, local assets will be blocked and appear missing in the output.
 
-Start a temporary local server and open the preview:
+#### Step 2: Read and Evaluate Each PNG
+
+Use the `readFile` tool (or equivalent image-reading tool) to load each PNG and evaluate it against the Quality Checklist (Section 6). No server or browser required.
+
+```
+slides/my-deck/assets/preview.001.png  ← Slide 1
+slides/my-deck/assets/preview.002.png  ← Slide 2
+...
+```
+
+#### Step 3: Fix Issues & Re-Export
+
+After identifying problems:
+1. **Refine Content**: Make text more concise first (see Section 5.1).
+2. **Adjust Layout**: Apply technical fixes if needed (see Section 5).
+3. **Re-export**: Re-run the PNG export command and re-read the updated images.
+
+#### Step 4: Clean Up
+
+After review is complete, delete all preview PNGs:
 
 ```powershell
-python -m http.server 8080
+# Delete all preview PNGs (PowerShell)
+Remove-Item slides/my-deck/assets/preview.*.png
 ```
 
-Then use the browser tool to navigate to `http://localhost:8080/preview.html`.
+**Important**: Preview PNGs are temporary artifacts. Always delete them before finishing.
 
-#### Step 3: Capture Screenshots & Evaluate
+### Automated Preview Script
 
-Use the browser tool to:
-1. Navigate through each slide (click navigation arrows or use arrow keys)
-2. Capture screenshots of each slide
-3. Evaluate against the quality checklist (see Section 6)
+For convenience, a reusable script is available at `skills/marp-slide-creator/scripts/preview.ps1`. Run it from the workspace root:
 
-#### Step 4: Fix Issues & Re-Preview
-
-After identifying problems (especially content overflow):
-1. **Refine Content**: First, try to make the text more concise. Remove redundant words, use bullet points instead of sentences, and focus on the core message.
-2. **Adjust Layout**: If refinement isn't enough, apply technical solutions like reducing font size or splitting slides (see Section 5).
-3. **Edit & Verify**: Update the Markdown file, re-run the Marp CLI, and refresh the browser to verify the fix.
-
-#### Step 5: Clean Up
-
-After review is complete:
-1. Stop the local server
-2. Delete the temporary `preview.html` file (and any other preview files such as `.pdf`, `.pptx`)
-3. Delete all screenshots taken during the review process
-
-**Important**: Always clean up preview files and screenshots after completing the review. These are temporary artifacts and should not be committed to the repository.
-
-### Automated Preview Workflow (Summary)
-
-```
-Edit .md → Run Marp CLI → Start server → Browser screenshot → Evaluate → Fix → Repeat
+```powershell
+# Usage: .\skills\marp-slide-creator\scripts\preview.ps1 -SlidePath <md-file> -Theme <css-file>
+.\skills\marp-slide-creator\scripts\preview.ps1 -SlidePath slides/my-deck/my-deck.md -Theme themes/azure-clarity.css
 ```
 
-### When Preview is Not Possible
+The script exports PNGs, lists them for review, and prompts for cleanup when done.
 
-If you have exhausted all available methods to preview the slides (e.g., browser tool unavailable, server issues, CLI errors) and cannot visually verify the output:
+### Feedback Loop Summary
 
-1. **Document the Issue**: Note which preview methods were attempted and why they failed
-2. **Report to User**: Inform the user that visual verification could not be completed and explain the situation
-3. **Provide Alternatives**: Suggest that the user manually preview the slides using VSCode's Marp extension or by running the Marp CLI commands provided
-4. **Quality Check**: Perform a thorough text-based review of the Markdown to ensure proper syntax, structure, and content organization
+```
+Edit .md → Export PNGs (Marp CLI) → Read PNGs → Evaluate → Fix → Repeat → Clean up
+```
+
+No server. No browser. No manual navigation. Just files.
+
+### When PNG Export Fails
+
+If Marp CLI itself fails (missing Node.js, network issues with npx, etc.):
+
+1. **Report to User**: Explain what failed and provide the exact command to run manually.
+2. **Text-Based Review**: Perform a thorough Markdown review for syntax, structure, and content organization.
+3. **Suggest VSCode Preview**: Ask the user to verify using the Marp for VS Code extension.
 
 **Example Report**:
-> "I was unable to visually preview the slides due to [specific reason]. I have completed the Markdown file following Marp best practices and syntax. Please preview the slides using the Marp for VS Code extension or by running: `npx -y @marp-team/marp-cli --theme themes/azure-clarity.css slides/your-deck/your-deck.md -o preview.html` and opening the HTML file in your browser."
+> "PNG export failed due to [specific reason]. Please run the following command manually and check the output: `npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css --images png slides/your-deck/your-deck.md -o slides/your-deck/assets/preview.png`"
 
 ### VSCode Integration (For Human Users)
-
-Instruct users to set up their workspace for live preview:
 
 1. Install the "Marp for VS Code" extension (`marp-team.marp-vscode`)
 2. Configure `.vscode/settings.json`:
@@ -316,7 +327,7 @@ Instruct users to set up their workspace for live preview:
      "markdown.marp.enableHtml": true
    }
    ```
-3. Open the `.md` file and use VSCode's built-in Markdown preview (`Ctrl+Shift+V` or `Cmd+Shift+V`)
+3. Open the `.md` file and use VSCode's built-in Markdown preview (`Ctrl+Shift+V`)
 4. The preview updates in real-time as you edit
 
 ### Slide Content Overflow Diagnostic
