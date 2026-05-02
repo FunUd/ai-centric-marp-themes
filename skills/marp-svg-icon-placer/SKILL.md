@@ -44,6 +44,31 @@ If you need to copy manually:
 - Example: Copy `references/icons/target.svg` → `slides/my-presentation/assets/target.svg`
 
 ## 3. Customize the Icon (Optional)
+
+> **⚠️ IMPORTANT: Never edit SVG color attributes by hand with shell commands** (`sed`, `powershell -replace`, etc.). Use the Python script instead for cross-platform compatibility.
+
+### Changing Icon Colors with the Recolor Script (Recommended)
+
+```python
+# Recolor specific icons in a project
+python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "#2563eb" lightbulb.svg gear.svg
+
+# Recolor all icons in a project
+python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "#ffffff" all
+
+# Reset to theme-driven color
+python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "currentColor" all
+
+# List SVG icons currently in the project's assets directory
+python skills/marp-svg-icon-placer/scripts/recolor-icons.py --list-assets my-presentation
+```
+
+The script will:
+- Replace `fill` and `stroke` color values (both attribute-style and inline-style) in every targeted SVG
+- Operate only on copies inside `slides/[project-name]/assets/` — the catalog originals are never touched
+- Work identically on Windows, macOS, and Linux
+
+### Manual Color Edit (Alternative)
 - If you need to customize the icon (color, size adjustments), edit the copied SVG file in the slide's `assets/` directory:
   - **Size**: Modify `width` and `height` attributes in the SVG file itself.
   - **Color**: Change `fill="currentColor"` to a specific color (e.g., `fill="#2563eb"`).
