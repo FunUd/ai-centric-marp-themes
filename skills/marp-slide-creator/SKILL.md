@@ -518,7 +518,63 @@ For complex diagrams (architecture, workflows, flowcharts) that may require manu
 
 ---
 
-## 8. Export & Delivery
+## 8. Contrast-Aware Design Principles
+
+Every slide design decision must preserve the visual hierarchy: **the element you want to emphasize must never blend into its surroundings.** This principle applies universally — regardless of whether you use `cols-2`, `cols-3`, `split-2`, `split-3`, background images, cover slides, or any future CSS classes.
+
+### The Core Rule
+
+> **Emphasized elements and their containers must have different background colors (or tones).**
+
+If both the emphasis element and its surrounding area share the same background color, the emphasis disappears. The audience will not perceive what you intended to highlight.
+
+### How It Manifests in Practice
+
+The themes use several classes that add background colors to regions of a slide. When you place another background-colored element inside one of those regions, you must verify contrast.
+
+**Examples:**
+
+- **Column layouts (`cols-2`, `cols-3`)**: Each `.col` receives a **pale primary-color background** (e.g., light blue). If you place a `callout.info` (same pale blue background) inside a column, the callout merges into the card and loses impact. The same risk applies to `callout.success` if the theme ever used a pale green column background.
+- **Split layouts (`split-2`, `split-3`)**: Columns have **no background**. They are safe with any callout because the callout is the only colored region.
+- **Background images (`bg left`, `bg right`, full `bg`)**: If the image contains tones similar to a callout’s background, the callout gets buried. A `callout.info` (blue) on a blue-tinted photograph is nearly invisible.
+- **Cover / dark-background slides**: Light-colored callouts may work, but always verify that the text inside the callout also has sufficient contrast against the callout’s own background.
+
+### Universal Contrast Checklist
+
+Before finalizing any slide, ask yourself:
+
+1. **What is the single most important element on this slide?** Define the emphasis target explicitly.
+2. **Does that element have a background color or strong visual treatment?** (`callout.*`, highlighted boxes, badges, color blocks, etc.)
+3. **What is directly behind or around that element?** (column cards, background images, full-slide color overlays, other callouts.)
+4. **Are the colors (or tones) of the element and its surroundings the same or similar?** If yes, the emphasis is lost.
+5. **What is the simplest change that restores contrast?** Options include:
+   - Switch to a layout class without background colors (e.g., `split-2` instead of `cols-2`).
+   - Move the emphasized element outside the colored container.
+   - Change the callout type to one with a contrasting color (e.g., `callout.warning` or `callout.danger` instead of `callout.info`).
+   - Add a border, shadow, or opaque overlay between the background and the element.
+
+### Anti-Patterns to Avoid
+
+These are specific instances of the universal rule. Whenever a new class is introduced, evaluate it through the same lens.
+
+- **Do NOT** place a `callout.info` inside a `cols-2` or `cols-3` column. The callout and the column card share the same pale primary background.
+- **Do NOT** place any pale-background callout on top of a background image with matching tones without an overlay or border.
+- **Do NOT** assume that because two classes are documented separately, they are visually compatible when combined. Always mentally overlay them.
+
+### Decision Guide
+
+Use this reasoning flow for any class combination, now or in the future:
+
+| Situation | Question to Ask | Typical Fix |
+|-----------|----------------|-------------|
+| Layout with column cards + callout | Do the column and callout share a background color? | Use a split layout (no column background) or choose a callout with a contrasting color. |
+| Background image + callout | Does the image contain tones similar to the callout background? | Add a dark overlay, move the callout to a neutral area, or pick a callout with a strongly contrasting color. |
+| Multiple callouts on one slide | Do any two callouts have colors that clash or blend? | Space them apart; avoid placing similar-toned callouts adjacent to each other. |
+| New class + existing callout | Does the new class apply a background color to the same region as the callout? | Preview and compare the rendered hex codes or visual tones. If they are within ~15% luminance, change one of them. |
+
+---
+
+## 9. Export & Delivery
 
 ### Export via Marp CLI
 
