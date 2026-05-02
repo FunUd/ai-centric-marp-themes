@@ -48,7 +48,7 @@ paginate: true
 
 A striking, modern theme with advanced cover designs and bold visuals.
 
-- **Four cover variants**: Classic, Wave, Diagonal, Noir, Aurora
+- **Five cover variants**: Classic, Wave, Diagonal, Noir, Aurora
 - Glass panels, gradient text, accent borders
 - All Azure Clarity layouts inherited and enhanced
 
@@ -149,16 +149,24 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `cover-wave` | *(Prism Edge)* Animated wave bottom |
 | `cover-diagonal` | *(Prism Edge)* Sharp diagonal split |
 | `cover-noir` | *(Prism Edge)* Dark dramatic background |
+| `cover-aurora` | *(Prism Edge)* Soft aurora rotating gradient |
+| `hero` | *(Prism Edge)* Single large centered message (H1 at 72px) |
+| `title-only` | *(Prism Edge)* Minimal large left-aligned title (H1 at 64px) |
 | `toc` | Two-column table of contents |
 | `toc-focus` | Single-column large-number agenda |
 | `cols-2` / `cols-3` | Card-style columns with background/border |
 | `split-2` / `split-3` | Clean columns without card styling |
+| `split-asym` / `split-asym-reverse` | *(Prism Edge)* Asymmetric 65:35 split columns |
 | `grid-quadrant` | 2x2 matrix (SWOT, priority analysis) |
+| `grid-sharp` | 2x2 border-only matrix (no backgrounds) |
 | `steps` | Horizontal step cards with STEP badges |
 | `timeline` | Vertical timeline with dates |
 | `checklist` | Checkmark-styled bullet list |
 | `timetable` | Styled schedule table |
 | `key-message` | Full-slide centered message |
+| `accent-left` | *(Prism Edge)* Gradient left-border accent on slide |
+| `bg-grid` | *(Prism Edge)* Subtle grid pattern background |
+| `bg-noise` | *(Prism Edge)* Soft noise texture background |
 | `profile` | Self-introduction / team member profile |
 | `dense` | High-density slide (20px base font) |
 | `extra-dense` | Maximum density (17px base font) |
@@ -179,6 +187,11 @@ All themes share a unified class system. Apply any class via the Marp directive:
 |-----------|-------|
 | **Callouts** | `<div class="callout info">...</div>` (types: `info`, `success`, `warning`, `danger`) |
 | **Badges** | `<span class="badge success">NEW</span>` |
+| **Glass Panel** | *(Prism Edge)* `<div class="glass-panel">...</div>` — frosted glass container |
+| **Gradient Text** | *(Prism Edge)* `<span class="gradient-text">Text</span>` — indigo-to-cyan gradient fill |
+| **Highlight Box** | *(Prism Edge)* `<div class="highlight-box">...</div>` — gradient left-bordered emphasis block |
+| **Quote Large** | *(Prism Edge)* `<div class="quote-large">...</div>` — 32px italic editorial blockquote |
+| **Stat Number** | *(Prism Edge)* `<span class="stat-number">42</span><span class="stat-label">Label</span>` |
 | **Images** | `![center shadow width:600px](path)` or `![bg right:45% shadow](path)` |
 
 ---
@@ -200,6 +213,7 @@ ai-centric-marp-themes/
 ├── skills/
 │   ├── azure-clarity-theme-expert/SKILL.md
 │   ├── marp-slide-creator/SKILL.md
+│   ├── marp-svg-icon-placer/SKILL.md
 │   ├── prism-edge-theme-expert/SKILL.md
 │   ├── slide-content-designer/SKILL.md
 │   └── warm-sunnyday-theme-expert/SKILL.md
