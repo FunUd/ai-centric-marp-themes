@@ -537,6 +537,7 @@ Use this checklist when reviewing each slide:
 - [ ] Images do not overlap with text
 - [ ] Consistent margins and padding across slides
 - [ ] Slide is not too sparse (wasted space) or too dense (crowded)
+- [ ] Slides with bullet points use left-aligned text (not center-aligned) — center alignment breaks line-start consistency and makes lists harder to read
 
 ### Typography
 - [ ] Heading hierarchy is clear (h1 > h2 > h3)
