@@ -130,6 +130,19 @@ Great for "My Journey" or career history slides.
 - **Class to use**: `<!-- _class: timeline -->`
 - Use an ordered list. Each item gets a dot on a vertical line.
 - `**Bold text**` within each item renders as the date/label in primary orange.
+- **IMPORTANT**: The bold date/period and description text must be on the same line with a space between them.
+- **Correct example**:
+  ```markdown
+  1. **2024年 Q1** プロジェクト発足、要件定義フェーズ開始
+  2. **2024年 Q3** プロトタイプ完成、ユーザーテスト実施
+  ```
+- **Incorrect example** (line break after bold):
+  ```markdown
+  1. **2024年 Q1**
+  プロジェクト発足、要件定義フェーズ開始
+  2. **2024年 Q3**
+  プロトタイプ完成、ユーザーテスト実施
+  ```
 
 ### 8. Motto / Key Message
 Share your personal motto or a strong, positive message.

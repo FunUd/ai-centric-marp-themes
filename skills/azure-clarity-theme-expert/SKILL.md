@@ -157,6 +157,19 @@ Use ordered lists (`1. `, `2. `).
   - Becomes side-by-side cards with badges like "STEP 1", "STEP 2". Ideal for implementation procedures.
 - **Timeline**: `<!-- _class: timeline -->`
   - Suitable for expressing project history or roadmaps.
+  - **IMPORTANT**: The bold date/period and description text must be on the same line with a space between them.
+  - **Correct example**:
+    ```markdown
+    1. **2024年 Q1** プロジェクト発足、要件定義フェーズ開始
+    2. **2024年 Q3** プロトタイプ完成、ユーザーテスト実施
+    ```
+  - **Incorrect example** (line break after bold):
+    ```markdown
+    1. **2024年 Q1**
+    プロジェクト発足、要件定義フェーズ開始
+    2. **2024年 Q3**
+    プロトタイプ完成、ユーザーテスト実施
+    ```
 
 ### Presentation of Confirmation Items
 - **Checklist**: `<!-- _class: checklist -->`
