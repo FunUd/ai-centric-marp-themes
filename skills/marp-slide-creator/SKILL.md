@@ -59,20 +59,20 @@ slides/
 
 > **⚠️ IMPORTANT: Never use shell-specific commands** (PowerShell `New-Item`/`Copy-Item`, Bash `mkdir`/`cp`) to create directories or copy files. These commands fail when the shell environment differs from expectations (e.g., Git Bash vs PowerShell vs CMD). Always use the Python setup script instead.
 
-Use `skills/scripts/setup-slide-project.py` for all project setup tasks. It works identically on Windows, macOS, and Linux regardless of the active shell.
+Use `skills/marp-slide-creator/scripts/setup-slide-project.py` for all project setup tasks. It works identically on Windows, macOS, and Linux regardless of the active shell.
 
 ```python
 # Create project directory structure only
-python skills/scripts/setup-slide-project.py my-presentation
+python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation
 
 # Create project and copy specific icons
-python skills/scripts/setup-slide-project.py my-presentation --copy-icons lightbulb.svg gear.svg
+python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --copy-icons lightbulb.svg gear.svg
 
 # Create project and copy ALL icons
-python skills/scripts/setup-slide-project.py my-presentation --copy-icons all
+python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --copy-icons all
 
 # List all available icons
-python skills/scripts/setup-slide-project.py my-presentation --list-icons
+python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --list-icons
 ```
 
 This creates:
@@ -712,10 +712,10 @@ When a slide has unnatural empty space or a concept is better explained visually
 
 ```python
 # Copy specific icons
-python skills/scripts/setup-slide-project.py <project-name> --copy-icons lightbulb.svg gear.svg
+python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name> --copy-icons lightbulb.svg gear.svg
 
 # List all available icons first
-python skills/scripts/setup-slide-project.py <project-name> --list-icons
+python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name> --list-icons
 ```
 
 ### Cover Slide

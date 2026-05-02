@@ -4,14 +4,14 @@ Cross-platform utility for Marp slide project setup.
 Handles directory creation and asset copying without relying on shell-specific commands.
 
 Usage:
-    python skills/scripts/setup-slide-project.py <project-name>
-    python skills/scripts/setup-slide-project.py <project-name> --copy-icons icon1.svg icon2.svg
-    python skills/scripts/setup-slide-project.py <project-name> --copy-icons all
+    python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name>
+    python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name> --copy-icons icon1.svg icon2.svg
+    python skills/marp-slide-creator/scripts/setup-slide-project.py <project-name> --copy-icons all
 
 Examples:
-    python skills/scripts/setup-slide-project.py my-presentation
-    python skills/scripts/setup-slide-project.py my-presentation --copy-icons lightbulb.svg gear.svg
-    python skills/scripts/setup-slide-project.py my-presentation --copy-icons all
+    python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation
+    python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --copy-icons lightbulb.svg gear.svg
+    python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation --copy-icons all
 """
 
 import argparse
