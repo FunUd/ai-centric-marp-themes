@@ -1,6 +1,6 @@
 ---
 name: marp-svg-icon-placer
-description: Use this skill to select, customize, and insert SVG icons into Marp presentations. It helps maintain visual consistency by pulling from a predefined AI-friendly icon library, adjusting size and color to fit the slide's layout, or generating new cohesive icons if none fit.
+description: ALWAYS activate this skill when placing, copying, or selecting SVG icons in any Marp presentation. Use this skill to select, customize, and insert SVG icons into Marp presentations. It helps maintain visual consistency by pulling from a predefined AI-friendly icon library, adjusting size and color to fit the slide's layout, or generating new cohesive icons if none fit. Must be activated before using any icon copy scripts or referencing the icon catalog.
 ---
 
 # Marp SVG Icon Placer

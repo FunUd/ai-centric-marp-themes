@@ -74,18 +74,7 @@ slides/
     └── assets/
 ```
 
-To copy icons to the project, use the `marp-svg-icon-placer` skill's copy script:
-
-```python
-# Copy specific icons
-python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation lightbulb.svg gear.svg
-
-# Copy ALL icons
-python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation all
-
-# List all available icons
-python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
-```
+To copy icons to the project, activate the `marp-svg-icon-placer` skill first. That skill contains the icon catalog, copy script usage, and placement guidelines.
 
 ---
 
@@ -707,22 +696,7 @@ When a slide has unnatural empty space or a concept is better explained visually
   - Representing abstract concepts with simple icons.
   - Creating custom illustrations that match the theme's color palette.
 - **Organization**: Always store generated assets in the `assets/` folder relative to the markdown file.
-- **Icon Source**: Always check `marp-svg-icon-placer` skill catalog first before generating new SVGs.
-
-**Copying icons to a project (cross-platform):**
-
-> **⚠️ Never use shell commands** (`Copy-Item`, `cp`, etc.) to copy icons. Use the Python script instead.
-
-```python
-# Copy specific icons
-python skills/marp-svg-icon-placer/scripts/copy-icons.py <project-name> lightbulb.svg gear.svg
-
-# Copy all icons
-python skills/marp-svg-icon-placer/scripts/copy-icons.py <project-name> all
-
-# List all available icons first
-python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
-```
+- **Icon Source**: Always activate the `marp-svg-icon-placer` skill before selecting or copying icons. That skill contains the full catalog, copy script usage, and placement guidelines.
 
 ### Cover Slide
 ```markdown
