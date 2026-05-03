@@ -166,9 +166,17 @@ Avoid these in casual presentations unless you really need to pack in content.
   - Better suited for reference/handout slides than casual presentation slides.
 
 ### 10-2. Fine-Grained Font Scale Adjustment
-For precise control over font sizes, use the `--font-scale` CSS variable.
+For precise control over font sizes, use the `--font-scale` CSS variable with `<style scoped>` tags.
 
-- **Usage**: `<!-- _style: "section { --font-scale: 0.85; }" -->`
+- **Correct Usage**:
+  ```markdown
+  <style scoped>
+  section {
+    --font-scale: 0.85;
+  }
+  </style>
+  ```
+- **IMPORTANT**: Do NOT use `<!-- _style: "..." -->` directive — it does not work for CSS variables. Always use `<style scoped>` tags.
 - **Available range**: `0.7` (very small) to `1.0` (default)
 - **Common values**:
   - `0.95`: Slightly smaller

@@ -123,6 +123,7 @@ section ul li,
 section ol li {
   margin-bottom: 6px;
   line-height: 1.6;
+  font-size: calc(24px * var(--font-scale));
 }
 
 section ul li::marker {
@@ -151,7 +152,7 @@ section table {
   width: 100%;
   border-collapse: collapse;
   margin: 16px 0;
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale));
 }
 
 section table thead th {
