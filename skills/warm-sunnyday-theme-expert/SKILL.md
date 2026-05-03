@@ -165,6 +165,19 @@ Avoid these in casual presentations unless you really need to pack in content.
 - **Very compact (font size 15px)**: `<!-- _class: extra-dense -->`
   - Better suited for reference/handout slides than casual presentation slides.
 
+### 10-2. Fine-Grained Font Scale Adjustment
+For precise control over font sizes, use the `--font-scale` CSS variable.
+
+- **Usage**: `<!-- _style: "section { --font-scale: 0.85; }" -->`
+- **Available range**: `0.7` (very small) to `1.0` (default)
+- **Common values**:
+  - `0.95`: Slightly smaller
+  - `0.9`: Moderately smaller
+  - `0.85`: Equivalent to `dense` class
+  - `0.75`: Equivalent to `extra-dense` class
+  - `0.7`: Maximum compression
+- **Note**: This affects all text elements (headings, paragraphs, lists, tables) proportionally. Use this when predefined `dense` or `extra-dense` classes don't provide the exact size you need.
+
 ---
 
 ## 🔧 Header / Footer / Pagination Utilities

@@ -93,6 +93,19 @@ Used when you need to pack a lot of information into one slide, such as system c
 - **Very high / Design details (Font size 17px)**: `<!-- _class: extra-dense -->`
   - Ideal for handouts that serve as documentation.
 
+### 5-2. Fine-Grained Font Scale Adjustment
+For precise control over font sizes, use the `--font-scale` CSS variable.
+
+- **Usage**: `<!-- _style: "section { --font-scale: 0.85; }" -->`
+- **Available range**: `0.7` (very small) to `1.0` (default)
+- **Common values**:
+  - `0.95`: Slightly smaller
+  - `0.9`: Moderately smaller
+  - `0.85`: Equivalent to `dense` class
+  - `0.75`: Equivalent to `extra-dense` class
+  - `0.7`: Maximum compression
+- **Note**: This affects all text elements (headings, paragraphs, lists, tables) proportionally. Use this when predefined `dense` or `extra-dense` classes don't provide the exact size you need.
+
 ### 6. Profile / Self-Introduction Slide
 Used for presenter introductions or team member profiles.
 
