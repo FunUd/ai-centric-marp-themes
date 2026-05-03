@@ -476,7 +476,7 @@ section.toc ol li {
   background: transparent;
   border-left: none;
   border-bottom: none;
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale));
   break-inside: avoid;
   display: flex;
   align-items: center;
@@ -515,7 +515,7 @@ section.toc-focus ol li {
   counter-increment: toc-counter;
   background: transparent;
   padding: 15px 0;
-  font-size: 28px;
+  font-size: calc(28px * var(--font-scale));
   font-weight: 600;
   color: var(--ac-accent);
   display: flex;
@@ -594,7 +594,7 @@ section.cols-3 .col {
 section.cols-2 .col h3,
 section.cols-3 .col h3 {
   color: var(--ac-primary);
-  font-size: 22px;
+  font-size: calc(22px * var(--font-scale));
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--ac-primary-light);
@@ -643,13 +643,13 @@ section.grid-quadrant .cell {
 
 section.grid-quadrant .cell h3 {
   color: var(--ac-primary);
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale));
   margin-bottom: 8px;
 }
 
 section.grid-quadrant .cell p,
 section.grid-quadrant .cell li {
-  font-size: 17px;
+  font-size: calc(17px * var(--font-scale));
   line-height: 1.5;
 }
 
@@ -701,7 +701,7 @@ section.grid-sharp .cell:nth-last-child(-n+2) {
 
 section.grid-sharp .cell h3 {
   color: var(--ac-primary);
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale));
   margin-bottom: 8px;
   font-weight: 600;
 }
@@ -710,7 +710,7 @@ section.grid-sharp .cell h3 {
    Timetable
    ============================================================ */
 section.timetable table {
-  font-size: 18px;
+  font-size: calc(18px * var(--font-scale));
 }
 
 section.timetable table thead th:first-child {
@@ -743,7 +743,7 @@ section.steps ol li {
   padding: 24px 20px 20px;
   position: relative;
   border-top: 4px solid var(--ac-primary);
-  font-size: 18px;
+  font-size: calc(18px * var(--font-scale));
   line-height: 1.5;
   margin: 0;
 }
@@ -764,7 +764,7 @@ section.steps ol li::before {
 
 section.steps ol li strong {
   display: block;
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale));
   color: var(--ac-accent);
   margin-bottom: 6px;
 }
@@ -814,21 +814,21 @@ section.profile .profile-content {
 }
 
 section.profile h1 {
-  font-size: 32px;
+  font-size: calc(32px * var(--font-scale));
   margin-bottom: 4px;
   border-bottom: none;
   padding-bottom: 0;
 }
 
 section.profile h2 {
-  font-size: 18px;
+  font-size: calc(18px * var(--font-scale));
   color: var(--ac-primary);
   font-weight: 400;
   margin-bottom: 16px;
 }
 
 section.profile ul {
-  font-size: 19px;
+  font-size: calc(19px * var(--font-scale));
 }
 
 /* ============================================================
@@ -846,7 +846,7 @@ section.key-message {
 section.key-message blockquote {
   border: none;
   background: transparent;
-  font-size: 40px;
+  font-size: calc(40px * var(--font-scale));
   font-weight: 700;
   color: var(--ac-accent);
   line-height: 1.4;
@@ -860,7 +860,7 @@ section.key-message blockquote p {
 
 section.key-message p {
   color: var(--ac-text-sub);
-  font-size: 22px;
+  font-size: calc(22px * var(--font-scale));
 }
 
 /* ============================================================
@@ -998,7 +998,7 @@ section.timeline ol li {
   padding-left: 36px;
   padding-bottom: 12px;
   margin-bottom: 0;
-  font-size: 19px;
+  font-size: calc(19px * var(--font-scale));
 }
 
 section.timeline ol li::before {
