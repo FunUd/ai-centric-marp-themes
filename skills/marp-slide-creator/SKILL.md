@@ -1,6 +1,6 @@
 ---
 name: marp-slide-creator
-description: ALWAYS activate this skill when creating or editing any Marp slides. Create, edit, and troubleshoot Marp presentation slides with professional quality. Use this skill whenever the user asks to create slides, presentations, or decks in Marp Markdown, or when they want to fix layout issues, preview slides, adjust content overflow, or improve slide design. Also use when the user mentions Marp, slide deck, presentation markdown, or wants to convert slides to PDF/PPTX. This skill enables AI to autonomously preview, evaluate, and iterate on slide quality.
+description: Activate this skill when writing or editing Marp Markdown files. Use when the user has an approved outline and is ready to generate slide code, or when they want to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX. This skill handles the implementation phase — Marp syntax, directives, image placement, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
 ---
 
 # Marp Slide Creator

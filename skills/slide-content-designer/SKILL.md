@@ -1,6 +1,6 @@
 ---
 name: slide-content-designer
-description: ALWAYS activate this skill when creating or editing any presentation slides. Guide users through planning, structuring, and drafting presentation slide content. Focuses on extracting the core message, reverse-engineering the structure, calculating slide counts, and applying best practices like '1 slide = 1 message' and MECE principles.
+description: Activate this skill at the START of a new presentation project, before any slides are written. Use when the user wants to plan, outline, or structure a presentation — defining the audience, core message, slide count, and section flow. This skill covers the content design phase only. Once the outline is approved, hand off to marp-slide-creator for Markdown implementation.
 ---
 
 # Slide Content Designer
