@@ -5,83 +5,44 @@ description: Activate this skill when writing or editing Marp Markdown files. Us
 
 # Marp Slide Creator
 
-A comprehensive guide for creating high-quality Marp presentations using AI. This skill covers everything from basic Marp syntax to advanced self-feedback loops for autonomous slide quality improvement.
-
-## Table of Contents
-
-1. [Marp Fundamentals](#1-marp-fundamentals)
-2. [Slide Structure & Directives](#2-slide-structure--directives)
-3. [Image Syntax](#3-image-syntax)
-4. [Preview & Feedback Loop](#4-preview--feedback-loop)
-5. [Content Overflow Solutions](#5-content-overflow-solutions)
-6. [Quality Checklist](#6-quality-checklist)
-7. [Visual Aids & Diagrams](#7-visual-aids--diagrams)
-8. [Export & Delivery](#8-export--delivery)
-
----
+A comprehensive guide for creating high-quality Marp presentations using AI.
 
 ## 1. Marp Fundamentals
 
 ### What is Marp?
 
-Marp (Markdown Presentation Ecosystem) converts Markdown into slide decks. It consists of:
-
-- **Marpit**: The core framework that transforms Markdown + CSS into slides
-- **Marp Core**: Extended Marpit with built-in themes and plugins
-- **Marp CLI**: Command-line tool for converting `.md` → HTML / PDF / PPTX / images
-- **Marp for VS Code**: Extension for live preview and export within VS Code
-
-### Basic Slide Structure
-
-Every Marp file starts with a YAML front-matter declaring `marp: true`, followed by Markdown content. Slides are separated by `---` (horizontal rule).
+Marp (Markdown Presentation Ecosystem) converts Markdown into slide decks:
+- **Marpit**: Core framework (Markdown + CSS → slides)
+- **Marp Core**: Extended Marpit with built-in themes
+- **Marp CLI**: Command-line tool for export (HTML/PDF/PPTX/PNG)
+- **Marp for VS Code**: Extension for live preview
 
 ### File Organization
 
-To keep the workspace clean and maintainable, always organize your presentation files as follows:
-
-1.  **Base Directory**: All presentations should reside in the `slides/` directory.
-2.  **Project Folder**: Create a dedicated subfolder for each individual slide deck (e.g., `slides/project-name/`).
-3.  **Files**:
-    *   Place the Markdown file (`.md`) directly inside the project folder.
-    *   Create an `assets/` subfolder for all images, icons, and diagrams.
-
-**Example Structure:**
-```text
+**Required Structure:**
+```
 slides/
-└── marketing-plan/
-    ├── marketing-plan.md
+└── project-name/
+    ├── project-name.md
     └── assets/
-        ├── logo.svg
-        └── overview-diagram.drawio.svg
+        ├── images/
+        └── icons/
 ```
 
-### Creating a New Project (Cross-Platform)
+### Creating a New Project
 
-> **⚠️ IMPORTANT: Never use shell-specific commands** (PowerShell `New-Item`/`Copy-Item`, Bash `mkdir`/`cp`) to create directories or copy files. These commands fail when the shell environment differs from expectations (e.g., Git Bash vs PowerShell vs CMD). Always use the Python setup script instead.
-
-Use `skills/marp-slide-creator/scripts/setup-slide-project.py` to create the project structure. It works identically on Windows, macOS, and Linux regardless of the active shell.
+> **⚠️ IMPORTANT: Never use shell commands** (PowerShell/Bash) to create directories. Use the Python setup script for cross-platform compatibility.
 
 ```python
-# Create project directory structure
 python skills/marp-slide-creator/scripts/setup-slide-project.py my-presentation
 ```
 
-This creates:
-```text
-slides/
-└── my-presentation/
-    ├── (place my-presentation.md here)
-    └── assets/
-```
-
-To copy icons to the project, activate the `marp-svg-icon-placer` skill first. That skill contains the icon catalog, copy script usage, and placement guidelines.
-
----
+### Basic Slide Structure
 
 ```markdown
 ---
 marp: true
-theme: default
+theme: azure-clarity
 paginate: true
 header: "Header Text"
 footer: "Footer Text"
@@ -89,571 +50,278 @@ footer: "Footer Text"
 
 # Slide 1 Title
 
-Content of the first slide.
+Content here.
 
 ---
 
 # Slide 2 Title
 
-Content of the second slide.
+More content.
 ```
 
 ### Front-matter Directives (Global)
 
-These apply to the entire deck:
-
-| Directive    | Purpose                        | Example                         |
-|-------------|-------------------------------|--------------------------------|
-| `marp`      | Enable Marp rendering          | `marp: true`                    |
-| `theme`     | Specify CSS theme              | `theme: azure-clarity`          |
-| `paginate`  | Show page numbers              | `paginate: true`                |
-| `header`    | Global header text             | `header: "Project Report"`      |
-| `footer`    | Global footer text             | `footer: "© 2026 Company"`     |
-| `size`      | Slide dimensions               | `size: 16:9`                    |
-| `math`      | Math rendering engine          | `math: mathjax`                 |
-| `style`     | Inline CSS for the entire deck | `style: "section { font-size: 20px; }"` |
-
----
+| Directive | Purpose | Example |
+|-----------|---------|---------|
+| `marp` | Enable Marp | `marp: true` |
+| `theme` | CSS theme | `theme: azure-clarity` |
+| `paginate` | Page numbers | `paginate: true` |
+| `header` | Global header | `header: "Report"` |
+| `footer` | Global footer | `footer: "© 2026"` |
+| `size` | Dimensions | `size: 16:9` |
 
 ## 2. Slide Structure & Directives
 
 ### Local Directives (Per-Slide)
 
-Local directives apply only to the current slide. Prefix with `_` inside an HTML comment:
+Apply to current slide only. Prefix with `_`:
 
 ```markdown
----
-
 <!-- _class: cover -->
 <!-- _paginate: false -->
 <!-- _header: "" -->
 <!-- _footer: "" -->
-
-# Title Slide
 ```
 
-| Directive      | Purpose                              | Example                         |
-|---------------|-------------------------------------|--------------------------------|
-| `_class`      | Apply CSS class to this slide        | `<!-- _class: cover -->`        |
-| `_paginate`   | Override pagination for this slide   | `<!-- _paginate: false -->`     |
-| `_header`     | Override header (empty = hide)       | `<!-- _header: "" -->`          |
-| `_footer`     | Override footer (empty = hide)       | `<!-- _footer: "" -->`          |
-| `_color`      | Override text color                  | `<!-- _color: white -->`        |
-| `_backgroundColor` | Override background color       | `<!-- _backgroundColor: #000 -->`|
-
-### Class Combinations
-
-Multiple classes can be combined in a single `_class` directive. The theme CSS determines which classes are available:
-
-```markdown
-<!-- _class: cover subtitle meta -->
-```
+| Directive | Purpose | Example |
+|-----------|---------|---------|
+| `_class` | Apply CSS class | `<!-- _class: cover -->` |
+| `_paginate` | Override pagination | `<!-- _paginate: false -->` |
+| `_header` | Override header | `<!-- _header: "" -->` |
+| `_footer` | Override footer | `<!-- _footer: "" -->` |
 
 ### Presenter Notes
-
-Add notes that appear only in presenter view. Place them after a slide's content using HTML comment syntax:
 
 ```markdown
 # Slide Content
 
-This is visible on the slide.
+Visible content here.
 
 <!--
-This is a presenter note.
-Only visible in presenter view.
+Presenter notes (only in presenter view)
 -->
 ```
 
----
-
 ## 3. Image Syntax
-
-Marp extends standard Markdown image syntax with powerful keywords placed in the alt text.
 
 ### Inline Images
 
 ```markdown
-![width:200px](image.jpg)              <!-- Set width -->
-![height:150px](image.jpg)             <!-- Set height -->
-![w:200 h:150](image.jpg)             <!-- Shorthand -->
-![width:100%](image.jpg)              <!-- Percentage width -->
-![center](image.jpg)                   <!-- Center align (theme-dependent) -->
-![shadow](image.jpg)                   <!-- Drop shadow (theme-dependent) -->
-![center shadow width:800px](image.jpg)  <!-- Combine keywords -->
+![width:200px](image.jpg)
+![height:150px](image.jpg)
+![w:200 h:150](image.jpg)
+![center shadow width:800px](image.jpg)
 ```
 
 ### Background Images
 
-Add `bg` keyword to use the image as slide background:
-
 ```markdown
-![bg](image.jpg)                       <!-- Full background -->
-![bg cover](image.jpg)                 <!-- Scale to fill (default) -->
+![bg](image.jpg)                      <!-- Full background -->
+![bg cover](image.jpg)                <!-- Scale to fill -->
 ![bg contain](image.jpg)              <!-- Scale to fit -->
-![bg fit](image.jpg)                   <!-- Alias for contain -->
-![bg auto](image.jpg)                  <!-- Original size -->
-![bg 150%](image.jpg)                  <!-- Scale percentage -->
-```
-
-### Split Backgrounds
-
-Split the slide into content area + image area:
-
-```markdown
-![bg left](image.jpg)                 <!-- Image on left, content on right -->
-![bg right](image.jpg)                <!-- Image on right, content on left -->
-![bg left:40%](image.jpg)             <!-- Custom split ratio -->
-![bg right:45% shadow](image.jpg)     <!-- With shadow effect -->
+![bg left:40%](image.jpg)             <!-- Split layout -->
+![bg right:45% shadow](image.jpg)     <!-- With shadow -->
 ```
 
 ### Multiple Backgrounds
 
-Stack multiple background images:
-
 ```markdown
 ![bg](image1.jpg)
 ![bg](image2.jpg)
-![bg](image3.jpg)
-```
-
-Use `vertical` keyword to arrange vertically instead of horizontally:
-
-```markdown
-![bg vertical](image1.jpg)
-![bg](image2.jpg)
+![bg vertical](image3.jpg)            <!-- Vertical stack -->
 ```
 
 ### Image Filters
 
-Apply CSS filters via alt text keywords:
-
 ```markdown
 ![blur:10px](image.jpg)
 ![brightness:1.5](image.jpg)
-![contrast:200%](image.jpg)
 ![grayscale:1](image.jpg)
-![sepia:50%](image.jpg)
 ![opacity:.5](image.jpg)
-![brightness:.8 sepia:50%](image.jpg)  <!-- Multiple filters -->
 ```
-
----
 
 ## 4. Preview & Feedback Loop
 
-> **⚠️ MANDATORY: Preview confirmation is a required step, not optional.**
-> Slide creation is NOT complete until every slide has been visually verified. Do NOT skip this step or declare the task done without completing it.
-
-This section is critical for AI-driven slide creation. It enables the AI to see the rendered output and iterate autonomously using a **two-stage feedback loop**.
-
-### Prerequisites
-
-- **Marp CLI**: Available via `npx @marp-team/marp-cli`
-- **Python 3.10+** and **Playwright**: `pip install playwright` then `playwright install chromium`
-- **VSCode Extension**: `marp-team.marp-vscode` (for human users' live preview)
+> **⚠️ MANDATORY: Preview confirmation is required, not optional.**
+> Slide creation is NOT complete until every slide has been visually verified.
 
 ### Two-Stage Feedback Loop
 
-AI should use both methods in sequence for optimal autonomous improvement:
+**Stage 1: getDiagnostics (Fast)**
+- Detects content overflow instantly
+- No export needed
 
-**Stage 1: getDiagnostics (Fast, Immediate)**
-- Detects content overflow instantly without export
-- Runs directly on the Markdown file
-- Catches obvious issues before heavy processing
-
-**Stage 2: DOM Metrics Extraction (Detailed, Visual)**
-- Detects image loading failures, layout issues, element positioning
+**Stage 2: DOM Metrics (Detailed)**
+- Detects image failures, layout issues
 - Requires HTML export + Playwright
-- Provides comprehensive visual analysis
 
-### Recommended Workflow
+### Workflow
 
 ```
 1. Edit Markdown
-2. Run getDiagnostics (immediate check)
-3. If issues found → fix → return to step 2
-4. If no issues → Export HTML → Run DOM Extractor
-5. Analyze DOM metrics and risk flags
-6. If issues found → fix → return to step 1
-7. Task complete
+2. Run getDiagnostics
+3. If issues → fix → return to step 2
+4. If clean → Export HTML → Run DOM Extractor
+5. Analyze metrics
+6. If issues → fix → return to step 1
+7. Complete
 ```
 
 ### Stage 1: getDiagnostics
-
-Use the `getDiagnostics` tool to check for content overflow immediately after editing:
 
 ```
 getDiagnostics(paths=["slides/my-deck/my-deck.md"])
 ```
 
-This leverages the Marp for VS Code extension's built-in diagnostic (`markdown.marp.diagnostics.slideContentOverflow`) and returns warnings instantly. If any overflow warnings appear, fix them before proceeding to Stage 2.
-
-**Advantages:**
-- No export needed
-- Instant results
-- Catches the most common issue (overflow) immediately
+Catches overflow warnings immediately.
 
 ### Stage 2: DOM Metrics Extraction
 
-After getDiagnostics passes with no warnings, proceed to detailed visual analysis using Playwright-based DOM extraction. It converts rendered slide layouts into structured text data (JSON) that any AI model can analyze — including text-only models without image support.
-
-#### Step 1: Export HTML
-
+**Step 1: Export HTML**
 ```powershell
 npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/assets/preview.html
 ```
 
-> **Note**: Unlike PNG, the `--allow-local-files` flag is not required for the HTML export itself. However, when Playwright opens the HTML file, local image paths inside must resolve correctly (use relative paths from the HTML file's directory).
-
-#### Step 2: Run the DOM Extractor Script
-
+**Step 2: Run DOM Extractor**
 ```powershell
 python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/assets/preview.html -o slides/my-deck/assets/dom-metrics.json
 ```
 
-The script (`skills/marp-slide-creator/scripts/marp-dom-extractor.py`) will:
-1. Launch a headless Chromium browser
-2. Load the HTML file
-3. Iterate every `<section>` (slide)
-4. Measure each element's position, size, text density, and overflow state
-5. Output a JSON file with per-slide metrics and risk flags
+**Step 3: Analyze JSON**
 
-#### Step 3: Read and Analyze the JSON
+Auto-detected risk flags:
+- `CONTENT_OVERFLOW`: Content past slide bottom
+- `DENSE_TEXT`: >600 characters
+- `MANY_LINES`: >20 lines
+- `IMAGE_NO_SRC`: Missing image source
+- `IMAGE_BROKEN`: Failed to load
 
-Load `dom-metrics.json` and evaluate each slide against the Quality Checklist (Section 6). The JSON contains:
-
-```json
-[
-  {
-    "slide": 1,
-    "slide_size": {"width": 1280, "height": 720},
-    "metrics": {
-      "char_count": 245,
-      "line_count": 8,
-      "element_count": 5,
-      "image_count": 1
-    },
-    "elements": [
-      {
-        "tag": "h1",
-        "text_preview": "Slide Title",
-        "top": 40,
-        "left": 40,
-        "width": 600,
-        "height": 60,
-        "overflow_style": "visible",
-        "clipped": false
-      }
-    ],
-    "risk_flags": []
-  }
-]
-```
-
-#### Auto-Detected Risk Flags
-
-The extractor automatically flags the following issues:
-
-| Flag | Meaning | Threshold |
-|------|---------|-----------|
-| `CONTENT_OVERFLOW` | Content extends past slide bottom | content bottom > slide height + 5px |
-| `DENSE_TEXT` | Slide may have too much text | char count > 600 |
-| `MANY_LINES` | High line count risk | line count > 20 |
-| `IMAGE_NO_SRC` | Image tag has no src | any `<img>` without `src` |
-| `IMAGE_BROKEN` | Image failed to load | `naturalWidth == 0` |
-
-#### Manual Checks from Element Data
-
-Beyond auto-flags, inspect the `elements` array for:
-- **Element overlap**: Two elements with overlapping `top`/`height` ranges and same `left`/`width`
-- **Text truncation**: `overflow_style` is `hidden` or `scroll`, or `clipped: true`
-- **Unbalanced layout**: Single column `width` much smaller than slide width with lots of whitespace
-- **Missing images**: `image_count` is 0 where an image was expected
-- **Font size anomalies**: `height` is unexpectedly large for a short `text_preview` (indicates oversized text)
-
-#### Step 4: Fix Issues & Re-Iterate
-
-After identifying problems from either stage:
-1. Refine content (Section 5.1)
-2. Adjust layout (Section 5)
-3. Return to Stage 1 (getDiagnostics)
-
-#### Complete Feedback Loop Summary
-
-```
-Edit .md
-  ↓
-Stage 1: getDiagnostics (immediate)
-  ↓ (if issues) → Fix → Loop back
-  ↓ (if clean)
-Stage 2: Export HTML → Run DOM Extractor (Playwright)
-  ↓
-Read JSON → Evaluate metrics & flags
-  ↓ (if issues) → Fix → Loop back to Stage 1
-  ↓ (if clean)
-Task Complete
-```
-
-**Key Principle:** Always run getDiagnostics first. It catches overflow issues instantly without the overhead of HTML export and Playwright. Only proceed to DOM extraction after getDiagnostics is clean.
-
----
+Manual checks from `elements` array:
+- Element overlap
+- Text truncation (`clipped: true`)
+- Unbalanced layout
+- Missing expected images
 
 ## 5. Content Overflow Solutions
 
-When content doesn't fit within a slide, use these techniques in order of preference (starting with the most "design-friendly" approach):
+Priority order (most design-friendly first):
 
-### 5.1 Content Refinement (Editing for Conciseness)
+### 5.1 Content Refinement
+- Bulletize paragraphs
+- Remove redundancy
+- Stick to "1 slide = 1 message"
+- Use active voice
 
-Before reaching for technical hacks, always try to "edit down" the content. This is the best way to maintain professional quality and readability.
-
-- **Bulletize**: Convert long paragraphs into short, punchy bullet points.
-- **Remove Redundancy**: Eliminate filler words ("In order to", "Basically", "As we can see").
-- **Core Message**: Stick to "1 slide = 1 message". If you have too many points, move secondary information to presenter notes or a separate slide.
-- **Active Voice**: Use active voice to shorten sentences (e.g., "The team designed the system" vs. "The system was designed by the team").
-
-### 5.2 Use the `style` Directive to Reduce Font Size (Per-Slide)
-
-Apply inline `<style>` scoped to a single slide using the `scoped` attribute. This is the most targeted approach:
-
+### 5.2 Per-Slide Font Size
 ```markdown
----
-
 <style scoped>
 section { font-size: 20px; }
-section li { font-size: 18px; line-height: 1.4; }
+section li { font-size: 18px; }
 </style>
-
-# Dense Content Slide
-
-- Item 1 with lots of text...
-- Item 2 with lots of text...
-...
 ```
 
-### 5.3 Use the Front-matter `style` Directive (Global)
-
-For deck-wide font size adjustment:
-
+### 5.3 Global Font Size
 ```markdown
 ---
-marp: true
-theme: azure-clarity
 style: |
   section { font-size: 22px; }
-  section li { font-size: 20px; }
 ---
 ```
 
-### 5.4 Use CSS Utility Classes
-
-If the theme provides utility classes like `text-small` or `text-large`:
-
+### 5.4 CSS Utility Classes
 ```markdown
 <div class="text-small">
-
-- Dense content here
-- More items
-
+Content here
 </div>
 ```
 
-### 5.5 Split Content Across Multiple Slides
-
-When content is truly too much for one slide, break it into parts:
-
+### 5.5 Split Slides
 ```markdown
----
-
 # Topic (1/2)
-
-- First half of points...
+- First half
 
 ---
 
 # Topic (2/2)
-
-- Second half of points...
+- Second half
 ```
 
-### 5.6 Image Size Adjustments
-
-When images overflow or dominate the slide:
-
+### 5.6 Image Resize
 ```markdown
-<!-- Instead of full-width image: -->
-![width:800px](large-image.jpg)
-
-<!-- Reduce to fit: -->
-![width:500px](large-image.jpg)
-
-<!-- Or use background with split for text+image layouts: -->
-![bg right:45%](large-image.jpg)
+![width:500px](image.jpg)
+![bg right:45%](image.jpg)
 ```
 
 ### 5.7 Table Overflow
-
-For tables with too many columns or rows:
-
 ```markdown
 <style scoped>
 section table { font-size: 16px; }
-section table td, section table th { padding: 6px 10px; }
-</style>
-
-| Col1 | Col2 | Col3 | Col4 | Col5 |
-|------|------|------|------|------|
-| ...  | ...  | ...  | ...  | ...  |
-```
-
-### 5.8 Code Block Overflow
-
-For long code blocks:
-
-```markdown
-<style scoped>
-section pre code { font-size: 14px; line-height: 1.3; }
 </style>
 ```
-
-### Decision Matrix for Overflow
-
-| Situation                     | Best Solution                                   |
-|------------------------------|------------------------------------------------|
-| Text/Bullets overflow        | **1. Refine text (conciseness)**, 2. `<style scoped>`, 3. Split |
-| Table too wide               | 1. Abbreviations/Refinement, 2. Reduce font-size |
-| Image too large              | Use `width:` keyword to resize                   |
-| Code block too long          | Reduce code font-size, or truncate example        |
-| Mixed content overflow       | Refine text + combine `<style scoped>` + resize  |
-| Content fundamentally too much| Split across 2+ slides                           |
-
----
 
 ## 6. Quality Checklist
 
-Use this checklist when reviewing each slide:
+Layout:
+- [ ] No text overflow/cutoff
+- [ ] Images don't overlap text
+- [ ] Consistent margins
+- [ ] Lists are left-aligned (not centered)
 
-### Layout & Readability
-- [ ] All text is fully visible within the slide boundaries (no overflow/cutoff)
-- [ ] Images do not overlap with text
-- [ ] Consistent margins and padding across slides
-- [ ] Slide is not too sparse (wasted space) or too dense (crowded)
-- [ ] Slides with bullet points use left-aligned text (not center-aligned) — center alignment breaks line-start consistency and makes lists harder to read
+Typography:
+- [ ] Clear heading hierarchy
+- [ ] Readable font size (≥16px)
+- [ ] Purposeful emphasis
 
-### Typography
-- [ ] Heading hierarchy is clear (h1 > h2 > h3)
-- [ ] Font size is readable (minimum ~16px for body text)
-- [ ] Emphasis (bold, italic) is used purposefully
-- [ ] Line height provides comfortable readability
+Visual:
+- [ ] Consistent color scheme
+- [ ] Good text/background contrast
+- [ ] Aligned tables
+- [ ] Diagrams/icons where appropriate
 
-### Visual Design
-- [ ] Color scheme is consistent across all slides
-- [ ] Background images have appropriate contrast with text
-- [ ] Tables are properly aligned and styled
-- [ ] Code blocks have syntax highlighting
-- [ ] No unnatural empty spaces (use visual aids to fill gaps)
-- [ ] Diagrams/Icons are used to aid understanding where appropriate
+Content:
+- [ ] One idea per slide
+- [ ] Concise bullet points
+- [ ] Images serve a purpose
 
-### Structural
-- [ ] First slide is a cover/title slide
-- [ ] Pagination is hidden on cover and closing slides
-- [ ] Headers/footers are hidden where appropriate (cover, key-message)
-- [ ] Slide transitions feel logical
+## 7. Visual Aids & Icons
 
-### Content
-- [ ] Each slide conveys a single main idea
-- [ ] Bullet points are concise (not full paragraphs)
-- [ ] Text is refined to fit the slide perfectly while maintaining clarity
-- [ ] Tables have clear headers
-- [ ] Images serve a purpose (not decorative filler)
+### SVG Icons
 
----
+After drafting, review for empty space. Add icons from `marp-svg-icon-placer` skill catalog.
 
-## 7. Visual Aids & Diagrams
+**Always activate `marp-svg-icon-placer` skill before selecting icons.**
 
-To enhance the visual quality and understanding of slides, follow these guidelines for creating and using visual aids:
+### Editable Diagrams
 
+Use `.drawio.svg` format for complex diagrams (architecture, workflows).
 
+## 8. Contrast-Aware Design
 
-### 7.2 Editable Diagrams (.drawio.svg)
+**Core Rule:** Emphasized elements and their containers must have different background colors.
 
-For complex diagrams (architecture, workflows, flowcharts) that may require manual refinement by the user:
+### Universal Checklist
 
-- **Format**: Use `.drawio.svg`. This allows the image to be rendered as an SVG in the slide but remains editable using the Draw.io / diagrams.net editor (or VS Code extension).
-- **Benefit**: Users can "Save as" or edit the file directly to fix small details or translations without needing to recreate the diagram from scratch.
+1. What is the most important element on this slide?
+2. Does it have a background color?
+3. What is directly behind it?
+4. Are the colors similar? If yes, emphasis is lost.
+5. Fix: Change layout, move element, or change color.
 
-### 7.3 Design Best Practices
+### Anti-Patterns
 
-- **Consistency**: Use colors from the theme (e.g., Azure blue, dark greys) for all generated visual aids.
-- **Simplicity**: Prefer clean, flat designs over complex or cluttered images.
-- **Alignment**: Use Marp's background image keywords (`bg right`, `bg left`) to integrate diagrams seamlessly with text.
-
----
-
-## 8. Contrast-Aware Design Principles
-
-Every slide design decision must preserve the visual hierarchy: **the element you want to emphasize must never blend into its surroundings.** This principle applies universally — regardless of whether you use `cols-2`, `cols-3`, `split-2`, `split-3`, background images, cover slides, or any future CSS classes.
-
-### The Core Rule
-
-> **Emphasized elements and their containers must have different background colors (or tones).**
-
-If both the emphasis element and its surrounding area share the same background color, the emphasis disappears. The audience will not perceive what you intended to highlight.
-
-### How It Manifests in Practice
-
-The themes use several classes that add background colors to regions of a slide. When you place another background-colored element inside one of those regions, you must verify contrast.
-
-**Examples:**
-
-- **Column layouts (`cols-2`, `cols-3`)**: Each `.col` receives a **pale primary-color background** (e.g., light blue). If you place a `callout.info` (same pale blue background) inside a column, the callout merges into the card and loses impact. The same risk applies to `callout.success` if the theme ever used a pale green column background.
-- **Split layouts (`split-2`, `split-3`)**: Columns have **no background**. They are safe with any callout because the callout is the only colored region.
-- **Background images (`bg left`, `bg right`, full `bg`)**: If the image contains tones similar to a callout’s background, the callout gets buried. A `callout.info` (blue) on a blue-tinted photograph is nearly invisible.
-- **Cover / dark-background slides**: Light-colored callouts may work, but always verify that the text inside the callout also has sufficient contrast against the callout’s own background.
-
-### Universal Contrast Checklist
-
-Before finalizing any slide, ask yourself:
-
-1. **What is the single most important element on this slide?** Define the emphasis target explicitly.
-2. **Does that element have a background color or strong visual treatment?** (`callout.*`, highlighted boxes, badges, color blocks, etc.)
-3. **What is directly behind or around that element?** (column cards, background images, full-slide color overlays, other callouts.)
-4. **Are the colors (or tones) of the element and its surroundings the same or similar?** If yes, the emphasis is lost.
-5. **What is the simplest change that restores contrast?** Options include:
-   - Switch to a layout class without background colors (e.g., `split-2` instead of `cols-2`).
-   - Move the emphasized element outside the colored container.
-   - Change the callout type to one with a contrasting color (e.g., `callout.warning` or `callout.danger` instead of `callout.info`).
-   - Add a border, shadow, or opaque overlay between the background and the element.
-
-### Anti-Patterns to Avoid
-
-These are specific instances of the universal rule. Whenever a new class is introduced, evaluate it through the same lens.
-
-- **Do NOT** place a `callout.info` inside a `cols-2` or `cols-3` column. The callout and the column card share the same pale primary background.
-- **Do NOT** place any pale-background callout on top of a background image with matching tones without an overlay or border.
-- **Do NOT** assume that because two classes are documented separately, they are visually compatible when combined. Always mentally overlay them.
-
-### Decision Guide
-
-Use this reasoning flow for any class combination, now or in the future:
-
-| Situation | Question to Ask | Typical Fix |
-|-----------|----------------|-------------|
-| Layout with column cards + callout | Do the column and callout share a background color? | Use a split layout (no column background) or choose a callout with a contrasting color. |
-| Background image + callout | Does the image contain tones similar to the callout background? | Add a dark overlay, move the callout to a neutral area, or pick a callout with a strongly contrasting color. |
-| Multiple callouts on one slide | Do any two callouts have colors that clash or blend? | Space them apart; avoid placing similar-toned callouts adjacent to each other. |
-| New class + existing callout | Does the new class apply a background color to the same region as the callout? | Preview and compare the rendered hex codes or visual tones. If they are within ~15% luminance, change one of them. |
-
----
+- **DO NOT** place `callout.info` inside `cols-2`/`cols-3` (same pale background)
+- **DO NOT** place pale callouts on matching-tone background images
+- **DO NOT** assume documented classes are visually compatible
 
 ## 9. Export & Delivery
 
 ### Export via Marp CLI
 
 ```powershell
-# HTML (default)
+# HTML
 npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md -o output.html
 
-# PDF (requires Chrome/Edge/Firefox installed)
+# PDF
 npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md -o output.pdf
 
 # PowerPoint
@@ -661,43 +329,19 @@ npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md -o outp
 
 # PNG images (all slides)
 npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md --images png
-
-# First slide only (for thumbnails/OGP)
-npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md --image png
 ```
 
-### Export via VSCode
-
-1. Open the Markdown file in VSCode
-2. Click the Marp icon in the toolbar
-3. Select "Export slide deck..."
-4. Choose format: HTML / PDF / PPTX / PNG / JPEG
-
-### PDF-Specific Options
+### PDF Options
 
 ```powershell
-# Add presenter notes as PDF annotations
+# With presenter notes
 npx -y @marp-team/marp-cli --no-stdin --pdf-notes slides.md -o output.pdf
 
-# Add PDF bookmarks/outlines
+# With bookmarks
 npx -y @marp-team/marp-cli --no-stdin --pdf-outlines slides.md -o output.pdf
 ```
 
----
-
 ## Quick Reference: Common Patterns
-### 7.1 SVG Icons and Images
-
-After drafting all slides, review every slide for unnatural empty space or text-only layouts. Any such slide MUST have an icon or visual element added before the task is considered complete.
-
-When a slide has unnatural empty space or a concept is better explained visually, use an icon from the `marp-svg-icon-placer` skill catalog, or create a custom SVG and place it in the `assets/` directory.
-
-- **Usage Cases**:
-  - Filling large empty areas that make the slide look unbalanced.
-  - Representing abstract concepts with simple icons.
-  - Creating custom illustrations that match the theme's color palette.
-- **Organization**: Always store generated assets in the `assets/` folder relative to the markdown file.
-- **Icon Source**: Always activate the `marp-svg-icon-placer` skill before selecting or copying icons. That skill contains the full catalog, copy script usage, and placement guidelines.
 
 ### Cover Slide
 ```markdown
@@ -706,11 +350,9 @@ When a slide has unnatural empty space or a concept is better explained visually
 <!-- _header: "" -->
 <!-- _footer: "" -->
 
-# Presentation Title
-
-## Subtitle Goes Here
-
-Author Name | Department | Date
+# Title
+## Subtitle
+Author | Date
 ```
 
 ### Section Divider
@@ -719,44 +361,34 @@ Author Name | Department | Date
 <!-- _header: "" -->
 <!-- _footer: "" -->
 
-> Key Takeaway Statement
-
-Supporting context below the main message.
+> Key Takeaway
 ```
 
 ### Two-Column Layout
 ```markdown
 <!-- _class: cols-2 -->
 
-# Comparison
-
 <div class="columns">
 <div class="col">
 
-### Option A
-
-- Point 1
-- Point 2
+### Left
+Content
 
 </div>
 <div class="col">
 
-### Option B
-
-- Point 1
-- Point 2
+### Right
+Content
 
 </div>
 </div>
 ```
 
-### Image + Text (Split Background)
+### Image + Text Split
 ```markdown
-# Topic Title
-
 ![bg right:45%](image.jpg)
 
+# Title
 - Point 1
 - Point 2
-- Point 3
 ```

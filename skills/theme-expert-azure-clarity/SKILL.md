@@ -5,226 +5,143 @@ description: A skill for maximizing the use of the Azure Clarity theme (for Marp
 
 # Azure Clarity Theme Expert
 
-This skill provides guidelines for appropriately using the classes and layout patterns provided by the custom Marp theme "Azure Clarity" to create beautiful and effective slides.
+This skill provides guidelines for using the Azure Clarity theme's classes and layout patterns to create professional business presentations.
 
-It assumes you already understand the basics of Marp and slide structure, and focuses specifically on **"how to utilize features unique to this theme."**
+## Basic Principles
 
-## 🎯 Basic Principles
+Apply optimal CSS classes (`<!-- _class: ... -->`) according to the slide's intent. The theme enables rich layouts beyond plain Markdown.
 
-In the Azure Clarity theme, the most important thing is to apply the optimal CSS classes (`<!-- _class: ... -->`) or HTML structures according to the slide's intent (use case). You can easily achieve rich layouts that cannot be expressed with plain Markdown alone.
-
----
-
-## 📐 Guide by Layout and Use Case
+## Layout Guide by Use Case
 
 ### 1. Cover / Title Slide
-The "face" of your presentation. A blue gradient is applied to the background.
+- **Classes**: `<!-- _class: cover subtitle meta -->`
+- **Directives**: `<!-- _paginate: false -->`, `<!-- _header: "" -->`, `<!-- _footer: "" -->`
+- **Features**: Blue gradient background, H1 = main title, H2 = subtitle, paragraph = badge-style meta
 
-- **Classes to use**: `<!-- _class: cover subtitle meta -->`
-- **Concurrent directives**: `<!-- _paginate: false -->`, `<!-- _header: "" -->`, `<!-- _footer: "" -->`
-- **Features**:
-  - `#` (H1) becomes the main title.
-  - `##` (H2) is emphasized as a subtitle (effect of the `subtitle` class).
-  - Paragraph text like presenter info is decorated like a badge (effect of the `meta` class).
+### 2. Table of Contents
+- **Many items**: `<!-- _class: toc -->` (2-column auto-layout)
+- **Few items (4-5)**: `<!-- _class: toc-focus -->` (large numbered single column)
 
-### 2. Table of Contents / Agenda
-Choose between two designs depending on the number of items.
+### 3. Column Layouts
 
-- **Many items (Standard)**: `<!-- _class: toc -->`
-  - Bullet points are automatically arranged in 2 columns.
-- **Few items (about 4-5)**: `<!-- _class: toc-focus -->`
-  - Becomes a stylish list with large, emphasized numbers in a single column.
+**Card Type (with background/border)**:
+- **2 Columns**: `<!-- _class: cols-2 -->`
+- **3 Columns**: `<!-- _class: cols-3 -->`
+- **Structure**:
+  ```html
+  <div class="columns">
+    <div class="col">Content 1</div>
+    <div class="col">Content 2</div>
+  </div>
+  ```
 
-### 3. Information Comparison / Parallel Expression (Column Layout)
-When placing multiple elements side by side, use different classes depending on whether you want a background/border.
-
-- **Card Type (with background and border)**:
-  - **2 Columns**: `<!-- _class: cols-2 -->`
-  - **3 Columns**: `<!-- _class: cols-3 -->`
-  - **Structure**:
-    ```html
-    <div class="columns">
-      <div class="col">Content 1</div>
-      <div class="col">Content 2</div>
-    </div>
-    ```
-- **Simple Type (no background or border)**: Best for placing a table next to text.
-  - **2 Columns**: `<!-- _class: split-2 -->`
-  - **3 Columns**: `<!-- _class: split-3 -->`
-  - **Structure**: Use a simple `<div>` instead of `<div class="col">`.
+**Simple Type (no background)**:
+- **2 Columns**: `<!-- _class: split-2 -->`
+- **3 Columns**: `<!-- _class: split-3 -->`
+- **Structure**: Use plain `<div>` instead of `<div class="col">`
 
 ### 4. 4-Quadrant Matrix
-Used for SWOT analysis, priority matrices, etc.
-
-- **Class to use**: `<!-- _class: grid-quadrant -->`
+- **Class**: `<!-- _class: grid-quadrant -->`
 - **Structure**:
   ```html
   <div class="grid">
-    <div class="cell">Quadrant 1 content</div>
-    <div class="cell">Quadrant 2 content</div>
-    <div class="cell">Quadrant 3 content</div>
-    <div class="cell">Quadrant 4 content</div>
+    <div class="cell">Q1</div>
+    <div class="cell">Q2</div>
+    <div class="cell">Q3</div>
+    <div class="cell">Q4</div>
   </div>
   ```
-- **Combining Images and Text**: If you want to split left/right within a quadrant, use `<div class="cell side">`.
+- **Side-image cell**: `<div class="cell side">` for image + text
 
-### 4-2. Sharp Grid (Border-Only Grid)
-A minimalist grid layout with borders only and no background colors.
-
-- **Class to use**: `<!-- _class: grid-sharp -->`
+### 4-2. Sharp Grid (Border-Only)
+- **Class**: `<!-- _class: grid-sharp -->`
 - **Structure**: Same as `grid-quadrant`
-  ```html
-  <div class="grid">
-    <div class="cell">Cell 1 content</div>
-    <div class="cell">Cell 2 content</div>
-    <div class="cell">Cell 3 content</div>
-    <div class="cell">Cell 4 content</div>
-  </div>
-  ```
-- **Features**:
-  - Transparent background with border-only design
-  - Clean, professional appearance
-  - Ideal for technical diagrams or minimalist presentations
+- **Features**: Transparent background, border-only, minimalist
 
-### 5. Information Density Control (High-Density Slides)
-Used when you need to pack a lot of information into one slide, such as system configurations or requirement definitions.
+### 5. Information Density Control
+- **Slightly dense (20px)**: `<!-- _class: dense -->`
+- **Very dense (17px)**: `<!-- _class: extra-dense -->`
 
-- **Slightly high (Font size 20px)**: `<!-- _class: dense -->`
-- **Very high / Design details (Font size 17px)**: `<!-- _class: extra-dense -->`
-  - Ideal for handouts that serve as documentation.
+### 5-2. Fine-Grained Font Scale
+Use `<style scoped>` with `--font-scale` CSS variable:
 
-### 5-2. Fine-Grained Font Scale Adjustment
-For precise control over font sizes, use the `--font-scale` CSS variable with `<style scoped>` tags.
+```markdown
+<style scoped>
+section { --font-scale: 0.85; }
+</style>
+```
 
-- **Correct Usage**:
-  ```markdown
-  <style scoped>
-  section {
-    --font-scale: 0.85;
-  }
-  </style>
-  ```
-- **IMPORTANT**: Do NOT use `<!-- _style: "..." -->` directive — it does not work for CSS variables. Always use `<style scoped>` tags.
-- **Available range**: `0.7` (very small) to `1.0` (default)
-- **Common values**:
-  - `0.95`: Slightly smaller
-  - `0.9`: Moderately smaller
-  - `0.85`: Equivalent to `dense` class
-  - `0.75`: Equivalent to `extra-dense` class
-  - `0.7`: Maximum compression
-- **Note**: This affects all text elements (headings, paragraphs, lists, tables) proportionally. Use this when predefined `dense` or `extra-dense` classes don't provide the exact size you need.
+**Available range**: `0.7` (very small) to `1.0` (default)
+**Common values**: `0.95`, `0.9`, `0.85` (≈dense), `0.75` (≈extra-dense), `0.7`
 
-### 6. Profile / Self-Introduction Slide
-Used for presenter introductions or team member profiles.
+**⚠️ IMPORTANT**: Do NOT use `<!-- _style: "..." -->` directive — it doesn't work for CSS variables.
 
-- **Class to use**: `<!-- _class: profile -->`
-- **Structure**: Wrap the entire content in `<div class="profile-layout">`, then split into `<div class="profile-image">` (left) and `<div class="profile-content">` (right).
+### 6. Profile / Self-Introduction
+- **Class**: `<!-- _class: profile -->`
+- **Structure**:
   ```html
   <div class="profile-layout">
     <div class="profile-image">
-      ![](path/to/photo.jpg)
-      Optional caption
+      ![](photo.jpg)
     </div>
     <div class="profile-content">
-
   # Name
-  ## Title / Role
-
-  - Career item 1
-  - Career item 2
+  ## Role
+  - Career items
     </div>
   </div>
   ```
-- **Features**:
-  - Profile photo is automatically displayed as a circle (200×200px).
-  - `h1` renders as a large name (32px, no underline).
-  - `h2` renders as a subdued role/title in primary color (18px).
-  - `ul` is slightly smaller (19px) for a clean list of career items.
 
-### 7. Appealing with a Strong Message
-Used when you want to convey a single message powerfully across the entire slide.
+### 7. Key Message
+- **Class**: `<!-- _class: key-message no-pagination -->`
+- **Directives**: `<!-- _header: "" -->`, `<!-- _footer: "" -->`
+- **Structure**: Main message in `> blockquote`, supplementary in `p`
 
-- **Class to use**: `<!-- _class: key-message no-pagination -->`
-- **Concurrent directives**: `<!-- _header: "" -->`, `<!-- _footer: "" -->`
-- **Structure**: Write the main message in `> blockquote` and supplementary info in a normal paragraph `p`.
-
----
-
-## 🔧 Header / Footer / Pagination Utilities
-
-Control the visibility of header, footer, and page numbers per slide using these utility classes.
+## Header / Footer / Pagination Utilities
 
 | Class / Directive | Effect |
-|---|---|
-| `<!-- _class: no-header -->` | Hides the header on that slide |
-| `<!-- _class: no-footer -->` | Hides the footer on that slide |
-| `<!-- _class: no-pagination -->` | Hides the page number on that slide |
-| `<!-- _class: pagination-left -->` | Moves the page number to the bottom-left |
-| `<!-- _class: with-header -->` | Adds top padding (85px) to avoid content overlapping the header (use when `header` directive is set but the class isn't auto-detected) |
+|-------------------|--------|
+| `no-header` | Hide header |
+| `no-footer` | Hide footer |
+| `no-pagination` | Hide page number |
+| `pagination-left` | Move page number to bottom-left |
+| `with-header` | Add top padding (85px) for header |
 
-- These can be combined with other layout classes: `<!-- _class: cover no-pagination no-header no-footer -->`
-- `section:has(header)` and `section.with-header` both apply the same top-padding rule, so `with-header` is a fallback for environments that don't support `:has()`.
+Combine: `<!-- _class: cover no-pagination no-header no-footer -->`
 
----
+## Component Guide
 
-## 🧩 Guide by Component
-
-Simply by adding a class according to the slide's intent, standard Markdown elements are converted into rich components.
-
-### Process and Time-Series Expression
-Use ordered lists (`1. `, `2. `).
-
-- **Step Expression**: `<!-- _class: steps -->`
-  - Becomes side-by-side cards with badges like "STEP 1", "STEP 2". Ideal for implementation procedures.
-- **Timeline**: `<!-- _class: timeline -->`
-  - Suitable for expressing project history or roadmaps.
-  - **IMPORTANT**: The bold date/period and description text must be on the same line with a space between them.
-  - **Correct example**:
+### Process & Time-Series
+- **Steps**: `<!-- _class: steps -->` (ordered list → side-by-side cards with "STEP N" badges)
+- **Timeline**: `<!-- _class: timeline -->` (ordered list → vertical timeline)
+  - **IMPORTANT**: Bold date and description must be on same line:
     ```markdown
-    1. **2024年 Q1** プロジェクト発足、要件定義フェーズ開始
-    2. **2024年 Q3** プロトタイプ完成、ユーザーテスト実施
-    ```
-  - **Incorrect example** (line break after bold):
-    ```markdown
-    1. **2024年 Q1**
-    プロジェクト発足、要件定義フェーズ開始
-    2. **2024年 Q3**
-    プロトタイプ完成、ユーザーテスト実施
+    1. **2024 Q1** Project kickoff
+    2. **2024 Q3** Prototype complete
     ```
 
-### Presentation of Confirmation Items
-- **Checklist**: `<!-- _class: checklist -->`
-  - Unordered lists (`- `) are converted into a design with checkmarks.
+### Confirmation Items
+- **Checklist**: `<!-- _class: checklist -->` (unordered list → checkmarks)
 
-### Presentation of Schedules
-- **Timetable**: `<!-- _class: timetable -->`
-  - Standard Markdown tables become an easy-to-read schedule style (e.g., the first column is highlighted).
+### Schedules
+- **Timetable**: `<!-- _class: timetable -->` (table → highlighted first column)
 
-### Warning and Supplementary Information (Callouts)
-Used when you want to emphasize specific information within a slide.
+### Callouts
+```html
+<div class="callout info">
+  <h4>ℹ️ Information</h4>
+  Content
+</div>
+```
+**Types**: `info`, `success`, `warning`, `danger`
 
-- **Structure**:
-  ```html
-  <div class="callout info">
-    <h4>ℹ️ Information</h4>
-    Supplementary info or tips
-  </div>
-  ```
-- **Types**: `info` (Standard), `success` (Success/Completion), `warning` (Caution), `danger` (Warning/Deprecated)
+## Alignment & Images
 
----
+### Alignment
+- **Vertical**: `v-top`, `v-center`/`v-middle`, `v-bottom`
+- **Horizontal**: `text-left`, `text-center`, `text-right`
+- **Example**: `<div class="col v-center text-center">`
 
-## 🎨 Alignment and Image Adjustments
-
-### Alignment within Columns
-You can adjust the placement of text and content within columns.
-
-- **Example usage**: `<div class="col v-center text-center">`
-- **Vertical**: `v-top` (Top), `v-center` / `v-middle` (Center), `v-bottom` (Bottom)
-- **Horizontal**: `text-left` (Left), `text-center` (Center), `text-right` (Right)
-*Note: To center all content in the slide, specify `<!-- _class: v-center text-center -->`.
-
-### Image Placement and Shadows
-- **Centered + Drop Shadow**: `![center shadow width:600px](path)`
-- **Marp Standard Background Split (Coexistence of text and image)**: `![bg right:45% shadow](path)`
-  - One of the most frequently used layouts in business presentations. Beautifully place text on the left and an image on the right.
+### Images
+- **Centered + Shadow**: `![center shadow width:600px](path)`
+- **Background Split**: `![bg right:45% shadow](path)`

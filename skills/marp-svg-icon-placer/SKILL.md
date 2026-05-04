@@ -5,102 +5,85 @@ description: ALWAYS activate this skill when placing, copying, or selecting SVG 
 
 # Marp SVG Icon Placer
 
-This skill helps you appropriately place SVG icons into Marp presentations (`.md` files) to enhance visual appeal and communication without disrupting design consistency.
+This skill helps you appropriately place SVG icons into Marp presentations to enhance visual appeal without disrupting design consistency.
 
 ## 1. Select an Icon
-- Always refer to `references/svg-icons-catalog.md` (located in the skill's references directory) for a catalog of available icons.
-- Search for an icon that matches the semantic meaning of the content where it will be placed.
-- Inside the catalog, you will find the description, usage, and the path to the actual SVG file (e.g., `icons/target.svg`).
-- **DO NOT** modify the `svg-icons-catalog.md` file or the SVG files in the `icons/` directory. They are read-only catalogs for your reference.
+
+- Refer to `references/svg-icons-catalog.md` for available icons
+- Search for an icon matching the semantic meaning
+- Find description, usage, and path (e.g., `icons/target.svg`)
+- **DO NOT** modify catalog files or SVG files in `icons/` directory
 
 ## 2. Copy Icon to Slide Assets
 
-> **⚠️ IMPORTANT: Never use shell commands** (`Copy-Item`, `cp`, etc.) to copy icons. Use the Python script instead for cross-platform compatibility.
+> **⚠️ IMPORTANT: Never use shell commands** (`Copy-Item`, `cp`, etc.). Use the Python script for cross-platform compatibility.
 
 ### Using the Copy Script (Recommended)
 
 ```python
-# Copy specific icons to a project
+# Copy specific icons
 python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation lightbulb.svg gear.svg
 
-# Copy all icons to a project
+# Copy all icons
 python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation all
 
-# List all available icons
+# List available icons
 python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
 ```
 
-The script will:
-- Copy icons from `skills/marp-svg-icon-placer/references/icons/` to `slides/[project-name]/assets/`
-- Verify the project's assets directory exists
-- Handle file paths correctly on Windows, macOS, and Linux
+The script copies from `skills/marp-svg-icon-placer/references/icons/` to `slides/[project-name]/assets/`
 
 ### Manual Copy (Alternative)
 
-If you need to copy manually:
 - Source: `skills/marp-svg-icon-placer/references/icons/[icon-name].svg`
 - Target: `slides/[slide-name]/assets/[icon-name].svg`
-- If the `assets/` directory doesn't exist, create it first.
-- Example: Copy `references/icons/target.svg` → `slides/my-presentation/assets/target.svg`
+- Create `assets/` directory if needed
 
 ## 3. Customize the Icon (Optional)
 
-> **⚠️ IMPORTANT: Never edit SVG color attributes by hand with shell commands** (`sed`, `powershell -replace`, etc.). Use the Python script instead for cross-platform compatibility.
+> **⚠️ IMPORTANT: Never edit SVG colors with shell commands**. Use the Python script for cross-platform compatibility.
 
-### Changing Icon Colors with the Recolor Script (Recommended)
+### Recolor Script (Recommended)
 
 ```python
-# Recolor specific icons in a project
+# Recolor specific icons
 python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "#2563eb" lightbulb.svg gear.svg
 
-# Recolor all icons in a project
+# Recolor all icons
 python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "#ffffff" all
 
-# Reset to theme-driven color
+# Reset to theme color
 python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "currentColor" all
 
-# List SVG icons currently in the project's assets directory
+# List icons in project
 python skills/marp-svg-icon-placer/scripts/recolor-icons.py --list-assets my-presentation
 ```
 
-The script will:
-- Replace `fill` and `stroke` color values (both attribute-style and inline-style) in every targeted SVG
-- Operate only on copies inside `slides/[project-name]/assets/` — the catalog originals are never touched
-- Work identically on Windows, macOS, and Linux
-
 ### Manual Color Edit (Alternative)
-- If you need to customize the icon (color, size adjustments), edit the copied SVG file in the slide's `assets/` directory:
-  - **Size**: Modify `width` and `height` attributes in the SVG file itself.
-  - **Color**: Change `fill="currentColor"` to a specific color (e.g., `fill="#2563eb"`).
-- Keep the original icon in `references/icons/` unchanged for future reuse.
 
-## 4. Place the Icon — Placement Patterns
+Edit the copied SVG in `slides/[project-name]/assets/`:
+- **Size**: Modify `width` and `height` attributes
+- **Color**: Change `fill="currentColor"` to specific color (e.g., `fill="#2563eb"`)
+- Keep original in `references/icons/` unchanged
 
-Choosing the right placement pattern is critical. Use one of the approved patterns below based on the context:
+## 4. Placement Patterns
 
 ### Pattern A: Inline with Heading (most common)
-Place the icon as an image reference directly inside the heading text.
 
 ```markdown
-# Slide Title ![icon](./assets/target.svg)
+# Slide Title ![icon width:32px](./assets/target.svg)
 ```
 
-- Use `width:28px` or `width:36px` in the image syntax for standard headings: `![icon width:32px](./assets/target.svg)`
-- This is the **default pattern** for decorating slide titles.
+Use `width:28px` or `width:36px` for standard headings. This is the **default pattern**.
 
-### Pattern B: Inline with Subheading / List Item
-For icons inside `###` subheadings or list items, use standard image syntax.
+### Pattern B: Inline with Subheading / List
 
 ```markdown
 ### ![icon](./assets/lightbulb.svg) Section Title
-- ![icon](./assets/check.svg) List item with icon
+- ![icon width:1em](./assets/check.svg) List item
 ```
 
-- Add size if needed: `![icon width:1em](./assets/check.svg)`
-- The icon flows naturally inline with the text.
-
-### Pattern C: Large Centered Icon (feature/column cards)
-For column cards (`cols-2`, `cols-3`) where the icon is the visual centerpiece above text, place the image as a standalone element.
+### Pattern C: Large Centered Icon (feature cards)
 
 ```markdown
 <div class="col v-center text-center">
@@ -108,54 +91,49 @@ For column cards (`cols-2`, `cols-3`) where the icon is the visual centerpiece a
 ![icon width:48px](./assets/database.svg)
 
 ### Card Title
-Card description text here.
+Description text
 
 </div>
 ```
 
-- Use `width:48px` for feature card icons.
-- Place the image on its own line with blank lines above and below.
+Use `width:48px` for feature card icons. Place on its own line with blank lines.
 
-### Pattern D: Background Image with Text Overlay
+### Pattern D: Background Image
 
 > **⚠️ IMPORTANT: Do NOT use catalog icons for backgrounds**
 > 
-> Icons from this catalog are NOT suitable for `bg` usage or any large-scale display that covers more than 30% of the slide area. For backgrounds and large decorative images:
-> - Create them using `.drawio.svg` format instead
-> - If that's not feasible, ask the user to provide appropriate background images
-> - Catalog icons are designed for small inline/decorative use only
+> Catalog icons are NOT suitable for `bg` usage or large-scale display (>30% of slide area). For backgrounds:
+> - Create them using `.drawio.svg` format
+> - Ask user to provide appropriate background images
+> - Catalog icons are for small inline/decorative use only
 
-For large decorative icons, use Marp's `bg` directive.
+For large decorative icons (if appropriate):
 
 ```markdown
 ![bg right:40% opacity:0.1](./assets/cloud-network.svg)
 
 # Slide with Background Icon
-Content here appears on the left while the icon serves as a subtle background element.
+Content on left
 ```
 
-- Adjust `opacity` to make the icon less prominent (typically `0.1` to `0.3`).
-- Use `left` or `right` to position the background icon.
+Adjust `opacity` to `0.1` to `0.3`. Use `left` or `right` positioning.
 
 ## 5. Generate New Icons (Fallback)
-- If the catalog does NOT contain a suitable icon for the requested concept, you must generate a new SVG icon.
-- **Design Consistency Constraints**:
-  - Must match the existing style in `references/icons/` (professional, clean, monotone).
-  - Set `width="1em"` and `height="1em"` by default.
-  - Set `fill="currentColor"`.
-  - Ensure the path data is clean and concise.
-- Save the new icon to both locations:
-  1. `references/icons/[icon-name].svg` (for the catalog)
-  2. `slides/[slide-name]/assets/[icon-name].svg` (for immediate use)
-- Add an entry to `references/svg-icons-catalog.md` following the existing format.
+
+If catalog lacks a suitable icon:
+- Generate new SVG matching existing style (professional, clean, monotone)
+- Set `width="1em"`, `height="1em"`, `fill="currentColor"`
+- Save to both:
+  1. `references/icons/[icon-name].svg` (catalog)
+  2. `slides/[slide-name]/assets/[icon-name].svg` (immediate use)
+- Add entry to `references/svg-icons-catalog.md`
 
 ## 6. Self-Review Checklist
-After placing icons, verify each slide:
 
-- [ ] All icon SVG files are copied to the slide's `assets/` directory
+- [ ] All icon SVG files copied to slide's `assets/` directory
 - [ ] Icon references use correct relative paths (e.g., `./assets/icon-name.svg`)
 - [ ] Icons in headings use appropriate size (e.g., `width:32px`)
-- [ ] Icons in column cards are properly sized (typically `width:48px`)
-- [ ] Icon colors match the theme (customize in the SVG file if needed)
-- [ ] The `assets/` directory is created if it didn't exist
-- [ ] Markdown remains clean and readable without embedded SVG code
+- [ ] Icons in column cards properly sized (typically `width:48px`)
+- [ ] Icon colors match theme (customize if needed)
+- [ ] `assets/` directory created if didn't exist
+- [ ] Markdown remains clean without embedded SVG code
