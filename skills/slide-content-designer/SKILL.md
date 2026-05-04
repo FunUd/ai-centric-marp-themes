@@ -1,13 +1,15 @@
 ---
 name: slide-content-designer
-description: Activate this skill at the START of a new presentation project, before any slides are written. Use when the user wants to plan, outline, or structure a presentation — defining the audience, core message, slide count, and section flow. This skill covers the content design phase only. Once the outline is approved, hand off to marp-slide-creator for Markdown implementation.
+description: Activate this skill at the START of any slide creation or editing task, before any slides are written. Use whenever the user wants to plan, outline, structure, revise, or review a presentation, including cases where the audience, theme, format, time limit, or other presentation details are unclear. This skill covers the content design phase only. Once the outline is approved, hand off to marp-slide-creator for Markdown implementation.
 ---
 
 # Slide Content Designer
 
 This skill provides a structured workflow for creating high-quality presentation slides, focusing on the planning and structuring phase.
 
-Use this skill when a user wants to create a presentation, outline a talk, or needs help figuring out what to say in their slides.
+Use this skill whenever a user wants to create or edit a presentation, outline a talk, review slide structure, or needs help figuring out what to say in their slides.
+
+If the presentation details are incomplete or unclear, load this skill first and use it to clarify the audience, theme, format, slide count, and allotted time before drafting.
 
 > **Note:** This skill focuses on *content, structure, and design principles*. For Marp-specific Markdown generation, use `marp-slide-creator` after the outline is finalized.
 
