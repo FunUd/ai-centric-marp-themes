@@ -1,5 +1,5 @@
 ---
-name: warm-sunnyday-theme-expert
+name: theme-expert-warm-sunnyday
 description: A skill for maximizing the use of the Warm Sunnyday theme (for Marp) to create friendly, approachable presentations for self-introductions, icebreakers, and casual chats. Trigger this skill when the user wants to design or modify slides for informal settings using the Warm Sunnyday theme.
 ---
 

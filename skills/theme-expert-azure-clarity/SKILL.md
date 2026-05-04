@@ -1,5 +1,5 @@
 ---
-name: azure-clarity-theme-expert
+name: theme-expert-azure-clarity
 description: A skill for maximizing the use of the Azure Clarity theme (for Marp) to create and layout professional business presentations. Trigger this skill when the user wants to design, modify, or optimize slides using the Azure Clarity theme, or when they want to beautifully present specific content (TOC, comparisons, schedules, etc.).
 ---
 
