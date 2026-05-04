@@ -291,6 +291,41 @@ After drafting, review for empty space. Add icons from `marp-svg-icon-placer` sk
 
 **Always activate `marp-svg-icon-placer` skill before selecting icons.**
 
+### Diagram Choice
+
+Use the simplest visual that communicates the idea clearly:
+
+1. Start with SVG icons for small accents, status markers, and lightweight labels.
+2. Use Mermaid when the slide needs a sequence, flow, state, or relationship diagram that can be expressed cleanly in code.
+3. Use `.drawio.svg` when Mermaid is too limited, when precise layout matters, or when the diagram needs richer shape control.
+4. If drawio still cannot represent it cleanly, or the quality is not good enough, ask the user to provide a source image.
+
+### Mermaid Diagrams
+
+Use Mermaid-style code blocks when a diagram is easier to read as structured text than as a hand-built graphic.
+
+```markdown
+<pre class="mermaid">
+sequenceDiagram
+    participant A as Client
+    participant B as Server
+
+    A->>B: HTTP request (GET /data)
+    B->>A: HTTP response (200 OK + JSON)
+</pre>
+```
+
+Good Mermaid use cases:
+- Sequence diagrams
+- Flowcharts
+- Simple state transitions
+- Dependency or relationship diagrams
+
+Prefer `.drawio.svg` instead when:
+- The diagram needs precise positioning or many cross-links
+- The slide must match a specific visual style
+- The diagram is too dense to read comfortably in Mermaid
+
 ### Editable Diagrams
 
 Use `.drawio.svg` format for complex diagrams (architecture, workflows).

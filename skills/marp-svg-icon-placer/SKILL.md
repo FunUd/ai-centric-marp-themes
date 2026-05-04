@@ -102,7 +102,7 @@ Use `width:48px` for feature card icons. Place on its own line with blank lines.
 
 > **⚠️ IMPORTANT: Do NOT use catalog icons for backgrounds**
 > 
-> Catalog icons are NOT suitable for `bg` usage or large-scale display (>30% of slide area). For backgrounds:
+> Catalog icons are NOT suitable for `bg` usage or large-scale display (>30% of slide area). For large visuals, hero art, or backgrounds:
 > - Create them using `.drawio.svg` format
 > - Ask user to provide appropriate background images
 > - Catalog icons are for small inline/decorative use only
