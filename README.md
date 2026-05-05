@@ -265,8 +265,6 @@ If the deck will be exported to PDF or PPTX, design to the static slide canvas f
 5. Theme-specific layout polish is needed -> pick one matching `theme-expert-*` skill after the theme is known
 6. Generic Marp layout mechanics are needed -> open `theme-expert-common` only for the shared class reference
 
-Edit `skills/` as the source of truth, then run `python sync-skills.py` to mirror the changes into `.codex/`, `.agent/`, `.windsurf/`, and `.kiro/`.
-
 ---
 
 ## Sample Slides
