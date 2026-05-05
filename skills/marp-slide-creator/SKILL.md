@@ -285,6 +285,13 @@ section table { font-size: 16px; }
 
 ## 6. Quality Checklist
 
+Structure (verify before preview):
+- [ ] Container classes have required wrapper divs (`columns`, `grid`, `profile-layout`)
+- [ ] Column layouts use `<div class="col">` or `<div>` for each column
+- [ ] Grid layouts have exactly 4 `<div class="cell">` children
+- [ ] Inline classes (`badge`, `gradient-text`) use `<span>`, not `<div>`
+- [ ] Alignment classes (`v-center`) applied to column divs, not `_class` directive
+
 Layout:
 - [ ] No text overflow/cutoff
 - [ ] No scroll-dependent code, Mermaid, or table regions in PDF/PPTX decks

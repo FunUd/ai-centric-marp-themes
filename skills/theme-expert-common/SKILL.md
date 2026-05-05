@@ -8,6 +8,19 @@ description: Shared Marp layout reference for theme-expert-* skills. Read this o
 This file contains shared Marp layout mechanics that are reused across the theme-specific skills.
 Load it only when you need the generic class syntax or when a theme skill explicitly points here.
 
+## Critical Structure Rules
+
+**Container classes require proper nesting. Missing wrapper divs will break layout:**
+
+- `callout` → Must wrap individual blocks, not entire slides
+- `cols-2/3`, `split-2/3` → Requires `<div class="columns">` + child `<div class="col">` or `<div>`
+- `grid-quadrant/sharp` → Requires `<div class="grid">` + 4× `<div class="cell">`
+- `profile` → Requires `<div class="profile-layout">` + `profile-image` + `profile-content`
+- Inline classes (`badge`, `gradient-text`) → Use `<span>`, not `<div>`
+- Alignment (`v-center`, `text-center`) → Apply to column divs, not slide-level `_class`
+
+**When in doubt, check `slides/sample-slide/` for correct structure.**
+
 ## Shared Patterns
 
 ### Cover / Title
