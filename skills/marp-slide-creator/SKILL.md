@@ -90,6 +90,22 @@ Apply to current slide only. Prefix with `_`:
 | `_header` | Override header | `<!-- _header: "" -->` |
 | `_footer` | Override footer | `<!-- _footer: "" -->` |
 
+### ⚠️ List Alignment in Centered-Layout Classes
+
+Several classes apply `text-align: center` to the entire slide section, which causes bullet lists to render centered instead of left-aligned:
+
+**Affected classes:** `cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`
+
+**Rule:** Do not place bullet lists (`-` or `*`) or numbered lists on slides that use these classes. Lists belong on content slides with the default (left-aligned) layout.
+
+If you must include a list on a centered-layout slide, override alignment with scoped CSS:
+
+```markdown
+<style scoped>
+section ul, section ol { text-align: left; }
+</style>
+```
+
 ### Presenter Notes
 
 ```markdown
@@ -212,6 +228,7 @@ Priority order (most design-friendly first):
 - Remove redundancy
 - Stick to "1 slide = 1 message"
 - Use active voice
+- Move lists off centered-layout slides (`cover`, `key-message`, etc.) — lists on those slides render centered, not left-aligned
 
 ### 5.2 Per-Slide Font Size
 ```markdown
@@ -273,7 +290,7 @@ Layout:
 - [ ] No scroll-dependent code, Mermaid, or table regions in PDF/PPTX decks
 - [ ] Images don't overlap text
 - [ ] Consistent margins
-- [ ] Lists are left-aligned (not centered)
+- [ ] Lists are left-aligned (not centered) — if centered, the slide likely uses a `cover`, `key-message`, or `align-center` class; either move the list to a content slide or add `<style scoped> section ul, section ol { text-align: left; } </style>`
 
 Typography:
 - [ ] Clear heading hierarchy
