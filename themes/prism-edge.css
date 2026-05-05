@@ -259,13 +259,14 @@ section table thead th:last-child {
 section table tbody td {
   padding: 10px 16px;
   border-bottom: 1px solid var(--pe-border-light);
+  background: var(--pe-white);
 }
 
-section table tbody tr:nth-child(even) {
-  background: var(--pe-primary-pale);
+section table tbody tr:nth-child(even) td {
+  background: var(--pe-bg);
 }
 
-section table tbody tr:hover {
+section table tbody tr:hover td {
   background: var(--pe-primary-light);
 }
 
