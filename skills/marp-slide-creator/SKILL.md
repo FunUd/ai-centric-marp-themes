@@ -157,7 +157,7 @@ If you want the same overflow check from the terminal, use the helper script:
 python skills/marp-slide-creator/scripts/marp-diagnostics.py slides/my-deck/my-deck.md
 ```
 
-This helper exports `slides/my-deck/assets/preview.html`, runs the DOM extractor, and writes `slides/my-deck/assets/dom-metrics.json`.
+This helper exports `slides/my-deck/preview.html`, runs the DOM extractor, and writes `slides/my-deck/assets/dom-metrics.json`.
 
 ### Workflow
 
@@ -177,12 +177,12 @@ If you already have a rendered HTML file, skip the export step and run the extra
 
 **Step 1: Export HTML**
 ```powershell
-npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/assets/preview.html
+npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/preview.html
 ```
 
 **Step 2: Run DOM Extractor**
 ```powershell
-python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/assets/preview.html -o slides/my-deck/assets/dom-metrics.json
+python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/preview.html -o slides/my-deck/assets/dom-metrics.json
 ```
 
 **Step 3: Analyze JSON**

@@ -217,6 +217,7 @@ ai-centric-marp-themes/
 │   │   └── scripts/
 │   │       └── marp-dom-extractor.py  # Playwright DOM metrics extractor for text-only AI review
 │   ├── marp-svg-icon-placer/SKILL.md
+│   ├── theme-expert-common/SKILL.md
 │   ├── theme-expert-prism-edge/SKILL.md
 │   ├── slide-content-designer/SKILL.md
 │   └── theme-expert-warm-sunnyday/SKILL.md
@@ -237,6 +238,7 @@ Use the smallest set of skills that fully covers the task:
 3. SVG icons need to be selected, copied, or recolored -> `marp-svg-icon-placer`
 4. One domain-specific presentation type is involved -> pick one matching `slide-expert-*` skill
 5. Theme-specific layout polish is needed -> pick one matching `theme-expert-*` skill after the theme is known
+6. Generic Marp layout mechanics are needed -> open `theme-expert-common` only for the shared class reference
 
 Edit `skills/` as the source of truth, then run `python sync-skills.py` to mirror the changes into `.codex/`, `.agent/`, `.windsurf/`, and `.kiro/`.
 

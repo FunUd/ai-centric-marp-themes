@@ -4,13 +4,18 @@ Extract per-slide DOM metrics from Marp-generated HTML files.
 This enables text-only AI models to detect layout risks (overflow, element positioning,
 hidden content) without requiring image parsing.
 
-Requires: playwright (pip install playwright)
+When Playwright is available, the extractor uses browser layout metrics for
+accurate overflow detection. Otherwise it falls back to a heuristic parser that
+still catches density and image risks.
 """
 
+from __future__ import annotations
+
 import argparse
+import html
 import json
 import math
-import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,13 +23,67 @@ from typing import Any
 try:
     from playwright.sync_api import sync_playwright
 except ImportError:
-    print("Error: playwright is not installed.")
-    print("Install it with: pip install playwright")
-    print("Then install browsers: playwright install chromium")
-    sys.exit(1)
+    sync_playwright = None
 
 
-def extract_slide_metrics(html_path: Path) -> list[dict[str, Any]]:
+SECTION_RE = re.compile(r"<section\b([^>]*)>(.*?)</section>", re.S | re.I)
+IMG_RE = re.compile(r"<img\b([^>]*)>", re.I)
+TAG_RE = re.compile(r"<[^>]+>")
+SCRIPT_STYLE_RE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.S | re.I)
+BLOCK_BREAK_RE = re.compile(
+    r"</(?:p|div|li|ul|ol|table|thead|tbody|tr|th|td|h[1-6]|header|footer|blockquote|pre|figure|section)>",
+    re.I,
+)
+BR_RE = re.compile(r"<br\s*/?>", re.I)
+ATTR_RE = re.compile(r"""([^\s=/>]+)(?:=(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?""")
+
+
+def parse_attrs(raw: str) -> dict[str, str]:
+    attrs: dict[str, str] = {}
+    for match in ATTR_RE.finditer(raw):
+        key = match.group(1).lower()
+        value = next((group for group in match.groups()[1:] if group is not None), "")
+        attrs[key] = value
+    return attrs
+
+
+def text_from_html(fragment: str) -> str:
+    fragment = SCRIPT_STYLE_RE.sub("", fragment)
+    fragment = BR_RE.sub("\n", fragment)
+    fragment = BLOCK_BREAK_RE.sub("\n", fragment)
+    fragment = TAG_RE.sub("", fragment)
+    fragment = html.unescape(fragment)
+
+    lines: list[str] = []
+    for line in fragment.splitlines():
+        line = re.sub(r"\s+", " ", line).strip()
+        if line:
+            lines.append(line)
+
+    return "\n".join(lines)
+
+
+def parse_slide_size(attrs: dict[str, str]) -> tuple[int, int]:
+    style = attrs.get("style", "")
+    width_match = re.search(r"width\s*:\s*(\d+)px", style)
+    height_match = re.search(r"height\s*:\s*(\d+)px", style)
+    width = int(width_match.group(1)) if width_match else 1280
+    height = int(height_match.group(1)) if height_match else 720
+    return width, height
+
+
+def is_remote_src(src: str) -> bool:
+    return src.startswith(("http://", "https://", "data:"))
+
+
+def local_image_exists(html_path: Path, src: str) -> bool:
+    candidate = Path(src)
+    if candidate.is_absolute():
+        return candidate.exists()
+    return (html_path.parent / src).exists()
+
+
+def extract_slide_metrics_browser(html_path: Path) -> list[dict[str, Any]]:
     """Load a Marp HTML file and extract per-slide metrics using Playwright."""
     absolute_path = html_path.resolve().as_posix()
     file_url = f"file:///{absolute_path}"
@@ -121,6 +180,7 @@ def extract_slide_metrics(html_path: Path) -> list[dict[str, Any]]:
             results.append(
                 {
                     "slide": idx,
+                    "analysis_mode": "browser",
                     "slide_size": {"width": slide_w, "height": slide_h},
                     "metrics": {
                         "char_count": char_count,
@@ -136,6 +196,67 @@ def extract_slide_metrics(html_path: Path) -> list[dict[str, Any]]:
         browser.close()
 
     return results
+
+
+def extract_slide_metrics_heuristic(html_path: Path) -> list[dict[str, Any]]:
+    """Extract per-slide metrics without Playwright using text heuristics."""
+    html_text = html_path.read_text(encoding="utf-8", errors="ignore")
+    results: list[dict[str, Any]] = []
+
+    for idx, match in enumerate(SECTION_RE.finditer(html_text), start=1):
+        attrs = parse_attrs(match.group(1))
+        inner_html = match.group(2)
+        slide_w, slide_h = parse_slide_size(attrs)
+
+        text_content = text_from_html(inner_html)
+        char_count = len(text_content)
+        line_count = text_content.count("\n") + 1 if text_content.strip() else 0
+
+        flags: list[str] = []
+        elements: list[dict[str, Any]] = []
+        image_count = 0
+
+        for img_match in IMG_RE.finditer(inner_html):
+            image_count += 1
+            img_attrs = parse_attrs(img_match.group(1))
+            src = img_attrs.get("src", "")
+            if not src:
+                flags.append("IMAGE_NO_SRC: <img> without src")
+            elif not is_remote_src(src) and not local_image_exists(html_path, src):
+                flags.append(f"IMAGE_BROKEN: {src[:40]}")
+
+        if char_count > 600:
+            flags.append(f"DENSE_TEXT: {char_count} chars may overflow")
+        if line_count > 20:
+            flags.append(f"MANY_LINES: {line_count} lines may overflow")
+        if char_count > 900 or line_count > 24:
+            flags.append("CONTENT_OVERFLOW: heuristic density suggests overflow risk")
+
+        results.append(
+            {
+                "slide": idx,
+                "analysis_mode": "heuristic",
+                "slide_size": {"width": slide_w, "height": slide_h},
+                "metrics": {
+                    "char_count": char_count,
+                    "line_count": line_count,
+                    "element_count": len(elements),
+                    "image_count": image_count,
+                },
+                "elements": elements,
+                "risk_flags": flags,
+            }
+        )
+
+    return results
+
+
+def extract_slide_metrics(html_path: Path) -> list[dict[str, Any]]:
+    """Extract per-slide metrics, using browser metrics when available."""
+    if sync_playwright is None:
+        return extract_slide_metrics_heuristic(html_path)
+
+    return extract_slide_metrics_browser(html_path)
 
 
 def main() -> None:

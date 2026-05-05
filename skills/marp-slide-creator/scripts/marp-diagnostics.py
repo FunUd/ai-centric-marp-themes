@@ -12,35 +12,70 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 EXTRACTOR_SCRIPT = SCRIPT_DIR / "marp-dom-extractor.py"
-DEFAULT_MARP_FALLBACK = ["npx", "-y", "@marp-team/marp-cli"]
+
+
+def resolve_executable(name: str) -> str | None:
+    """Resolve a runnable executable path for the current platform."""
+    candidates = [name]
+    if os.name == "nt" and not Path(name).suffix:
+        candidates.extend([f"{name}.cmd", f"{name}.exe", f"{name}.bat"])
+
+    for candidate in candidates:
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+
+    path = Path(name)
+    if path.exists():
+        return str(path)
+
+    return None
 
 
 def resolve_default_outputs(markdown_path: Path) -> tuple[Path, Path]:
     assets_dir = markdown_path.parent / "assets"
     assets_dir.mkdir(parents=True, exist_ok=True)
-    return assets_dir / "preview.html", assets_dir / "dom-metrics.json"
+    return markdown_path.parent / "preview.html", assets_dir / "dom-metrics.json"
 
 
-def run_command(command: list[str]) -> None:
-    subprocess.run(command, check=True)
+def run_command(command: list[str], env: dict[str, str] | None = None) -> None:
+    subprocess.run(command, check=True, env=env)
+
+
+def npm_cache_env() -> dict[str, str]:
+    env = os.environ.copy()
+    if os.name == "nt":
+        cache_dir = Path(r"C:\tmp\npm-cache")
+    else:
+        cache_dir = Path(tempfile.gettempdir()) / "npm-cache"
+
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    env["npm_config_cache"] = str(cache_dir)
+    return env
 
 
 def export_html(markdown_path: Path, html_path: Path, marp_bin: str) -> list[str]:
-    primary = [marp_bin, "--no-stdin", str(markdown_path), "-o", str(html_path)]
+    primary_bin = resolve_executable(marp_bin) or marp_bin
+    primary = [primary_bin, "--no-stdin", str(markdown_path), "-o", str(html_path)]
     try:
-        run_command(primary)
+        primary_env = npm_cache_env() if Path(primary_bin).name.lower().startswith("npx") else None
+        run_command(primary, env=primary_env)
         return primary
     except FileNotFoundError:
-        fallback = [*DEFAULT_MARP_FALLBACK, "--no-stdin", str(markdown_path), "-o", str(html_path)]
-        run_command(fallback)
+        fallback_bin = resolve_executable("npx") or "npx"
+        fallback = [fallback_bin, "-y", "@marp-team/marp-cli", "--no-stdin", str(markdown_path), "-o", str(html_path)]
+        run_command(fallback, env=npm_cache_env())
         return fallback
 
 
@@ -56,6 +91,11 @@ def load_metrics(json_path: Path) -> list[dict[str, Any]]:
 def print_summary(metrics: list[dict[str, Any]], html_path: Path, json_path: Path) -> int:
     print(f"HTML written: {html_path}")
     print(f"Metrics written: {json_path}")
+
+    if metrics:
+        analysis_mode = str(metrics[0].get("analysis_mode") or "browser")
+        if analysis_mode == "heuristic":
+            print("Analysis mode: heuristic (Playwright unavailable, overflow checks are approximate).")
 
     risk_entries: list[tuple[int, list[str]]] = []
     for slide in metrics:
@@ -80,7 +120,7 @@ def main() -> int:
     parser.add_argument("markdown_file", help="Path to the Marp Markdown deck")
     parser.add_argument(
         "--html-out",
-        help="Path to the rendered HTML file (default: <deck>/assets/preview.html)",
+        help="Path to the rendered HTML file (default: <deck>/preview.html)",
     )
     parser.add_argument(
         "--json-out",
