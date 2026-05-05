@@ -233,7 +233,9 @@ ai-centric-marp-themes/
 
 Use the smallest set of skills that fully covers the task:
 
-1. Topic, audience, outline, or structure still unclear -> `slide-content-designer`
+If the deck will be exported to PDF or PPTX, design to the static slide canvas from the start. Do not rely on scrollable panels or clipped overflow.
+
+1. Topic, audience, output format, outline, or structure still unclear -> `slide-content-designer`
 2. Outline approved, or you need Marp Markdown, layout fixes, overflow checks, or export -> `marp-slide-creator`
 3. SVG icons need to be selected, copied, or recolored -> `marp-svg-icon-placer`
 4. One domain-specific presentation type is involved -> pick one matching `slide-expert-*` skill

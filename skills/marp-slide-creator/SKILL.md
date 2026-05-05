@@ -1,6 +1,6 @@
 ---
 name: marp-slide-creator
-description: Activate this skill when writing or editing Marp Markdown files after the outline is approved, or when the user wants to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX. This skill handles the implementation phase - Marp syntax, directives, image placement, diagnostics, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
+description: Activate this skill when writing or editing Marp Markdown files after the outline is approved, or when the user wants to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX with fully visible content. This skill handles the implementation phase - Marp syntax, directives, image placement, diagnostics, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
 ---
 
 # Marp Slide Creator
@@ -140,6 +140,9 @@ Presenter notes (only in presenter view)
 ![opacity:.5](image.jpg)
 ```
 
+> **Export-safe rule**
+> HTML scrollability is not a valid fallback for PDF/PPTX deliverables. If a code block, Mermaid diagram, table, or callout needs scrolling or clipping to stay readable, split it or redesign it.
+
 ## 4. Preview & Feedback Loop
 
 > **⚠️ MANDATORY: Preview confirmation is required, not optional.**
@@ -257,10 +260,17 @@ section table { font-size: 16px; }
 </style>
 ```
 
+### 5.8 Export-Safe Code and Diagrams
+- Avoid `overflow-x: auto`, clipped panes, or hidden scrollbars for content that must survive PDF/PPTX export.
+- Keep code examples short enough to fit on the slide; if not, split them across slides or move the full version to notes or an appendix.
+- Simplify Mermaid diagrams before shrinking them. If the diagram would need scrolling, switch to multiple slides or use `.drawio.svg`.
+- Prefer readable excerpts over tiny text that only works in browser preview.
+
 ## 6. Quality Checklist
 
 Layout:
 - [ ] No text overflow/cutoff
+- [ ] No scroll-dependent code, Mermaid, or table regions in PDF/PPTX decks
 - [ ] Images don't overlap text
 - [ ] Consistent margins
 - [ ] Lists are left-aligned (not centered)
@@ -319,6 +329,8 @@ Good Mermaid use cases:
 - Simple state transitions
 - Dependency or relationship diagrams
 
+If the diagram would need scrolling or tiny text to fit, split it or use `.drawio.svg` instead.
+
 Prefer `.drawio.svg` instead when:
 - The diagram needs precise positioning or many cross-links
 - The slide must match a specific visual style
@@ -349,6 +361,8 @@ Use `.drawio.svg` format for complex diagrams (architecture, workflows).
 ## 9. Export & Delivery
 
 ### Export via Marp CLI
+
+For PDF/PPTX targets, treat the exported file as the source of truth. Re-check any slide that uses dense code, Mermaid, tables, or small text.
 
 ```powershell
 # HTML

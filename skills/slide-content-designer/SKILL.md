@@ -1,6 +1,6 @@
 ---
 name: slide-content-designer
-description: Activate this skill when the deck still needs planning, outlining, or major restructuring. Use whenever the audience, core message, theme, format, or time limit is still unclear, or when the user wants to review the story flow before drafting. This skill covers content design only. Once the outline is approved, hand off to marp-slide-creator for Marp Markdown, layout fixes, overflow cleanup, or export.
+description: Activate this skill when the deck still needs planning, outlining, or major restructuring. Use whenever the audience, core message, theme, output format, or time limit is still unclear, or when the user wants to review the story flow before drafting. This skill covers content design only. Once the outline is approved, hand off to marp-slide-creator for Marp Markdown, layout fixes, overflow cleanup, or export.
 ---
 
 # Slide Content Designer
@@ -38,7 +38,9 @@ If the topic or core message is unclear, initiate brainstorming:
 
 ## 2. Planning & Scope
 
-Always ask for the allotted presentation time to determine scope.
+Always ask for the allotted presentation time and the target output format (HTML preview only, PDF, PPTX, or both) to determine scope.
+
+**Output rule**: If PDF/PPTX is a target, plan for a fixed slide canvas. Do not rely on scrollable panels, clipped regions, or hover-only details.
 
 **Rule of Thumb**: Use **1 minute per slide** as the default, then let a domain-specific skill override that when its topic normally needs more or less time.
 
@@ -68,7 +70,7 @@ Keep these in mind when drafting text to ensure content *can* be designed well l
 
 ## 5. Workflow Execution
 
-1. **Ask & Clarify**: Time limit? Audience? Core message?
+1. **Ask & Clarify**: Time limit? Audience? Core message? Output format?
 2. **Brainstorm (if needed)**: Help user find core message
 3. **Outline**: Propose section-by-section outline and slide count
 4. **WAIT for approval**: Present outline and ask for confirmation
