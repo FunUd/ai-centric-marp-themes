@@ -1,6 +1,6 @@
 ---
 name: marp-slide-creator
-description: Activate this skill when writing or editing Marp Markdown files after the outline is approved, or when the user wants to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX. This skill handles the implementation phase: Marp syntax, directives, image placement, diagnostics, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
+description: Activate this skill when writing or editing Marp Markdown files after the outline is approved, or when the user wants to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX. This skill handles the implementation phase - Marp syntax, directives, image placement, diagnostics, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
 ---
 
 # Marp Slide Creator
