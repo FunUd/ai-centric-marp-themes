@@ -386,9 +386,10 @@ print(f"Revenue Growth: {revenue_growth:.1f}%")
 <!-- _header: "" -->
 <!-- _footer: "" -->
 
-> "Design is not just what it looks like and feels like. Design is how it works."
+> 優れたデザインとは、見た目の美しさではなく、
+> いかに機能するかによって決まる。
 
-Steve Jobs
+— プレゼンター名
 
 ---
 

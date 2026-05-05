@@ -305,6 +305,7 @@ This enables the alternative text-only review pipeline described in `skills/marp
 ## Third-party Assets
 
 - SVG icons in `skills/marp-svg-icon-placer/references/icons/`: [Phosphor Icons](https://phosphoricons.com/) — [MIT License](https://github.com/phosphor-icons/core/blob/main/LICENSE)
+- Bundled fonts in `assets/fonts/`: [Carlito](https://github.com/googlefonts/carlito), [Caladea](https://github.com/huertatipografica/Caladea), [Liberation Mono](https://github.com/liberationfonts/liberation-fonts) — all under [SIL Open Font License 1.1](https://scripts.sil.org/OFL)
 
 ## License
 

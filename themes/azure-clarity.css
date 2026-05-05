@@ -1,7 +1,6 @@
 /* @theme azure-clarity */
 
 @import 'default';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
 
 /* ============================================================
    CSS Variables — テーマカラーの変更はここだけでOK
@@ -35,7 +34,7 @@ section {
   padding: 45px 70px 50px 70px;
   background: var(--ac-white);
   color: var(--ac-text);
-  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', sans-serif;
   --font-scale: 1;
   font-size: calc(24px * var(--font-scale));
   font-weight: 400;
