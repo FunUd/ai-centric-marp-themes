@@ -93,6 +93,24 @@
   --pe-cyan: #06B6D4;
   --pe-magenta: #EC4899;
   --pe-dark: #020617;
+  
+  /* Override Marp's default syntax highlighting colors */
+  --color-prettylights-syntax-comment: #94a3b8;
+  --color-prettylights-syntax-constant: #fb923c;
+  --color-prettylights-syntax-entity: #fb7185;
+  --color-prettylights-syntax-storage-modifier-import: #f0f4f8;
+  --color-prettylights-syntax-entity-tag: #fb7185;
+  --color-prettylights-syntax-keyword: #e879f9;
+  --color-prettylights-syntax-string: #86efac;
+  --color-prettylights-syntax-variable: #fbbf24;
+  --color-prettylights-syntax-markup-heading: #fb7185;
+  --color-prettylights-syntax-markup-list: #7dd3fc;
+  --color-prettylights-syntax-markup-italic: #f0f4f8;
+  --color-prettylights-syntax-markup-bold: #f0f4f8;
+  --color-prettylights-syntax-markup-inserted-text: #86efac;
+  --color-prettylights-syntax-markup-inserted-bg: transparent;
+  --color-prettylights-syntax-markup-deleted-text: #fb7185;
+  --color-prettylights-syntax-markup-deleted-bg: transparent;
 }
 
 /* ============================================================
@@ -264,17 +282,18 @@ section code {
 }
 
 section pre {
-  background: var(--pe-dark);
+  background: #1a1f2e;
   border-radius: var(--pe-radius);
   padding: 20px 24px;
   margin: 16px 0;
   overflow-x: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #2d3548;
 }
 
 section pre code {
   background: transparent;
-  color: #E2E8F0;
+  color: #f0f4f8;
   padding: 0;
   font-size: 18px;
   line-height: 1.5;
@@ -286,45 +305,46 @@ section pre code {
 section pre code .hljs-keyword,
 section pre code .hljs-selector-tag,
 section pre code .hljs-tag {
-  color: #c678dd;
+  color: #e879f9 !important;
+  font-weight: 500;
 }
 
 section pre code .hljs-built_in,
 section pre code .hljs-type {
-  color: #e5c07b;
+  color: #fbbf24 !important;
 }
 
 section pre code .hljs-literal,
 section pre code .hljs-number {
-  color: #d19a66;
+  color: #fb923c !important;
 }
 
 section pre code .hljs-string,
 section pre code .hljs-regexp,
 section pre code .hljs-addition {
-  color: #98c379;
+  color: #86efac !important;
 }
 
 section pre code .hljs-name,
 section pre code .hljs-class,
 section pre code .hljs-title {
-  color: #e06c75;
+  color: #fb7185 !important;
 }
 
 section pre code .hljs-attr,
 section pre code .hljs-attribute {
-  color: #d19a66;
+  color: #fcd34d !important;
 }
 
 section pre code .hljs-symbol,
 section pre code .hljs-bullet {
-  color: #61aeee;
+  color: #7dd3fc !important;
 }
 
 section pre code .hljs-comment,
 section pre code .hljs-quote,
 section pre code .hljs-deletion {
-  color: #7f848e;
+  color: #94a3b8 !important;
   font-style: italic;
 }
 
