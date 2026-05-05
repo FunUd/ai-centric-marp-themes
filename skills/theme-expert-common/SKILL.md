@@ -40,6 +40,11 @@ Load it only when you need the generic class syntax or when a theme skill explic
 - `<!-- _class: split-2 -->` and `<!-- _class: split-3 -->` for simple split layouts
 - Prefer symmetry unless one side is clearly the dominant visual
 
+> **⚠️ `cols-*` / `split-*` must appear in `_class`.**
+> When combining with other classes (e.g. `with-header`), the column class must still be present.
+> `<!-- _class: with-header -->` alone will NOT activate the column layout.
+> Correct: `<!-- _class: cols-2 with-header -->`
+
 ### Grids
 
 - `<!-- _class: grid-quadrant -->` for a 2x2 comparison or summary matrix
