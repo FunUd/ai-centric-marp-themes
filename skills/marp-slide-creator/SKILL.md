@@ -26,7 +26,8 @@ slides/
     ├── project-name.md
     └── assets/
         ├── images/
-        └── icons/
+        ├── icons/
+        └── diagrams/     # For Mermaid SVG files
 ```
 
 ### Creating a New Project
@@ -196,7 +197,7 @@ If you already have a rendered HTML file, skip the export step and run the extra
 
 **Step 1: Export HTML**
 ```powershell
-npx -y @marp-team/marp-cli --no-stdin --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/preview.html
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/preview.html
 ```
 
 **Step 2: Run DOM Extractor**
@@ -334,31 +335,46 @@ Use the simplest visual that communicates the idea clearly:
 
 ### Mermaid Diagrams
 
-Use Mermaid-style code blocks when a diagram is easier to read as structured text than as a hand-built graphic.
+**⚠️ IMPORTANT: Do NOT use inline Mermaid code blocks in Marp slides.**
 
-```markdown
-<pre class="mermaid">
+Mermaid diagrams often fail to render correctly in Marp preview and export. Instead, use Mermaid CLI to convert diagrams to SVG offline, then insert the SVG as an image.
+
+**Workflow:**
+
+1. Create a `.mmd` file in `slides/project-name/assets/diagrams/`:
+
+```mermaid
 sequenceDiagram
     participant A as Client
     participant B as Server
 
     A->>B: HTTP request (GET /data)
     B->>A: HTTP response (200 OK + JSON)
-</pre>
 ```
 
-Good Mermaid use cases:
+2. Convert to SVG using Mermaid CLI:
+
+```powershell
+npx -y @mermaid-js/mermaid-cli -i slides/project-name/assets/diagrams/sequence.mmd -o slides/project-name/assets/diagrams/sequence.svg
+```
+
+3. Insert the SVG in your slide:
+
+```markdown
+![width:800px](assets/diagrams/sequence.svg)
+```
+
+**Good Mermaid use cases:**
 - Sequence diagrams
 - Flowcharts
 - Simple state transitions
 - Dependency or relationship diagrams
 
-If the diagram would need scrolling or tiny text to fit, split it or use `.drawio.svg` instead.
-
-Prefer `.drawio.svg` instead when:
+**Prefer `.drawio.svg` instead when:**
 - The diagram needs precise positioning or many cross-links
 - The slide must match a specific visual style
 - The diagram is too dense to read comfortably in Mermaid
+- You need more control over styling and layout
 
 ### Editable Diagrams
 
@@ -388,28 +404,30 @@ Use `.drawio.svg` format for complex diagrams (architecture, workflows).
 
 For PDF/PPTX targets, treat the exported file as the source of truth. Re-check any slide that uses dense code, Mermaid, tables, or small text.
 
+**Note:** When using local images (including SVG diagrams), add `--allow-local-files` option to enable local file access.
+
 ```powershell
 # HTML
-npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md -o output.html
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.html
 
 # PDF
-npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md -o output.pdf
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.pdf
 
 # PowerPoint
-npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md -o output.pptx
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.pptx
 
 # PNG images (all slides)
-npx -y @marp-team/marp-cli --no-stdin --theme themes/theme.css slides.md --images png
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md --images png
 ```
 
 ### PDF Options
 
 ```powershell
 # With presenter notes
-npx -y @marp-team/marp-cli --no-stdin --pdf-notes slides.md -o output.pdf
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --pdf-notes slides.md -o output.pdf
 
 # With bookmarks
-npx -y @marp-team/marp-cli --no-stdin --pdf-outlines slides.md -o output.pdf
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --pdf-outlines slides.md -o output.pdf
 ```
 
 ## Quick Reference: Common Patterns
