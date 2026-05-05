@@ -211,15 +211,26 @@ ai-centric-marp-themes/
 │       ├── warm-sunnyday-sample.md
 │       └── assets/
 ├── skills/
-│   ├── theme-expert-azure-clarity/SKILL.md
+│   ├── slide-content-designer/SKILL.md
 │   ├── marp-slide-creator/
 │   │   ├── SKILL.md
 │   │   └── scripts/
-│   │       └── marp-dom-extractor.py  # Playwright DOM metrics extractor for text-only AI review
+│   │       ├── marp-diagnostics.py        # Overflow / layout diagnostics helper
+│   │       ├── marp-dom-extractor.py      # Playwright DOM metrics extractor for text-only AI review
+│   │       └── setup-slide-project.py     # Project scaffolding helper
 │   ├── marp-svg-icon-placer/SKILL.md
+│   ├── slide-expert-api-architecture/SKILL.md
+│   ├── slide-expert-design-review/SKILL.md
+│   ├── slide-expert-postmortem/SKILL.md
+│   ├── slide-expert-progress-report/SKILL.md
+│   ├── slide-expert-release-notes/SKILL.md
+│   ├── slide-expert-requirements-specification/SKILL.md
+│   ├── slide-expert-self-introduction/SKILL.md
+│   ├── slide-expert-tech-selection/SKILL.md
+│   ├── slide-expert-tech-sharing/SKILL.md
+│   ├── theme-expert-azure-clarity/SKILL.md
 │   ├── theme-expert-common/SKILL.md
 │   ├── theme-expert-prism-edge/SKILL.md
-│   ├── slide-content-designer/SKILL.md
 │   └── theme-expert-warm-sunnyday/SKILL.md
 └── README.md
 ```
@@ -227,7 +238,7 @@ ai-centric-marp-themes/
 - **`themes/`** — Theme CSS files ready to use with Marp.
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
-- **`skills/marp-slide-creator/scripts/`** — Marp diagnostics helper and Playwright-based DOM extractor for AI-driven slide layout review without image parsing.
+- **`skills/marp-slide-creator/scripts/`** — Marp diagnostics helper, Playwright-based DOM extractor for AI-driven slide layout review without image parsing, and project scaffolding helper.
 
 ### Skill Routing
 
@@ -239,6 +250,18 @@ If the deck will be exported to PDF or PPTX, design to the static slide canvas f
 2. Outline approved, or you need Marp Markdown, layout fixes, overflow checks, or export -> `marp-slide-creator`
 3. SVG icons need to be selected, copied, or recolored -> `marp-svg-icon-placer`
 4. One domain-specific presentation type is involved -> pick one matching `slide-expert-*` skill
+
+   | Skill | Use case |
+   |-------|----------|
+   | `slide-expert-design-review` | Design content (structure / IF / state transitions / exception handling) |
+   | `slide-expert-requirements-specification` | Functional / non-functional requirements, constraints, assumptions |
+   | `slide-expert-tech-selection` | Multi-option trade-off comparison and recommendation |
+   | `slide-expert-api-architecture` | System-wide architecture, data flows, responsibility segregation |
+   | `slide-expert-progress-report` | Implementation results, milestone tracking, stakeholder updates |
+   | `slide-expert-release-notes` | Release value, impact scope, migration steps |
+   | `slide-expert-postmortem` | Incident cause, impact, timeline, preventive actions |
+   | `slide-expert-tech-sharing` | Knowledge sharing, study groups, best practices |
+   | `slide-expert-self-introduction` | Personal background, skills, interests for new assignments |
 5. Theme-specific layout polish is needed -> pick one matching `theme-expert-*` skill after the theme is known
 6. Generic Marp layout mechanics are needed -> open `theme-expert-common` only for the shared class reference
 
