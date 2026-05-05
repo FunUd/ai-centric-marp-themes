@@ -1,6 +1,6 @@
 ---
 name: marp-slide-creator
-description: Activate this skill when writing or editing Marp Markdown files. Use when the user has an approved outline and is ready to generate slide code, or when they want to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX. This skill handles the implementation phase — Marp syntax, directives, image placement, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
+description: Activate this skill when writing or editing Marp Markdown files after the outline is approved, or when the user wants to fix layout issues, resolve content overflow, preview slides, or export to PDF/PPTX. This skill handles the implementation phase: Marp syntax, directives, image placement, diagnostics, and the preview feedback loop. For content planning and outline creation, use slide-content-designer first.
 ---
 
 # Marp Slide Creator
@@ -145,37 +145,35 @@ Presenter notes (only in presenter view)
 > **⚠️ MANDATORY: Preview confirmation is required, not optional.**
 > Slide creation is NOT complete until every slide has been visually verified.
 
-### Two-Stage Feedback Loop
+### Stage 1: Editor Diagnostic
 
-**Stage 1: getDiagnostics (Fast)**
-- Detects content overflow instantly
-- No export needed
+Marp for VS Code includes an experimental `slide-content-overflow` diagnostic. Enable `markdown.marp.diagnostics.slideContentOverflow` and keep the Markdown preview open to surface overflow warnings directly in the editor.
 
-**Stage 2: DOM Metrics (Detailed)**
-- Detects image failures, layout issues
-- Requires HTML export + Playwright
+### Stage 2: Batch Diagnostic Helper
+
+If you want the same overflow check from the terminal, use the helper script:
+
+```powershell
+python skills/marp-slide-creator/scripts/marp-diagnostics.py slides/my-deck/my-deck.md
+```
+
+This helper exports `slides/my-deck/assets/preview.html`, runs the DOM extractor, and writes `slides/my-deck/assets/dom-metrics.json`.
 
 ### Workflow
 
 ```
 1. Edit Markdown
-2. Run getDiagnostics
-3. If issues → fix → return to step 2
-4. If clean → Export HTML → Run DOM Extractor
+2. Run the editor diagnostic or `marp-diagnostics.py`
+3. If issues -> fix -> repeat
+4. If clean -> export HTML and run the DOM extractor for a deeper pass
 5. Analyze metrics
-6. If issues → fix → return to step 1
+6. If issues -> fix -> repeat
 7. Complete
 ```
 
-### Stage 1: getDiagnostics
+### Stage 3: DOM Metrics Extraction
 
-```
-getDiagnostics(paths=["slides/my-deck/my-deck.md"])
-```
-
-Catches overflow warnings immediately.
-
-### Stage 2: DOM Metrics Extraction
+If you already have a rendered HTML file, skip the export step and run the extractor directly.
 
 **Step 1: Export HTML**
 ```powershell

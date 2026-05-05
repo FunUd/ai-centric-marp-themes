@@ -36,6 +36,7 @@ def main() -> None:
     create_project(args.project_name)
     print(f"\nProject structure created successfully!")
     print(f"To copy icons, use: python skills/marp-svg-icon-placer/scripts/copy-icons.py {args.project_name} <icon-names>")
+    print(f"To check overflow, use: python skills/marp-slide-creator/scripts/marp-diagnostics.py slides/{args.project_name}/{args.project_name}.md")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 ---
 name: slide-expert-release-notes
-description: ALWAYS activate this skill when creating or editing release notes or change communication presentation slides. Specialized skill for slides that effectively communicate release content, impact scope, and important notes to stakeholders. Use whenever the user mentions release notes, release announcements, change logs, or wants to present version updates to stakeholders.
+description: ALWAYS activate this skill when creating or editing release announcement, changelog, or version-update presentation slides. Use when the user needs to communicate release value, impact scope, migration steps, and next actions to stakeholders.
 ---
 
 # Release Notes & Change Communication Slide Skill
@@ -160,7 +160,7 @@ Learning curve?     →   1-week transition period + tutorial provided
 **Character Count Guidelines**:
 - Headings: Within 20 characters
 - Bullet points: Within 30 characters per line
-- Entire slide: Within 100 characters (excluding code examples)
+- Summary slides: aim for roughly 100 characters total; detailed feature or migration slides may be longer when screenshots, tables, or step lists are clearer
 
 **Text Reduction Techniques**:
 - Formal Japanese "desu/masu" → Plain form ending with nouns
@@ -254,7 +254,7 @@ Learning curve?     →   1-week transition period + tutorial provided
 ### Quality Checks
 
 - [ ] **One Slide One Message**: No mixed themes?
-- [ ] **Character Count**: Does each slide stay within 100 characters?
+- [ ] **Character Count**: Is the summary slide concise without forcing detail slides into an artificial limit?
 - [ ] **Visual Hierarchy**: Is important information emphasized?
 - [ ] **Links**: Do links to related materials work?
 - [ ] **Dates**: Are release dates and deadlines accurate?

@@ -1,11 +1,13 @@
 ---
 name: theme-expert-prism-edge
-description: A skill for maximizing the use of the Prism Edge theme (for Marp) to create striking, modern, high-impact professional presentations. Trigger this skill when the user wants to design, modify, or optimize slides using the Prism Edge theme, or when they want bold, eye-catching visuals with advanced cover designs and sophisticated layouts.
+description: A skill for maximizing the Prism Edge theme in Marp once the theme has already been chosen. Use when the user wants bold, high-impact theme-specific layout guidance for an existing deck direction, not for early-stage planning.
 ---
 
 # Prism Edge Theme Expert
 
 This skill provides guidelines for using the Prism Edge theme — designed for **high-impact, modern, professional presentations** with bold indigo-cyan gradients, sharp edges, and sophisticated cover designs.
+
+Use this skill after the content structure is decided. For outline planning or story shaping, use `slide-content-designer` or the relevant domain skill first.
 
 ## Basic Principles
 

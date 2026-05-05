@@ -211,22 +211,34 @@ ai-centric-marp-themes/
 │       ├── warm-sunnyday-sample.md
 │       └── assets/
 ├── skills/
-│   ├── azure-clarity-theme-expert/SKILL.md
+│   ├── theme-expert-azure-clarity/SKILL.md
 │   ├── marp-slide-creator/
 │   │   ├── SKILL.md
 │   │   └── scripts/
 │   │       └── marp-dom-extractor.py  # Playwright DOM metrics extractor for text-only AI review
 │   ├── marp-svg-icon-placer/SKILL.md
-│   ├── prism-edge-theme-expert/SKILL.md
+│   ├── theme-expert-prism-edge/SKILL.md
 │   ├── slide-content-designer/SKILL.md
-│   └── warm-sunnyday-theme-expert/SKILL.md
+│   └── theme-expert-warm-sunnyday/SKILL.md
 └── README.md
 ```
 
 - **`themes/`** — Theme CSS files ready to use with Marp.
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
-- **`skills/marp-slide-creator/scripts/`** — Playwright-based DOM extractor for AI-driven slide layout review without image parsing.
+- **`skills/marp-slide-creator/scripts/`** — Marp diagnostics helper and Playwright-based DOM extractor for AI-driven slide layout review without image parsing.
+
+### Skill Routing
+
+Use the smallest set of skills that fully covers the task:
+
+1. Topic, audience, outline, or structure still unclear -> `slide-content-designer`
+2. Outline approved, or you need Marp Markdown, layout fixes, overflow checks, or export -> `marp-slide-creator`
+3. SVG icons need to be selected, copied, or recolored -> `marp-svg-icon-placer`
+4. One domain-specific presentation type is involved -> pick one matching `slide-expert-*` skill
+5. Theme-specific layout polish is needed -> pick one matching `theme-expert-*` skill after the theme is known
+
+Edit `skills/` as the source of truth, then run `python sync-skills.py` to mirror the changes into `.codex/`, `.agent/`, `.windsurf/`, and `.kiro/`.
 
 ---
 
@@ -282,7 +294,7 @@ pip install playwright
 playwright install chromium
 ```
 
-This enables the alternative text-only review pipeline described in `skills/marp-slide-creator/SKILL.md`.
+This enables the alternative text-only review pipeline described in `skills/marp-slide-creator/SKILL.md` and `skills/marp-slide-creator/scripts/marp-diagnostics.py`.
 
 ---
 

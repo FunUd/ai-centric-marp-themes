@@ -1,11 +1,13 @@
 ---
 name: theme-expert-warm-sunnyday
-description: A skill for maximizing the use of the Warm Sunnyday theme (for Marp) to create friendly, approachable presentations for self-introductions, icebreakers, and casual chats. Trigger this skill when the user wants to design or modify slides for informal settings using the Warm Sunnyday theme.
+description: A skill for maximizing the Warm Sunnyday theme in Marp once the theme has already been chosen. Use when the user wants friendly, casual, or self-introduction layout guidance for a deck that is already heading toward Warm Sunnyday.
 ---
 
 # Warm Sunnyday Theme Expert
 
 This skill provides guidelines for using the Warm Sunnyday theme — designed for self-introductions, icebreakers, casual meetings with warm oranges, pinks, and rounded fonts (Nunito / Zen Maru Gothic).
+
+Use this skill after the content structure is decided. For outline planning or story shaping, use `slide-content-designer` or the relevant domain skill first.
 
 ## Basic Principles
 
