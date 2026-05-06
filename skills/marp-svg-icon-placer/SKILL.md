@@ -1,6 +1,6 @@
 ---
 name: marp-svg-icon-placer
-description: ALWAYS activate this skill when placing, copying, or selecting SVG icons in any Marp presentation. Use this skill to select, customize, and insert SVG icons into Marp presentations. It helps maintain visual consistency by pulling from a predefined AI-friendly icon library, adjusting size and color to fit the slide's layout, or generating new cohesive icons if none fit. Must be activated before using any icon copy scripts or referencing the icon catalog.
+description: Activate this skill ONLY when specifically placing, copying, or selecting SVG icons in any Marp presentation.
 ---
 
 # Marp SVG Icon Placer
@@ -9,10 +9,15 @@ This skill helps you appropriately place SVG icons into Marp presentations to en
 
 ## 1. Select an Icon
 
-- Refer to `references/svg-icons-catalog.md` for available icons
-- Search for an icon matching the semantic meaning
-- Find description, usage, and path (e.g., `icons/target.svg`)
+**Step 1: Search by keyword first** (avoids loading the full catalog into context):
+```powershell
+python skills/marp-svg-icon-placer/scripts/copy-icons.py --search "target"
+```
+
+**Step 2: If search returns candidates**, use the name directly.
+**Step 3: If no match**, run `--list` to see all icons, or refer to `references/svg-icons-catalog.md` for full metadata and usage examples.
 - **DO NOT** modify catalog files or SVG files in `icons/` directory
+
 
 ## 2. Copy Icon to Slide Assets
 

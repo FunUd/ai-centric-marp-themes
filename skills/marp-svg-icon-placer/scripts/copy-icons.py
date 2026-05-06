@@ -33,6 +33,22 @@ def list_icons() -> None:
         print(f"  {icon.name}")
 
 
+def search_icons(query: str) -> None:
+    """Search available icons by name substring (case-insensitive)."""
+    if not ICONS_SOURCE_DIR.exists():
+        print(f"Icons directory not found: {ICONS_SOURCE_DIR}", file=sys.stderr)
+        sys.exit(1)
+    icons = sorted(ICONS_SOURCE_DIR.glob("*.svg"))
+    matches = [icon for icon in icons if query.lower() in icon.name.lower()]
+    if matches:
+        print(f"Icons matching '{query}' ({len(matches)}):")
+        for icon in matches:
+            print(f"  {icon.name}")
+    else:
+        print(f"No icons matching '{query}' found.")
+        print("Tip: run --list to see all available icons.")
+
+
 def copy_icons(project_name: str, icon_names: list[str]) -> None:
     """Copy SVG icons from the icon catalog to the project's assets directory."""
     assets_dir = SLIDES_BASE_DIR / project_name / "assets"
@@ -92,14 +108,23 @@ def main() -> None:
         action="store_true",
         help="List all available icons and exit",
     )
+    parser.add_argument(
+        "--search",
+        metavar="QUERY",
+        help="Search available icons by name substring and exit",
+    )
     args = parser.parse_args()
 
     if args.list:
         list_icons()
         return
 
+    if args.search:
+        search_icons(args.search)
+        return
+
     if not args.project_name:
-        parser.error("project_name is required unless --list is specified")
+        parser.error("project_name is required unless --list or --search is specified")
 
     if not args.icons:
         parser.error("at least one icon name (or 'all') is required")
