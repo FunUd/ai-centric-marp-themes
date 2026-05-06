@@ -1,6 +1,6 @@
 ---
 name: slide-content-designer
-description: Activate this skill when the deck still needs planning, outlining, or major restructuring. Use whenever the audience, core message, theme, output format, or time limit is still unclear, or when the user wants to review the story flow before drafting. This skill covers content design only. Once the outline is approved, hand off to marp-slide-creator for Marp Markdown, layout fixes, overflow cleanup, or export.
+description: Activate this skill ONLY when the deck needs planning, outlining, or major restructuring. DO NOT generate any Markdown slide content until the outline is explicitly approved by the user.
 ---
 
 # Slide Content Designer
@@ -72,6 +72,10 @@ Keep these in mind when drafting text to ensure content *can* be designed well l
 
 1. **Ask & Clarify**: Time limit? Audience? Core message? Output format?
 2. **Brainstorm (if needed)**: Help user find core message
-3. **Outline**: Propose section-by-section outline and slide count
-4. **WAIT for approval**: Present outline and ask for confirmation
-5. **Draft**: Generate slide text applying "1 Slide = 1 Message" and MECE, only after outline approval for a new or majorly revised deck
+3. **Outline**: Propose section-by-section outline with slide titles and estimated slide count
+4. **WAIT for approval**: Present outline and ask for confirmation — **do not proceed without an explicit OK**
+5. **Draft (outline-level only)**: After outline is approved, write slide-level bullet points using placeholders like `[Insert diagram here]` or `[List 3 key benefits]` — **do not write final prose or Marp Markdown yet**
+6. **Hand off to `marp-slide-creator`**: Once slide-level content is confirmed, activate `marp-slide-creator` to generate the final Marp Markdown
+
+> **Placeholder rule**: Keep each slide entry at outline-level (title + 2–4 bullet points max) until the user explicitly approves the full structure. Expanding into full text before approval wastes tokens and makes restructuring costly.
+

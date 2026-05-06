@@ -1,6 +1,6 @@
 ---
 name: slide-expert-tech-selection
-description: ALWAYS activate this skill when creating or editing technology selection or comparison presentation slides. Specialized skill for slides that compare multiple technical options, analyze trade-offs, and present a clear recommendation with rationale. Use whenever the user wants to create trade-off sliders, comparison matrices, ADR-style documentation, or technical decision presentations.
+description: Activate this skill ONLY when creating or editing technology selection or comparison presentation slides.
 ---
 
 # Technology Selection Comparison Slide Expert
@@ -103,3 +103,9 @@ Visual:
 - [ ] Rating symbols consistent
 - [ ] Recommended option visually distinct
 - [ ] No information overload (split if >6 criteria)
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.

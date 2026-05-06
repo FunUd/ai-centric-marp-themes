@@ -1,6 +1,6 @@
 ---
 name: slide-expert-release-notes
-description: ALWAYS activate this skill when creating or editing release announcement, changelog, or version-update presentation slides. Use when the user needs to communicate release value, impact scope, migration steps, and next actions to stakeholders.
+description: Activate this skill ONLY when creating or editing release announcement, changelog, or version-update presentation slides.
 ---
 
 # Release Notes & Change Communication Slide Skill
@@ -258,3 +258,9 @@ Learning curve?     →   1-week transition period + tutorial provided
 - [ ] **Visual Hierarchy**: Is important information emphasized?
 - [ ] **Links**: Do links to related materials work?
 - [ ] **Dates**: Are release dates and deadlines accurate?
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.

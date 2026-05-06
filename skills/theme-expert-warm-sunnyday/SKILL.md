@@ -1,6 +1,6 @@
 ---
 name: theme-expert-warm-sunnyday
-description: A skill for maximizing the Warm Sunnyday theme in Marp once the theme has already been chosen. Use when the user wants friendly, casual, or self-introduction layout guidance for a deck that is already heading toward Warm Sunnyday.
+description: Activate this skill ONLY when the Marp implementation phase has begun and the Warm Sunnyday theme has already been chosen. DO NOT activate during outlining.
 ---
 
 # Warm Sunnyday Theme Expert

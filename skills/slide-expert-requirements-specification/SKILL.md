@@ -1,6 +1,6 @@
 ---
 name: slide-expert-requirements-specification
-description: ALWAYS activate this skill when creating requirements specification slides or documentation. Use for functional requirements, non-functional requirements, constraints, assumptions, and stakeholder alignment. Essential for project kickoff, requirement reviews, system specifications, and business requirement documentation. Make sure to use this skill whenever the user mentions requirements, specifications, stakeholder alignment, project documentation, or needs to organize technical and business requirements for presentation.
+description: Activate this skill ONLY when creating requirements specification slides or documentation.
 ---
 
 # Requirements Specification Expert
@@ -139,3 +139,9 @@ The skill is successful when:
 - The presentation facilitates productive discussion and decision-making
 - Project scope and boundaries are unambiguously defined
 - Implementation planning can proceed based on the documented requirements
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.

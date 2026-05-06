@@ -1,6 +1,6 @@
 ---
 name: slide-expert-design-review
-description: ALWAYS activate this skill when creating or editing design review presentation slides. Specialized skill for creating technical design review slides covering architecture, interfaces, state transitions, and exception handling. Use when the user needs to explain design content (structure/IF/state transitions/exception handling) and obtain review approval. This skill provides structured slide organization based on software design documentation best practices and design review methodologies.
+description: Activate this skill ONLY when creating or editing design review presentation slides.
 ---
 
 # Design Review Slide Expert
@@ -44,44 +44,7 @@ Ensure your slides address these review perspectives:
 
 ## Recommended Slide Structure
 
-### Section 1: Opening (2-3 slides)
-- **Cover Slide**: Title, date, presenter, review scope
-- **Agenda**: What will be covered in this review
-- **Objectives & Goals**: What decisions need to be made today
-
-### Section 2: Background & Context (2-3 slides)
-- **Problem Statement**: What problem does this design solve?
-- **Requirements Summary**: Key functional and non-functional requirements
-- **Constraints**: Technical, business, or timeline constraints
-
-### Section 3: Architecture Overview (3-5 slides)
-- **High-Level Architecture**: System diagram showing major components
-- **Component Responsibilities**: What each module does
-- **Design Decisions**: Why this architecture was chosen (trade-offs)
-
-### Section 4: Interface Design (3-5 slides)
-- **External Interfaces**: APIs, protocols, integration points
-- **Internal Interfaces**: Module-to-module communication
-- **Data Formats**: Request/response structures, message formats
-- **Security & Authentication**: How interfaces are secured
-
-### Section 5: State Transitions (2-4 slides)
-- **State Diagram**: Visual representation of states and transitions
-- **State Descriptions**: What each state represents
-- **Transition Conditions**: Events triggering state changes
-- **State Actions**: Entry/exit/during actions for each state
-
-### Section 6: Exception Handling (2-4 slides)
-- **Error Categories**: System errors, business errors, validation errors
-- **Error Scenarios**: Specific cases that can go wrong
-- **Recovery Procedures**: How the system handles each error type
-- **Error Responses**: User-facing messages and logging
-
-### Section 7: Summary & Next Steps (1-2 slides)
-- **Design Summary**: Key points and decisions
-- **Open Questions**: Items needing further discussion
-- **Action Items**: Who does what by when
-- **Approval Request**: Explicit ask for review approval
+For the detailed section-by-section slide structure, **please read `references/structure-template.md`**.
 
 ## Content Best Practices
 
@@ -148,3 +111,9 @@ For complex state machines, document:
 - [ ] Open questions are clearly identified
 - [ ] No ambiguous or unclear expressions
 - [ ] No contradictions within the design
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.

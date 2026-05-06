@@ -1,6 +1,6 @@
 ---
 name: slide-expert-api-architecture
-description: ALWAYS activate this skill when creating or editing API and system architecture explanation slides. Specialized skill for presenting system-wide architecture, data flows, and responsibility segregation from a bird's-eye view. Use whenever the user wants to explain system structure, component interactions, API flows, or technical architecture to stakeholders. Make sure to activate this skill whenever the user mentions API design, system architecture, or architecture diagrams in the context of slides or presentations.
+description: Activate this skill ONLY when creating or editing API and system architecture explanation slides. DO NOT activate if the goal is general slide creation.
 ---
 
 # API & System Architecture Explanation Slide Expert
@@ -37,57 +37,7 @@ The C4 model provides a hierarchical way to visualize software architecture at d
 
 ## Recommended Slide Structure
 
-### Section 1: Opening (1-2 slides)
-- **Cover Slide**: Title, system name, presenter, date
-- **Agenda**: What architecture aspects will be covered
-
-### Section 2: System Overview (2-3 slides)
-- **System Context Diagram (C4 L1)**: What the system does and who uses it
-  - Show external actors (users, other systems)
-  - Show external dependencies
-  - Keep it simple - no internal details
-- **Business Value**: Why this architecture matters
-- **Key Capabilities**: Main features the system provides
-
-### Section 3: High-Level Architecture (3-5 slides)
-- **Container Diagram (C4 L2)**: Major building blocks
-  - Web applications, APIs, databases, message queues
-  - How containers communicate
-  - Technology choices at container level
-- **Data Flow Overview**: End-to-end data journey
-  - Input sources → Processing → Storage → Output
-  - Use arrows to show direction
-- **Integration Points**: External system connections
-  - APIs consumed and provided
-  - Data exchange formats
-  - Authentication/security mechanisms
-
-### Section 4: Component Details (3-5 slides, optional for technical audiences)
-- **Component Diagram (C4 L3)**: Inside key containers
-  - Major components and their responsibilities
-  - Component interactions
-- **API Specifications**: Key endpoints and contracts
-  - Endpoint paths and methods
-  - Request/response formats
-  - Error handling patterns
-- **Sequence Diagrams**: Critical interaction flows
-  - Authentication flow
-  - Core business process flows
-  - Error handling scenarios
-
-### Section 5: Data Architecture (2-3 slides)
-- **Data Model Overview**: Key entities and relationships
-- **Data Flow Diagram**: How data moves through the system
-- **Storage Strategy**: Database choices and rationale
-
-### Section 6: Non-Functional Aspects (2-3 slides)
-- **Scalability**: How the system handles load
-- **Security**: Key security measures and patterns
-- **Monitoring/Observability**: How system health is tracked
-
-### Section 7: Summary (1-2 slides)
-- **Architecture Highlights**: Key decisions and patterns
-- **Next Steps**: Questions, feedback, or action items
+For the detailed section-by-section slide structure, **please read `references/structure-template.md`**.
 
 ## Diagram Types and Best Practices
 
@@ -256,3 +206,9 @@ The C4 model provides a hierarchical way to visualize software architecture at d
 - [ ] Scope of each diagram is clear
 - [ ] Consistent terminology throughout
 - [ ] Backup detail slides prepared for Q&A
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.

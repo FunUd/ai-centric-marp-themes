@@ -1,6 +1,6 @@
 ---
 name: theme-expert-azure-clarity
-description: A skill for maximizing the Azure Clarity theme in Marp once the theme has already been chosen. Use when the user wants business-slide layout guidance, theme-specific classes, or structure polish for a deck that is already headed toward Azure Clarity.
+description: Activate this skill ONLY when the Marp implementation phase has begun and the Azure Clarity theme has already been chosen. DO NOT activate during outlining.
 ---
 
 # Azure Clarity Theme Expert

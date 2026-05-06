@@ -19,6 +19,12 @@ Load it only when you need the generic class syntax or when a theme skill explic
 - Inline classes (`badge`, `gradient-text`) → Use `<span>`, not `<div>`
 - Alignment (`v-center`, `text-center`) → Apply to column divs, not slide-level `_class`
 
+**For the exact HTML structure of these patterns, please read `references/layout-snippets.md`.**
+
+> **🚨 CRITICAL FAILURE WARNING:**
+> A very common AI mistake is writing the HTML `<div class="columns">` but forgetting to put `<!-- _class: cols-2 -->` at the top of the slide.
+> **The HTML wrapper alone does NOT work.** You MUST include the Marp `<!-- _class: ... -->` directive at the top of the slide, or the layout will completely break and stack vertically.
+
 **When in doubt, check `slides/sample-slide/` for correct structure.**
 
 ## Shared Patterns

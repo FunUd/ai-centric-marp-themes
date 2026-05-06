@@ -1,6 +1,6 @@
 ---
 name: slide-expert-progress-report
-description: ALWAYS activate this skill when creating or editing progress reports or achievement presentation slides. Specialized skill for structuring executive summaries, milestone tracking, risk visualization, and action-oriented reporting formats. Use whenever the user needs to share implementation results, project status, or obtain stakeholder feedback. Make sure to activate this skill whenever the user mentions 進捗報告, status report, milestone review, or project update slides.
+description: Activate this skill ONLY when creating or editing progress reports or achievement presentation slides.
 ---
 
 # Progress Report & Achievement Presentation Expert
@@ -207,3 +207,9 @@ Communication:
 3. **Future Commitment** — Clear next steps with owners
 4. **Transparent Issues** — Risks and blockers visible
 5. **Action Orientation** — Specific decisions requested
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.

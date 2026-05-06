@@ -1,6 +1,6 @@
 ---
 name: theme-expert-prism-edge
-description: A skill for maximizing the Prism Edge theme in Marp once the theme has already been chosen. Use when the user wants bold, high-impact theme-specific layout guidance for an existing deck direction, not for early-stage planning.
+description: Activate this skill ONLY when the Marp implementation phase has begun and the Prism Edge theme has already been chosen. DO NOT activate during outlining.
 ---
 
 # Prism Edge Theme Expert

@@ -1,6 +1,6 @@
 ---
 name: slide-expert-tech-sharing
-description: ALWAYS activate this skill when creating or editing study group or technical sharing presentation slides. Specialized skill for engineers sharing knowledge, best practices, case studies, or technical insights with teams and organizations. Use whenever the user mentions 勉強会, tech talk, knowledge sharing, or wants to structure slides for technical knowledge transfer with audience analysis, storytelling, and visual design patterns.
+description: Activate this skill ONLY when creating or editing study group or technical sharing presentation slides.
 ---
 
 # Technical Sharing Slide Expert
@@ -32,39 +32,7 @@ Before creating slides, analyze your audience:
 
 ### Recommended Slide Structure
 
-| Section | Purpose | Typical Slide Count |
-|---------|---------|---------------------|
-| **Cover** | Title, presenter, date | 1 |
-| **Hook** | Why should audience care? | 1 |
-| **Agenda** | What will be covered | 1 |
-| **Background** | Context and problem statement | 1-2 |
-| **Core Content** | Main technical explanation | 40% of slides |
-| **Case Study** | Real implementation example | 2-3 |
-| **Best Practices** | Lessons learned, recommendations | 1-2 |
-| **Summary** | Key takeaways | 1 |
-| **Q&A/Next Steps** | Discussion and follow-up | 1 |
-
-### The "1 Slide = 1 Message" Rule
-
-Each slide should convey exactly one clear message:
-
-- **❌ Bad**: "Overview of our architecture, performance metrics, and future plans"
-- **✅ Good**: "Microservices architecture reduced deployment time by 60%"
-
-### Storytelling Techniques
-
-**The Problem-Solution-Impact Pattern:**
-```
-We faced [specific challenge] → 
-We tried [approach/technology] → 
-Result was [measurable outcome] → 
-Key lesson: [actionable insight]
-```
-
-**The Before-After Comparison:**
-- Visual side-by-side comparison of old vs new approach
-- Concrete metrics (performance, maintainability, cost)
-- Clear explanation of trade-offs
+For the detailed section-by-section slide structure, **please read `references/structure-template.md`**.
 
 ## Slide Design Principles
 
@@ -206,3 +174,9 @@ Include a slide with:
 - [ ] Visual hierarchy is clear (title → key visual → supporting text)
 - [ ] Color scheme is consistent and accessible
 - [ ] Code is syntax highlighted and properly sized (16-18px)
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.
