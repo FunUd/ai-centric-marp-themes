@@ -14,10 +14,13 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 - `callout` → Must wrap individual blocks, not entire slides
 - `cols-2/3`, `split-2/3` → Requires `<div class="columns">` + child `<div class="col">` or `<div>`
-- `grid-quadrant/sharp` → Requires `<div class="grid">` + 4× `<div class="cell">`
+- `grid-quadrant/sharp` → Requires `<div class="grid">` + exactly four `<div class="cell">` children. **DO NOT hallucinate wrapper divs like `<div class="cell side"><div>`. Use EXACTLY `<div class="cell">`.**
 - `profile` → Requires `<div class="profile-layout">` + `profile-image` + `profile-content`
 - Inline classes (`badge`, `gradient-text`) → Use `<span>`, not `<div>`
 - Alignment (`v-center`, `text-center`) → Apply to column divs, not slide-level `_class`
+
+> **🚨 DO NOT HALLUCINATE CLASSES:**
+> Do not use classes that are not explicitly documented in the theme-specific skill or this common file (e.g., `accent-left`). If you need an asymmetrical layout, check if the theme specifically supports it (like `split-asym` in Prism Edge), otherwise use standard classes like `cols-2`.
 
 **For the exact HTML structure of these patterns, please read `references/layout-snippets.md`.**
 

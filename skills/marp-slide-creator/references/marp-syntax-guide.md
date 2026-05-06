@@ -25,6 +25,9 @@ Apply to current slide only. Prefix with `_`:
 <!-- _footer: "" -->
 ```
 
+> **⚠️ CRITICAL ANTI-PATTERN: DO NOT REPEAT GLOBAL DIRECTIVES!**
+> Do not use `_paginate: true`, `_header: "..."`, or `_footer: "..."` on every single slide. If you declared `paginate: true` or `header: "..."` in the global frontmatter at the top of the file, it automatically applies to all slides. Only use local directives like `_paginate: false` or `_header: ""` when you want to specifically HIDE them for a single slide (like a cover slide).
+
 ## 2. Image Syntax
 
 ### Inline Images
