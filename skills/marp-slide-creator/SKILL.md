@@ -110,6 +110,30 @@ Manual checks from `elements` array:
 - Unbalanced layout
 - Missing expected images
 
+### Stage 4: AI Visual Inspection (Image-based Feedback Loop)
+
+When you (the AI) need to visually confirm the actual layout, contrast, and element positioning, you can generate and analyze screenshots directly. This is the most reliable way to check complex layouts.
+
+**Step 1: Export to Images (PNG)**
+Use Marp CLI to generate images. This will output a sequence of images (e.g., `temp-preview.001.png`, `temp-preview.002.png`).
+```powershell
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/azure-clarity.css slides/my-deck/my-deck.md --images png -o slides/my-deck/assets/temp-preview.png
+```
+> **Environment Note:** If the image export fails due to missing browser/Chromium dependencies or corporate policy restrictions, abort the visual inspection and fall back to the Stage 3 DOM Metrics Extractor.
+> **Model Note:** This step requires the AI model to have image-reading (vision) capabilities.
+
+**Step 2: Inspect the Images**
+Use your file viewing tool (`view_file`) on the specific generated image(s) you need to check. This will load the image into your context, allowing you to visually identify:
+- Text overflowing slide boundaries or container `div`s.
+- Poor contrast (e.g., light text on a light background).
+- Misaligned columns or grids.
+- Improperly scaled images or icons.
+
+**Step 3: Cleanup (MANDATORY)**
+Once you have reviewed the images and made necessary corrections to the Markdown, you **MUST** delete all temporary screenshot files to keep the workspace clean.
+```powershell
+Remove-Item -Path "slides/my-deck/assets/temp-preview*.png" -Force
+```
 ## 5. Content Overflow Solutions
 
 Priority order (most design-friendly first):
