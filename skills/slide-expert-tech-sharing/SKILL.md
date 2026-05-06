@@ -1,11 +1,21 @@
 ---
 name: slide-expert-tech-sharing
-description: Activate this skill ONLY when creating or editing study group or technical sharing presentation slides.
+description: Activate this skill ONLY when PLANNING or OUTLINING Tech Sharing presentation slides. DO NOT activate during Marp implementation, layout fixing, or exporting.
 ---
 
 # Technical Sharing Slide Expert
 
 A guide for creating effective technical sharing and study group presentation slides for engineers.
+
+
+## MANDATORY: Confirm Before Drafting
+
+**DO NOT generate any slide content for a new or substantially revised deck until you have explicitly confirmed the outline with the user.**
+
+Before writing any new slide content, you MUST:
+1. Present a proposed outline (section titles + slide count + estimated time) based on the guidelines below.
+2. Ask: "Does this structure work for you? Let me know if you'd like any changes."
+3. Wait for explicit approval before proceeding.
 
 ## Understanding Your Audience
 
@@ -180,3 +190,6 @@ Include a slide with:
 
 Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
 Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.
+
+> **Diagram Warning for Implementation Phase:** When suggesting diagrams (like Sequence or Flowcharts), remind the user that inline Mermaid (` ```mermaid `) fails in Marp PDF exports. Diagrams must be placed as placeholder images (`![Diagram](./assets/diagram.svg)`) and generated offline using Mermaid CLI during the implementation phase.
+

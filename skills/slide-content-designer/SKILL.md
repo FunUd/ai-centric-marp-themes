@@ -14,6 +14,8 @@ If the outline is already approved and the work is mainly Marp implementation, l
 If the presentation details are incomplete or unclear, load this skill first and use it to clarify the audience, theme, format, slide count, and allotted time before drafting.
 
 > **Note:** This skill focuses on *content, structure, and design principles*. For Marp-specific Markdown generation, use `marp-slide-creator` after the outline is finalized.
+> 
+> **Domain-Specific Outlines:** If the user wants to create a specific type of presentation (e.g., API Architecture, Progress Report, Tech Sharing), prioritize activating the corresponding `slide-expert-*` skill instead of this generic one. Do not load both simultaneously.
 
 ## MANDATORY: Confirm Before Drafting a New Outline
 
