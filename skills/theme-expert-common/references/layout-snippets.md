@@ -86,3 +86,15 @@ Use these exact HTML snippets to ensure correct structure and avoid layout break
   <p><strong>Note:</strong> This is an info callout.</p>
 </div>
 ```
+
+## Custom Font Scaling (font-scale)
+
+Use this when you need finer control over content density than `dense` or `extra-dense` provide.
+
+```html
+<style scoped>
+section {
+  --font-scale: 0.85; /* Scale factor (default is 1.0) */
+}
+</style>
+```

@@ -140,3 +140,16 @@ Content
 - Point 1
 - Point 2
 ```
+
+### 5. Custom Font Scaling
+If standard density classes (`dense`, `extra-dense`) are insufficient, use the `--font-scale` variable within a scoped style block.
+
+```html
+<style scoped>
+section {
+  --font-scale: 0.85; /* Scale factor (default: 1.0) */
+}
+</style>
+```
+
+> **Note:** This affects all text elements (paragraphs, lists, tables, etc.) except the main slide title (`h1`).

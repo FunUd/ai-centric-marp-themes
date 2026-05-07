@@ -90,7 +90,14 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 - `<!-- _class: dense -->` for moderately dense slides
 - `<!-- _class: extra-dense -->` for the densest slides that still need to stay readable
-- Use `<style scoped>` with `--font-scale` if you need finer control
+- Use `<style scoped>` with `--font-scale` if you need finer control:
+  ```html
+  <style scoped>
+  section {
+    --font-scale: 0.8;
+  }
+  </style>
+  ```
 
 ### Profile / Self-Introduction
 
