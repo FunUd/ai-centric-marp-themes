@@ -124,6 +124,8 @@ Manual checks from `elements` array:
 
 When you (the AI) need to visually confirm the actual layout, contrast, and element positioning, you can generate and analyze screenshots directly. This is the most reliable way to check complex layouts.
 
+**⚠️ PERMISSION CHECK:** Before performing this stage, ensure the user has explicitly opted-in to "Visual layout checks" or "AI Vision". If not, do NOT proceed with image generation and stick to Stage 3 DOM Metrics.
+
 **Step 1: Export to Images (PNG)**
 Use Marp CLI to generate images. This will output a sequence of images (e.g., `temp-preview.001.png`, `temp-preview.002.png`).
 ```powershell
@@ -132,14 +134,22 @@ npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/azure-c
 > **Environment Note:** If the image export fails due to missing browser/Chromium dependencies or corporate policy restrictions, abort the visual inspection and fall back to the Stage 3 DOM Metrics Extractor.
 > **Model Note:** This step requires the AI model to have image-reading (vision) capabilities.
 
-**Step 2: Inspect the Images**
+**Step 2: Slide Identification Protocol (MANDATORY)**
+To avoid misidentifying slide numbers during visual inspection:
+1. **Render with Pagination**: If not already present, ensure `paginate: true` is set in the frontmatter during the diagnostic render.
+2. **Cross-reference Filename & Page Number**: When viewing an image (e.g., `temp-preview.003.png`), look for the page number rendered in the footer of the slide itself.
+3. **Verify Content**: Before applying a fix, confirm that the slide title or key text in the image matches the slide you intend to edit in the Markdown file.
+4. **Source of Truth**: The rendered page number in the image is the source of truth for *which* slide is being seen. The file sequence (001, 002...) usually matches, but can drift if hidden slides are present.
+
+**Step 3: Inspect the Images**
 Use your file viewing tool (`view_file`) on the specific generated image(s) you need to check. This will load the image into your context, allowing you to visually identify:
 - Text overflowing slide boundaries or container `div`s.
 - Poor contrast (e.g., light text on a light background).
 - Misaligned columns or grids.
 - Improperly scaled images or icons.
 
-**Step 3: Cleanup (MANDATORY)**
+**Step 4: Cleanup (MANDATORY)**
+
 Once you have reviewed the images and made necessary corrections to the Markdown, you **MUST** delete all temporary screenshot files to keep the workspace clean.
 ```powershell
 Remove-Item -Path "slides/my-deck/assets/temp-preview*.png" -Force

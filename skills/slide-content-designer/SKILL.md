@@ -53,6 +53,9 @@ Always ask for the allotted presentation time and the target output format (HTML
 
 **Action**: Explicitly propose target slide count and high-level outline for approval before drafting.
 
+**Visual Check Confirmation**: Always ask if the user wants to perform AI visual layout checks (using vision models) or stay with text-based linting. Explain that visual checks provide higher quality but incur higher token costs.
+
+
 ## 3. Structural Best Practices
 
 When drafting content, apply these rules:
@@ -74,10 +77,10 @@ Keep these in mind when drafting text to ensure content *can* be designed well l
 
 1. **Ask & Clarify**: Time limit? Audience? Core message? Output format?
 2. **Brainstorm (if needed)**: Help user find core message
-3. **Outline**: Propose section-by-section outline with slide titles and estimated slide count
-4. **WAIT for approval**: Present outline and ask for confirmation — **do not proceed without an explicit OK**
-5. **Draft (outline-level only)**: After outline is approved, write slide-level bullet points using placeholders like `[Insert diagram here]` or `[List 3 key benefits]` — **do not write final prose or Marp Markdown yet**
-6. **Hand off to `marp-slide-creator`**: Once slide-level content is confirmed, activate `marp-slide-creator` to generate the final Marp Markdown
+3. **Outline**: Propose section-by-section outline with slide titles and estimated slide count.
+4. **Visual Check Opt-in**: Ask: *"Would you like to perform visual layout checks using AI vision later? (High quality, but higher token cost) or stick to text-based linting?"*
+5. **WAIT for approval**: Present outline and ask for confirmation — **do not proceed without an explicit OK**
+6. **Draft (outline-level only)**: After outline is approved, write slide-level bullet points using placeholders like `[Insert diagram here]` or `[List 3 key benefits]` — **do not write final prose or Marp Markdown yet**
+7. **Hand off to `marp-slide-creator`**: Once slide-level content is confirmed, activate `marp-slide-creator` to generate the final Marp Markdown
 
 > **Placeholder rule**: Keep each slide entry at outline-level (title + 2–4 bullet points max) until the user explicitly approves the full structure. Expanding into full text before approval wastes tokens and makes restructuring costly.
-
