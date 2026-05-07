@@ -168,8 +168,8 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `bg-grid` | *(Prism Edge)* Subtle grid pattern background |
 | `bg-noise` | *(Prism Edge)* Soft noise texture background |
 | `profile` | Self-introduction / team member profile |
-| `dense` | High-density slide (20px base font) |
-| `extra-dense` | Maximum density (17px base font) |
+| `dense` | High-density slide (18px base font) |
+| `extra-dense` | Maximum density (15px base font) |
 
 ### Alignment & Utilities
 
@@ -180,6 +180,8 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `no-pagination` | Hide page number |
 | `no-header` / `no-footer` | Hide header/footer |
 | `with-header` | Extra top padding for header space |
+| `pagination-left` | Move page number to bottom-left |
+| `text-large` / `text-small` | 1.3em / 0.85em text size utility |
 
 ### Components
 
@@ -217,6 +219,7 @@ ai-centric-marp-themes/
 │   │   └── scripts/
 │   │       ├── marp-diagnostics.py        # Overflow / layout diagnostics helper
 │   │       ├── marp-dom-extractor.py      # Playwright DOM metrics extractor for text-only AI review
+│   │       ├── marp-lint.py               # Pre-render linter for structural mistakes
 │   │       └── setup-slide-project.py     # Project scaffolding helper
 │   ├── marp-svg-icon-placer/SKILL.md
 │   ├── slide-expert-api-architecture/SKILL.md
@@ -238,7 +241,11 @@ ai-centric-marp-themes/
 - **`themes/`** — Theme CSS files ready to use with Marp.
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
-- **`skills/marp-slide-creator/scripts/`** — Marp diagnostics helper, Playwright-based DOM extractor for AI-driven slide layout review without image parsing, and project scaffolding helper.
+- **`skills/marp-slide-creator/scripts/`** — Scripting toolkit for high-quality Marp generation:
+  - `marp-lint.py`: Catches structural mistakes (missing class directives, centered lists) *before* rendering.
+  - `marp-diagnostics.py`: Surfaces overflow and broken-image risks *after* rendering to HTML.
+  - `marp-dom-extractor.py`: Playwright-based metrics extractor for AI-driven layout review.
+  - `setup-slide-project.py`: Project scaffolding helper.
 
 ### Skill Routing
 
@@ -326,7 +333,11 @@ This enables the alternative text-only review pipeline described in `skills/marp
 ## Third-party Assets
 
 - SVG icons in `skills/marp-svg-icon-placer/references/icons/`: [Phosphor Icons](https://phosphoricons.com/) — [MIT License](https://github.com/phosphor-icons/core/blob/main/LICENSE)
-- Bundled fonts in `assets/fonts/`: [Carlito](https://github.com/googlefonts/carlito), [Caladea](https://github.com/huertatipografica/Caladea), [Liberation Mono](https://github.com/liberationfonts/liberation-fonts) — all under [SIL Open Font License 1.1](https://scripts.sil.org/OFL)
+- Bundled fonts in `assets/fonts/`:
+  - **Serif/Sans**: [Carlito](https://github.com/googlefonts/carlito), [Caladea](https://github.com/huertatipografica/Caladea), [Poppins](https://github.com/itfoundry/poppins), [Space Grotesk](https://github.com/floriankarsten/space-grotesk)
+  - **Japanese**: [Noto Sans JP](https://github.com/googlefonts/noto-cjk), [Zen Maru Gothic](https://github.com/googlefonts/zen-marugothic)
+  - **Mono**: [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), [Liberation Mono](https://github.com/liberationfonts/liberation-fonts)
+  - All under [SIL Open Font License 1.1](https://scripts.sil.org/OFL)
 
 ## License
 
