@@ -140,7 +140,7 @@ section {
    ============================================================ */
 section h1 {
   color: var(--pe-accent);
-  font-size: calc(38px * var(--font-scale));
+  font-size: 38px;
   font-weight: 700;
   margin: 0 0 24px 0;
   padding-bottom: 12px;
@@ -1314,24 +1314,21 @@ section .underline-accent::after {
    Content Density Utilities
    ============================================================ */
 section.dense {
-  font-size: 18px;
+  --font-scale: 0.75;
   line-height: 1.5;
 }
 
 section.dense h1 {
-  font-size: 30px;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom-width: 2px;
 }
 
 section.dense h2 {
-  font-size: 24px;
   margin-bottom: 10px;
 }
 
 section.dense h3 {
-  font-size: 20px;
   margin-bottom: 6px;
 }
 
@@ -1345,39 +1342,27 @@ section.dense li {
   margin-bottom: 2px;
 }
 
-section.dense table {
-  font-size: 16px;
-}
-
-section.dense pre code {
-  font-size: 15px;
-}
-
 section.dense blockquote {
-  font-size: 17px;
   padding: 10px 18px;
 }
 
 section.extra-dense {
-  font-size: 15px;
+  --font-scale: 0.625;
   line-height: 1.4;
   padding: 30px 50px 35px 50px;
 }
 
 section.extra-dense h1 {
-  font-size: 26px;
   margin-bottom: 8px;
   padding-bottom: 6px;
   border-bottom-width: 2px;
 }
 
 section.extra-dense h2 {
-  font-size: 20px;
   margin-bottom: 6px;
 }
 
 section.extra-dense h3 {
-  font-size: 18px;
   margin-bottom: 4px;
 }
 
@@ -1391,16 +1376,7 @@ section.extra-dense li {
   margin-bottom: 1px;
 }
 
-section.extra-dense table {
-  font-size: 14px;
-}
-
-section.extra-dense pre code {
-  font-size: 13px;
-}
-
 section.extra-dense blockquote {
-  font-size: 14px;
   padding: 8px 14px;
 }
 
