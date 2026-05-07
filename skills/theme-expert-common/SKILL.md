@@ -24,11 +24,38 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 **For the exact HTML structure of these patterns, please read `references/layout-snippets.md`.**
 
-> **🚨 CRITICAL FAILURE WARNING:**
-> A very common AI mistake is writing the HTML `<div class="columns">` but forgetting to put `<!-- _class: cols-2 -->` at the top of the slide.
-> **The HTML wrapper alone does NOT work.** You MUST include the Marp `<!-- _class: ... -->` directive at the top of the slide, or the layout will completely break and stack vertically.
+> **🚨 CRITICAL FAILURE WARNING — #1 CAUSE OF BROKEN SLIDES:**
+> Writing `<div class="columns">` or `<div class="grid">` WITHOUT the matching `<!-- _class: ... -->` directive is the single most common and destructive AI mistake. **The HTML wrapper alone does NOTHING.** The CSS layout activates ONLY when the `section` element has the correct class.
+>
+> **WRONG (layout will NOT activate — content stacks vertically and overflows):**
+> ```markdown
+> <!-- _class: with-header -->
+> # Title
+> <div class="columns">
+> <div class="col">Left</div>
+> <div class="col">Right</div>
+> </div>
+> ```
+>
+> **CORRECT:**
+> ```markdown
+> <!-- _class: cols-2 with-header -->
+> # Title
+> <div class="columns">
+> <div class="col">Left</div>
+> <div class="col">Right</div>
+> </div>
+> ```
+>
+> **Required pairings:**
+> - `<div class="columns">` → `cols-2`, `cols-3`, `split-2`, `split-3`, `split-asym`, or `split-asym-reverse` in `_class`
+> - `<div class="grid">` → `grid-quadrant` or `grid-sharp` in `_class`
+> - `<div class="profile-layout">` → `profile` in `_class`
 
-**When in doubt, check `slides/sample-slide/` for correct structure.**
+> **🚨 CENTERED LIST PROHIBITION:**
+> Do NOT place bullet lists (`-`, `*`, `1.`) on slides with centered-layout classes: `cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`. Lists will render centered instead of left-aligned. Move lists to content slides.
+
+**When in doubt, check `slides/sample-slide/` for correct structure, and run `marp-lint.py` to catch these issues automatically.**
 
 ## Shared Patterns
 

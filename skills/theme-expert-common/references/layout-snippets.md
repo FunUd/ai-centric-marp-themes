@@ -2,6 +2,8 @@
 
 Use these exact HTML snippets to ensure correct structure and avoid layout breaks.
 
+> **🚨 Every snippet below includes the `<!-- _class: ... -->` directive. This directive is NOT optional — it is an inseparable part of the pattern. Without it, the layout does NOT activate.**
+
 ## Two-Column Layout (cols-2)
 ```html
 <!-- _class: cols-2 -->

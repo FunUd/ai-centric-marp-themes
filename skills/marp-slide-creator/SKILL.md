@@ -55,31 +55,41 @@ For syntax on inline images, background images, and image filters, **read `refer
 > **⚠️ MANDATORY: Preview confirmation is required, not optional.**
 > Slide creation is NOT complete until every slide has been visually verified.
 
-### Stage 1: Editor Diagnostic
+### Workflow (MUST follow this order)
 
-Marp for VS Code includes an experimental `slide-content-overflow` diagnostic. Enable `markdown.marp.diagnostics.slideContentOverflow` and keep the Markdown preview open to surface overflow warnings directly in the editor.
+```
+1. Edit Markdown
+2. Run marp-lint.py (catches structural errors BEFORE rendering)
+3. If lint issues -> fix -> repeat from step 2
+4. Run marp-diagnostics.py (catches rendered-output issues)
+5. If DOM issues -> fix -> repeat from step 2
+6. Complete
+```
+
+### Stage 1: Pre-Render Lint (MANDATORY FIRST STEP)
+
+**Always run the pre-render linter BEFORE marp-diagnostics.py.** It catches structural issues that the DOM extractor CANNOT detect (because the CSS never activates when the structure is wrong).
+
+```powershell
+python skills/marp-slide-creator/scripts/marp-lint.py slides/my-deck/my-deck.md
+```
+
+It detects:
+- `MISSING_CLASS_DIRECTIVE`: `<div class="columns">` without matching `<!-- _class: cols-2 -->` (layout won't activate)
+- `CENTERED_LIST`: Bullet lists on centered-layout slides (renders centered, not left-aligned)
+- `OVERSIZED_ICON`: Catalog SVG icons used larger than 200px (icons are for small decorative use only)
+
+> **⚠️ DO NOT skip this step.** The DOM extractor reports "no issues" even when layouts are completely broken because the content simply stacks vertically inside the slide's overflow:hidden container.
 
 ### Stage 2: Batch Diagnostic Helper
 
-If you want the same overflow check from the terminal, use the helper script:
+After lint passes clean, run the DOM-based diagnostics:
 
 ```powershell
 python skills/marp-slide-creator/scripts/marp-diagnostics.py slides/my-deck/my-deck.md
 ```
 
 This helper exports `slides/my-deck/preview.html`, runs the DOM extractor, and writes `slides/my-deck/assets/dom-metrics.json`.
-
-### Workflow
-
-```
-1. Edit Markdown
-2. Run the editor diagnostic or `marp-diagnostics.py`
-3. If issues -> fix -> repeat
-4. If clean -> export HTML and run the DOM extractor for a deeper pass
-5. Analyze metrics
-6. If issues -> fix -> repeat
-7. Complete
-```
 
 ### Stage 3: DOM Metrics Extraction
 
@@ -200,32 +210,38 @@ section table { font-size: 16px; }
 
 ## 6. Quality Checklist
 
-Structure (verify before preview):
-- [ ] Container classes have required wrapper divs (`columns`, `grid`, `profile-layout`)
+### 🚨 Critical Structure (MUST verify — these cause silent failures):
+- [ ] **Every `<div class="columns">` slide has `<!-- _class: cols-2 -->` (or cols-3/split-2/split-3/split-asym/split-asym-reverse) in its directive** — without this, the layout does NOT activate and content stacks vertically
+- [ ] **Every `<div class="grid">` slide has `<!-- _class: grid-quadrant -->` or `<!-- _class: grid-sharp -->` in its directive** — same reason
+- [ ] **Every `<div class="profile-layout">` slide has `<!-- _class: profile -->`**
+- [ ] **No bullet/numbered lists on centered-layout slides** (`cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`) — lists render centered, not left-aligned
+- [ ] **No catalog SVG icons used larger than width:200px** — icons are for inline/decorative use only (≤48px for cards, ≤36px for headings)
+- [ ] `marp-lint.py` reports zero issues
+
+### Structure (verify before preview):
 - [ ] Column layouts use `<div class="col">` or `<div>` for each column
 - [ ] Grid layouts have exactly 4 `<div class="cell">` children
 - [ ] Inline classes (`badge`, `gradient-text`) use `<span>`, not `<div>`
 - [ ] Alignment classes (`v-center`) applied to column divs, not `_class` directive
 
-Layout:
+### Layout:
 - [ ] No text overflow/cutoff
 - [ ] No scroll-dependent code, Mermaid, or table regions in PDF/PPTX decks
 - [ ] Images don't overlap text
 - [ ] Consistent margins
-- [ ] Lists are left-aligned (not centered) — if centered, the slide likely uses a `cover`, `key-message`, or `align-center` class; either move the list to a content slide or add `<style scoped> section ul, section ol { text-align: left; } </style>`
 
-Typography:
+### Typography:
 - [ ] Clear heading hierarchy
 - [ ] Readable font size (≥16px)
 - [ ] Purposeful emphasis
 
-Visual:
+### Visual:
 - [ ] Consistent color scheme
 - [ ] Good text/background contrast
 - [ ] Aligned tables
 - [ ] Diagrams/icons where appropriate
 
-Content:
+### Content:
 - [ ] One idea per slide
 - [ ] Concise bullet points
 - [ ] Images serve a purpose

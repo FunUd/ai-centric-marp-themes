@@ -133,7 +133,7 @@ footer: "© 2026 Your Company"
 
 ---
 
-<!-- _class: with-header -->
+<!-- _class: split-2 with-header -->
 
 # Stat Number & Highlight Box
 

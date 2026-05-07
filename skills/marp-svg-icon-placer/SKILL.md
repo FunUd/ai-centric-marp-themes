@@ -103,16 +103,27 @@ Description text
 
 Use `width:48px` for feature card icons. Place on its own line with blank lines.
 
-### Pattern D: Background Image
+### Pattern D: Background / Large Visual
 
-> **⚠️ IMPORTANT: Do NOT use catalog icons for backgrounds**
-> 
-> Catalog icons are NOT suitable for `bg` usage or large-scale display (>30% of slide area). For large visuals, hero art, or backgrounds:
+> **🚨 HARD RULE: Catalog icons MUST NOT exceed width:200px.**
+>
+> Catalog icons are designed for small inline/decorative use ONLY:
+> - **Headings**: `width:28px` to `width:36px`
+> - **List items**: `width:1em`
+> - **Feature cards**: `width:48px`
+> - **Maximum**: `width:200px` (absolute ceiling — no exceptions)
+>
+> **NEVER** use a catalog icon as:
+> - A hero/feature image (e.g., `width:300px` centered on slide)
+> - A background image (`![bg ...]`)
+> - Any element covering >15% of slide area
+>
+> For large visuals, hero art, or backgrounds:
 > - Create them using `.drawio.svg` format
-> - Ask user to provide appropriate background images
-> - Catalog icons are for small inline/decorative use only
+> - Ask the user to provide appropriate images
+> - Use `generate_image` tool if available
 
-For large decorative icons (if appropriate):
+For subtle decorative background use only (opacity ≤ 0.15):
 
 ```markdown
 ![bg right:40% opacity:0.1](./assets/cloud-network.svg)
@@ -121,7 +132,7 @@ For large decorative icons (if appropriate):
 Content on left
 ```
 
-Adjust `opacity` to `0.1` to `0.3`. Use `left` or `right` positioning.
+Adjust `opacity` to `0.1` to `0.15`. Use `left` or `right` positioning.
 
 ## 5. Generate New Icons (Fallback)
 
