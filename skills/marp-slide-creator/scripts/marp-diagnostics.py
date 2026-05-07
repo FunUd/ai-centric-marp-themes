@@ -65,16 +65,22 @@ def npm_cache_env() -> dict[str, str]:
     return env
 
 
-def export_html(markdown_path: Path, html_path: Path, marp_bin: str) -> list[str]:
+def export_html(markdown_path: Path, html_path: Path, marp_bin: str, theme: str | None = None) -> list[str]:
     primary_bin = resolve_executable(marp_bin) or marp_bin
-    primary = [primary_bin, "--no-stdin", str(markdown_path), "-o", str(html_path)]
+    primary = [primary_bin, "--no-stdin", "--allow-local-files", str(markdown_path), "-o", str(html_path)]
+    if theme:
+        primary.extend(["--theme", theme])
+
     try:
         primary_env = npm_cache_env() if Path(primary_bin).name.lower().startswith("npx") else None
         run_command(primary, env=primary_env)
         return primary
-    except FileNotFoundError:
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # Fallback to npx if primary failed
         fallback_bin = resolve_executable("npx") or "npx"
-        fallback = [fallback_bin, "-y", "@marp-team/marp-cli", "--no-stdin", str(markdown_path), "-o", str(html_path)]
+        fallback = [fallback_bin, "-y", "@marp-team/marp-cli", "--no-stdin", "--allow-local-files", str(markdown_path), "-o", str(html_path)]
+        if theme:
+            fallback.extend(["--theme", theme])
         run_command(fallback, env=npm_cache_env())
         return fallback
 
@@ -95,7 +101,9 @@ def print_summary(metrics: list[dict[str, Any]], html_path: Path, json_path: Pat
     if metrics:
         analysis_mode = str(metrics[0].get("analysis_mode") or "browser")
         if analysis_mode == "heuristic":
-            print("Analysis mode: heuristic (Playwright unavailable, overflow checks are approximate).")
+            print("Analysis mode: heuristic (Playwright unavailable).")
+            print("- Overflow checks are approximate (based on character density).")
+            print("- Image checks only verify local file existence.")
 
     risk_entries: list[tuple[int, list[str]]] = []
     for slide in metrics:
@@ -132,6 +140,10 @@ def main() -> int:
         help="Marp CLI executable to try first (fallback: npx @marp-team/marp-cli)",
     )
     parser.add_argument(
+        "--theme",
+        help="Path to a custom Marp theme CSS file",
+    )
+    parser.add_argument(
         "--fail-on-risk",
         action="store_true",
         help="Exit with a non-zero status when any slide has risk flags",
@@ -160,7 +172,12 @@ def main() -> int:
             json_path.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        command_used = export_html(markdown_path.resolve(), html_path.resolve(), args.marp_bin)
+        command_used = export_html(
+            markdown_path.resolve(),
+            html_path.resolve(),
+            args.marp_bin,
+            theme=args.theme,
+        )
         print(f"Marp command: {' '.join(command_used)}")
         extract_metrics(html_path.resolve(), json_path.resolve())
         metrics = load_metrics(json_path.resolve())

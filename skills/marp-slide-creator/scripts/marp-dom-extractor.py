@@ -223,7 +223,7 @@ def extract_slide_metrics_heuristic(html_path: Path) -> list[dict[str, Any]]:
             if not src:
                 flags.append("IMAGE_NO_SRC: <img> without src")
             elif not is_remote_src(src) and not local_image_exists(html_path, src):
-                flags.append(f"IMAGE_BROKEN: {src[:40]}")
+                flags.append(f"IMAGE_MISSING: {src[:40]} (File not found)")
 
         if char_count > 600:
             flags.append(f"DENSE_TEXT: {char_count} chars may overflow")

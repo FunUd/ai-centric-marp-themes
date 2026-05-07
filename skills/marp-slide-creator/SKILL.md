@@ -86,7 +86,7 @@ It detects:
 After lint passes clean, run the DOM-based diagnostics:
 
 ```powershell
-python skills/marp-slide-creator/scripts/marp-diagnostics.py slides/my-deck/my-deck.md
+python skills/marp-slide-creator/scripts/marp-diagnostics.py --theme themes/prism-edge.css slides/my-deck/my-deck.md
 ```
 
 This helper exports `slides/my-deck/preview.html`, runs the DOM extractor, and writes `slides/my-deck/assets/dom-metrics.json`.
@@ -120,6 +120,17 @@ Manual checks from `elements` array:
 - Unbalanced layout
 - Missing expected images
 
+### Stage 3.1: Reliable Image Verification
+
+**Never** report images as "OK" based solely on file existence or size if you cannot visually confirm them.
+
+- **If you have Vision capabilities**: Use Stage 4 (Image-based Feedback Loop) to see the actual rendered slides.
+- **If you DO NOT have Vision capabilities** (or the user opted-out):
+    - Report: "Image verification skipped (Vision unavailable/opt-out)".
+    - You may still report "File exists" if `marp-diagnostics.py` shows no `IMAGE_MISSING` flags, but do NOT call it "OK" or "Verified".
+- **Binary Read Errors**: If `view_file` fails with a binary error when trying to view a PNG/JPG, do NOT assume the file is valid. This error simply means the file is binary.
+- **`view_file` usage**: When viewing binary images, do NOT provide `StartLine` or `EndLine` arguments.
+
 ### Stage 4: AI Visual Inspection (Image-based Feedback Loop)
 
 When you (the AI) need to visually confirm the actual layout, contrast, and element positioning, you can generate and analyze screenshots directly. This is the most reliable way to check complex layouts.
@@ -129,7 +140,7 @@ When you (the AI) need to visually confirm the actual layout, contrast, and elem
 **Step 1: Export to Images (PNG)**
 Use Marp CLI to generate images. This will output a sequence of images (e.g., `temp-preview.001.png`, `temp-preview.002.png`).
 ```powershell
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/azure-clarity.css slides/my-deck/my-deck.md --images png -o slides/my-deck/assets/temp-preview.png
+npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/prism-edge.css slides/my-deck/my-deck.md --images png -o slides/my-deck/assets/temp-preview.png
 ```
 > **Environment Note:** If the image export fails due to missing browser/Chromium dependencies or corporate policy restrictions, abort the visual inspection and fall back to the Stage 3 DOM Metrics Extractor.
 > **Model Note:** This step requires the AI model to have image-reading (vision) capabilities.
@@ -250,6 +261,7 @@ section table { font-size: 16px; }
 - [ ] Good text/background contrast
 - [ ] Aligned tables
 - [ ] Diagrams/icons where appropriate
+- [ ] **Images verified visually** (or explicitly reported as "unverified" if vision unavailable)
 
 ### Content:
 - [ ] One idea per slide
