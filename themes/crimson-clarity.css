@@ -1075,39 +1075,39 @@ section .callout p:last-child {
   margin-bottom: 0;
 }
 
-section .callout.info {
+section .callout.blue {
   border-left-color: #3498db;
   background: #ebf5fb;
 }
 
-section .callout.info h4 {
+section .callout.blue h4 {
   color: #2980b9;
 }
 
-section .callout.success {
+section .callout.green {
   border-left-color: var(--cc-success);
   background: #f0f9f4;
 }
 
-section .callout.success h4 {
+section .callout.green h4 {
   color: #1e8449;
 }
 
-section .callout.warning {
+section .callout.orange {
   border-left-color: var(--cc-warning);
   background: #fff8f0;
 }
 
-section .callout.warning h4 {
+section .callout.orange h4 {
   color: #d68910;
 }
 
-section .callout.danger {
+section .callout.red {
   border-left-color: var(--cc-danger);
   background: #fdf2f1;
 }
 
-section .callout.danger h4 {
+section .callout.red h4 {
   color: #cb4335;
 }
 
@@ -1128,22 +1128,22 @@ section .badge {
   color: var(--cc-primary-dark);
 }
 
-section .badge.primary {
+section .badge.blue {
   background-color: var(--cc-primary);
   color: var(--cc-white);
 }
 
-section .badge.success {
+section .badge.green {
   background-color: var(--cc-success);
   color: var(--cc-white);
 }
 
-section .badge.warning {
+section .badge.orange {
   background-color: var(--cc-warning);
   color: var(--cc-white);
 }
 
-section .badge.danger {
+section .badge.red {
   background-color: var(--cc-danger);
   color: var(--cc-white);
 }
@@ -1207,23 +1207,23 @@ section .v-bottom {
 /* ============================================================
    Highlight colors utility
    ============================================================ */
-section .text-primary {
-  color: var(--cc-primary);
+section .text-blue {
+  color: #3498db;
 }
 
 section .text-accent {
   color: var(--cc-accent);
 }
 
-section .text-success {
+section .text-green {
   color: var(--cc-success);
 }
 
-section .text-warning {
+section .text-orange {
   color: var(--cc-warning);
 }
 
-section .text-danger {
+section .text-red {
   color: var(--cc-danger);
 }
 

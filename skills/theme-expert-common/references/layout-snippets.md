@@ -80,10 +80,10 @@ Use these exact HTML snippets to ensure correct structure and avoid layout break
 </div>
 ```
 
-## Callouts (callout.info / success / warning / danger)
+## Callouts (blue, green, orange, red)
 ```html
-<div class="callout info">
-  <p><strong>Note:</strong> This is an info callout.</p>
+<div class="callout blue">
+  <p><strong>Note:</strong> Specify colors directly (blue, green, orange, or red).</p>
 </div>
 ```
 

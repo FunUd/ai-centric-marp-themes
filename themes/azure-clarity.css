@@ -1075,35 +1075,35 @@ section .callout p:last-child {
   margin-bottom: 0;
 }
 
-section .callout.info {
+section .callout.blue {
   border-left-color: var(--ac-primary);
   background: var(--ac-primary-pale);
 }
 
-section .callout.success {
+section .callout.green {
   border-left-color: var(--ac-success);
   background: #f0f9f4;
 }
 
-section .callout.success h4 {
+section .callout.green h4 {
   color: #1e8449;
 }
 
-section .callout.warning {
+section .callout.orange {
   border-left-color: var(--ac-warning);
   background: #fff8f0;
 }
 
-section .callout.warning h4 {
+section .callout.orange h4 {
   color: #d68910;
 }
 
-section .callout.danger {
+section .callout.red {
   border-left-color: var(--ac-danger);
   background: #fdf2f1;
 }
 
-section .callout.danger h4 {
+section .callout.red h4 {
   color: #cb4335;
 }
 
@@ -1124,22 +1124,22 @@ section .badge {
   color: var(--ac-primary-dark);
 }
 
-section .badge.primary {
+section .badge.blue {
   background-color: var(--ac-primary);
   color: var(--ac-white);
 }
 
-section .badge.success {
+section .badge.green {
   background-color: var(--ac-success);
   color: var(--ac-white);
 }
 
-section .badge.warning {
+section .badge.orange {
   background-color: var(--ac-warning);
   color: var(--ac-white);
 }
 
-section .badge.danger {
+section .badge.red {
   background-color: var(--ac-danger);
   color: var(--ac-white);
 }
@@ -1203,7 +1203,7 @@ section .v-bottom {
 /* ============================================================
    Highlight colors utility
    ============================================================ */
-section .text-primary {
+section .text-blue {
   color: var(--ac-primary);
 }
 
@@ -1211,15 +1211,15 @@ section .text-accent {
   color: var(--ac-accent);
 }
 
-section .text-success {
+section .text-green {
   color: var(--ac-success);
 }
 
-section .text-warning {
+section .text-orange {
   color: var(--ac-warning);
 }
 
-section .text-danger {
+section .text-red {
   color: var(--ac-danger);
 }
 

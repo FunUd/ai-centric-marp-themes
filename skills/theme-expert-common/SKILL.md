@@ -12,7 +12,7 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 **Container classes require proper nesting. Missing wrapper divs will break layout:**
 
-- `callout` → Must wrap individual blocks, not entire slides
+- `callout` → Must wrap individual blocks, not entire slides. Types: `blue`, `green`, `orange`, `red`.
 - `cols-2/3`, `split-2/3` → Requires `<div class="columns">` + child `<div class="col">` or `<div>`
 - `grid-quadrant/sharp` → Requires `<div class="grid">` + exactly four `<div class="cell">` children. **DO NOT hallucinate wrapper divs like `<div class="cell side"><div>`. Use EXACTLY `<div class="cell">`.**
 - `profile` → Requires `<div class="profile-layout">` + `profile-image` + `profile-content`
@@ -126,8 +126,9 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 ### Callouts
 
-- `callout.info`, `callout.success`, `callout.warning`, and `callout.danger` are available
-- Use callouts sparingly and keep contrast strong
+- `blue`, `green`, `orange`, and `red` are available.
+- Use these color-based names regardless of semantic meaning.
+- Use callouts sparingly and keep contrast strong.
 
 ### Alignment and Images
 

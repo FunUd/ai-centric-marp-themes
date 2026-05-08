@@ -219,8 +219,8 @@ All themes share a unified class system. Apply any class via the Marp directive:
 
 | Component | Usage |
 |-----------|-------|
-| **Callouts** | `<div class="callout info">...</div>` (types: `info`, `success`, `warning`, `danger`) |
-| **Badges** | `<span class="badge success">NEW</span>` |
+| **Callouts** | `<div class="callout blue">...</div>` (types: `blue`, `green`, `orange`, `red`) |
+| **Badges** | `<span class="badge red">NEW</span>` (types: `blue`, `green`, `orange`, `red`) |
 | **Glass Panel** | *(Prism Edge)* `<div class="glass-panel">...</div>` — frosted glass container |
 | **Gradient Text** | *(Prism Edge)* `<span class="gradient-text">Text</span>` — indigo-to-cyan gradient fill |
 | **Highlight Box** | *(Prism Edge)* `<div class="highlight-box">...</div>` — gradient left-bordered emphasis block |
