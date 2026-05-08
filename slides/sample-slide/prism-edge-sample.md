@@ -334,27 +334,27 @@ footer: "© 2026 Your Company"
 
 # コールアウトとバッジ
 
-<div class="callout info">
+<div class="callout blue">
 <h4>Information</h4>
 補足情報や Tips を目立たせて表示します。
 </div>
 
-<div class="callout success">
+<div class="callout green">
 <h4>Success</h4>
 完了した項目や成功事例を強調します。
 </div>
 
-<div class="callout warning">
+<div class="callout orange">
 <h4>Warning</h4>
 注意が必要な点を強調します。
 </div>
 
-<div class="callout danger">
+<div class="callout red">
 <h4>Danger</h4>
 リスクや非推奨事項を明確にします。
 </div>
 
-ステータス: <span class="badge primary">進行中</span> <span class="badge success">完了</span> <span class="badge warning">要確認</span> <span class="badge danger">重要</span>
+ステータス: <span class="badge blue">進行中</span> <span class="badge green">完了</span> <span class="badge orange">要確認</span> <span class="badge red">重要</span>
 
 ---
 

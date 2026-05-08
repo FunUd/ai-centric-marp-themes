@@ -387,24 +387,24 @@ footer: "© 2026 Your Company"
 
 # コールアウトとバッジ
 
-汎用的に使えるハイライト要素です。新機能 <span class="badge danger">NEW</span> や、状態 <span class="badge success">完了</span> を表現できます。
+汎用的に使えるハイライト要素です。新機能 <span class="badge red">NEW</span> や、状態 <span class="badge green">完了</span> を表現できます。
 
-<div class="callout info">
+<div class="callout blue">
 <h4>ℹ️ Information</h4>
 標準のコールアウトです。補足情報やヒントを記載するのに適しています。
 </div>
 
-<div class="callout success">
+<div class="callout green">
 <h4>✅ Success</h4>
 成功や完了を伝えるメッセージです。ポジティブな結果を強調します。
 </div>
 
-<div class="callout warning">
+<div class="callout orange">
 <h4>⚠️ Warning</h4>
 注意喚起です。仕様の制限や、気をつけるべきポイントを記載します。
 </div>
 
-<div class="callout danger">
+<div class="callout red">
 <h4>🚨 Danger</h4>
 重大な警告です。非推奨の操作や、エラー状態を表現するのに使用します。
 </div>
