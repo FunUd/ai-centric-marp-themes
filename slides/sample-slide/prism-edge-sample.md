@@ -64,7 +64,7 @@ footer: "© 2026 Your Company"
 
 1. 目次（標準）
 2. Hero スライド
-3. Title Only（セクション分け）
+3. Title Only & Elegant（セクション分け）
 4. Accent Left Border
 5. Section Number
 6. 背景パターン
@@ -106,6 +106,15 @@ footer: "© 2026 Your Company"
 <!-- _footer: "" -->
 
 # Strategy & Vision
+
+---
+
+<!-- _class: title-elegant no-pagination -->
+<!-- _header: "" -->
+<!-- _footer: "" -->
+
+# Strategic Vision
+## Shaping The Future
 
 ---
 

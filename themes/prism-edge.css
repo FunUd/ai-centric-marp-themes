@@ -800,6 +800,83 @@ section.title-only h1 {
 }
 
 /* ============================================================
+   Title Elegant — sophisticated title slide
+   ============================================================ */
+section.title-elegant {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--pe-bg);
+  padding: 80px 100px;
+  position: relative;
+}
+
+section.title-elegant::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(180deg, transparent 0%, var(--pe-primary) 100%);
+}
+
+section.title-elegant::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(0deg, transparent 0%, var(--pe-cyan) 100%);
+}
+
+section.title-elegant h1 {
+  font-size: 52px;
+  font-weight: 400;
+  color: var(--pe-accent);
+  border-bottom: none;
+  margin: 0 0 24px 0;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  transition: all 0.3s ease;
+}
+
+section.title-elegant h1:last-child {
+  margin-bottom: 0;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  font-size: 58px;
+}
+
+/* Decorative diamond for single-title elegant slides */
+section.title-elegant h1:last-child::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--pe-primary);
+  transform: rotate(45deg);
+  margin: 60px auto 0;
+  opacity: 0.6;
+  background: linear-gradient(135deg, var(--pe-primary-pale), transparent);
+}
+
+section.title-elegant h2 {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--pe-primary);
+  margin: 0;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
    Accent Left — bold left accent border
    ============================================================ */
 section.accent-left {
@@ -1481,7 +1558,7 @@ section .checklist li::before {
 section .callout {
   padding: 18px 24px;
   margin: 16px 0;
-  background: linear-gradient(135deg, var(--pe-primary-pale) 0%, rgba(199,210,254,0.3) 100%);
+  background: var(--pe-primary-pale);
   font-size: 0.95em;
   position: relative;
 }
@@ -1493,7 +1570,7 @@ section .callout::before {
   left: 0;
   bottom: 0;
   width: 6px;
-  background: linear-gradient(180deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+  background: var(--pe-primary);
 }
 
 section .callout h4 {
@@ -1510,11 +1587,11 @@ section .callout p:last-child {
 }
 
 section .callout.blue {
-  background: linear-gradient(135deg, var(--pe-primary-pale) 0%, rgba(199,210,254,0.3) 100%);
+  background: #EEF2FF;
 }
 
 section .callout.blue::before {
-  background: linear-gradient(180deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+  background: var(--pe-primary);
 }
 
 section .callout.blue h4 {
@@ -1522,11 +1599,11 @@ section .callout.blue h4 {
 }
 
 section .callout.green {
-  background: linear-gradient(135deg, #ecfdf5 0%, rgba(16,185,129,0.12) 100%);
+  background: #ECFDF5;
 }
 
 section .callout.green::before {
-  background: linear-gradient(180deg, var(--pe-success) 0%, #34d399 100%);
+  background: var(--pe-success);
 }
 
 section .callout.green h4 {
@@ -1534,11 +1611,11 @@ section .callout.green h4 {
 }
 
 section .callout.orange {
-  background: linear-gradient(135deg, #fffbeb 0%, rgba(245,158,11,0.12) 100%);
+  background: #FFFBEB;
 }
 
 section .callout.orange::before {
-  background: linear-gradient(180deg, var(--pe-warning) 0%, #fbbf24 100%);
+  background: var(--pe-warning);
 }
 
 section .callout.orange h4 {
@@ -1546,11 +1623,11 @@ section .callout.orange h4 {
 }
 
 section .callout.red {
-  background: linear-gradient(135deg, #fef2f2 0%, rgba(239,68,68,0.12) 100%);
+  background: #FEF2F2;
 }
 
 section .callout.red::before {
-  background: linear-gradient(180deg, var(--pe-danger) 0%, #f87171 100%);
+  background: var(--pe-danger);
 }
 
 section .callout.red h4 {
@@ -1760,14 +1837,22 @@ section .section-number {
 }
 
 /* ============================================================
-   Highlight Box — vivid marker-like background
+   Highlight Box — inline emphasis for key insights
    ============================================================ */
 section .highlight-box {
-  background: linear-gradient(135deg, rgba(79,70,229,0.12) 0%, rgba(6,182,212,0.08) 100%);
-  border-left: 4px solid var(--pe-primary);
-  padding: 16px 20px;
-  margin: 12px 0;
+  background: transparent;
+  border-left: 2px solid var(--pe-primary);
+  padding: 8px 0 8px 24px;
+  margin: 16px 0;
   position: relative;
+}
+
+section .highlight-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(90deg, rgba(79,70,229,0.06) 0%, transparent 100%);
+  z-index: -1;
 }
 
 /* ============================================================

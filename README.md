@@ -184,6 +184,7 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `cover-aurora` | *(Prism Edge)* Soft aurora rotating gradient |
 | `hero` | *(Prism Edge)* Single large centered message (H1 at 72px) |
 | `title-only` | *(Prism Edge)* Minimal large left-aligned title (H1 at 64px) |
+| `title-elegant` | *(Prism Edge)* Elegant centered title slide (adapts to subtitle presence) |
 | `toc` | Two-column table of contents |
 | `toc-focus` | Single-column large-number agenda |
 | `cols-2` / `cols-3` | Card-style columns with background/border |
@@ -219,11 +220,11 @@ All themes share a unified class system. Apply any class via the Marp directive:
 
 | Component | Usage |
 |-----------|-------|
-| **Callouts** | `<div class="callout blue">...</div>` (types: `blue`, `green`, `orange`, `red`) |
+| **Callouts** | `<div class="callout blue">...</div>` (types: `blue`, `green`, `orange`, `red`) — independent alert blocks |
 | **Badges** | `<span class="badge red">NEW</span>` (types: `blue`, `green`, `orange`, `red`) |
 | **Glass Panel** | *(Prism Edge)* `<div class="glass-panel">...</div>` — frosted glass container |
 | **Gradient Text** | *(Prism Edge)* `<span class="gradient-text">Text</span>` — indigo-to-cyan gradient fill |
-| **Highlight Box** | *(Prism Edge)* `<div class="highlight-box">...</div>` — gradient left-bordered emphasis block |
+| **Highlight Box** | *(Prism Edge)* `<div class="highlight-box">...</div>` — inline emphasis block for key insights |
 | **Quote Large** | *(Prism Edge)* `<div class="quote-large">...</div>` — 32px italic editorial blockquote |
 | **Stat Number** | *(Prism Edge)* `<span class="stat-number">42</span><span class="stat-label">Label</span>` |
 | **Images** | `![center shadow width:600px](path)` or `![bg right:45% shadow](path)` |

@@ -11,9 +11,9 @@ Use this skill after the content structure is decided. For outline planning or s
 ## Prism Edge-Specific Cues
 
 - Use `cover-wave`, `cover-diagonal`, `cover-noir`, or `cover-aurora` to set the tone fast
-- Use `hero` or `title-only` when the opening slide needs a single strong message
+- Use `hero`, `title-only`, or `title-elegant` when the opening slide needs a single strong message
 - Use `split-asym` or `split-asym-reverse` when the composition should feel intentionally off-center
-- Use `glass-panel`, `gradient-text`, `underline-accent`, `section-number`, `highlight-box`, and `quote-large` for emphasis
+- Use `glass-panel`, `gradient-text`, `underline-accent`, `section-number`, `highlight-box` (for inline emphasis), and `quote-large` for emphasis
 - Use `bg-grid` and `bg-noise` only when the background itself should carry part of the design
 
 ## Shared Mechanics
