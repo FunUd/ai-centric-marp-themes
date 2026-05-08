@@ -5,7 +5,7 @@
 /* Space Grotesk — Latin body text (SIL OFL 1.1, Florian Karsten) */
 @font-face {
   font-family: 'Prism Grotesk';
-  src: url('../../assets/fonts/SpaceGrotesk-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/SpaceGrotesk-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,7 +13,7 @@
 
 @font-face {
   font-family: 'Prism Grotesk';
-  src: url('../../assets/fonts/SpaceGrotesk-Medium.ttf') format('truetype');
+  src: url('../assets/fonts/SpaceGrotesk-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: 'Prism Grotesk';
-  src: url('../../assets/fonts/SpaceGrotesk-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/SpaceGrotesk-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -30,7 +30,7 @@
 /* Noto Sans JP — Japanese body text (SIL OFL 1.1, Google) */
 @font-face {
   font-family: 'Prism JP';
-  src: url('../../assets/fonts/NotoSansJP-Variable.ttf') format('truetype');
+  src: url('../assets/fonts/NotoSansJP-Variable.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -39,7 +39,7 @@
 /* JetBrains Mono — code blocks (SIL OFL 1.1, JetBrains) */
 @font-face {
   font-family: 'Prism Mono';
-  src: url('../../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -47,7 +47,7 @@
 
 @font-face {
   font-family: 'Prism Mono';
-  src: url('../../assets/fonts/JetBrainsMono-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -55,7 +55,7 @@
 
 @font-face {
   font-family: 'Prism Mono';
-  src: url('../../assets/fonts/JetBrainsMono-Italic.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-Italic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -63,7 +63,7 @@
 
 @font-face {
   font-family: 'Prism Mono';
-  src: url('../../assets/fonts/JetBrainsMono-BoldItalic.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-BoldItalic.ttf') format('truetype');
   font-weight: 700;
   font-style: italic;
   font-display: swap;

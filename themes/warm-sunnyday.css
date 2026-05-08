@@ -5,7 +5,7 @@
 /* Poppins — Latin body text (SIL OFL 1.1, The Poppins Project Authors) */
 @font-face {
   font-family: 'Warm Poppins';
-  src: url('../../assets/fonts/Poppins-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/Poppins-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,7 +13,7 @@
 
 @font-face {
   font-family: 'Warm Poppins';
-  src: url('../../assets/fonts/Poppins-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/Poppins-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: 'Warm Poppins';
-  src: url('../../assets/fonts/Poppins-Italic.ttf') format('truetype');
+  src: url('../assets/fonts/Poppins-Italic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -29,7 +29,7 @@
 
 @font-face {
   font-family: 'Warm Poppins';
-  src: url('../../assets/fonts/Poppins-BoldItalic.ttf') format('truetype');
+  src: url('../assets/fonts/Poppins-BoldItalic.ttf') format('truetype');
   font-weight: 700;
   font-style: italic;
   font-display: swap;
@@ -38,7 +38,7 @@
 /* Zen Maru Gothic — Japanese body text (SIL OFL 1.1, Yoshimichi Ohira) */
 @font-face {
   font-family: 'Warm JP';
-  src: url('../../assets/fonts/ZenMaruGothic-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/ZenMaruGothic-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -46,7 +46,7 @@
 
 @font-face {
   font-family: 'Warm JP';
-  src: url('../../assets/fonts/ZenMaruGothic-Medium.ttf') format('truetype');
+  src: url('../assets/fonts/ZenMaruGothic-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -54,7 +54,7 @@
 
 @font-face {
   font-family: 'Warm JP';
-  src: url('../../assets/fonts/ZenMaruGothic-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/ZenMaruGothic-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -63,7 +63,7 @@
 /* JetBrains Mono — code blocks (SIL OFL 1.1, JetBrains) */
 @font-face {
   font-family: 'Warm Mono';
-  src: url('../../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -71,7 +71,7 @@
 
 @font-face {
   font-family: 'Warm Mono';
-  src: url('../../assets/fonts/JetBrainsMono-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -79,7 +79,7 @@
 
 @font-face {
   font-family: 'Warm Mono';
-  src: url('../../assets/fonts/JetBrainsMono-Italic.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-Italic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -87,7 +87,7 @@
 
 @font-face {
   font-family: 'Warm Mono';
-  src: url('../../assets/fonts/JetBrainsMono-BoldItalic.ttf') format('truetype');
+  src: url('../assets/fonts/JetBrainsMono-BoldItalic.ttf') format('truetype');
   font-weight: 700;
   font-style: italic;
   font-display: swap;
