@@ -11,6 +11,7 @@ A curated collection of **production-ready, AI-optimized Marp themes** designed 
 | Theme | Style | Best For |
 |-------|-------|----------|
 | **Azure Clarity** | Clean, corporate blue | Business reports, project proposals, technical documentation |
+| **Crimson Clarity** | Deep, energetic corporate red | High-impact proposals, strategic plans, executive summaries |
 | **Prism Edge** | Bold indigo-cyan, modern edge | Keynotes, product launches, investor pitches |
 | **Warm Sunnyday** | Warm orange, friendly rounded | Casual presentations, workshops, community talks |
 
@@ -43,6 +44,37 @@ paginate: true
 ![Azure Clarity Step](assets/screenshots/azure-clarity-step.png)
 
 </details>
+
+### Crimson Clarity
+
+A strong, energetic red theme built for high-impact business presentations.
+
+- Vibrant professional layouts with energetic accents
+- TOC, agenda, comparison columns, 4-quadrant grids
+- Steps, timelines, checklists, timetables, callouts
+- Profile slides, key-message slides, dense information slides
+
+```yaml
+---
+marp: true
+theme: crimson-clarity
+paginate: true
+---
+```
+
+<details>
+<summary>📸 Slides Preview</summary>
+
+![Crimson Clarity Cover](assets/screenshots/crimson-clarity-cover.png)
+![Crimson Clarity TOC](assets/screenshots/crimson-clarity-toc.png)
+![Crimson Clarity Columns](assets/screenshots/crimson-clarity-cols.png)
+![Crimson Clarity Grid](assets/screenshots/crimson-clarity-grid.png)
+![Crimson Clarity Timeline](assets/screenshots/crimson-clarity-timeline.png)
+![Crimson Clarity Callout](assets/screenshots/crimson-clarity-callout.png)
+![Crimson Clarity Step](assets/screenshots/crimson-clarity-step.png)
+
+</details>
+
 
 ### Prism Edge
 
@@ -204,6 +236,7 @@ All themes share a unified class system. Apply any class via the Marp directive:
 ai-centric-marp-themes/
 ├── themes/
 │   ├── azure-clarity.css      # Corporate blue theme
+│   ├── crimson-clarity.css       # Deep corporate red theme
 │   ├── prism-edge.css         # Bold modern theme
 │   └── warm-sunnyday.css      # Warm friendly theme
 ├── slides/
@@ -232,6 +265,7 @@ ai-centric-marp-themes/
 │   ├── slide-expert-tech-selection/SKILL.md
 │   ├── slide-expert-tech-sharing/SKILL.md
 │   ├── theme-expert-azure-clarity/SKILL.md
+│   ├── theme-expert-crimson-clarity/SKILL.md
 │   ├── theme-expert-common/SKILL.md
 │   ├── theme-expert-prism-edge/SKILL.md
 │   └── theme-expert-warm-sunnyday/SKILL.md

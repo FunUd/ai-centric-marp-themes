@@ -1,0 +1,1252 @@
+/* @theme crimson-clarity */
+
+@import 'default';
+
+/* ============================================================
+   CSS Variables — テーマカラーの変更はここだけでOK
+   ============================================================ */
+:root {
+  --cc-primary: #D32F2F;
+  --cc-primary-dark: #B71C1C;
+  --cc-primary-light: #FFEBEE;
+  --cc-primary-pale: #FFF5F5;
+  --cc-accent: #5C0000;
+  --cc-text: #211010;
+  --cc-text-sub: #7D5A5A;
+  --cc-white: #FFFFFF;
+  --cc-bg: #FFFBFB;
+  --cc-border: #EAC1C1;
+  --cc-border-light: #F5E1E1;
+  --cc-success: #27AE60;
+  --cc-warning: #F39C12;
+  --cc-danger: #E74C3C;
+  --cc-shadow: rgba(211, 47, 47, 0.08);
+  --cc-radius: 0px;
+  --cc-radius-lg: 0px;
+  
+  /* Override Marp's default syntax highlighting colors */
+  --color-prettylights-syntax-comment: #94a3b8;
+  --color-prettylights-syntax-constant: #fb923c;
+  --color-prettylights-syntax-entity: #fb7185;
+  --color-prettylights-syntax-storage-modifier-import: #f0f4f8;
+  --color-prettylights-syntax-entity-tag: #fb7185;
+  --color-prettylights-syntax-keyword: #e879f9;
+  --color-prettylights-syntax-string: #86efac;
+  --color-prettylights-syntax-variable: #fbbf24;
+  --color-prettylights-syntax-markup-heading: #fb7185;
+  --color-prettylights-syntax-markup-list: #7dd3fc;
+  --color-prettylights-syntax-markup-italic: #f0f4f8;
+  --color-prettylights-syntax-markup-bold: #f0f4f8;
+  --color-prettylights-syntax-markup-inserted-text: #86efac;
+  --color-prettylights-syntax-markup-inserted-bg: transparent;
+  --color-prettylights-syntax-markup-deleted-text: #fb7185;
+  --color-prettylights-syntax-markup-deleted-bg: transparent;
+}
+
+/* ============================================================
+   Base Slide
+   ============================================================ */
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 45px 70px 50px 70px;
+  background: var(--cc-white);
+  color: var(--cc-text);
+  font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans JP', sans-serif;
+  --font-scale: 1;
+  font-size: calc(24px * var(--font-scale));
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+/* ============================================================
+   Typography
+   ============================================================ */
+section h1 {
+  color: var(--cc-accent);
+  font-size: 38px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--cc-primary);
+  line-height: 1.3;
+}
+
+section h2 {
+  color: var(--cc-accent);
+  font-size: calc(30px * var(--font-scale));
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+section h3 {
+  color: var(--cc-primary-dark);
+  font-size: calc(24px * var(--font-scale));
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+section h4 {
+  color: var(--cc-primary);
+  font-size: calc(20px * var(--font-scale));
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+section h5,
+section h6 {
+  color: var(--cc-text-sub);
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+section p {
+  margin: 0 0 16px 0;
+}
+
+section a {
+  color: var(--cc-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--cc-primary-light);
+}
+
+section a:hover {
+  border-bottom-color: var(--cc-primary);
+}
+
+/* ============================================================
+   Lists
+   ============================================================ */
+section ul,
+section ol {
+  margin: 0 0 16px 0;
+  padding-left: 1.5em;
+}
+
+section ul li,
+section ol li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+  font-size: calc(24px * var(--font-scale));
+}
+
+section ul li::marker {
+  color: var(--cc-primary);
+}
+
+section ol li::marker {
+  color: var(--cc-primary);
+  font-weight: 600;
+}
+
+/* グループ名付き箇条書き */
+section ul ul,
+section ol ol,
+section ul ol,
+section ol ul {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-size: 0.92em;
+  color: var(--cc-text);
+}
+
+/* ============================================================
+   Table
+   ============================================================ */
+section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: calc(20px * var(--font-scale));
+}
+
+section table thead th {
+  background: var(--cc-primary);
+  color: var(--cc-white);
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  border: none;
+}
+
+section table thead th:first-child {
+  border-radius: var(--cc-radius) 0 0 0;
+}
+
+section table thead th:last-child {
+  border-radius: 0 var(--cc-radius) 0 0;
+}
+
+section table tbody td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--cc-border-light);
+  background: var(--cc-white);
+}
+
+section table tbody tr:nth-child(even) td {
+  background: var(--cc-bg);
+}
+
+section table tbody tr:hover td {
+  background: var(--cc-primary-light);
+}
+
+/* ============================================================
+   Code & Blockquote
+   ============================================================ */
+section code {
+  background: var(--cc-primary-pale);
+  color: var(--cc-primary-dark);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+section pre {
+  background: #1a1f2e;
+  border-radius: var(--cc-radius);
+  padding: 20px 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #2d3548;
+}
+
+section pre code {
+  background: transparent;
+  color: #f0f4f8;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Syntax Highlighting (Dark Theme for pre)
+   ============================================================ */
+section pre code .hljs-keyword,
+section pre code .hljs-selector-tag,
+section pre code .hljs-tag {
+  color: #e879f9 !important;
+  font-weight: 500;
+}
+
+section pre code .hljs-built_in,
+section pre code .hljs-type {
+  color: #fbbf24 !important;
+}
+
+section pre code .hljs-literal,
+section pre code .hljs-number {
+  color: #fb923c !important;
+}
+
+section pre code .hljs-string,
+section pre code .hljs-regexp,
+section pre code .hljs-addition {
+  color: #86efac !important;
+}
+
+section pre code .hljs-name,
+section pre code .hljs-class,
+section pre code .hljs-title {
+  color: #fb7185 !important;
+}
+
+section pre code .hljs-attr,
+section pre code .hljs-attribute {
+  color: #fcd34d !important;
+}
+
+section pre code .hljs-symbol,
+section pre code .hljs-bullet {
+  color: #7dd3fc !important;
+}
+
+section pre code .hljs-comment,
+section pre code .hljs-quote,
+section pre code .hljs-deletion {
+  color: #94a3b8 !important;
+  font-style: italic;
+}
+
+section blockquote {
+  border-left: 4px solid var(--cc-primary);
+  background: var(--cc-primary-pale);
+  margin: 16px 0;
+  padding: 16px 24px;
+  border-radius: 0 var(--cc-radius) var(--cc-radius) 0;
+  color: var(--cc-accent);
+  font-size: 22px;
+}
+
+section blockquote p {
+  margin: 0;
+}
+
+/* ============================================================
+   Text Emphasis
+   ============================================================ */
+section strong {
+  color: var(--cc-primary-dark);
+  font-weight: 700;
+}
+
+section em {
+  color: var(--cc-text-sub);
+  font-style: italic;
+}
+
+section mark {
+  background: linear-gradient(transparent 60%, #FFCDD2 60%);
+  padding: 0 4px;
+}
+
+/* ============================================================
+   Images
+   ============================================================ */
+section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--cc-radius);
+}
+
+section img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+
+section img[alt~="shadow"] {
+  box-shadow: 0 8px 24px var(--cc-shadow);
+}
+
+/* ============================================================
+   Header & Footer
+   ============================================================ */
+header {
+  position: absolute;
+  top: 16px;
+  left: 75px;
+  right: 75px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cc-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cc-border-light);
+}
+
+footer {
+  position: absolute;
+  bottom: 16px;
+  left: 75px;
+  right: 75px;
+  font-size: 12px;
+  color: var(--cc-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ============================================================
+   Pagination (section::after)
+   ============================================================ */
+section::after {
+  position: absolute;
+  bottom: 18px;
+  right: 30px;
+  font-size: 13px;
+  color: var(--cc-text-sub);
+  font-weight: 500;
+  background: var(--cc-primary-pale);
+  padding: 3px 12px;
+  border-radius: 12px;
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+}
+
+/* ============================================================
+   Utility: Header / Footer / Pagination control
+   ============================================================ */
+section.no-header header {
+  display: none;
+}
+
+section.no-footer footer {
+  display: none;
+}
+
+section.no-pagination::after {
+  display: none;
+}
+
+section.pagination-left::after {
+  right: auto;
+  left: 30px;
+}
+
+section:has(header),
+section.with-header {
+  padding-top: 85px;
+}
+
+/* ============================================================
+   Cover Slide — 表紙
+   ============================================================ */
+section.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--cc-white) 0%, var(--cc-primary-pale) 40%, var(--cc-primary-light) 100%);
+  padding: 80px;
+}
+
+
+section.cover h1 {
+  font-size: 52px;
+  color: var(--cc-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(92, 0, 0, 0.08);
+}
+
+section.cover h2 {
+  font-size: 28px;
+  color: var(--cc-primary);
+  font-weight: 400;
+  margin-bottom: 32px;
+}
+
+section.cover p {
+  color: var(--cc-text-sub);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+/* cover + subtitle: サブタイトル強調 */
+section.cover.subtitle h2 {
+  font-weight: 500;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--cc-border);
+  margin-bottom: 24px;
+}
+
+/* cover + meta: メタ情報エリアの装飾 */
+section.cover.meta p {
+  background: rgba(211, 47, 47, 0.06);
+  display: inline-block;
+  padding: 4px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+}
+
+/* 装飾用の円 */
+section.cover::after {
+  content: '' !important;
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cc-primary-light) 0%, transparent 70%);
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* ============================================================
+   TOC — 目次
+   ============================================================ */
+section.toc {
+  padding-top: 45px;
+}
+
+section.toc:has(header) {
+  padding-top: 85px;
+}
+
+section.toc ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding-left: 0;
+  columns: 2;
+  column-gap: 60px;
+}
+
+section.toc ol li {
+  counter-increment: toc-counter;
+  padding: 8px 0;
+  margin-bottom: 0;
+  border-radius: 0;
+  background: transparent;
+  border-left: none;
+  border-bottom: none;
+  font-size: calc(20px * var(--font-scale));
+  break-inside: avoid;
+  display: flex;
+  align-items: center;
+}
+
+section.toc ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--cc-primary);
+  font-weight: 700;
+  font-size: 18px;
+  margin-right: 16px;
+}
+
+/* ============================================================
+   TOC Focus — 目次 (少項目向け)
+   ============================================================ */
+section.toc-focus {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+section.toc-focus ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 850px;
+  margin: 20px auto 0;
+}
+
+section.toc-focus ol li {
+  counter-increment: toc-counter;
+  background: transparent;
+  padding: 15px 0;
+  font-size: calc(28px * var(--font-scale));
+  font-weight: 600;
+  color: var(--cc-accent);
+  display: flex;
+  align-items: center;
+  border: none;
+  border-bottom: 1px solid var(--cc-border-light);
+  box-shadow: none;
+  transition: all 0.3s ease;
+  border-radius: 0;
+}
+
+section.toc-focus ol li:last-child {
+  border-bottom: none;
+}
+
+section.toc-focus ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--cc-primary);
+  font-size: 36px;
+  font-weight: 300;
+  margin-right: 32px;
+  width: 60px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border-right: 2px solid var(--cc-primary-light);
+  border-radius: 0;
+}
+
+section.toc-focus ol li:hover {
+  background: linear-gradient(90deg, var(--cc-primary-pale) 0%, transparent 100%);
+  padding-left: 16px;
+}
+
+/* ============================================================
+   2-Column Layout
+   ============================================================ */
+section.cols-2>div.columns,
+section.cols-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   3-Column Layout
+   ============================================================ */
+section.cols-3>div.columns,
+section.cols-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* カラムカードスタイル */
+section.cols-2 .col,
+section.cols-3 .col {
+  background: var(--cc-primary-pale);
+  border-radius: var(--cc-radius-lg);
+  padding: 24px;
+  border: 1px solid var(--cc-border-light);
+  height: 100%;
+  overflow: hidden;
+}
+
+section.cols-2 .col h3,
+section.cols-3 .col h3 {
+  color: var(--cc-primary);
+  font-size: calc(22px * var(--font-scale));
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--cc-primary-light);
+}
+
+/* ============================================================
+   Split Layout (背景・枠線なしのシンプルな分割レイアウト)
+   ============================================================ */
+section.split-2>div.columns,
+section.split-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+section.split-3>div.columns,
+section.split-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
+   4-Quadrant Grid (2x2)
+   ============================================================ */
+section.grid-quadrant>div.grid,
+section.grid-quadrant>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100% - 80px);
+}
+
+section.grid-quadrant .cell {
+  background: var(--cc-primary-pale);
+  border-radius: var(--cc-radius-lg);
+  padding: 20px 24px;
+  border: 1px solid var(--cc-border-light);
+  overflow: hidden;
+}
+
+section.grid-quadrant .cell h3 {
+  color: var(--cc-primary);
+  font-size: calc(20px * var(--font-scale));
+  margin-bottom: 8px;
+}
+
+section.grid-quadrant .cell p,
+section.grid-quadrant .cell li {
+  font-size: calc(17px * var(--font-scale));
+  line-height: 1.5;
+}
+
+/* 象限内での左右分割レイアウト */
+section.grid-quadrant .cell.side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+section.grid-quadrant .cell.side>div:first-child {
+  flex: 1;
+}
+
+section.grid-quadrant .cell.side img {
+  max-width: 140px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Sharp Grid — border-only grid (no backgrounds)
+   ============================================================ */
+section.grid-sharp>div.grid,
+section.grid-sharp>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  height: calc(100% - 80px);
+}
+
+section.grid-sharp .cell {
+  background: transparent;
+  border-radius: 0;
+  padding: 24px 28px;
+  border-right: 1px solid var(--cc-border-light);
+  border-bottom: 1px solid var(--cc-border-light);
+  overflow: hidden;
+}
+
+section.grid-sharp .cell:nth-child(2n) {
+  border-right: none;
+}
+
+section.grid-sharp .cell:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+section.grid-sharp .cell h3 {
+  color: var(--cc-primary);
+  font-size: calc(20px * var(--font-scale));
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Timetable
+   ============================================================ */
+section.timetable table {
+  font-size: calc(18px * var(--font-scale));
+}
+
+section.timetable table thead th:first-child {
+  width: 140px;
+}
+
+section.timetable table tbody td:first-child {
+  font-weight: 600;
+  color: var(--cc-primary);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Steps — ステップ表示
+   ============================================================ */
+section.steps ol {
+  list-style: none;
+  padding: 0;
+  counter-reset: step-counter;
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+section.steps ol li {
+  counter-increment: step-counter;
+  flex: 1;
+  background: var(--cc-primary-pale);
+  border-radius: var(--cc-radius-lg);
+  padding: 24px 20px 20px;
+  position: relative;
+  border-top: 4px solid var(--cc-primary);
+  font-size: calc(18px * var(--font-scale));
+  line-height: 1.5;
+  margin: 0;
+}
+
+section.steps ol li::before {
+  content: 'STEP ' counter(step-counter);
+  display: block;
+  width: max-content;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cc-white);
+  background: var(--cc-primary);
+  padding: 3px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+}
+
+section.steps ol li strong {
+  display: block;
+  font-size: calc(20px * var(--font-scale));
+  color: var(--cc-accent);
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   Profile — 経歴紹介
+   ============================================================ */
+section.profile {
+  padding-top: 45px;
+}
+
+section.profile:has(header) {
+  padding-top: 85px;
+}
+
+/* 明示的な左右カラム構造: <div class="profile-layout"> で囲む */
+section.profile .profile-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 48px;
+  width: 100%;
+}
+
+/* 左カラム：画像エリア */
+section.profile .profile-image {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+section.profile .profile-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--cc-primary-light);
+  box-shadow: 0 8px 24px var(--cc-shadow);
+}
+
+/* 右カラム：テキストエリア */
+section.profile .profile-content {
+  flex: 1;
+  min-width: 0;
+}
+
+section.profile h1 {
+  font-size: 32px;
+  margin-bottom: 4px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+section.profile h2 {
+  font-size: calc(18px * var(--font-scale));
+  color: var(--cc-primary);
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+section.profile ul {
+  font-size: calc(19px * var(--font-scale));
+}
+
+/* ============================================================
+   Key Message — 強調メッセージ
+   ============================================================ */
+section.key-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--cc-primary-pale), var(--cc-primary-light));
+}
+
+section.key-message blockquote {
+  border: none;
+  background: transparent;
+  font-size: calc(40px * var(--font-scale));
+  font-weight: 700;
+  color: var(--cc-accent);
+  line-height: 1.4;
+  max-width: 900px;
+  padding: 0;
+}
+
+section.key-message blockquote p {
+  margin: 0;
+}
+
+section.key-message p {
+  color: var(--cc-text-sub);
+  font-size: calc(22px * var(--font-scale));
+}
+
+/* ============================================================
+   Content Density Utilities — 文字をぎっしり詰め込むためのクラス
+   ============================================================ */
+
+/* 標準的な「少し詰め込みたい」ケース */
+section.dense {
+  --font-scale: 0.75;
+  line-height: 1.5;
+}
+
+section.dense h1 {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom-width: 2px;
+}
+
+section.dense h2 {
+  margin-bottom: 10px;
+}
+
+section.dense h3 {
+  margin-bottom: 6px;
+}
+
+section.dense p,
+section.dense ul,
+section.dense ol {
+  margin-bottom: 10px;
+}
+
+section.dense li {
+  margin-bottom: 2px;
+}
+
+section.dense blockquote {
+  padding: 10px 18px;
+}
+
+/* 限界まで「ぎっしり詰め込みたい」ケース (設計詳細など) */
+section.extra-dense {
+  --font-scale: 0.625;
+  line-height: 1.4;
+  padding: 30px 50px 35px 50px;
+}
+
+section.extra-dense h1 {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom-width: 2px;
+}
+
+section.extra-dense h2 {
+  margin-bottom: 6px;
+}
+
+section.extra-dense h3 {
+  margin-bottom: 4px;
+}
+
+section.extra-dense p,
+section.extra-dense ul,
+section.extra-dense ol {
+  margin-bottom: 8px;
+}
+
+section.extra-dense li {
+  margin-bottom: 1px;
+}
+
+section.extra-dense blockquote {
+  padding: 8px 14px;
+}
+
+/* ヘッダーがある場合のパディング調整 */
+section.dense:has(header),
+section.dense.with-header {
+  padding-top: 75px;
+}
+
+section.extra-dense:has(header),
+section.extra-dense.with-header {
+  padding-top: 70px;
+}
+
+
+/* ============================================================
+   Timeline — タイムライン
+   ============================================================ */
+section.timeline ol {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  margin-left: 24px;
+}
+
+section.timeline ol::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--cc-primary), var(--cc-primary-light));
+  border-radius: 3px;
+}
+
+section.timeline ol li {
+  position: relative;
+  padding-left: 36px;
+  padding-bottom: 12px;
+  margin-bottom: 0;
+  font-size: calc(19px * var(--font-scale));
+}
+
+section.timeline ol li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+  background: var(--cc-primary);
+  border-radius: 50%;
+  border: 3px solid var(--cc-white);
+  box-shadow: 0 0 0 3px var(--cc-primary-light);
+}
+
+section.timeline ol li strong {
+  display: block;
+  color: var(--cc-primary);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* ============================================================
+   Checklist — チェックリスト
+   ============================================================ */
+section.checklist ul,
+section .checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+section.checklist ul li,
+section .checklist li {
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+section.checklist ul li::before,
+section .checklist li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: var(--cc-white);
+  background: var(--cc-success);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--cc-radius);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ============================================================
+   Callouts (Alerts)
+   ============================================================ */
+section .callout {
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-left: 6px solid var(--cc-primary);
+  background: var(--cc-primary-pale);
+  border-radius: 0 var(--cc-radius) var(--cc-radius) 0;
+  font-size: 0.95em;
+}
+
+section .callout h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: inherit;
+}
+
+section .callout p:last-child {
+  margin-bottom: 0;
+}
+
+section .callout.info {
+  border-left-color: #3498db;
+  background: #ebf5fb;
+}
+
+section .callout.info h4 {
+  color: #2980b9;
+}
+
+section .callout.success {
+  border-left-color: var(--cc-success);
+  background: #f0f9f4;
+}
+
+section .callout.success h4 {
+  color: #1e8449;
+}
+
+section .callout.warning {
+  border-left-color: var(--cc-warning);
+  background: #fff8f0;
+}
+
+section .callout.warning h4 {
+  color: #d68910;
+}
+
+section .callout.danger {
+  border-left-color: var(--cc-danger);
+  background: #fdf2f1;
+}
+
+section .callout.danger h4 {
+  color: #cb4335;
+}
+
+/* ============================================================
+   Badges / Tags
+   ============================================================ */
+section .badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.65em;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: var(--cc-radius);
+  background-color: var(--cc-primary-light);
+  color: var(--cc-primary-dark);
+}
+
+section .badge.primary {
+  background-color: var(--cc-primary);
+  color: var(--cc-white);
+}
+
+section .badge.success {
+  background-color: var(--cc-success);
+  color: var(--cc-white);
+}
+
+section .badge.warning {
+  background-color: var(--cc-warning);
+  color: var(--cc-white);
+}
+
+section .badge.danger {
+  background-color: var(--cc-danger);
+  color: var(--cc-white);
+}
+
+/* ============================================================
+   Alignment Utilities
+   ============================================================ */
+
+/* Horizontal Alignment */
+section.text-left,
+section .text-left,
+section.align-left,
+section .align-left {
+  text-align: left;
+}
+
+section.text-center,
+section .text-center,
+section.align-center,
+section .align-center {
+  text-align: center;
+}
+
+section.text-right,
+section .text-right,
+section.align-right,
+section .align-right {
+  text-align: right;
+}
+
+/* Vertical Alignment */
+section.v-top,
+section .v-top,
+section.v-center,
+section .v-center,
+section.v-middle,
+section .v-middle,
+section.v-bottom,
+section .v-bottom {
+  display: flex !important;
+  flex-direction: column;
+}
+
+section.v-top,
+section .v-top {
+  justify-content: flex-start;
+}
+
+section.v-center,
+section .v-center,
+section.v-middle,
+section .v-middle {
+  justify-content: center;
+}
+
+section.v-bottom,
+section .v-bottom {
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   Highlight colors utility
+   ============================================================ */
+section .text-primary {
+  color: var(--cc-primary);
+}
+
+section .text-accent {
+  color: var(--cc-accent);
+}
+
+section .text-success {
+  color: var(--cc-success);
+}
+
+section .text-warning {
+  color: var(--cc-warning);
+}
+
+section .text-danger {
+  color: var(--cc-danger);
+}
+
+section .text-sub {
+  color: var(--cc-text-sub);
+}
+
+section .text-large {
+  font-size: 1.3em;
+}
+
+section .text-small {
+  font-size: 0.85em;
+}
+
+section .bg-pale {
+  background: var(--cc-primary-pale);
+  padding: 16px;
+  border-radius: var(--cc-radius);
+}
+
+section .bg-light {
+  background: var(--cc-primary-light);
+  padding: 16px;
+  border-radius: var(--cc-radius);
+}

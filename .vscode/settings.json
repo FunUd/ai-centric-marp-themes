@@ -2,7 +2,8 @@
   "markdown.marp.themes": [
     "./themes/azure-clarity.css",
     "./themes/warm-sunnyday.css",
-    "./themes/prism-edge.css"
+    "./themes/prism-edge.css",
+    "./themes/crimson-clarity.css"
   ],
   "markdown.marp.html": "all"
 }
