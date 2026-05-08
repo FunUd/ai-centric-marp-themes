@@ -98,8 +98,10 @@ paginate: true
 ![Prism Edge Cover Wave](assets/screenshots/prism-edge-cover-wave.png)
 ![Prism Edge Cover Diagonal](assets/screenshots/prism-edge-cover-diagonal.png)
 ![Prism Edge Cover Noir](assets/screenshots/prism-edge-cover-noir.png)
+![Prism Edge Title Elegant](assets/screenshots/prism-edge-title-elegant.png)
 ![Prism Edge Columns](assets/screenshots/prism-edge-cols.png)
 ![Prism Edge Grid](assets/screenshots/prism-edge-grid.png)
+![Prism Edge Callout](assets/screenshots/prism-edge-callout.png)
 ![Prism Edge gradnum](assets/screenshots/prism-edge-gradnum.png)
 ![Prism Edge statnum](assets/screenshots/prism-edge-statnum.png)
 
