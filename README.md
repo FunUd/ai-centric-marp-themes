@@ -245,6 +245,7 @@ ai-centric-marp-themes/
 ├── slides/
 │   └── sample-slide/
 │       ├── azure-clarity-sample.md
+│       ├── crimson-clarity-sample.md
 │       ├── prism-edge-sample.md
 │       ├── warm-sunnyday-sample.md
 │       └── assets/

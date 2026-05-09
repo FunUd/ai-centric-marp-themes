@@ -37,4 +37,4 @@ For the exact syntax of the shared Marp patterns, read `theme-expert-common` onl
 
 - Prefer concise labels and symmetrical layouts
 - Use contrast to separate emphasis from supporting content
-- Keep business decks visually calm and easy to scan, while leveraging the garnet red for strong emphasis
+- Keep business decks visually calm and easy to scan, while leveraging the crimson red for strong emphasis
