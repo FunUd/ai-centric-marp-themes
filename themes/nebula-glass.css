@@ -53,7 +53,15 @@
   --ng-glass-blur: blur(24px);
   --ng-glow-violet: 0 0 12px rgba(124, 58, 237, 0.8), 0 0 24px rgba(124, 58, 237, 0.4);
   --ng-glow-cyan: 0 0 12px rgba(6, 182, 212, 0.8), 0 0 24px rgba(6, 182, 212, 0.4);
-  --ng-radius: 20px;
+  --ng-radius: 6px;
+
+  /* Override Marp default table colors */
+  --color-background: #050505;
+  --color-background-code: rgba(255, 255, 255, 0.06);
+  --color-background-paginate: rgba(255, 255, 255, 0.06);
+  --color-foreground: #F8FAFC;
+  --color-highlight: #7C3AED;
+  --color-dimmed: #94A3B8;
   
   /* Syntax Highlighting */
   --color-prettylights-syntax-comment: #64748b;
@@ -168,34 +176,54 @@ section ol li::marker {
 }
 
 section table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 24px 0;
-  background: var(--ng-glass);
-  backdrop-filter: var(--ng-glass-blur);
-  border: 1px solid var(--ng-glass-border);
-  border-radius: var(--ng-radius);
-  overflow: hidden;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  margin: 16px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 0.88em !important;
+}
+
+section table thead,
+section table thead tr,
+section table thead th {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+section table thead tr {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 section table th {
-  background: rgba(255, 255, 255, 0.08);
-  color: #FFFFFF;
-  padding: 16px;
-  text-align: left;
-  font-weight: 700;
-  border-bottom: 1px solid var(--ng-glass-border);
+  background: transparent !important;
+  color: var(--ng-text) !important;
+  padding: 10px 16px !important;
+  text-align: left !important;
+  font-weight: 700 !important;
+  font-size: 0.85em !important;
+  letter-spacing: 0.04em !important;
+  border: none !important;
+}
+
+section table tbody tr {
+  background: transparent !important;
+  border: none !important;
 }
 
 section table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: var(--ng-text-muted);
+  padding: 11px 16px !important;
+  color: var(--ng-text-muted) !important;
+  background: transparent !important;
+  border: none !important;
 }
 
-section table tr:last-child td {
-  border-bottom: none;
+section table td strong {
+  color: var(--ng-secondary) !important;
+  font-weight: 700 !important;
 }
 
 /* ============================================================
@@ -254,37 +282,52 @@ section.cover-nebula {
   justify-content: center;
   align-items: flex-start;
   text-align: left;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
-    var(--ng-bg);
+  /* ベースと同じ背景を維持しつつ、カバー用に光を強調 */
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.35) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1) 0%, transparent 100%);
 }
 
-/* cover-nebula ではヘッダーバーを非表示 */
-section.cover-nebula header {
+/* cover-nebula ではヘッダー・フッター・ページ番号を非表示 */
+section.cover-nebula header,
+section.cover-nebula footer {
+  display: none;
+}
+
+section.cover-nebula::after {
   display: none;
 }
 
 section.cover-nebula h1 {
   font-size: 80px;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #FFFFFF 70%, rgba(255,255,255,0.2));
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #FFFFFF 60%, rgba(255,255,255,0.3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.04em;
+  line-height: 1.05;
   text-shadow: none;
 }
 
 section.cover-nebula h2 {
-  font-size: 24px;
-  color: var(--ng-secondary);
+  font-size: 22px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.35em;
   margin-top: 0;
-  opacity: 0.8;
+  margin-bottom: 0;
   background: none;
+  color: var(--ng-secondary);
   -webkit-text-fill-color: var(--ng-secondary);
+  opacity: 0.75;
+}
+
+section.cover-nebula p {
+  color: var(--ng-text-muted);
+  font-size: 0.85em;
+  margin-top: 40px;
+  margin-bottom: 0;
 }
 
 /* Glass Card — Fixed Centered Bullets */
@@ -296,12 +339,12 @@ section.glass-card-layout {
 section.glass-card-layout .card {
   background: var(--ng-glass);
   border: 1px solid var(--ng-glass-border);
-  border-radius: 32px;
+  border-radius: var(--ng-radius);
   padding: 60px 80px;
   backdrop-filter: var(--ng-glass-blur);
   box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
   max-width: 1000px;
-  text-align: left; /* Keep left-aligned for proper bullet placement */
+  text-align: left;
 }
 
 section.glass-card-layout .card h1 {
@@ -318,6 +361,13 @@ section.split-glass {
   align-items: center;
 }
 
+/* split-glass の左カラム（.content） */
+section.split-glass .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 section.split-glass .glass-panel {
   background: var(--ng-glass);
   border: 1px solid var(--ng-glass-border);
@@ -325,6 +375,10 @@ section.split-glass .glass-panel {
   padding: 40px;
   backdrop-filter: var(--ng-glass-blur);
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+section.split-glass .glass-panel h3 {
+  margin-top: 0;
 }
 
 /* Steps — Refined Minimalist Design */
@@ -360,6 +414,132 @@ section.steps li::before {
 }
 
 /* ============================================================
+   Additional Layout Classes
+   ============================================================ */
+
+/* Key Message — Full-slide statement, no box */
+section.key-message {
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 100px;
+  padding-right: 160px;
+  background-image:
+    radial-gradient(circle at 10% 50%, rgba(124, 58, 237, 0.25) 0%, transparent 55%),
+    radial-gradient(circle at 90% 20%, rgba(6, 182, 212, 0.12) 0%, transparent 45%);
+}
+
+section.key-message blockquote {
+  border-left: 3px solid var(--ng-primary);
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0 0 0 40px;
+  box-shadow: none;
+  backdrop-filter: none;
+  margin: 0;
+  max-width: 900px;
+}
+
+section.key-message blockquote p {
+  font-family: 'Nebula Header', 'Nebula JP', sans-serif;
+  font-size: 2.4em;
+  font-weight: 700;
+  color: var(--ng-text);
+  -webkit-text-fill-color: var(--ng-text);
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  font-style: normal;
+  margin: 0;
+}
+
+/* Cols-2 / Cols-3 — Multi-column layout */
+section.cols-2 .columns,
+section.cols-3 .columns {
+  display: grid;
+  gap: 48px;
+  align-items: start;
+  flex: 1;
+}
+
+section.cols-2 .columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+section.cols-3 .columns {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+}
+
+section.cols-2 .col,
+section.cols-3 .col {
+  background: var(--ng-glass);
+  border: 1px solid var(--ng-glass-border);
+  border-radius: var(--ng-radius);
+  padding: 32px 36px;
+  backdrop-filter: var(--ng-glass-blur);
+}
+
+section.cols-2 .col h3,
+section.cols-3 .col h3 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+section.cols-2 .col li,
+section.cols-3 .col li {
+  font-size: 0.85em;
+  margin-bottom: 10px;
+}
+
+/* Grid Quadrant — 2×2 grid */
+section.grid-quadrant {
+  /* h1 takes natural space, grid fills the rest */
+}
+
+section.grid-quadrant .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+}
+
+section.grid-quadrant .cell {
+  background: var(--ng-glass);
+  border: 1px solid var(--ng-glass-border);
+  border-radius: var(--ng-radius);
+  padding: 28px 32px;
+  backdrop-filter: var(--ng-glass-blur);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+section.grid-quadrant .cell h3 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+
+section.grid-quadrant .cell p,
+section.grid-quadrant .cell li {
+  font-size: 0.82em;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+section.grid-quadrant .cell ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+section.grid-quadrant .cell ul li::marker {
+  content: '';
+}
+
+/* ============================================================
    Utilities
    ============================================================ */
 
@@ -378,7 +558,7 @@ section.steps li::before {
 .glow-cyan {
   color: var(--ng-secondary) !important;
   -webkit-text-fill-color: var(--ng-secondary) !important;
-  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.9)) drop-shadow(0 0 20px rgba(6, 182, 212, 0.5));
+  filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.5));
 }
 
 header {
@@ -417,3 +597,444 @@ section::after {
   border: 1px solid var(--ng-glass-border);
   font-weight: 600;
 }
+
+/* ============================================================
+   Display Control Utilities
+   ============================================================ */
+section.no-header header   { display: none; }
+section.no-footer footer   { display: none; }
+section.no-pagination::after { display: none; }
+
+/* ============================================================
+   TOC — 目次（2カラム）
+   ============================================================ */
+section.toc ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding-left: 0;
+  columns: 2;
+  column-gap: 60px;
+  margin-top: 8px;
+}
+
+section.toc ol li {
+  counter-increment: toc-counter;
+  padding: 10px 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.88em;
+  color: var(--ng-text-muted);
+  break-inside: avoid;
+  display: flex;
+  align-items: center;
+}
+
+section.toc ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--ng-primary);
+  font-weight: 700;
+  font-size: 0.85em;
+  font-family: 'Nebula Header', sans-serif;
+  margin-right: 16px;
+  min-width: 28px;
+}
+
+/* ============================================================
+   TOC Focus — 目次（少項目・縦並び大きめ）
+   ============================================================ */
+section.toc-focus ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 16px;
+}
+
+section.toc-focus ol li {
+  counter-increment: toc-counter;
+  padding: 18px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--ng-text);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 0;
+}
+
+section.toc-focus ol li:last-child {
+  border-bottom: none;
+}
+
+section.toc-focus ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--ng-primary);
+  font-size: 1.4em;
+  font-weight: 300;
+  font-family: 'Nebula Header', sans-serif;
+  margin-right: 32px;
+  min-width: 56px;
+  padding-right: 24px;
+  border-right: 1px solid rgba(124, 58, 237, 0.3);
+  line-height: 1;
+}
+
+/* ============================================================
+   Split-2 / Split-3 — 背景なしシンプル分割
+   ============================================================ */
+section.split-2 .columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  flex: 1;
+}
+
+section.split-3 .columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  flex: 1;
+}
+
+/* split-X の各カラムは区切り線のみ */
+section.split-2 .col + .col,
+section.split-3 .col + .col {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 40px;
+}
+
+/* ============================================================
+   Grid Sharp — 背景なし・区切り線のみ 2×2
+   ============================================================ */
+section.grid-sharp .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+}
+
+section.grid-sharp .cell {
+  background: transparent;
+  border-radius: 0;
+  padding: 28px 32px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+section.grid-sharp .cell:nth-child(2n) {
+  border-right: none;
+}
+
+section.grid-sharp .cell:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+section.grid-sharp .cell h3 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+
+/* ============================================================
+   Dense / Extra-Dense — 情報密度ユーティリティ
+   ============================================================ */
+section.dense {
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+section.dense h1 { font-size: 40px; margin-bottom: 20px; }
+section.dense h2 { font-size: 28px; margin-bottom: 14px; }
+section.dense h3 { font-size: 22px; margin-bottom: 10px; }
+section.dense p, section.dense ul, section.dense ol { margin-bottom: 12px; }
+section.dense li { margin-bottom: 6px; }
+
+section.extra-dense {
+  font-size: 17px;
+  line-height: 1.45;
+  padding: 50px 70px;
+}
+
+section.extra-dense h1 { font-size: 34px; margin-bottom: 14px; }
+section.extra-dense h2 { font-size: 24px; margin-bottom: 10px; }
+section.extra-dense h3 { font-size: 19px; margin-bottom: 8px; }
+section.extra-dense p, section.extra-dense ul, section.extra-dense ol { margin-bottom: 8px; }
+section.extra-dense li { margin-bottom: 3px; }
+
+/* ============================================================
+   Timeline — 縦タイムライン
+   ============================================================ */
+section.timeline ol {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  margin-left: 20px;
+  margin-top: 8px;
+}
+
+section.timeline ol::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(180deg,
+    var(--ng-primary) 0%,
+    var(--ng-secondary) 100%);
+  opacity: 0.5;
+}
+
+section.timeline ol li {
+  position: relative;
+  padding-left: 40px;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  font-size: 0.88em;
+  color: var(--ng-text-muted);
+}
+
+section.timeline ol li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 14px;
+  height: 14px;
+  background: var(--ng-bg);
+  border: 2px solid var(--ng-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.6);
+}
+
+section.timeline ol li strong {
+  display: block;
+  color: var(--ng-secondary);
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+
+/* ============================================================
+   Checklist — チェックマーク付きリスト
+   ============================================================ */
+section.checklist ul,
+section .checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+section.checklist ul li,
+section .checklist li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  line-height: 1.5;
+  color: var(--ng-text-muted);
+  padding-left: 0;
+}
+
+section.checklist ul li::marker,
+section .checklist li::marker {
+  content: '';
+}
+
+section.checklist ul li::before,
+section .checklist li::before {
+  content: '✓';
+  flex-shrink: 0;
+  color: var(--ng-secondary);
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  position: static;
+}
+
+/* ============================================================
+   Callout — 注釈ボックス（violet / cyan / rose / green）
+   ============================================================ */
+section .callout {
+  padding: 18px 24px;
+  margin: 16px 0;
+  border-left: 3px solid var(--ng-primary);
+  background: rgba(124, 58, 237, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 0 var(--ng-radius) var(--ng-radius) 0;
+  font-size: 0.9em;
+}
+
+section .callout h4 {
+  margin: 0 0 8px 0;
+  color: var(--ng-primary);
+  font-size: 0.95em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+section .callout p:last-child { margin-bottom: 0; }
+
+section .callout.violet {
+  border-left-color: var(--ng-primary);
+  background: rgba(124, 58, 237, 0.08);
+}
+section .callout.violet h4 { color: var(--ng-primary); }
+
+section .callout.cyan {
+  border-left-color: var(--ng-secondary);
+  background: rgba(6, 182, 212, 0.08);
+}
+section .callout.cyan h4 { color: var(--ng-secondary); }
+
+section .callout.rose {
+  border-left-color: var(--ng-accent);
+  background: rgba(244, 63, 94, 0.08);
+}
+section .callout.rose h4 { color: var(--ng-accent); }
+
+section .callout.green {
+  border-left-color: #34D399;
+  background: rgba(52, 211, 153, 0.08);
+}
+section .callout.green h4 { color: #34D399; }
+
+/* ============================================================
+   Badge — インラインバッジ
+   ============================================================ */
+section .badge {
+  display: inline-block;
+  padding: 3px 12px;
+  font-size: 0.62em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--ng-glass);
+  color: var(--ng-text-muted);
+  font-family: 'Nebula Header', sans-serif;
+}
+
+section .badge.violet {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: rgba(124, 58, 237, 0.5);
+  color: #C4B5FD;
+}
+
+section .badge.cyan {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: var(--ng-secondary);
+}
+
+section .badge.rose {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #FDA4AF;
+}
+
+section .badge.green {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #6EE7B7;
+}
+
+/* ============================================================
+   Profile — 顔写真＋経歴レイアウト
+   ============================================================ */
+section.profile .profile-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 56px;
+  width: 100%;
+}
+
+section.profile .profile-image {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+section.profile .profile-image img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 24px rgba(124, 58, 237, 0.3);
+}
+
+section.profile .profile-content {
+  flex: 1;
+  min-width: 0;
+}
+
+section.profile h1 {
+  font-size: 36px;
+  margin-bottom: 4px;
+}
+
+section.profile h2 {
+  font-size: 20px;
+  color: var(--ng-secondary);
+  font-weight: 400;
+  margin-bottom: 20px;
+  -webkit-text-fill-color: var(--ng-secondary);
+}
+
+section.profile ul {
+  font-size: 0.88em;
+}
+
+/* ============================================================
+   Timetable — 時間割テーブル
+   ============================================================ */
+section.timetable table {
+  font-size: 0.82em !important;
+}
+
+section.timetable table td:first-child {
+  font-weight: 700 !important;
+  color: var(--ng-secondary) !important;
+  white-space: nowrap;
+  width: 120px;
+}
+
+/* ============================================================
+   Alignment Utilities
+   ============================================================ */
+section.text-left,  section .text-left  { text-align: left; }
+section.text-center, section .text-center { text-align: center; }
+section.text-right, section .text-right { text-align: right; }
+
+section.v-top    { justify-content: flex-start; }
+section.v-center { justify-content: center; }
+section.v-bottom { justify-content: flex-end; }
+
+/* ============================================================
+   Color Utilities
+   ============================================================ */
+section .text-violet { color: var(--ng-primary) !important; -webkit-text-fill-color: var(--ng-primary) !important; }
+section .text-cyan   { color: var(--ng-secondary) !important; -webkit-text-fill-color: var(--ng-secondary) !important; }
+section .text-rose   { color: var(--ng-accent) !important; -webkit-text-fill-color: var(--ng-accent) !important; }
+section .text-muted  { color: var(--ng-text-muted) !important; -webkit-text-fill-color: var(--ng-text-muted) !important; }
+section .text-white  { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+section .text-large  { font-size: 1.25em; }
+section .text-small  { font-size: 0.8em; }

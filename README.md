@@ -13,6 +13,7 @@ A curated collection of **production-ready, AI-optimized Marp themes** designed 
 | **Azure Clarity** | Clean, corporate blue | Business reports, project proposals, technical documentation |
 | **Crimson Clarity** | Deep, energetic corporate red | High-impact proposals, strategic plans, executive summaries |
 | **Prism Edge** | Bold indigo-cyan, modern edge | Keynotes, product launches, investor pitches |
+| **Nebula Glass** | Dark glassmorphism, cyber-luxe | Tech demos, premium keynotes, high-sense product presentations |
 | **Warm Sunnyday** | Warm orange, friendly rounded | Casual presentations, workshops, community talks |
 
 ### Azure Clarity
@@ -107,6 +108,30 @@ paginate: true
 
 </details>
 
+### Nebula Glass
+
+An ultra-modern dark theme with glassmorphism, layered light effects, and architectural asymmetry.
+
+- **Unique cover variant**: `cover-nebula` with left-aligned layout and refined light beams
+- Glass panels, gradient text, glow effects (`glow-violet`, `glow-cyan`)
+- Designed for tech-premium, cyber-luxe aesthetics
+- Optimized for Japanese + English mixed typography (Noto Sans JP + Poppins)
+
+```yaml
+---
+marp: true
+theme: nebula-glass
+paginate: true
+---
+```
+
+<details>
+<summary>📸 Slides Preview</summary>
+
+![Nebula Glass Cover](assets/screenshots/nebula-glass-cover.png)
+
+</details>
+
 ### Warm Sunnyday
 
 A welcoming, warm-toned theme with rounded corners and soft aesthetics.
@@ -184,6 +209,7 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `cover-diagonal` | *(Prism Edge)* Sharp diagonal split |
 | `cover-noir` | *(Prism Edge)* Dark dramatic background |
 | `cover-aurora` | *(Prism Edge)* Soft aurora rotating gradient |
+| `cover-nebula` | *(Nebula Glass)* Architectural left-aligned cover with light beams |
 | `hero` | *(Prism Edge)* Single large centered message (H1 at 72px) |
 | `title-only` | *(Prism Edge)* Minimal large left-aligned title (H1 at 64px) |
 | `title-elegant` | *(Prism Edge)* Elegant centered title slide (adapts to subtitle presence) |
@@ -192,6 +218,8 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `cols-2` / `cols-3` | Card-style columns with background/border |
 | `split-2` / `split-3` | Clean columns without card styling |
 | `split-asym` / `split-asym-reverse` | *(Prism Edge)* Asymmetric 65:35 split columns |
+| `split-glass` | *(Nebula Glass)* Asymmetric split with glass panel |
+| `glass-card-layout` | *(Nebula Glass)* Focused key message with centered title and left-aligned card content |
 | `grid-quadrant` | 2x2 matrix (SWOT, priority analysis) |
 | `grid-sharp` | 2x2 border-only matrix (no backgrounds) |
 | `steps` | Horizontal step cards with STEP badges |
@@ -224,8 +252,10 @@ All themes share a unified class system. Apply any class via the Marp directive:
 |-----------|-------|
 | **Callouts** | `<div class="callout blue">...</div>` (types: `blue`, `green`, `orange`, `red`) — independent alert blocks |
 | **Badges** | `<span class="badge red">NEW</span>` (types: `blue`, `green`, `orange`, `red`) |
-| **Glass Panel** | *(Prism Edge)* `<div class="glass-panel">...</div>` — frosted glass container |
-| **Gradient Text** | *(Prism Edge)* `<span class="gradient-text">Text</span>` — indigo-to-cyan gradient fill |
+| **Glass Panel** | *(Prism Edge / Nebula Glass)* `<div class="glass-panel">...</div>` — frosted glass container |
+| **Gradient Text** | *(Prism Edge / Nebula Glass)* `<span class="gradient-text">Text</span>` — gradient fill |
+| **Glow Violet** | *(Nebula Glass)* `<span class="glow-violet">Text</span>` — subtle violet light emission |
+| **Glow Cyan** | *(Nebula Glass)* `<span class="glow-cyan">Text</span>` — subtle cyan light emission |
 | **Highlight Box** | *(Prism Edge)* `<div class="highlight-box">...</div>` — inline emphasis block for key insights |
 | **Quote Large** | *(Prism Edge)* `<div class="quote-large">...</div>` — 32px italic editorial blockquote |
 | **Stat Number** | *(Prism Edge)* `<span class="stat-number">42</span><span class="stat-label">Label</span>` |
@@ -240,12 +270,14 @@ ai-centric-marp-themes/
 ├── themes/
 │   ├── azure-clarity.css      # Corporate blue theme
 │   ├── crimson-clarity.css       # Deep corporate red theme
+│   ├── nebula-glass.css       # Dark glassmorphism theme
 │   ├── prism-edge.css         # Bold modern theme
 │   └── warm-sunnyday.css      # Warm friendly theme
 ├── slides/
 │   └── sample-slide/
 │       ├── azure-clarity-sample.md
 │       ├── crimson-clarity-sample.md
+│       ├── nebula-glass-sample.md
 │       ├── prism-edge-sample.md
 │       ├── warm-sunnyday-sample.md
 │       └── assets/
@@ -271,6 +303,7 @@ ai-centric-marp-themes/
 │   ├── theme-expert-azure-clarity/SKILL.md
 │   ├── theme-expert-crimson-clarity/SKILL.md
 │   ├── theme-expert-common/SKILL.md
+│   ├── theme-expert-nebula-glass/SKILL.md
 │   ├── theme-expert-prism-edge/SKILL.md
 │   └── theme-expert-warm-sunnyday/SKILL.md
 └── README.md
