@@ -1,0 +1,397 @@
+/* @theme nebula-glass */
+
+@import 'default';
+
+/* Poppins — Headers (Geometric Sans) */
+@font-face {
+  font-family: 'Nebula Header';
+  src: url('../assets/fonts/Poppins-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Poppins — Regular */
+@font-face {
+  font-family: 'Nebula Body';
+  src: url('../assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Noto Sans JP — Japanese body text */
+@font-face {
+  font-family: 'Nebula JP';
+  src: url('../assets/fonts/NotoSansJP-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* JetBrains Mono — code blocks */
+@font-face {
+  font-family: 'Nebula Mono';
+  src: url('../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   CSS Variables
+   ============================================================ */
+:root {
+  --ng-bg: #050505;
+  --ng-text: #F8FAFC;
+  --ng-text-muted: #94A3B8;
+  --ng-primary: #7C3AED;   /* Violet */
+  --ng-secondary: #06B6D4; /* Cyan */
+  --ng-accent: #F43F5E;    /* Rose */
+  --ng-glass: rgba(255, 255, 255, 0.04);
+  --ng-glass-border: rgba(255, 255, 255, 0.12);
+  --ng-glass-blur: blur(24px);
+  --ng-glow-violet: 0 0 20px rgba(124, 58, 237, 0.4);
+  --ng-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.4);
+  --ng-radius: 20px;
+  
+  /* Syntax Highlighting */
+  --color-prettylights-syntax-comment: #64748b;
+  --color-prettylights-syntax-constant: #7dd3fc;
+  --color-prettylights-syntax-entity: #c084fc;
+  --color-prettylights-syntax-storage-modifier-import: #e2e8f0;
+  --color-prettylights-syntax-entity-tag: #fb7185;
+  --color-prettylights-syntax-keyword: #f472b6;
+  --color-prettylights-syntax-string: #86efac;
+  --color-prettylights-syntax-variable: #fbbf24;
+}
+
+/* ============================================================
+   Base Slide
+   ============================================================ */
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 60px 80px;
+  background-color: var(--ng-bg);
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1) 0%, transparent 100%);
+  color: var(--ng-text);
+  font-family: 'Nebula Body', 'Nebula JP', sans-serif;
+  font-size: 26px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+section h1 {
+  font-family: 'Nebula Header', 'Nebula JP', sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  margin: 0 0 32px 0;
+  color: #FFFFFF;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #FFFFFF 60%, rgba(255,255,255,0.4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+section h2 {
+  font-family: 'Nebula Header', 'Nebula JP', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  color: var(--ng-secondary);
+  letter-spacing: -0.02em;
+}
+
+section h3 {
+  font-family: 'Nebula Header', 'Nebula JP', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: var(--ng-primary);
+}
+
+section p {
+  margin: 0 0 20px 0;
+  color: var(--ng-text-muted);
+}
+
+section strong {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+section em {
+  color: var(--ng-secondary);
+  font-style: italic;
+}
+
+/* ============================================================
+   Lists & Tables
+   ============================================================ */
+section ul, section ol {
+  margin: 0 0 24px 0;
+  padding-left: 1.2em;
+}
+
+section li {
+  margin-bottom: 12px;
+  color: var(--ng-text-muted);
+}
+
+section li strong {
+  color: var(--ng-text);
+}
+
+section ul li::marker {
+  color: var(--ng-primary);
+  content: '✦ ';
+}
+
+section ol li::marker {
+  color: var(--ng-primary);
+  font-weight: 700;
+}
+
+section table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 24px 0;
+  background: var(--ng-glass);
+  backdrop-filter: var(--ng-glass-blur);
+  border: 1px solid var(--ng-glass-border);
+  border-radius: var(--ng-radius);
+  overflow: hidden;
+}
+
+section table th {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+  padding: 16px;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 1px solid var(--ng-glass-border);
+}
+
+section table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--ng-text-muted);
+}
+
+section table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================
+   Code & Blocks
+   ============================================================ */
+section code {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ng-secondary);
+  padding: 0.15em 0.4em;
+  border-radius: 8px;
+  font-family: 'Nebula Mono', monospace;
+  font-size: 0.85em;
+}
+
+section pre {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--ng-glass-border);
+  border-radius: var(--ng-radius);
+  padding: 28px;
+  backdrop-filter: var(--ng-glass-blur);
+  margin: 24px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+section pre code {
+  background: transparent;
+  padding: 0;
+  color: #e2e8f0;
+  font-size: 20px;
+}
+
+section blockquote {
+  border-left: 6px solid var(--ng-primary);
+  background: var(--ng-glass);
+  margin: 32px 0;
+  padding: 30px 40px;
+  border-radius: 0 var(--ng-radius) var(--ng-radius) 0;
+  backdrop-filter: var(--ng-glass-blur);
+  box-shadow: 10px 10px 30px rgba(0,0,0,0.2);
+}
+
+section blockquote p {
+  margin: 0;
+  color: var(--ng-text);
+  font-size: 1.1em;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Layout Classes
+   ============================================================ */
+
+/* Cover Nebula — The Signature Look */
+section.cover-nebula {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(124, 58, 237, 0.35) 0%, transparent 55%),
+    radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.35) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.15) 0%, transparent 65%),
+    var(--ng-bg);
+}
+
+section.cover-nebula h1 {
+  font-size: 96px;
+  margin-bottom: 12px;
+  text-shadow: 0 15px 45px rgba(0,0,0,0.7);
+  letter-spacing: -0.05em;
+}
+
+section.cover-nebula h2 {
+  font-size: 32px;
+  color: var(--ng-text-muted);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  margin-top: 0;
+  background: none;
+  -webkit-text-fill-color: var(--ng-text-muted);
+}
+
+/* Glass Card — Focused Message */
+section.glass-card-layout {
+  justify-content: center;
+  align-items: center;
+}
+
+section.glass-card-layout .card {
+  background: var(--ng-glass);
+  border: 1px solid var(--ng-glass-border);
+  border-radius: 32px;
+  padding: 60px 80px;
+  backdrop-filter: var(--ng-glass-blur);
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+  max-width: 1000px;
+  text-align: center;
+}
+
+section.glass-card-layout .card h1 {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+/* Split Glass — Multi-dimensional */
+section.split-glass {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+section.split-glass .glass-panel {
+  background: var(--ng-glass);
+  border: 1px solid var(--ng-glass-border);
+  border-radius: var(--ng-radius);
+  padding: 40px;
+  backdrop-filter: var(--ng-glass-blur);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+/* Steps — Modern Numbered List */
+section.steps li {
+  list-style: none;
+  counter-increment: step-counter;
+  position: relative;
+  padding-left: 80px;
+  margin-bottom: 40px;
+}
+
+section.steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--ng-primary), var(--ng-secondary));
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-size: 22px;
+  box-shadow: var(--ng-glow-violet);
+  font-family: 'Nebula Header', sans-serif;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+
+.gradient-text {
+  background: linear-gradient(90deg, var(--ng-primary), var(--ng-secondary), var(--ng-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.glow-violet { text-shadow: var(--ng-glow-violet); color: #FFFFFF !important; }
+.glow-cyan { text-shadow: var(--ng-glow-cyan); color: #FFFFFF !important; }
+
+header {
+  position: absolute;
+  top: 25px;
+  left: 80px;
+  right: 80px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ng-text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+footer {
+  position: absolute;
+  bottom: 25px;
+  left: 80px;
+  right: 80px;
+  font-size: 14px;
+  color: var(--ng-text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+section::after {
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+  position: absolute;
+  bottom: 25px;
+  right: 40px;
+  font-size: 14px;
+  color: var(--ng-text-muted);
+  background: var(--ng-glass);
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--ng-glass-border);
+  font-weight: 600;
+}

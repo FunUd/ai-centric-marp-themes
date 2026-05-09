@@ -3,7 +3,8 @@
     "./themes/azure-clarity.css",
     "./themes/warm-sunnyday.css",
     "./themes/prism-edge.css",
-    "./themes/crimson-clarity.css"
+    "./themes/crimson-clarity.css",
+    "./themes/nebula-glass.css"
   ],
   "markdown.marp.html": "all"
 }
