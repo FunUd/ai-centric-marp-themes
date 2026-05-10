@@ -154,6 +154,11 @@ section ul, section ol {
   padding-left: 1.5em;
 }
 
+section ul {
+  list-style: none;
+  padding-left: 0;
+}
+
 section li {
   margin-bottom: 14px;
   color: var(--ng-text-muted);
@@ -164,10 +169,18 @@ section li strong {
   color: var(--ng-text);
 }
 
-section ul li::marker {
+section ul li {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+section ul li::before {
+  content: '✦';
   color: var(--ng-secondary);
-  content: '✦  ';
   font-size: 0.8em;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 section ol li::marker {
