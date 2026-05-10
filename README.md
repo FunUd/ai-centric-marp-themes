@@ -129,6 +129,12 @@ paginate: true
 <summary>📸 Slides Preview</summary>
 
 ![Nebula Glass Cover](assets/screenshots/nebula-glass-cover.png)
+![Nebula Glass TOC](assets/screenshots/nebula-glass-toc.png)
+![Nebula Glass Columns](assets/screenshots/nebula-glass-cols.png)
+![Nebula Glass Grid](assets/screenshots/nebula-glass-grid.png)
+![Nebula Glass Timeline](assets/screenshots/nebula-glass-timeline.png)
+![Nebula Glass Callout](assets/screenshots/nebula-glass-callout.png)
+![Nebula Glass Step](assets/screenshots/nebula-glass-step.png)
 
 </details>
 
