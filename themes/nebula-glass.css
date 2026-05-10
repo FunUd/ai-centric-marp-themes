@@ -605,6 +605,13 @@ section.no-header header   { display: none; }
 section.no-footer footer   { display: none; }
 section.no-pagination::after { display: none; }
 
+/* headerがある場合はpaddingを増やしてタイトルが被らないようにする */
+/* headerがない場合はデフォルトのpadding-top: 60pxのままタイトルが上に詰まる */
+section:has(header),
+section.with-header {
+  padding-top: 100px;
+}
+
 /* ============================================================
    TOC — 目次（2カラム）
    ============================================================ */
