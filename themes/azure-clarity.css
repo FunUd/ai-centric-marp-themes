@@ -280,12 +280,12 @@ section pre code .hljs-deletion {
 }
 
 section blockquote {
-  border-left: 4px solid var(--ac-primary);
-  background: var(--ac-primary-pale);
+  border-left: 4px solid #94a3b8;
+  background: #f1f5f9;
   margin: 16px 0;
   padding: 16px 24px;
   border-radius: 0 var(--ac-radius) var(--ac-radius) 0;
-  color: var(--ac-accent);
+  color: #475569;
   font-size: 22px;
 }
 
