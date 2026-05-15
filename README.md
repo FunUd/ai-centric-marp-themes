@@ -185,6 +185,18 @@ paginate: true
    ---
    ```
 
+### 5. Setup for AI Agents (Recommended)
+
+If you are using AI coding assistants like **Claude Code, Windsurf, Cursor, Kiro, or VS Code Copilot**, you can enable the custom "Skills" (specialized prompts and tools) included in this repo.
+
+Run the synchronization script to install these skills into your editor's configuration directory:
+
+```bash
+python scripts/sync-skills.py
+```
+
+This will link the contents of `skills/` to your local `.agents/`, `.windsurf/`, `.claude/`, etc., allowing the AI to understand the layout classes and best practices for these themes.
+
 4. **Use layout classes** to unlock rich designs without writing HTML:
 
    ```markdown
@@ -287,6 +299,8 @@ ai-centric-marp-themes/
 │       ├── prism-edge-sample.md
 │       ├── warm-sunnyday-sample.md
 │       └── assets/
+├── scripts/
+│   └── sync-skills.py             # Setup tool for AI agent skills
 ├── skills/
 │   ├── slide-content-designer/SKILL.md
 │   ├── marp-slide-creator/
