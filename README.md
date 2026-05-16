@@ -434,6 +434,10 @@ This enables the alternative text-only review pipeline described in `skills/marp
   - **Mono**: [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), [Liberation Mono](https://github.com/liberationfonts/liberation-fonts)
   - All under [SIL Open Font License 1.1](https://scripts.sil.org/OFL)
 
+## Original Assets
+
+- `slides/sample-slide/assets/sample_image.jpg` is an original image created by the repository author and is not a third-party asset.
+
 ## License
 
 MIT License — Copyright (c) 2026 FunUd
