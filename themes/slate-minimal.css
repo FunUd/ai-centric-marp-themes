@@ -1,0 +1,1025 @@
+/* @theme slate-minimal */
+
+@import 'default';
+
+/* Caladea —Serif headings (SIL OFL 1.1, Huerta Tipografica) */
+@font-face {
+  font-family: 'Slate Serif';
+  src: url('../assets/fonts/Caladea-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Slate Serif';
+  src: url('../assets/fonts/Caladea-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Slate Serif';
+  src: url('../assets/fonts/Caladea-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Poppins —Sans body text (SIL OFL 1.1, Indian Type Foundry) */
+@font-face {
+  font-family: 'Slate Sans';
+  src: url('../assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Slate Sans';
+  src: url('../assets/fonts/Poppins-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Noto Sans JP —Japanese body text (SIL OFL 1.1, Google) */
+@font-face {
+  font-family: 'Slate JP';
+  src: url('../assets/fonts/NotoSansJP-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   CSS Variables —Slate Minimal (Monochrome)
+   ============================================================ */
+:root {
+  --sm-primary: #475569;
+  --sm-primary-dark: #1E293B;
+  --sm-primary-light: #E2E8F0;
+  --sm-primary-pale: #F8FAFC;
+  --sm-accent: #0F172A;
+  --sm-text: #334155;
+  --sm-text-sub: #94A3B8;
+  --sm-white: #FFFFFF;
+  --sm-bg: #FFFFFF;
+  --sm-border: #CBD5E1;
+  --sm-border-light: #F1F5F9;
+
+  /* Semantic colors mapped to grayscale for minimalist aesthetic */
+  --sm-success: #64748B;
+  --sm-warning: #94A3B8;
+  --sm-danger: #475569;
+
+  --sm-shadow: rgba(0, 0, 0, 0.05);
+  --sm-radius: 4px;
+  --sm-radius-lg: 8px;
+
+  /* Syntax highlighting colors (Grayscale/Muted) */
+  --color-prettylights-syntax-comment: #cbd5e1;
+  --color-prettylights-syntax-constant: #64748b;
+  --color-prettylights-syntax-entity: #334155;
+  --color-prettylights-syntax-storage-modifier-import: #f8fafc;
+  --color-prettylights-syntax-entity-tag: #475569;
+  --color-prettylights-syntax-keyword: #1e293b;
+  --color-prettylights-syntax-string: #94a3b8;
+  --color-prettylights-syntax-variable: #64748b;
+  --color-prettylights-syntax-markup-heading: #1e293b;
+  --color-prettylights-syntax-markup-list: #94a3b8;
+  --color-prettylights-syntax-markup-italic: #f8fafc;
+  --color-prettylights-syntax-markup-bold: #f8fafc;
+  --color-prettylights-syntax-markup-inserted-text: #475569;
+  --color-prettylights-syntax-markup-inserted-bg: transparent;
+  --color-prettylights-syntax-markup-deleted-text: #cbd5e1;
+  --color-prettylights-syntax-markup-deleted-bg: transparent;
+}
+
+/* ============================================================
+   Base Slide
+   ============================================================ */
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 80px 100px;
+  background: var(--sm-bg);
+  color: var(--sm-text);
+  font-family: 'Slate Sans', 'Slate JP', sans-serif;
+  --font-scale: 1;
+  font-size: calc(21px * var(--font-scale));
+  font-weight: 300;
+  line-height: 1.85;
+  letter-spacing: 0.04em;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+section h1 {
+  font-family: 'Slate Serif', 'Slate JP', serif;
+  color: var(--sm-accent);
+  font-size: 44px;
+  font-weight: 400;
+  margin: 0 0 40px 0;
+  padding-bottom: 0;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+section h2 {
+  font-family: 'Slate Serif', 'Slate JP', serif;
+  color: var(--sm-accent);
+  font-size: calc(34px * var(--font-scale));
+  font-weight: 400;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+section h3 {
+  color: var(--sm-primary-dark);
+  font-size: calc(24px * var(--font-scale));
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+section h4 {
+  color: var(--sm-primary);
+  font-size: calc(20px * var(--font-scale));
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+section h5,
+section h6 {
+  color: var(--sm-text-sub);
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 300;
+  margin: 0 0 12px 0;
+}
+
+section p {
+  margin: 0 0 24px 0;
+}
+
+section a {
+  color: var(--sm-primary-dark);
+  text-decoration: none;
+  border-bottom: 1px solid var(--sm-primary);
+}
+
+section a:hover {
+  color: var(--sm-accent);
+  border-bottom-width: 2px;
+}
+
+/* ============================================================
+   Lists
+   ============================================================ */
+section ul,
+section ol {
+  margin: 0 0 20px 0;
+  padding-left: 1.5em;
+}
+
+section ul li,
+section ol li {
+  margin-bottom: 8px;
+  line-height: 1.7;
+  font-size: calc(22px * var(--font-scale));
+}
+
+section ul li::marker {
+  color: var(--sm-text-sub);
+}
+
+section ol li::marker {
+  color: var(--sm-text-sub);
+}
+
+section ul ul,
+section ol ol,
+section ul ol,
+section ol ul {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  font-size: 0.95em;
+  color: var(--sm-text);
+}
+
+/* ============================================================
+   Table
+   ============================================================ */
+section table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 32px 0;
+  font-size: calc(20px * var(--font-scale));
+}
+
+section table,
+section table thead,
+section table tbody,
+section table tr,
+section table th,
+section table td {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+section table thead th {
+  background: transparent;
+  color: var(--sm-text-sub);
+  padding: 12px 20px 18px 20px;
+  text-align: left;
+  font-weight: 300;
+  border-top: none;
+  border-bottom: none;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+section table tbody td {
+  padding: 16px 20px;
+  border-bottom: none;
+  background: transparent;
+}
+
+section table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================
+   Code & Blockquote
+   ============================================================ */
+section code {
+  background: var(--sm-border-light);
+  color: var(--sm-accent);
+  padding: 2px 6px;
+  font-size: 0.85em;
+  font-family: 'Consolas', 'Monaco', monospace;
+  border-radius: 2px;
+}
+
+section pre {
+  background: transparent;
+  padding: 32px;
+  margin: 24px 0;
+  overflow-x: auto;
+  border: 1px solid var(--sm-border-light);
+  border-radius: 2px;
+}
+
+section pre code {
+  background: transparent;
+  color: var(--sm-text);
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  border: none;
+}
+
+section blockquote {
+  border-left: none;
+  background: transparent;
+  margin: 32px 0;
+  padding: 16px 0 16px 40px;
+  color: var(--sm-text-sub);
+  font-size: 26px;
+  font-family: 'Slate Serif', 'Slate JP', serif;
+  font-style: italic;
+  position: relative;
+}
+
+section blockquote::before {
+  content: '“';
+  position: absolute;
+  left: 0;
+  top: -10px;
+  font-size: 64px;
+  color: var(--sm-border-light);
+  font-family: 'Slate Serif', serif;
+  line-height: 1;
+}
+
+section blockquote p {
+  margin: 0;
+}
+
+/* ============================================================
+   Text Emphasis
+   ============================================================ */
+section strong {
+  color: var(--sm-accent);
+  font-weight: 700;
+}
+
+section em {
+  color: var(--sm-primary);
+  font-style: italic;
+}
+
+section mark {
+  background: var(--sm-primary-pale);
+  color: var(--sm-accent);
+  padding: 0 4px;
+}
+
+/* ============================================================
+   Images
+   ============================================================ */
+section img {
+  max-width: 100%;
+  height: auto;
+}
+
+section img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+
+section img[alt~="shadow"] {
+  border: 1px solid var(--sm-border-light);
+  padding: 8px;
+}
+
+/* ============================================================
+   Header & Footer
+   ============================================================ */
+header {
+  position: absolute;
+  top: 40px;
+  left: 100px;
+  right: 100px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--sm-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+footer {
+  position: absolute;
+  bottom: 40px;
+  left: 100px;
+  right: 100px;
+  font-size: 13px;
+  color: var(--sm-text-sub);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   Pagination (section::after)
+   ============================================================ */
+section::after {
+  position: absolute;
+  bottom: 30px;
+  right: 80px;
+  font-size: 13px;
+  color: var(--sm-text-sub);
+  font-weight: 400;
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+}
+
+/* Utility: Header / Footer / Pagination control */
+section.no-header header {
+  display: none;
+}
+
+section.no-footer footer {
+  display: none;
+}
+
+section.no-pagination::after {
+  display: none;
+}
+
+section.pagination-left::after {
+  right: auto;
+  left: 80px;
+}
+
+section:has(header),
+section.with-header {
+  padding-top: 100px;
+}
+
+/* ============================================================
+   Cover Slide
+   ============================================================ */
+section.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  padding: 120px;
+  background: var(--sm-bg);
+}
+
+section.cover::before {
+  content: '';
+  position: absolute;
+  top: 120px;
+  left: 120px;
+  width: 60px;
+  height: 1px;
+  background: var(--sm-accent);
+}
+
+section.cover h1 {
+  font-family: 'Slate Serif', 'Slate JP', serif;
+  font-size: 68px;
+  color: var(--sm-accent);
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 32px;
+  margin-top: 48px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+section.cover h2 {
+  font-family: 'Slate Sans', 'Slate JP', sans-serif;
+  font-size: 26px;
+  color: var(--sm-text-sub);
+  font-weight: 300;
+  margin-bottom: 80px;
+  letter-spacing: 0.08em;
+}
+
+section.cover p {
+  color: var(--sm-text);
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+section.cover.subtitle h2 {
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 60px;
+}
+
+section.cover.meta p {
+  font-size: 14px;
+  color: var(--sm-text-sub);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   TOC
+   ============================================================ */
+section.toc {
+  padding-top: 60px;
+}
+
+section.toc:has(header) {
+  padding-top: 100px;
+}
+
+section.toc ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding-left: 0;
+  columns: 2;
+  column-gap: 80px;
+}
+
+section.toc ol li {
+  counter-increment: toc-counter;
+  padding: 14px 0;
+  margin-bottom: 0;
+  font-size: calc(22px * var(--font-scale));
+  break-inside: avoid;
+  display: flex;
+  align-items: baseline;
+}
+
+section.toc ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--sm-text-sub);
+  font-family: 'Slate Serif', serif;
+  font-size: 18px;
+  margin-right: 24px;
+}
+
+/* ============================================================
+   TOC Focus
+   ============================================================ */
+section.toc-focus {
+  display: flex;
+  flex-direction: column;
+}
+
+section.toc-focus ol {
+  counter-reset: toc-counter;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 900px;
+  margin: 40px 0 0 0;
+}
+
+section.toc-focus ol li {
+  counter-increment: toc-counter;
+  padding: 16px 0;
+  font-size: calc(32px * var(--font-scale));
+  color: var(--sm-accent);
+  display: flex;
+  align-items: baseline;
+  font-family: 'Slate Serif', 'Slate JP', serif;
+}
+
+section.toc-focus ol li::before {
+  content: counter(toc-counter, decimal-leading-zero);
+  color: var(--sm-text-sub);
+  font-size: 20px;
+  font-family: 'Slate Sans', sans-serif;
+  margin-right: 40px;
+  width: 30px;
+}
+
+/* ============================================================
+   Column Layouts
+   ============================================================ */
+section.cols-2>div.columns,
+section.cols-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  flex: 1;
+}
+
+section.cols-3>div.columns,
+section.cols-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 48px;
+  flex: 1;
+}
+
+section.cols-2 .col,
+section.cols-3 .col {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+section.cols-2 .col:first-child,
+section.cols-3 .col:first-child {
+  padding-left: 0;
+}
+
+section.cols-2 .col h3,
+section.cols-3 .col h3 {
+  color: var(--sm-accent);
+  font-size: calc(22px * var(--font-scale));
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  border-bottom: none;
+  font-family: 'Slate Serif', 'Slate JP', serif;
+}
+
+/* Split */
+section.split-2>div.columns,
+section.split-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  height: calc(100% - 80px);
+}
+
+section.split-3>div.columns,
+section.split-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 48px;
+  height: calc(100% - 80px);
+}
+
+/* ============================================================
+   Grid Quadrant (2x2)
+   ============================================================ */
+section.grid-quadrant>div.grid,
+section.grid-quadrant>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 64px;
+  height: calc(100% - 80px);
+}
+
+section.grid-quadrant .cell {
+  background: transparent;
+  padding: 0;
+  border: none;
+  padding-top: 8px;
+}
+
+section.grid-quadrant .cell h3 {
+  color: var(--sm-accent);
+  font-size: calc(20px * var(--font-scale));
+  margin-bottom: 12px;
+  font-family: 'Slate Serif', 'Slate JP', serif;
+}
+
+/* Grid Sharp */
+section.grid-sharp>div.grid,
+section.grid-sharp>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  height: calc(100% - 80px);
+}
+
+section.grid-sharp .cell {
+  background: transparent;
+  padding: 32px;
+  border-right: 1px solid var(--sm-border-light);
+  border-bottom: 1px solid var(--sm-border-light);
+}
+
+section.grid-sharp .cell:nth-child(2n) {
+  border-right: none;
+}
+
+section.grid-sharp .cell:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+/* ============================================================
+   Timetable
+   ============================================================ */
+section.timetable table {
+  font-size: calc(18px * var(--font-scale));
+}
+
+section.timetable table thead th:first-child {
+  width: 140px;
+}
+
+section.timetable table tbody td:first-child {
+  font-weight: 700;
+  color: var(--sm-text);
+}
+
+/* ============================================================
+   Steps
+   ============================================================ */
+section.steps ol {
+  list-style: none;
+  padding: 0;
+  counter-reset: step-counter;
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+section.steps ol li {
+  counter-increment: step-counter;
+  flex: 1;
+  background: transparent;
+  padding: 0;
+  border: none;
+  font-size: calc(18px * var(--font-scale));
+}
+
+section.steps ol li:first-child {
+  padding-left: 0;
+}
+
+section.steps ol li::before {
+  content: counter(step-counter, decimal-leading-zero);
+  display: block;
+  font-family: 'Slate Serif', serif;
+  font-size: 36px;
+  color: var(--sm-text-sub);
+  margin-bottom: 20px;
+}
+
+section.steps ol li strong {
+  display: block;
+  font-size: calc(20px * var(--font-scale));
+  color: var(--sm-accent);
+  margin-bottom: 8px;
+  font-family: 'Slate Serif', 'Slate JP', serif;
+}
+
+/* ============================================================
+   Profile
+   ============================================================ */
+section.profile {
+  padding-top: 60px;
+}
+
+section.profile:has(header) {
+  padding-top: 100px;
+}
+
+section.profile .profile-layout {
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+  height: 100%;
+}
+
+section.profile .profile-image {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+section.profile .profile-image img {
+  width: 100%;
+}
+
+section.profile .profile-content {
+  flex: 1;
+}
+
+section.profile .profile-content h2 {
+  font-size: 40px;
+  margin-bottom: 8px;
+  color: var(--sm-accent);
+  border: none;
+  font-family: 'Slate Serif', 'Slate JP', serif;
+}
+
+section.profile .profile-content h3 {
+  font-size: 18px;
+  color: var(--sm-text-sub);
+  margin-bottom: 32px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   Key Message
+   ============================================================ */
+section.key-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+section.key-message h2 {
+  font-family: 'Slate Serif', 'Slate JP', serif;
+  font-size: 56px;
+  color: var(--sm-accent);
+  line-height: 1.3;
+  border: none;
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+
+section.key-message p {
+  font-size: 24px;
+  color: var(--sm-text);
+  max-width: 800px;
+}
+
+/* ============================================================
+   Density
+   ============================================================ */
+section.dense {
+  --font-scale: 0.85;
+}
+
+section.extra-dense {
+  --font-scale: 0.75;
+}
+
+/* ============================================================
+   Timeline
+   ============================================================ */
+section.timeline ul,
+section.timeline ol {
+  list-style: none;
+  padding-left: 20px;
+  position: relative;
+  margin: 20px 0;
+}
+
+section.timeline ul::before,
+section.timeline ol::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: 1px;
+  background: var(--sm-border-light);
+}
+
+section.timeline ul li,
+section.timeline ol li {
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 32px;
+  font-size: calc(20px * var(--font-scale));
+}
+
+section.timeline ul li::before,
+section.timeline ol li::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  width: 9px;
+  height: 9px;
+  background: var(--sm-bg);
+  border: 1px solid var(--sm-text-sub);
+  border-radius: 50%;
+}
+
+section.timeline ul li strong,
+section.timeline ol li strong {
+  display: block;
+  color: var(--sm-accent);
+  font-family: 'Slate Serif', 'Slate JP', serif;
+  font-size: calc(22px * var(--font-scale));
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   Checklist
+   ============================================================ */
+section.checklist ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+section.checklist ul li {
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 16px;
+}
+
+section.checklist ul li::before {
+  content: '—'; position: absolute; left: 0; top: 0;
+ color: var(--sm-text-sub);
+  font-weight: 400;
+}
+
+/* ============================================================
+   Callouts (Monochrome mapping)
+   ============================================================ */
+.callout {
+  padding: 20px 24px;
+  margin: 24px 0;
+  font-size: calc(20px * var(--font-scale));
+  border-left: 2px solid;
+  background: var(--sm-primary-pale);
+}
+
+.callout.blue {
+  border-color: var(--sm-primary);
+}
+
+.callout.green {
+  border-color: var(--sm-success);
+}
+
+.callout.orange {
+  border-color: var(--sm-warning);
+}
+
+.callout.red {
+  border-color: var(--sm-danger);
+}
+
+/* ============================================================
+   Badges
+   ============================================================ */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 13px;
+  font-weight: 400;
+  border-radius: 0;
+  vertical-align: middle;
+  margin-right: 8px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge.blue {
+  color: var(--sm-primary);
+  border-color: var(--sm-primary);
+  background: transparent;
+}
+
+.badge.green {
+  color: var(--sm-success);
+  border-color: var(--sm-success);
+  background: transparent;
+}
+
+.badge.orange {
+  color: var(--sm-warning);
+  border-color: var(--sm-warning);
+  background: transparent;
+}
+
+.badge.red {
+  color: var(--sm-danger);
+  border-color: var(--sm-danger);
+  background: transparent;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+section.v-center {
+  justify-content: center;
+}
+
+section.v-top {
+  justify-content: flex-start;
+}
+
+section.v-bottom {
+  justify-content: flex-end;
+}
+
+.text-blue {
+  color: var(--sm-primary) !important;
+}
+
+.text-accent {
+  color: var(--sm-accent) !important;
+}
+
+.text-green {
+  color: var(--sm-success) !important;
+}
+
+.text-orange {
+  color: var(--sm-warning) !important;
+}
+
+.text-red {
+  color: var(--sm-danger) !important;
+}
+
+.text-sub {
+  color: var(--sm-text-sub) !important;
+}
+
+.text-large {
+  font-size: 1.3em !important;
+}
+
+.text-small {
+  font-size: 0.85em !important;
+}
+
+.bg-pale {
+  background-color: var(--sm-primary-pale) !important;
+  padding: 24px;
+}
+
+.bg-light {
+  background-color: var(--sm-bg) !important;
+  padding: 24px;
+}

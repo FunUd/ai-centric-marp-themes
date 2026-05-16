@@ -4,7 +4,8 @@
     "./themes/warm-sunnyday.css",
     "./themes/prism-edge.css",
     "./themes/crimson-clarity.css",
-    "./themes/nebula-glass.css"
+    "./themes/nebula-glass.css",
+    "./themes/slate-minimal.css"
   ],
   "markdown.marp.html": "all"
 }

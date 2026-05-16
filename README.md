@@ -15,6 +15,7 @@ A curated collection of **production-ready, AI-optimized Marp themes** designed 
 | **Prism Edge** | Bold indigo-cyan, modern edge | Keynotes, product launches, investor pitches |
 | **Nebula Glass** | Dark glassmorphism, cyber-luxe | Tech demos, premium keynotes, high-sense product presentations |
 | **Warm Sunnyday** | Warm orange, friendly rounded | Casual presentations, workshops, community talks |
+| **Slate Minimal** | Monochrome, serif typography, extreme minimalism | Academic research, design concepts, philosophical talks |
 
 ### Azure Clarity
 
@@ -290,7 +291,8 @@ ai-centric-marp-themes/
 │   ├── crimson-clarity.css       # Deep corporate red theme
 │   ├── nebula-glass.css       # Dark glassmorphism theme
 │   ├── prism-edge.css         # Bold modern theme
-│   └── warm-sunnyday.css      # Warm friendly theme
+│   ├── warm-sunnyday.css      # Warm friendly theme
+│   └── slate-minimal.css      # Monochrome minimalist theme
 ├── slides/
 │   └── sample-slide/
 │       ├── azure-clarity-sample.md
@@ -298,6 +300,7 @@ ai-centric-marp-themes/
 │       ├── nebula-glass-sample.md
 │       ├── prism-edge-sample.md
 │       ├── warm-sunnyday-sample.md
+│       ├── slate-minimal-sample.md
 │       └── assets/
 ├── scripts/
 │   └── sync-skills.py             # Setup tool for AI agent skills
@@ -325,7 +328,8 @@ ai-centric-marp-themes/
 │   ├── theme-expert-common/SKILL.md
 │   ├── theme-expert-nebula-glass/SKILL.md
 │   ├── theme-expert-prism-edge/SKILL.md
-│   └── theme-expert-warm-sunnyday/SKILL.md
+│   ├── theme-expert-warm-sunnyday/SKILL.md
+│   └── theme-expert-slate-minimal/SKILL.md
 └── README.md
 ```
 
