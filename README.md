@@ -166,6 +166,35 @@ paginate: true
 
 </details>
 
+### Slate Minimal
+
+A monochrome theme that strips presentation down to type, spacing, and structure.
+
+- Serif-led typography with generous whitespace and quiet contrast
+- Minimal layouts for agendas, profiles, grids, callouts, and timelines
+- Best for academic research, design concepts, and reflective talks
+
+```yaml
+---
+marp: true
+theme: slate-minimal
+paginate: true
+---
+```
+
+<details>
+<summary>📸 Slides Preview</summary>
+
+![Slate Minimal Cover](assets/screenshots/slate-minimal-cover.png)
+![Slate Minimal Agenda](assets/screenshots/slate-minimal-agenda.png)
+![Slate Minimal Profile](assets/screenshots/slate-minimal-profile.png)
+![Slate Minimal Grid](assets/screenshots/slate-minimal-grid.png)
+![Slate Minimal Callout](assets/screenshots/slate-minimal-callout.png)
+![Slate Minimal Timeline](assets/screenshots/slate-minimal-timeline.png)
+![Slate Minimal Key Message](assets/screenshots/slate-minimal-key-message.png)
+
+</details>
+
 ---
 
 ## Quick Start
