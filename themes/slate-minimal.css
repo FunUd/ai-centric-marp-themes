@@ -57,13 +57,16 @@
    CSS Variables —Slate Minimal (Monochrome)
    ============================================================ */
 :root {
+  --sm-ink: #111111;
+  --sm-ink-soft: #242424;
+  --sm-ink-faint: rgba(17, 17, 17, 0.12);
   --sm-primary: #475569;
-  --sm-primary-dark: #1E293B;
+  --sm-primary-dark: var(--sm-ink);
   --sm-primary-light: #E2E8F0;
   --sm-primary-pale: #F8FAFC;
-  --sm-accent: #0F172A;
+  --sm-accent: var(--sm-ink);
   --sm-text: #334155;
-  --sm-text-sub: #94A3B8;
+  --sm-text-sub: #6B7280;
   --sm-white: #FFFFFF;
   --sm-bg: #FFFFFF;
   --sm-border: #CBD5E1;
@@ -78,22 +81,22 @@
   --sm-radius: 4px;
   --sm-radius-lg: 8px;
 
-  /* Syntax highlighting colors (Grayscale/Muted) */
-  --color-prettylights-syntax-comment: #cbd5e1;
-  --color-prettylights-syntax-constant: #64748b;
-  --color-prettylights-syntax-entity: #334155;
-  --color-prettylights-syntax-storage-modifier-import: #f8fafc;
-  --color-prettylights-syntax-entity-tag: #475569;
-  --color-prettylights-syntax-keyword: #1e293b;
-  --color-prettylights-syntax-string: #94a3b8;
-  --color-prettylights-syntax-variable: #64748b;
+  /* Syntax highlighting colors (Slate-toned, readable) */
+  --color-prettylights-syntax-comment: #94a3b8;       /* slate-400 — comments */
+  --color-prettylights-syntax-constant: #0369a1;      /* sky-700 — constants/numbers */
+  --color-prettylights-syntax-entity: #0f766e;        /* teal-700 — functions/entities */
+  --color-prettylights-syntax-storage-modifier-import: #334155; /* slate-700 — imports */
+  --color-prettylights-syntax-entity-tag: #0f766e;    /* teal-700 — tags */
+  --color-prettylights-syntax-keyword: #475569;       /* slate-600 — keywords (bold) */
+  --color-prettylights-syntax-string: #0369a1;        /* sky-700 — strings */
+  --color-prettylights-syntax-variable: #334155;      /* slate-700 — variables */
   --color-prettylights-syntax-markup-heading: #1e293b;
-  --color-prettylights-syntax-markup-list: #94a3b8;
-  --color-prettylights-syntax-markup-italic: #f8fafc;
-  --color-prettylights-syntax-markup-bold: #f8fafc;
-  --color-prettylights-syntax-markup-inserted-text: #475569;
+  --color-prettylights-syntax-markup-list: #475569;
+  --color-prettylights-syntax-markup-italic: #64748b;
+  --color-prettylights-syntax-markup-bold: #1e293b;
+  --color-prettylights-syntax-markup-inserted-text: #0f766e;
   --color-prettylights-syntax-markup-inserted-bg: transparent;
-  --color-prettylights-syntax-markup-deleted-text: #cbd5e1;
+  --color-prettylights-syntax-markup-deleted-text: #be123c;
   --color-prettylights-syntax-markup-deleted-bg: transparent;
 }
 
@@ -272,17 +275,17 @@ section code {
 }
 
 section pre {
-  background: transparent;
+  background: #F8FAFC;
   padding: 32px;
   margin: 24px 0;
-  overflow-x: auto;
+  overflow: hidden;
   border: 1px solid var(--sm-border-light);
   border-radius: 2px;
 }
 
 section pre code {
   background: transparent;
-  color: var(--sm-text);
+  color: #334155;
   padding: 0;
   font-size: 18px;
   line-height: 1.6;
@@ -959,6 +962,12 @@ section.checklist ul li::before {
   color: var(--sm-primary);
   border-color: var(--sm-primary);
   background: transparent;
+}
+
+.badge.ink {
+  color: var(--sm-white);
+  border-color: var(--sm-accent);
+  background: var(--sm-accent);
 }
 
 .badge.green {

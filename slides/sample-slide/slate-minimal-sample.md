@@ -151,7 +151,7 @@ p  { font-size: 21px; color: var(--text-muted); }
 
 | Component | Status | Description |
 | :--- | :--- | :--- |
-| Typography | <span class="badge blue">Stable</span> | セリフ体とサンセリフ体の組み合わせ |
+| Typography | <span class="badge ink">Core</span> | セリフ体とサンセリフ体の組み合わせ |
 | Colors | <span class="badge green">Updated</span> | モノクロームを基調としたスレートカラー |
 | Layouts | <span class="badge orange">Beta</span> | グリッド、カラム、タイムラインなど |
 | Animations| <span class="badge red">Planning</span> | ホバー時の微細なインタラクション |
