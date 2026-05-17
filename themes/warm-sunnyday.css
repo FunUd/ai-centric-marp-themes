@@ -1085,16 +1085,27 @@ section.timeline ol::before {
 section.timeline ol li {
   position: relative;
   padding-left: 36px;
-  padding-bottom: 12px;
-  margin-bottom: 0;
+  padding-bottom: 0;
+  margin-bottom: 24px;
   font-size: calc(19px * var(--font-scale));
+  line-height: 1.25;
+}
+
+section.timeline ol li p {
+  margin: 0;
+  line-height: 1.25;
+}
+
+section.timeline ol li p + p {
+  margin-top: 0.2em;
 }
 
 section.timeline ol li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 6px;
+  top: 0;
+  transform: translateY(calc(0.5lh - 50%));
   width: 15px;
   height: 15px;
   background: var(--ac-primary);
@@ -1108,7 +1119,8 @@ section.timeline ol li strong {
   color: var(--ac-primary);
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 2px;
+  line-height: 1.5;
+  margin-bottom: 0;
 }
 
 /* ============================================================

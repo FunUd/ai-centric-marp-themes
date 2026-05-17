@@ -843,6 +843,18 @@ section.timeline ol li {
   padding-left: 40px;
   margin-bottom: 32px;
   font-size: calc(20px * var(--font-scale));
+  line-height: 1.25;
+}
+
+section.timeline ul li p,
+section.timeline ol li p {
+  margin: 0;
+  line-height: 1.25;
+}
+
+section.timeline ul li p + p,
+section.timeline ol li p + p {
+  margin-top: 0.2em;
 }
 
 section.timeline ul li::before,
@@ -850,7 +862,8 @@ section.timeline ol li::before {
   content: '';
   position: absolute;
   left: 16px;
-  top: 12px;
+  top: 0;
+  transform: translateY(calc(0.6875em - 50%));
   width: 9px;
   height: 9px;
   background: var(--sm-bg);
@@ -864,7 +877,8 @@ section.timeline ol li strong {
   color: var(--sm-accent);
   font-family: 'Slate Serif', 'Slate JP', serif;
   font-size: calc(22px * var(--font-scale));
-  margin-bottom: 8px;
+  line-height: 1.25;
+  margin-bottom: 2px;
   font-weight: 700;
 }
 
