@@ -882,6 +882,14 @@ section.steps ol li strong {
   margin-bottom: 6px;
 }
 
+section.steps ol li p {
+  margin: 0;
+}
+
+section.steps ol li br {
+  display: none;
+}
+
 /* ============================================================
    Profile — 経歴紹介
    ============================================================ */

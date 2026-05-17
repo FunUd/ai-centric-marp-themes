@@ -731,6 +731,14 @@ section.steps ol li strong {
   font-family: 'Slate Serif', 'Slate JP', serif;
 }
 
+section.steps ol li p {
+  margin: 0;
+}
+
+section.steps ol li br {
+  display: none;
+}
+
 /* ============================================================
    Profile
    ============================================================ */

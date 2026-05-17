@@ -115,7 +115,15 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 ### Steps and Timeline
 
-- `<!-- _class: steps -->` for process slides
+- `<!-- _class: steps -->` for process slides. Use a Markdown ordered list with `**bold**` for the step title followed by the description on the next line:
+  ```markdown
+  <!-- _class: steps -->
+  # Title
+  1. **Step title**
+     Description text here.
+  2. **Step title**
+     Description text here.
+  ```
 - `<!-- _class: timeline -->` for ordered milestones
 - Keep the date and description on the same line for timeline items
 

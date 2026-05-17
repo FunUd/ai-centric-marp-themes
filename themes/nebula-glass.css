@@ -426,6 +426,10 @@ section.steps li::before {
   backdrop-filter: blur(10px);
 }
 
+section.steps li br {
+  display: none;
+}
+
 /* ============================================================
    Additional Layout Classes
    ============================================================ */
