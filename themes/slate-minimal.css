@@ -529,27 +529,28 @@ section.toc ol li::before {
 section.toc-focus {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
 }
 
 section.toc-focus ol {
   counter-reset: toc-counter;
   list-style: none;
-  padding: 0;
+  padding: 0 0 0 80px;
   display: flex;
   flex-direction: column;
   gap: 0;
   width: 100%;
   max-width: 900px;
-  margin: 40px 0 0 0;
+  margin: 12x 0 0 0;
 }
 
 section.toc-focus ol li {
   counter-increment: toc-counter;
-  padding: 16px 0;
+  padding: 12px 0;
   font-size: calc(32px * var(--font-scale));
   color: var(--sm-accent);
   display: flex;
-  align-items: baseline;
+  align-items: center;
   font-family: 'Slate Serif', 'Slate JP', serif;
 }
 
@@ -560,6 +561,7 @@ section.toc-focus ol li::before {
   font-family: 'Slate Sans', sans-serif;
   margin-right: 40px;
   width: 30px;
+  flex-shrink: 0;
 }
 
 /* ============================================================

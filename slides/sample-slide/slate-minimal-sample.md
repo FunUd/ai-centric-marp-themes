@@ -32,11 +32,6 @@ Slate Minimal Theme | Design Division | 2026.05.16
 # 発表者紹介
 
 <div class="profile-layout">
-<div class="profile-image">
-
-![shadow](./assets/sample_image.jpg)
-
-</div>
 <div class="profile-content">
 
 ## 山田 太郎
