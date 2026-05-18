@@ -12,7 +12,7 @@ A curated collection of **production-ready, AI-optimized Marp themes** designed 
 |-------|-------|----------|
 | **Azure Clarity** | Clean, corporate blue | Business reports, project proposals, technical documentation |
 | **Crimson Clarity** | Deep, energetic corporate red | High-impact proposals, strategic plans, executive summaries |
-| **Prism Edge** | Bold indigo-cyan, modern edge | Keynotes, product launches, investor pitches |
+| **Prism Edge** | Editorial indigo-cyan, polished and restrained | Keynotes, product launches, investor pitches |
 | **Nebula Glass** | Dark glassmorphism, cyber-luxe | Tech demos, premium keynotes, high-sense product presentations |
 | **Warm Sunnyday** | Warm orange, friendly rounded | Casual presentations, workshops, community talks |
 | **Slate Minimal** | Monochrome, serif typography, extreme minimalism | Academic research, design concepts, philosophical talks |
@@ -80,7 +80,7 @@ paginate: true
 
 ### Prism Edge
 
-A striking, modern theme with advanced cover designs and bold visuals.
+An editorial premium theme with refined cover designs, restrained contrast, and polished visuals.
 
 - **Five cover variants**: Classic, Wave, Diagonal, Noir, Aurora
 - Glass panels, gradient text, accent borders

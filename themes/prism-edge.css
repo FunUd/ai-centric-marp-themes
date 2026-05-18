@@ -73,26 +73,26 @@
    CSS Variables
    ============================================================ */
 :root {
-  --pe-primary: #4F46E5;
-  --pe-primary-dark: #312E81;
+  --pe-primary: #4338CA;
+  --pe-primary-dark: #1E1B4B;
   --pe-primary-light: #C7D2FE;
-  --pe-primary-pale: #E0E7FF;
-  --pe-accent: #0F172A;
-  --pe-text: #0F172A;
+  --pe-primary-pale: #EEF2FF;
+  --pe-accent: #111827;
+  --pe-text: #111827;
   --pe-text-sub: #64748B;
   --pe-white: #FFFFFF;
-  --pe-bg: #F8FAFC;
-  --pe-border: #CBD5E1;
-  --pe-border-light: #E2E8F0;
+  --pe-bg: #FAFBFC;
+  --pe-border: #D1D9E6;
+  --pe-border-light: #E8EDF4;
   --pe-success: #10B981;
   --pe-warning: #F59E0B;
   --pe-danger: #EF4444;
-  --pe-shadow: rgba(79, 70, 229, 0.08);
+  --pe-shadow: rgba(30, 41, 59, 0.06);
   --pe-radius: 0px;
   --pe-radius-lg: 0px;
-  --pe-cyan: #06B6D4;
-  --pe-magenta: #EC4899;
-  --pe-dark: #020617;
+  --pe-cyan: #0891B2;
+  --pe-magenta: #D946EF;
+  --pe-dark: #030712;
   
   /* Override Marp's default syntax highlighting colors */
   --color-prettylights-syntax-comment: #94a3b8;
@@ -126,8 +126,8 @@ section {
   --font-scale: 1;
   font-size: calc(24px * var(--font-scale));
   font-weight: 400;
-  line-height: 1.7;
-  letter-spacing: 0.01em;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -140,27 +140,27 @@ section {
    ============================================================ */
 section h1 {
   color: var(--pe-accent);
-  font-size: 38px;
+  font-size: 36px;
   font-weight: 700;
-  margin: 0 0 24px 0;
-  padding-bottom: 12px;
-  border-bottom: 3px solid var(--pe-primary);
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--pe-primary);
   line-height: 1.3;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
 }
 
 section h2 {
   color: var(--pe-accent);
-  font-size: calc(30px * var(--font-scale));
+  font-size: calc(28px * var(--font-scale));
   font-weight: 600;
   margin: 0 0 16px 0;
-  line-height: 1.4;
-  letter-spacing: -0.02em;
+  line-height: 1.35;
+  letter-spacing: -0.018em;
 }
 
 section h3 {
   color: var(--pe-primary-dark);
-  font-size: calc(24px * var(--font-scale));
+  font-size: calc(22px * var(--font-scale));
   font-weight: 600;
   margin: 0 0 12px 0;
 }
@@ -207,7 +207,7 @@ section ul li,
 section ol li {
   margin-bottom: 6px;
   line-height: 1.6;
-  font-size: calc(24px * var(--font-scale));
+  font-size: calc(23px * var(--font-scale));
 }
 
 section ul li::marker {
@@ -240,7 +240,7 @@ section table {
 }
 
 section table thead th {
-  background: var(--pe-primary);
+  background: linear-gradient(90deg, var(--pe-primary-dark) 0%, var(--pe-primary) 100%);
   color: var(--pe-white);
   padding: 10px 16px;
   text-align: left;
@@ -562,8 +562,8 @@ section.cover-wave::before {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 240px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234F46E5' fill-opacity='0.12' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='%2306B6D4' fill-opacity='0.08' d='M0,256L48,245.3C96,235,192,213,288,208C384,203,480,213,576,234.7C672,256,768,288,864,277.3C960,267,1056,213,1152,202.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  height: 190px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234338CA' fill-opacity='0.09' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='%230891B2' fill-opacity='0.05' d='M0,256L48,245.3C96,235,192,213,288,208C384,203,480,213,576,234.7C672,256,768,288,864,277.3C960,267,1056,213,1152,202.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
   background-size: cover;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -571,7 +571,7 @@ section.cover-wave::before {
 }
 
 section.cover-wave h1 {
-  font-size: 56px;
+  font-size: 52px;
   color: var(--pe-accent);
   border-bottom: none;
   padding-bottom: 0;
@@ -580,10 +580,10 @@ section.cover-wave h1 {
 }
 
 section.cover-wave h2 {
-  font-size: 28px;
+  font-size: 24px;
   color: var(--pe-primary);
   font-weight: 400;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 section.cover-wave p {
@@ -607,15 +607,15 @@ section.cover-diagonal::before {
   position: absolute;
   top: 0;
   right: 0;
-  width: 55%;
+  width: 50%;
   height: 100%;
-  background: linear-gradient(160deg, var(--pe-primary) 0%, var(--pe-primary-dark) 100%);
+  background: linear-gradient(160deg, var(--pe-primary-dark) 0%, var(--pe-primary) 100%);
   clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
   z-index: 0;
 }
 
 section.cover-diagonal h1 {
-  font-size: 56px;
+  font-size: 52px;
   color: var(--pe-accent);
   border-bottom: none;
   padding-bottom: 0;
@@ -630,7 +630,7 @@ section.cover-diagonal h2 {
   font-size: 24px;
   color: var(--pe-primary);
   font-weight: 400;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   position: relative;
   z-index: 1;
   max-width: 45%;
@@ -661,7 +661,7 @@ section.cover-noir {
 }
 
 section.cover-noir h1 {
-  font-size: 56px;
+  font-size: 52px;
   color: #FFFFFF;
   border-bottom: none;
   padding-bottom: 0;
@@ -670,10 +670,10 @@ section.cover-noir h1 {
 }
 
 section.cover-noir h2 {
-  font-size: 28px;
+  font-size: 24px;
   color: var(--pe-primary-light);
   font-weight: 400;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 section.cover-noir p {
@@ -689,7 +689,7 @@ section.cover-aurora {
   align-items: center;
   text-align: center;
   background:
-    linear-gradient(135deg, rgba(79,70,229,0.15) 0%, rgba(236,72,153,0.1) 50%, rgba(6,182,212,0.15) 100%),
+    linear-gradient(135deg, rgba(67,56,202,0.12) 0%, rgba(217,70,239,0.07) 50%, rgba(8,145,178,0.12) 100%),
     var(--pe-bg);
   padding: 80px;
   position: relative;
@@ -703,10 +703,11 @@ section.cover-aurora::before {
   width: 200%;
   height: 200%;
   background:
-    radial-gradient(circle at 30% 30%, rgba(79,70,229,0.08) 0%, transparent 40%),
-    radial-gradient(circle at 70% 70%, rgba(236,72,153,0.06) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(6,182,212,0.08) 0%, transparent 40%);
-  animation: aurora-rotate 20s linear infinite;
+    radial-gradient(circle at 30% 30%, rgba(67,56,202,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(217,70,239,0.045) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(8,145,178,0.06) 0%, transparent 40%);
+  animation: aurora-rotate 28s linear infinite;
+  opacity: 0.8;
   z-index: 0;
 }
 
@@ -716,7 +717,7 @@ section.cover-aurora::before {
 }
 
 section.cover-aurora h1 {
-  font-size: 56px;
+  font-size: 52px;
   color: var(--pe-accent);
   border-bottom: none;
   padding-bottom: 0;
@@ -727,10 +728,10 @@ section.cover-aurora h1 {
 }
 
 section.cover-aurora h2 {
-  font-size: 28px;
+  font-size: 24px;
   color: var(--pe-primary);
   font-weight: 400;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   position: relative;
   z-index: 1;
 }
@@ -756,7 +757,7 @@ section.hero {
 }
 
 section.hero h1 {
-  font-size: 72px;
+  font-size: 68px;
   font-weight: 700;
   color: var(--pe-accent);
   border-bottom: none;
@@ -766,14 +767,14 @@ section.hero h1 {
 }
 
 section.hero h2 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 400;
   color: var(--pe-primary);
   margin-bottom: 16px;
 }
 
 section.hero p {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--pe-text-sub);
 }
 
@@ -790,12 +791,12 @@ section.title-only {
 }
 
 section.title-only h1 {
-  font-size: 64px;
+  font-size: 58px;
   font-weight: 700;
   color: var(--pe-accent);
   border-bottom: none;
   margin: 0;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.035em;
   line-height: 1.15;
 }
 
@@ -820,8 +821,8 @@ section.title-elegant::before {
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 100px;
-  background: linear-gradient(180deg, transparent 0%, var(--pe-primary) 100%);
+  height: 84px;
+  background: linear-gradient(180deg, transparent 0%, rgba(67,56,202,0.8) 100%);
 }
 
 section.title-elegant::after {
@@ -831,47 +832,46 @@ section.title-elegant::after {
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 100px;
-  background: linear-gradient(0deg, transparent 0%, var(--pe-cyan) 100%);
+  height: 84px;
+  background: linear-gradient(0deg, transparent 0%, rgba(8,145,178,0.8) 100%);
 }
 
 section.title-elegant h1 {
-  font-size: 52px;
-  font-weight: 400;
+  font-size: 48px;
+  font-weight: 500;
   color: var(--pe-accent);
   border-bottom: none;
   margin: 0 0 24px 0;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   line-height: 1.2;
-  transition: all 0.3s ease;
 }
 
 section.title-elegant h1:last-child {
   margin-bottom: 0;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  font-size: 58px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  font-size: 52px;
 }
 
 /* Decorative diamond for single-title elegant slides */
 section.title-elegant h1:last-child::after {
   content: '';
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border: 1px solid var(--pe-primary);
   transform: rotate(45deg);
-  margin: 60px auto 0;
-  opacity: 0.6;
+  margin: 48px auto 0;
+  opacity: 0.5;
   background: linear-gradient(135deg, var(--pe-primary-pale), transparent);
 }
 
 section.title-elegant h2 {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
   color: var(--pe-primary);
   margin: 0;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -888,7 +888,7 @@ section.accent-left::before {
   position: absolute;
   top: 0;
   left: 0;
-  width: 8px;
+  width: 6px;
   height: 100%;
   background: linear-gradient(180deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
   z-index: 10;
@@ -1343,15 +1343,15 @@ section.bg-grid {
     linear-gradient(var(--pe-border-light) 1px, transparent 1px),
     linear-gradient(90deg, var(--pe-border-light) 1px, transparent 1px),
     var(--pe-bg);
-  background-size: 40px 40px;
+  background-size: 44px 44px;
 }
 
 /* Noise texture background via CSS gradients */
 section.bg-noise {
   background:
-    radial-gradient(circle at 20% 20%, rgba(79,70,229,0.03) 0%, transparent 20%),
-    radial-gradient(circle at 80% 80%, rgba(6,182,212,0.03) 0%, transparent 20%),
-    radial-gradient(circle at 50% 50%, rgba(236,72,153,0.02) 0%, transparent 25%),
+    radial-gradient(circle at 20% 20%, rgba(67,56,202,0.025) 0%, transparent 20%),
+    radial-gradient(circle at 80% 80%, rgba(8,145,178,0.025) 0%, transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(217,70,239,0.015) 0%, transparent 25%),
     var(--pe-bg);
 }
 
@@ -1359,19 +1359,19 @@ section.bg-noise {
    Glass Panel — frosted glass effect (sharp edges)
    ============================================================ */
 section .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.66);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.18);
   padding: 24px;
-  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
 }
 
 /* ============================================================
    Gradient Text
    ============================================================ */
 section .gradient-text {
-  background: linear-gradient(135deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+  background: linear-gradient(135deg, var(--pe-primary) 8%, var(--pe-cyan) 92%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1391,7 +1391,7 @@ section .underline-accent::after {
   bottom: -4px;
   left: 0;
   width: 100%;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(90deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
 }
 
@@ -1667,38 +1667,38 @@ section .badge {
   white-space: nowrap;
   vertical-align: middle;
   border-radius: var(--pe-radius);
-  background: linear-gradient(135deg, var(--pe-primary-light) 0%, rgba(199,210,254,0.6) 100%);
+  background: linear-gradient(135deg, #F8FAFF 0%, rgba(199,210,254,0.4) 100%);
   color: var(--pe-primary-dark);
-  border: 1px solid rgba(79,70,229,0.15);
-  letter-spacing: 0.02em;
+  border: 1px solid rgba(67,56,202,0.14);
+  letter-spacing: 0.01em;
 }
 
 section .badge.blue {
-  background: linear-gradient(135deg, var(--pe-primary) 0%, #6366f1 100%);
+  background: linear-gradient(135deg, var(--pe-primary) 0%, #5B5FE9 100%);
   color: var(--pe-white);
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(79,70,229,0.25);
+  box-shadow: 0 2px 8px rgba(67,56,202,0.18);
 }
 
 section .badge.green {
   background: linear-gradient(135deg, var(--pe-success) 0%, #34d399 100%);
   color: var(--pe-white);
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.18);
 }
 
 section .badge.orange {
   background: linear-gradient(135deg, var(--pe-warning) 0%, #fbbf24 100%);
   color: var(--pe-white);
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(245,158,11,0.25);
+  box-shadow: 0 2px 8px rgba(245,158,11,0.18);
 }
 
 section .badge.red {
   background: linear-gradient(135deg, var(--pe-danger) 0%, #f87171 100%);
   color: var(--pe-white);
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(239,68,68,0.25);
+  box-shadow: 0 2px 8px rgba(239,68,68,0.18);
 }
 
 /* ============================================================
@@ -1823,7 +1823,7 @@ section .bg-dark {
    Stat Number — big metric display
    ============================================================ */
 section .stat-number {
-  font-size: 56px;
+  font-size: 52px;
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -1832,26 +1832,26 @@ section .stat-number {
 }
 
 section .stat-label {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--pe-text-sub);
   font-weight: 500;
   display: block;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
 }
 
 /* ============================================================
    Section Number — large decorative number for headings
    ============================================================ */
 section .section-number {
-  font-size: 110px;
+  font-size: 96px;
   font-weight: 700;
   line-height: 1;
   color: var(--pe-primary);
-  opacity: 0.12;
+  opacity: 0.08;
   position: absolute;
-  top: 40px;
-  left: 70px;
+  top: 32px;
+  left: 64px;
   z-index: 0;
   letter-spacing: -0.04em;
 }
@@ -1862,7 +1862,7 @@ section .section-number {
 section .highlight-box {
   background: transparent;
   border-left: 2px solid var(--pe-primary);
-  padding: 8px 0 8px 24px;
+  padding: 8px 0 8px 20px;
   margin: 16px 0;
   position: relative;
 }
@@ -1871,7 +1871,7 @@ section .highlight-box::before {
   content: '';
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(90deg, rgba(79,70,229,0.06) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(67,56,202,0.04) 0%, transparent 100%);
   z-index: -1;
 }
 
@@ -1879,12 +1879,12 @@ section .highlight-box::before {
    Large Quote — editorial blockquote style
    ============================================================ */
 section .quote-large {
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.45;
   color: var(--pe-accent);
-  border-left: 4px solid var(--pe-primary);
-  padding-left: 24px;
+  border-left: 3px solid var(--pe-primary);
+  padding-left: 20px;
   margin: 24px 0;
   font-style: italic;
   letter-spacing: -0.01em;

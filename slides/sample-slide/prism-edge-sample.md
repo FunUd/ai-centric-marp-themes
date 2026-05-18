@@ -13,7 +13,7 @@ footer: "© 2026 Your Company"
 
 # Prism Edge
 
-## 高品質でモダン、プロフェッショナルで目を引くデザイン
+## Editorial premium for modern strategy decks
 
 プレゼンター名 | 部署名 | 2026年4月
 
@@ -26,9 +26,9 @@ footer: "© 2026 Your Company"
 
 # Diagonal Cover
 
-## 斜め分割背景で大胆な印象を
+## Sharper hierarchy, quieter surface
 
- asymmetry が視線をキャッチします
+視線を誘導しながら、余白で上質さを出します
 
 ---
 
@@ -39,9 +39,9 @@ footer: "© 2026 Your Company"
 
 # Noir Cover
 
-## 複雑な多層グラデーションで高級感を演出
+## A restrained dramatic mode for launches
 
-ダークモードの dramatic な演出に最適
+ダークトーンでも情報の輪郭はくっきり保てます
 
 ---
 
@@ -52,9 +52,9 @@ footer: "© 2026 Your Company"
 
 # Aurora Cover
 
-## オーロラ風の流れるグラデーション
+## Subtle motion with polished contrast
 
-クリエイティブなプレゼンテーションに
+クリエイティブな場面でも、過度に騒がしくなりません
 
 ---
 
@@ -136,9 +136,9 @@ footer: "© 2026 Your Company"
 
 # Section Number
 
-<div class="section-number">02</div>
+<div class="section-number">01</div>
 
-`.section-number` は背景に大きな装飾数字を配置します
+`.section-number` は背景に薄く章番号を置いて、ページのリズムをつくります
 
 ---
 
@@ -353,23 +353,23 @@ footer: "© 2026 Your Company"
 # コールアウトとバッジ
 
 <div class="callout blue">
-<h4>Information</h4>
-補足情報や Tips を目立たせて表示します。
+<h4>Insight</h4>
+補足情報や注目ポイントを静かに引き立てます。
 </div>
 
 <div class="callout green">
 <h4>Success</h4>
-完了した項目や成功事例を強調します。
+完了した項目や成果を落ち着いて示します。
 </div>
 
 <div class="callout orange">
 <h4>Warning</h4>
-注意が必要な点を強調します。
+注意が必要な点を明快に伝えます。
 </div>
 
 <div class="callout red">
 <h4>Danger</h4>
-リスクや非推奨事項を明確にします。
+リスクや非推奨事項をはっきり示します。
 </div>
 
 ステータス: <span class="badge blue">進行中</span> <span class="badge green">完了</span> <span class="badge orange">要確認</span> <span class="badge red">重要</span>
@@ -382,7 +382,7 @@ footer: "© 2026 Your Company"
 
 # <span class="gradient-text">+128%</span>
 
-## グラデーションテキストで数字を際立たせる
+## 数字を控えめに際立たせる
 
 ---
 
