@@ -442,9 +442,9 @@ section::after {
   font-size: 13px;
   color: var(--pe-text-sub);
   font-weight: 500;
-  background: var(--pe-primary-pale);
-  padding: 3px 12px;
-  border-radius: var(--pe-radius);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
   content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
 }
 
