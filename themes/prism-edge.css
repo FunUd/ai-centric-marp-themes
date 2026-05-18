@@ -93,7 +93,7 @@
   --pe-cyan: #0891B2;
   --pe-magenta: #D946EF;
   --pe-dark: #030712;
-  
+
   /* Override Marp's default syntax highlighting colors */
   --color-prettylights-syntax-comment: #94a3b8;
   --color-prettylights-syntax-constant: #fb923c;
@@ -689,7 +689,7 @@ section.cover-aurora {
   align-items: center;
   text-align: center;
   background:
-    linear-gradient(135deg, rgba(67,56,202,0.12) 0%, rgba(217,70,239,0.07) 50%, rgba(8,145,178,0.12) 100%),
+    linear-gradient(135deg, rgba(67, 56, 202, 0.12) 0%, rgba(217, 70, 239, 0.07) 50%, rgba(8, 145, 178, 0.12) 100%),
     var(--pe-bg);
   padding: 80px;
   position: relative;
@@ -703,17 +703,22 @@ section.cover-aurora::before {
   width: 200%;
   height: 200%;
   background:
-    radial-gradient(circle at 30% 30%, rgba(67,56,202,0.06) 0%, transparent 40%),
-    radial-gradient(circle at 70% 70%, rgba(217,70,239,0.045) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(8,145,178,0.06) 0%, transparent 40%);
+    radial-gradient(circle at 30% 30%, rgba(67, 56, 202, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(217, 70, 239, 0.045) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(8, 145, 178, 0.06) 0%, transparent 40%);
   animation: aurora-rotate 28s linear infinite;
   opacity: 0.8;
   z-index: 0;
 }
 
 @keyframes aurora-rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 section.cover-aurora h1 {
@@ -822,7 +827,7 @@ section.title-elegant::before {
   transform: translateX(-50%);
   width: 2px;
   height: 84px;
-  background: linear-gradient(180deg, transparent 0%, rgba(67,56,202,0.8) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(67, 56, 202, 0.8) 100%);
 }
 
 section.title-elegant::after {
@@ -833,7 +838,7 @@ section.title-elegant::after {
   transform: translateX(-50%);
   width: 2px;
   height: 84px;
-  background: linear-gradient(0deg, transparent 0%, rgba(8,145,178,0.8) 100%);
+  background: linear-gradient(0deg, transparent 0%, rgba(8, 145, 178, 0.8) 100%);
 }
 
 section.title-elegant h1 {
@@ -1349,9 +1354,9 @@ section.bg-grid {
 /* Noise texture background via CSS gradients */
 section.bg-noise {
   background:
-    radial-gradient(circle at 20% 20%, rgba(67,56,202,0.025) 0%, transparent 20%),
-    radial-gradient(circle at 80% 80%, rgba(8,145,178,0.025) 0%, transparent 20%),
-    radial-gradient(circle at 50% 50%, rgba(217,70,239,0.015) 0%, transparent 25%),
+    radial-gradient(circle at 20% 20%, rgba(67, 56, 202, 0.025) 0%, transparent 20%),
+    radial-gradient(circle at 80% 80%, rgba(8, 145, 178, 0.025) 0%, transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.015) 0%, transparent 25%),
     var(--pe-bg);
 }
 
@@ -1510,7 +1515,7 @@ section.timeline ol li p {
   line-height: 1.25;
 }
 
-section.timeline ol li p + p {
+section.timeline ol li p+p {
   margin-top: 0.2em;
 }
 
@@ -1576,11 +1581,14 @@ section .checklist li::before {
    Callouts (Alerts)
    ============================================================ */
 section .callout {
-  padding: 18px 24px;
+  padding: 18px 22px;
   margin: 16px 0;
-  background: var(--pe-primary-pale);
-  font-size: 0.95em;
+  background: rgba(255, 255, 255, 0.96);
+  font-size: 0.94em;
   position: relative;
+  border: 1px solid rgba(67, 56, 202, 0.10);
+  border-left: 4px solid var(--pe-primary);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
 }
 
 section .callout::before {
@@ -1589,17 +1597,17 @@ section .callout::before {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 6px;
-  background: var(--pe-primary);
+  width: 0;
 }
 
 section .callout h4 {
   margin-top: 0;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--pe-primary-dark);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 section .callout p:last-child {
@@ -1607,11 +1615,8 @@ section .callout p:last-child {
 }
 
 section .callout.blue {
-  background: #EEF2FF;
-}
-
-section .callout.blue::before {
-  background: var(--pe-primary);
+  background: rgba(238, 242, 255, 0.94);
+  border-left-color: var(--pe-primary);
 }
 
 section .callout.blue h4 {
@@ -1619,11 +1624,8 @@ section .callout.blue h4 {
 }
 
 section .callout.green {
-  background: #ECFDF5;
-}
-
-section .callout.green::before {
-  background: var(--pe-success);
+  background: rgba(236, 253, 245, 0.94);
+  border-left-color: var(--pe-success);
 }
 
 section .callout.green h4 {
@@ -1631,11 +1633,8 @@ section .callout.green h4 {
 }
 
 section .callout.orange {
-  background: #FFFBEB;
-}
-
-section .callout.orange::before {
-  background: var(--pe-warning);
+  background: rgba(255, 251, 235, 0.94);
+  border-left-color: var(--pe-warning);
 }
 
 section .callout.orange h4 {
@@ -1643,11 +1642,8 @@ section .callout.orange h4 {
 }
 
 section .callout.red {
-  background: #FEF2F2;
-}
-
-section .callout.red::before {
-  background: var(--pe-danger);
+  background: rgba(254, 242, 242, 0.94);
+  border-left-color: var(--pe-danger);
 }
 
 section .callout.red h4 {
@@ -1669,9 +1665,9 @@ section .badge {
   white-space: nowrap;
   vertical-align: middle;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.84) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(241, 245, 249, 0.84) 100%);
   color: var(--pe-primary-dark);
-  border: 1px solid rgba(67,56,202,0.12);
+  border: 1px solid rgba(67, 56, 202, 0.12);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   box-shadow:
@@ -1690,27 +1686,27 @@ section .badge::before {
 }
 
 section .badge.blue {
-  background: linear-gradient(180deg, rgba(67,56,202,0.10) 0%, rgba(67,56,202,0.06) 100%);
+  background: linear-gradient(180deg, rgba(67, 56, 202, 0.10) 0%, rgba(67, 56, 202, 0.06) 100%);
   color: var(--pe-primary-dark);
-  border-color: rgba(67,56,202,0.18);
+  border-color: rgba(67, 56, 202, 0.18);
 }
 
 section .badge.green {
-  background: linear-gradient(180deg, rgba(16,185,129,0.10) 0%, rgba(16,185,129,0.06) 100%);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.10) 0%, rgba(16, 185, 129, 0.06) 100%);
   color: #047857;
-  border-color: rgba(16,185,129,0.18);
+  border-color: rgba(16, 185, 129, 0.18);
 }
 
 section .badge.orange {
-  background: linear-gradient(180deg, rgba(245,158,11,0.10) 0%, rgba(245,158,11,0.06) 100%);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.10) 0%, rgba(245, 158, 11, 0.06) 100%);
   color: #B45309;
-  border-color: rgba(245,158,11,0.18);
+  border-color: rgba(245, 158, 11, 0.18);
 }
 
 section .badge.red {
-  background: linear-gradient(180deg, rgba(239,68,68,0.10) 0%, rgba(239,68,68,0.06) 100%);
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.10) 0%, rgba(239, 68, 68, 0.06) 100%);
   color: #B91C1C;
-  border-color: rgba(239,68,68,0.18);
+  border-color: rgba(239, 68, 68, 0.18);
 }
 
 /* ============================================================
@@ -1882,8 +1878,11 @@ section .highlight-box {
 section .highlight-box::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(90deg, rgba(67,56,202,0.04) 0%, transparent 100%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(67, 56, 202, 0.04) 0%, transparent 100%);
   z-index: -1;
 }
 
