@@ -1658,47 +1658,59 @@ section .callout.red h4 {
    Badges / Tags
    ============================================================ */
 section .badge {
-  display: inline-block;
-  padding: 5px 14px;
-  font-size: 0.72em;
-  font-weight: 700;
-  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 0.68em;
+  font-weight: 600;
+  line-height: 1.2;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  border-radius: var(--pe-radius);
-  background: linear-gradient(135deg, #F8FAFF 0%, rgba(199,210,254,0.4) 100%);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.84) 100%);
   color: var(--pe-primary-dark);
-  border: 1px solid rgba(67,56,202,0.14);
-  letter-spacing: 0.01em;
+  border: 1px solid rgba(67,56,202,0.12);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+section .badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.85;
+  flex-shrink: 0;
 }
 
 section .badge.blue {
-  background: linear-gradient(135deg, var(--pe-primary) 0%, #5B5FE9 100%);
-  color: var(--pe-white);
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(67,56,202,0.18);
+  background: linear-gradient(180deg, rgba(67,56,202,0.10) 0%, rgba(67,56,202,0.06) 100%);
+  color: var(--pe-primary-dark);
+  border-color: rgba(67,56,202,0.18);
 }
 
 section .badge.green {
-  background: linear-gradient(135deg, var(--pe-success) 0%, #34d399 100%);
-  color: var(--pe-white);
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(16,185,129,0.18);
+  background: linear-gradient(180deg, rgba(16,185,129,0.10) 0%, rgba(16,185,129,0.06) 100%);
+  color: #047857;
+  border-color: rgba(16,185,129,0.18);
 }
 
 section .badge.orange {
-  background: linear-gradient(135deg, var(--pe-warning) 0%, #fbbf24 100%);
-  color: var(--pe-white);
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(245,158,11,0.18);
+  background: linear-gradient(180deg, rgba(245,158,11,0.10) 0%, rgba(245,158,11,0.06) 100%);
+  color: #B45309;
+  border-color: rgba(245,158,11,0.18);
 }
 
 section .badge.red {
-  background: linear-gradient(135deg, var(--pe-danger) 0%, #f87171 100%);
-  color: var(--pe-white);
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(239,68,68,0.18);
+  background: linear-gradient(180deg, rgba(239,68,68,0.10) 0%, rgba(239,68,68,0.06) 100%);
+  color: #B91C1C;
+  border-color: rgba(239,68,68,0.18);
 }
 
 /* ============================================================
