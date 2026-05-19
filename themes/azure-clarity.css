@@ -1059,17 +1059,16 @@ section .checklist li::before {
   content: '✓';
   position: absolute;
   left: 0;
-  top: 4px;
-  color: var(--ac-white);
-  background: var(--ac-success);
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--ac-radius);
-  font-size: 14px;
-  font-weight: bold;
+  top: 0;
+  color: var(--ac-primary);
+  background: none;
+  border: none;
+  width: auto;
+  height: auto;
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 /* ============================================================
