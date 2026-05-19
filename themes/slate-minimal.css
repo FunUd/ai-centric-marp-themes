@@ -886,13 +886,12 @@ section.timeline ol li::before {
 
 section.timeline ul li strong,
 section.timeline ol li strong {
-  display: block;
+  display: inline;
   color: var(--sm-accent);
   font-family: 'Slate Serif', 'Slate JP', serif;
   font-size: calc(22px * var(--font-scale));
-  line-height: 1.25;
-  margin-bottom: 2px;
   font-weight: 700;
+  margin-right: 0.5em;
 }
 
 /* ============================================================
