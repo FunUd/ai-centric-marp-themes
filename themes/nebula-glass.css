@@ -148,7 +148,7 @@ section strong {
 }
 
 section em {
-  color: #9FE8F2;
+  color: #67E8F9;
   font-style: italic;
 }
 
@@ -183,14 +183,14 @@ section ul li {
 
 section ul li::before {
   content: '•';
-  color: rgba(34, 211, 238, 0.95);
+  color: rgba(34, 211, 238, 1.0);
   font-size: 0.9em;
   flex-shrink: 0;
   line-height: 1;
 }
 
 section ol li::marker {
-  color: var(--ng-primary);
+  color: #C4B5FD;
   font-weight: 700;
 }
 
@@ -257,7 +257,7 @@ section table td strong {
    ============================================================ */
 section code {
   background: rgba(255, 255, 255, 0.08);
-  color: #8DE8F4;
+  color: #67E8F9;
   padding: 0.15em 0.45em;
   border-radius: 10px;
   font-family: 'Nebula Mono', monospace;
@@ -319,17 +319,7 @@ section.cover-nebula {
     radial-gradient(circle at 50% 50%, rgba(7, 10, 18, 1) 0%, rgba(5, 7, 13, 0.98) 58%, rgba(2, 4, 9, 1) 100%);
 }
 
-section.cover-nebula::before {
-  content: '';
-  position: absolute;
-  left: 80px;
-  top: 110px;
-  width: 1px;
-  height: 230px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(139, 92, 246, 0.75), rgba(34, 211, 238, 0.25), transparent);
-  opacity: 0.85;
-  pointer-events: none;
-}
+/* cover-nebula の縦線は不要のため削除 */
 
 /* cover-nebula ではヘッダー・フッター・ページ番号を非表示 */
 section.cover-nebula header,
@@ -402,8 +392,8 @@ section.glass-card-layout .card h1 {
 /* Split Glass — Multi-dimensional */
 section.split-glass {
   display: grid;
-  grid-template-columns: 1.12fr 0.98fr;
-  gap: 48px;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
   align-items: center;
 }
 
@@ -418,15 +408,22 @@ section.split-glass .glass-panel {
   background: var(--ng-glass-strong);
   border: 1px solid var(--ng-glass-border-strong);
   border-radius: var(--ng-radius-lg);
-  padding: 38px;
+  padding: 32px 30px;
   backdrop-filter: var(--ng-glass-blur);
   box-shadow:
     0 24px 52px -26px rgba(0, 0, 0, 0.64),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  min-width: 0;
+  overflow: hidden;
 }
 
 section.split-glass .glass-panel h3 {
   margin-top: 0;
+}
+
+section.split-glass .glass-panel li {
+  font-size: 0.88em;
+  word-break: break-word;
 }
 
 /* Steps — Refined Minimalist Design */
@@ -454,11 +451,11 @@ section.steps li::before {
   justify-content: center;
   align-items: center;
   font-weight: 700;
-  color: #9DEBFA;
+  color: #67E8F9;
   font-size: 18px;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 0 18px rgba(34, 211, 238, 0.08);
+    0 0 18px rgba(34, 211, 238, 0.12);
   font-family: 'Nebula Header', sans-serif;
   backdrop-filter: blur(10px);
 }
@@ -476,7 +473,7 @@ section.key-message {
   justify-content: center;
   align-items: flex-start;
   padding-left: 92px;
-  padding-right: 144px;
+  padding-right: 92px;
   background-image:
     radial-gradient(circle at 10% 50%, rgba(139, 92, 246, 0.22) 0%, transparent 52%),
     radial-gradient(circle at 90% 20%, rgba(34, 211, 238, 0.1) 0%, transparent 40%);
@@ -493,7 +490,7 @@ section.key-message blockquote {
   box-shadow: none;
   backdrop-filter: none;
   margin: 0;
-  max-width: 840px;
+  max-width: 100%;
 }
 
 section.key-message blockquote p {
@@ -885,7 +882,7 @@ section.timeline ol li::before {
 
 section.timeline ol li strong {
   display: block;
-  color: #9FE8F2;
+  color: #67E8F9;
   font-size: 0.85em;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -1104,8 +1101,8 @@ section.v-bottom { justify-content: flex-end; }
 /* ============================================================
    Color Utilities
    ============================================================ */
-section .text-violet { color: var(--ng-primary) !important; -webkit-text-fill-color: var(--ng-primary) !important; }
-section .text-cyan   { color: #8DE8F4 !important; -webkit-text-fill-color: #8DE8F4 !important; }
+section .text-violet { color: #A78BFA !important; -webkit-text-fill-color: #A78BFA !important; }
+section .text-cyan   { color: #67E8F9 !important; -webkit-text-fill-color: #67E8F9 !important; }
 section .text-rose   { color: #FDB4BF !important; -webkit-text-fill-color: #FDB4BF !important; }
 section .text-muted  { color: var(--ng-text-muted) !important; -webkit-text-fill-color: var(--ng-text-muted) !important; }
 section .text-white  { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }

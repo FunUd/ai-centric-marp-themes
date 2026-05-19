@@ -102,7 +102,7 @@ console.log("プレゼンテーションの未来へようこそ。");
 
 <!-- _class: key-message -->
 
-> 宇宙は、美しいものを好む。
+> Insert key message here.
 
 ---
 
