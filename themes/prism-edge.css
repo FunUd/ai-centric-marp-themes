@@ -73,8 +73,8 @@
    CSS Variables
    ============================================================ */
 :root {
-  --pe-primary: #4338CA;
-  --pe-primary-dark: #1E1B4B;
+  --pe-primary: #4F46E5;
+  --pe-primary-dark: #312E81;
   --pe-primary-light: #C7D2FE;
   --pe-primary-pale: #EEF2FF;
   --pe-accent: #111827;
@@ -90,7 +90,7 @@
   --pe-shadow: rgba(30, 41, 59, 0.06);
   --pe-radius: 0px;
   --pe-radius-lg: 0px;
-  --pe-cyan: #0891B2;
+  --pe-cyan: #06B6D4;
   --pe-magenta: #D946EF;
   --pe-dark: #030712;
 
@@ -377,7 +377,7 @@ section em {
 }
 
 section mark {
-  background: linear-gradient(transparent 60%, var(--pe-cyan) 60%);
+  background: linear-gradient(transparent 70%, #67bcf9 70%);
   padding: 0 4px;
   color: inherit;
 }
@@ -609,7 +609,7 @@ section.cover-diagonal::before {
   right: 0;
   width: 50%;
   height: 100%;
-  background: linear-gradient(160deg, var(--pe-primary-dark) 0%, var(--pe-primary) 100%);
+  background: linear-gradient(160deg, var(--pe-primary) 0%, var(--pe-primary-dark) 100%);
   clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
   z-index: 0;
 }
@@ -826,8 +826,8 @@ section.title-elegant::before {
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 84px;
-  background: linear-gradient(180deg, transparent 0%, rgba(67, 56, 202, 0.8) 100%);
+  height: 100px;
+  background: linear-gradient(180deg, transparent 0%, var(--pe-primary) 100%);
 }
 
 section.title-elegant::after {
@@ -837,46 +837,46 @@ section.title-elegant::after {
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 84px;
-  background: linear-gradient(0deg, transparent 0%, rgba(8, 145, 178, 0.8) 100%);
+  height: 100px;
+  background: linear-gradient(0deg, transparent 0%, var(--pe-cyan) 100%);
 }
 
 section.title-elegant h1 {
-  font-size: 48px;
-  font-weight: 500;
+  font-size: 52px;
+  font-weight: 400;
   color: var(--pe-accent);
   border-bottom: none;
   margin: 0 0 24px 0;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   line-height: 1.2;
 }
 
 section.title-elegant h1:last-child {
   margin-bottom: 0;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  font-size: 52px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  font-size: 58px;
 }
 
 /* Decorative diamond for single-title elegant slides */
 section.title-elegant h1:last-child::after {
   content: '';
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 1px solid var(--pe-primary);
   transform: rotate(45deg);
-  margin: 48px auto 0;
-  opacity: 0.5;
+  margin: 60px auto 0;
+  opacity: 0.6;
   background: linear-gradient(135deg, var(--pe-primary-pale), transparent);
 }
 
 section.title-elegant h2 {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 400;
   color: var(--pe-primary);
   margin: 0;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
