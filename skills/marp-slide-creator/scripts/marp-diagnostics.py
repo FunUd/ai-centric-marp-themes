@@ -85,8 +85,10 @@ def export_html(markdown_path: Path, html_path: Path, marp_bin: str, theme: str 
         return fallback
 
 
-def extract_metrics(html_path: Path, json_path: Path) -> None:
+def extract_metrics(html_path: Path, json_path: Path, screenshot_dir: Path | None = None) -> None:
     extractor = [sys.executable, str(EXTRACTOR_SCRIPT), str(html_path), "-o", str(json_path)]
+    if screenshot_dir:
+        extractor.extend(["--screenshot-dir", str(screenshot_dir)])
     run_command(extractor)
 
 
@@ -144,6 +146,10 @@ def main() -> int:
         help="Path to a custom Marp theme CSS file",
     )
     parser.add_argument(
+        "--screenshot-dir",
+        help="Directory to save slide screenshots during DOM extraction",
+    )
+    parser.add_argument(
         "--fail-on-risk",
         action="store_true",
         help="Exit with a non-zero status when any slide has risk flags",
@@ -179,7 +185,9 @@ def main() -> int:
             theme=args.theme,
         )
         print(f"Marp command: {' '.join(command_used)}")
-        extract_metrics(html_path.resolve(), json_path.resolve())
+        
+        screenshot_dir = Path(args.screenshot_dir) if args.screenshot_dir else None
+        extract_metrics(html_path.resolve(), json_path.resolve(), screenshot_dir)
         metrics = load_metrics(json_path.resolve())
         status = print_summary(metrics, html_path.resolve(), json_path.resolve())
     except subprocess.CalledProcessError as exc:

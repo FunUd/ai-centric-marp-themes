@@ -81,31 +81,30 @@ It detects:
 
 > **⚠️ DO NOT skip this step.** The DOM extractor reports "no issues" even when layouts are completely broken because the content simply stacks vertically inside the slide's overflow:hidden container.
 
-### Stage 2: Batch Diagnostic Helper
+### Stage 2: Unified Diagnostics & Screenshots
 
-After lint passes clean, run the DOM-based diagnostics:
+After lint passes clean, run the unified diagnostic helper to export HTML, run DOM analysis, and optionally generate bespoke-free slide screenshots in a single command:
 
 ```powershell
-python skills/marp-slide-creator/scripts/marp-diagnostics.py --theme themes/prism-edge.css slides/my-deck/my-deck.md
+python skills/marp-slide-creator/scripts/marp-diagnostics.py --theme themes/prism-edge.css slides/my-deck/my-deck.md --screenshot-dir slides/my-deck/assets/screenshots
 ```
 
-This helper exports `slides/my-deck/preview.html`, runs the DOM extractor, and writes `slides/my-deck/assets/dom-metrics.json`.
+This helper exports `slides/my-deck/preview.html`, saves individual slide screenshots to `slides/my-deck/assets/screenshots/slide-001.png`, `slide-002.png` etc. (with the Marp navigation toolbar and progress bar automatically hidden), and writes DOM analysis to `slides/my-deck/assets/dom-metrics.json`.
 
 ### Stage 3: DOM Metrics Extraction
 
-If you already have a rendered HTML file, skip the export step and run the extractor directly.
+If you already have a rendered HTML file and only want to run the extractor without rebuilding, you can run the extractor directly:
 
-**Step 1: Export HTML**
-```powershell
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/azure-clarity.css slides/my-deck/my-deck.md -o slides/my-deck/preview.html
-```
-
-**Step 2: Run DOM Extractor**
+**Step 1: Run DOM Extractor**
 ```powershell
 python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/preview.html -o slides/my-deck/assets/dom-metrics.json
 ```
+To also output screenshots during extraction:
+```powershell
+python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/preview.html -o slides/my-deck/assets/dom-metrics.json --screenshot-dir slides/my-deck/assets/screenshots
+```
 
-**Step 3: Analyze JSON**
+**Step 2: Analyze JSON**
 
 Auto-detected risk flags:
 - `CONTENT_OVERFLOW`: Content past slide bottom
@@ -137,33 +136,28 @@ When you (the AI) need to visually confirm the actual layout, contrast, and elem
 
 **⚠️ PERMISSION CHECK:** Before performing this stage, ensure the user has explicitly opted-in to "Visual layout checks" or "AI Vision". If not, do NOT proceed with image generation and stick to Stage 3 DOM Metrics.
 
-**Step 1: Export to Images (PNG)**
-Use Marp CLI to generate images. This will output a sequence of images (e.g., `temp-preview.001.png`, `temp-preview.002.png`).
-```powershell
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/prism-edge.css slides/my-deck/my-deck.md --images png -o slides/my-deck/assets/temp-preview.png
-```
-> **Environment Note:** If the image export fails due to missing browser/Chromium dependencies or corporate policy restrictions, abort the visual inspection and fall back to the Stage 3 DOM Metrics Extractor.
-> **Model Note:** This step requires the AI model to have image-reading (vision) capabilities.
+**Step 1: Generate Screenshots**
+Run the unified diagnostic helper with `--screenshot-dir` specified (see Stage 2). This will generate clean, bespoke-UI-free slide screenshots (e.g. `slide-001.png`, `slide-002.png`) inside the specified folder.
 
 **Step 2: Slide Identification Protocol (MANDATORY)**
 To avoid misidentifying slide numbers during visual inspection:
-1. **Render with Pagination**: If not already present, ensure `paginate: true` is set in the frontmatter during the diagnostic render.
-2. **Cross-reference Filename & Page Number**: When viewing an image (e.g., `temp-preview.003.png`), look for the page number rendered in the footer of the slide itself.
+1. **Render with Pagination**: If not already present, ensure `paginate: true` is set in the frontmatter.
+2. **Cross-reference Filename & Page Number**: When viewing an image (e.g., `slide-003.png`), confirm that the slide number rendered in the footer of the slide itself matches the page you intend to review.
 3. **Verify Content**: Before applying a fix, confirm that the slide title or key text in the image matches the slide you intend to edit in the Markdown file.
-4. **Source of Truth**: The rendered page number in the image is the source of truth for *which* slide is being seen. The file sequence (001, 002...) usually matches, but can drift if hidden slides are present.
+4. **Source of Truth**: The rendered page number in the image is the source of truth for *which* slide is being seen.
 
-**Step 3: Inspect the Images**
-Use your file viewing tool (`view_file`) on the specific generated image(s) you need to check. This will load the image into your context, allowing you to visually identify:
-- Text overflowing slide boundaries or container `div`s.
-- Poor contrast (e.g., light text on a light background).
-- Misaligned columns or grids.
-- Improperly scaled images or icons.
+**Step 3: Inspect the Images (Visual Quality Checklist)**
+Use your file viewing tool (`view_file`) on the specific generated image(s) you need to check. This will load the image into your context. Inspect the slide against the following visual quality criteria:
+- **Contrast**: Is there sufficient color contrast between the text and background/background-image? (Particularly check pale text on light backgrounds or keycards).
+- **Overlap**: Are text elements, SVG icons, background shapes, or Mermaid diagrams overlapping or blocking each other?
+- **Alignment & Balance**: For column/grid layouts (e.g., `cols-2`, `cols-3`, `grid-quadrant`), is the height and layout of content balanced? Are the margins symmetrical?
+- **Typography**: Are Japanese/English fonts rendering correctly without ugly fallback fonts (like default Mincho or broken character rendering)?
 
 **Step 4: Cleanup (MANDATORY)**
 
-Once you have reviewed the images and made necessary corrections to the Markdown, you **MUST** delete all temporary screenshot files to keep the workspace clean.
+Once you have reviewed the images and made necessary corrections to the Markdown, you **MUST** delete the temporary screenshot folder to keep the workspace clean.
 ```powershell
-Remove-Item -Path "slides/my-deck/assets/temp-preview*.png" -Force
+Remove-Item -Path "slides/my-deck/assets/screenshots" -Recurse -Force
 ```
 ## 5. Content Overflow Solutions
 

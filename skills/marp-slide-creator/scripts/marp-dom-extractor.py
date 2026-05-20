@@ -25,6 +25,23 @@ try:
 except ImportError:
     sync_playwright = None
 
+# CSS to hide slide control UI elements injected by Marp bespoke.js
+# Targets: navigation bar, progress bar, presenter overlay
+HIDE_CONTROLS_CSS = """
+  /* bespoke navigation bar */
+  .bespoke-marp-osc,
+  /* progress bar */
+  .bespoke-progress-parent,
+  /* presenter notes overlay */
+  .bespoke-marp-presenter-view,
+  /* any fixed/absolute UI injected by bespoke */
+  [class*="bespoke-marp-osc"],
+  [class*="bespoke-progress"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+"""
 
 SECTION_RE = re.compile(r"<section\b([^>]*)>(.*?)</section>", re.S | re.I)
 IMG_RE = re.compile(r"<img\b([^>]*)>", re.I)
@@ -83,7 +100,7 @@ def local_image_exists(html_path: Path, src: str) -> bool:
     return (html_path.parent / src).exists()
 
 
-def extract_slide_metrics_browser(html_path: Path) -> list[dict[str, Any]]:
+def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None = None) -> list[dict[str, Any]]:
     """Load a Marp HTML file and extract per-slide metrics using Playwright."""
     absolute_path = html_path.resolve().as_posix()
     file_url = f"file:///{absolute_path}"
@@ -96,6 +113,16 @@ def extract_slide_metrics_browser(html_path: Path) -> list[dict[str, Any]]:
         page.goto(file_url, wait_until="networkidle")
         page.wait_for_timeout(500)  # Extra buffer for CSS/layout
 
+        if screenshot_dir:
+            screenshot_dir.mkdir(parents=True, exist_ok=True)
+            page.add_style_tag(content=HIDE_CONTROLS_CSS)
+            page.mouse.move(-100, -100)
+            page.wait_for_timeout(300)
+
+        # Click body to ensure keyboard focus
+        page.click("body")
+        page.wait_for_timeout(200)
+
         # Marp CLI exports sections inside <div class="marpit"> or <body>
         # Each section has inline style with width/height
         slides = page.locator("body > div.marpit > section, body > section").all()
@@ -103,8 +130,20 @@ def extract_slide_metrics_browser(html_path: Path) -> list[dict[str, Any]]:
             slides = page.locator("section").all()
 
         for idx, slide in enumerate(slides, start=1):
+            if idx > 1:
+                page.keyboard.press("ArrowRight")
+                page.wait_for_timeout(150)
+                if screenshot_dir:
+                    page.add_style_tag(content=HIDE_CONTROLS_CSS)
+                    page.mouse.move(-100, -100)
+                    page.wait_for_timeout(50)
+
             # Ensure slide is in viewport for accurate sizing
             slide.scroll_into_view_if_needed()
+
+            if screenshot_dir:
+                shot_path = screenshot_dir / f"slide-{idx:03d}.png"
+                page.screenshot(path=str(shot_path))
 
             # Bounding box of the slide itself
             box = slide.bounding_box()
@@ -251,12 +290,14 @@ def extract_slide_metrics_heuristic(html_path: Path) -> list[dict[str, Any]]:
     return results
 
 
-def extract_slide_metrics(html_path: Path) -> list[dict[str, Any]]:
+def extract_slide_metrics(html_path: Path, screenshot_dir: Path | None = None) -> list[dict[str, Any]]:
     """Extract per-slide metrics, using browser metrics when available."""
     if sync_playwright is None:
+        if screenshot_dir:
+            print("Warning: Playwright is unavailable. Skipping screenshots.", file=sys.stderr)
         return extract_slide_metrics_heuristic(html_path)
 
-    return extract_slide_metrics_browser(html_path)
+    return extract_slide_metrics_browser(html_path, screenshot_dir)
 
 
 def main() -> None:
@@ -266,6 +307,10 @@ def main() -> None:
     parser.add_argument("html_file", help="Path to the Marp-generated HTML file")
     parser.add_argument(
         "-o", "--output", default="-", help="Output file (default: stdout)"
+    )
+    parser.add_argument(
+        "-s", "--screenshot-dir",
+        help="Directory to save slide screenshots (requires Playwright)",
     )
     parser.add_argument(
         "--compact",
@@ -279,7 +324,8 @@ def main() -> None:
         print(f"Error: file not found: {html_path}", file=sys.stderr)
         sys.exit(1)
 
-    data = extract_slide_metrics(html_path)
+    screenshot_dir = Path(args.screenshot_dir) if args.screenshot_dir else None
+    data = extract_slide_metrics(html_path, screenshot_dir)
 
     indent = None if args.compact else 2
     json_text = json.dumps(data, indent=indent, ensure_ascii=False)
