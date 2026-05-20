@@ -367,7 +367,7 @@ ai-centric-marp-themes/
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
 - **`skills/marp-slide-creator/scripts/`** — Scripting toolkit for high-quality Marp generation:
   - `marp-lint.py`: Catches structural mistakes (missing class directives, centered lists) *before* rendering.
-  - `marp-diagnostics.py`: Surfaces overflow and broken-image risks *after* rendering to HTML.
+  - `marp-diagnostics.py`: Surfaces overflow and broken-image risks *after* rendering to HTML, with support for exporting clean, bespoke-UI-free screenshots for visual inspection.
   - `marp-dom-extractor.py`: Playwright-based metrics extractor for AI-driven layout review.
   - `setup-slide-project.py`: Project scaffolding helper.
 
@@ -441,16 +441,16 @@ No build step required — changes are live on save.
 
 Slide dimensions: **1280 x 720 px** (16:9)
 
-### Optional: Playwright (for AI DOM-based review)
+### Optional: Playwright (for AI DOM-based & Visual Review)
 
-If you want AI models without image support to review slide layouts, install the Playwright-based DOM extractor:
+Playwright is required to extract slide DOM metrics (enabling layout overflow detection) and to generate clean, bespoke-UI-free slide screenshots for AI visual inspection:
 
 ```bash
 pip install playwright
 playwright install chromium
 ```
 
-This enables the alternative text-only review pipeline described in `skills/marp-slide-creator/SKILL.md` and `skills/marp-slide-creator/scripts/marp-diagnostics.py`.
+This enables the diagnostics and screenshot capture pipeline described in `skills/marp-slide-creator/SKILL.md` and `skills/marp-slide-creator/scripts/marp-diagnostics.py`.
 
 ---
 
