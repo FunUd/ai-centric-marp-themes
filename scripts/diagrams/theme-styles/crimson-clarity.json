@@ -1,0 +1,48 @@
+{
+  "theme": "crimson-clarity",
+  "name": "Crimson Clarity",
+  "mode": "light",
+  "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif",
+  "colors": {
+    "primary": "#D32F2F",
+    "primaryDark": "#B71C1C",
+    "primaryLight": "#FFEBEE",
+    "primaryPale": "#FFF5F5",
+    "accent": "#5C0000",
+    "text": "#211010",
+    "textMuted": "#7D5A5A",
+    "background": "#FFFBFB",
+    "surface": "#FFFFFF",
+    "border": "#EAC1C1",
+    "borderLight": "#F5E1E1",
+    "line": "#D32F2F",
+    "success": "#27AE60",
+    "warning": "#F39C12",
+    "danger": "#E74C3C"
+  },
+  "mermaid": {
+    "theme": "base",
+    "themeVariables": {
+      "primaryColor": "#FFF5F5",
+      "primaryTextColor": "#211010",
+      "primaryBorderColor": "#D32F2F",
+      "lineColor": "#D32F2F",
+      "secondaryColor": "#FFEBEE",
+      "tertiaryColor": "#FFFBFB",
+      "mainBkg": "#FFF5F5",
+      "nodeBorder": "#D32F2F",
+      "clusterBkg": "#FFFBFB",
+      "clusterBorder": "#EAC1C1",
+      "titleColor": "#211010",
+      "edgeLabelBackground": "#FFFFFF",
+      "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif"
+    }
+  },
+  "drawio": {
+    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#D32F2F;fontColor=#211010;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#D32F2F;strokeColor=#B71C1C;fontColor=#FFFFFF;fontStyle=1;",
+    "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#D32F2F;fontColor=#211010;",
+    "containerStyle": "swimlane;startSize=28;fillColor=#FFFBFB;strokeColor=#EAC1C1;fontColor=#211010;fontStyle=1;",
+    "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#D32F2F;strokeWidth=1.5;endArrow=block;endFill=1;"
+  }
+}

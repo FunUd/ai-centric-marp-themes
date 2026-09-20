@@ -1,0 +1,48 @@
+{
+  "theme": "slate-minimal",
+  "name": "Slate Minimal",
+  "mode": "light",
+  "fontFamily": "'Caladea', 'Poppins', 'Noto Sans JP', serif",
+  "colors": {
+    "primary": "#475569",
+    "primaryDark": "#111111",
+    "primaryLight": "#E2E8F0",
+    "primaryPale": "#F8FAFC",
+    "accent": "#111111",
+    "text": "#334155",
+    "textMuted": "#6B7280",
+    "background": "#FFFFFF",
+    "surface": "#FFFFFF",
+    "border": "#CBD5E1",
+    "borderLight": "#F1F5F9",
+    "line": "#475569",
+    "success": "#64748B",
+    "warning": "#94A3B8",
+    "danger": "#475569"
+  },
+  "mermaid": {
+    "theme": "base",
+    "themeVariables": {
+      "primaryColor": "#F8FAFC",
+      "primaryTextColor": "#334155",
+      "primaryBorderColor": "#475569",
+      "lineColor": "#475569",
+      "secondaryColor": "#E2E8F0",
+      "tertiaryColor": "#FFFFFF",
+      "mainBkg": "#F8FAFC",
+      "nodeBorder": "#475569",
+      "clusterBkg": "#FFFFFF",
+      "clusterBorder": "#CBD5E1",
+      "titleColor": "#111111",
+      "edgeLabelBackground": "#FFFFFF",
+      "fontFamily": "'Caladea', 'Poppins', 'Noto Sans JP', serif"
+    }
+  },
+  "drawio": {
+    "primaryNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;fontColor=#334155;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#475569;strokeColor=#111111;fontColor=#FFFFFF;fontStyle=1;",
+    "secondaryNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#E2E8F0;strokeColor=#475569;fontColor=#334155;",
+    "containerStyle": "swimlane;startSize=28;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontColor=#111111;fontStyle=1;",
+    "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=block;endFill=1;"
+  }
+}

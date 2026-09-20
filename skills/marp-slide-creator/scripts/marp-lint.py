@@ -67,6 +67,7 @@ SCOPED_LIST_OVERRIDE_RE = re.compile(
 HEADING_RE = re.compile(r"^\s*(#{1,3})\s+(.+)$", re.MULTILINE)
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 STYLE_RE = re.compile(r"<style\b[^>]*>.*?</style>", re.S | re.I)
+CODE_FENCE_RE = re.compile(r"```[\s\S]*?```", re.MULTILINE)
 TAG_RE = re.compile(r"<[^>]+>")
 
 # Topic-only / generic title keywords (So What? missing)
@@ -135,29 +136,33 @@ def parse_slides(markdown: str) -> list[SlideInfo]:
 
         slide = SlideInfo(number=i, raw_content=raw)
 
+        # Strip fenced code blocks before analysis to avoid false positives
+        # (e.g. SVG paths inside code examples triggering diagram/icon checks)
+        raw_no_code = CODE_FENCE_RE.sub("", raw)
+
         # Extract _class directives
-        for match in CLASS_DIRECTIVE_RE.finditer(raw):
+        for match in CLASS_DIRECTIVE_RE.finditer(raw_no_code):
             classes_str = match.group(1)
             slide.classes.update(c.strip() for c in classes_str.split())
 
         # Extract div classes
-        for match in DIV_CLASS_RE.finditer(raw):
+        for match in DIV_CLASS_RE.finditer(raw_no_code):
             div_classes_str = match.group(1)
             slide.div_classes.extend(div_classes_str.split())
 
-        # Extract images
-        for match in IMG_RE.finditer(raw):
+        # Extract images (code-stripped to avoid false positives from code examples)
+        for match in IMG_RE.finditer(raw_no_code):
             slide.images.append((match.group(1), match.group(2)))
 
         # Extract headings
-        for match in HEADING_RE.finditer(raw):
+        for match in HEADING_RE.finditer(raw_no_code):
             slide.headings.append(match.group(2).strip())
 
-        # Extract list items
-        for match in LIST_ITEM_RE.finditer(raw):
+        # Extract list items (code-stripped to avoid counting code-block lines)
+        for match in LIST_ITEM_RE.finditer(raw_no_code):
             slide.list_items.append(match.group(2).strip())
 
-        # Plain text length calculation
+        # Plain text length calculation (use original raw for accurate char count)
         plain = extract_plain_text(raw)
         slide.plain_text_len = len(plain)
 
@@ -254,6 +259,124 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
     return issues
 
 
+# ---------------------------------------------------------------------------
+# Diagram-specific lint checks (Phase 5.1 addition)
+# ---------------------------------------------------------------------------
+
+# Keywords that identify a path as a diagram (not an icon)
+DIAGRAM_PATH_KEYWORDS = frozenset(
+    ["diagram", "chart", "flow", "arch", "seq", "state", "drawio", "mmd", "render"]
+)
+
+# Max safe diagram widths per layout class (px)
+DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
+    "full":  1120,   # full-width single column
+    "col2":  520,    # 2-column layouts
+    "col3":  360,    # 3-column layouts
+    "asym":  710,    # asymmetric split
+}
+
+# Layout class sets → layout key
+_COL2_CLASSES = {"cols-2", "split-2", "split-asym", "split-asym-reverse", "split-glass", "glass-card-layout"}
+_COL3_CLASSES = {"cols-3", "split-3"}
+
+
+def _is_diagram_src(src: str) -> bool:
+    """Return True when the image source looks like a rendered diagram (not an icon)."""
+    src_lower = src.lower()
+    return any(kw in src_lower for kw in DIAGRAM_PATH_KEYWORDS)
+
+
+def _slide_layout_key(slide: SlideInfo) -> str:
+    """Infer the applicable layout constraint key from the slide's _class directives."""
+    if slide.classes.intersection(_COL3_CLASSES):
+        return "col3"
+    if slide.classes.intersection(_COL2_CLASSES):
+        return "col2"
+    # split-asym / asymmetric layouts
+    if slide.classes.intersection({"split-asym", "split-asym-reverse"}):
+        return "asym"
+    return "full"
+
+
+def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
+    """Check diagram images for missing width, oversized width, and centered-layout placement.
+
+    Checks:
+    - DIAGRAM_MISSING_WIDTH (WARNING): Diagram SVG embedded without explicit width:NNNpx.
+    - DIAGRAM_OVERFLOW_WIDTH (ERROR):  Diagram width exceeds the max for the slide layout.
+    - DIAGRAM_ON_CENTERED_LAYOUT (WARNING): Diagram placed on a centered layout
+      (cover, key-message, etc.) where it may render oddly.
+    """
+    issues: list[LintIssue] = []
+
+    layout_key = _slide_layout_key(slide)
+    max_width = DIAGRAM_LAYOUT_MAX_WIDTHS[layout_key]
+
+    for alt, src in slide.images:
+        # Skip background images
+        if alt.startswith("bg"):
+            continue
+
+        src_path = Path(src)
+
+        # Skip non-SVG files (diagrams are always exported as SVG)
+        if src_path.suffix.lower() != ".svg":
+            continue
+
+        # Only process paths that look like diagrams
+        if not _is_diagram_src(src):
+            continue
+
+        width_match = IMG_WIDTH_RE.search(alt)
+
+        # --- Check 1: missing width on diagram ---
+        if not width_match:
+            issues.append(LintIssue(
+                slide=slide.number,
+                severity="WARNING",
+                code="DIAGRAM_MISSING_WIDTH",
+                message=(
+                    f"Diagram '{src_path.name}' is embedded without a width constraint "
+                    f"(e.g. width:900px). Without it the diagram may expand to full slide "
+                    f"width and push other content off the slide. "
+                    f"Recommended max for '{layout_key}' layout: {max_width}px."
+                ),
+            ))
+        else:
+            # --- Check 2: width exceeds layout max ---
+            width = int(width_match.group(1))
+            if width > max_width:
+                issues.append(LintIssue(
+                    slide=slide.number,
+                    severity="ERROR",
+                    code="DIAGRAM_OVERFLOW_WIDTH",
+                    message=(
+                        f"Diagram '{src_path.name}' width:{width}px exceeds the safe maximum "
+                        f"for '{layout_key}' layout ({max_width}px). "
+                        f"This will cause horizontal overflow or push content off the slide. "
+                        f"Reduce to width:{max_width}px or less."
+                    ),
+                ))
+
+        # --- Check 3: diagram on centered-layout slide ---
+        centered = slide.classes.intersection(CENTERED_CLASSES)
+        if centered:
+            issues.append(LintIssue(
+                slide=slide.number,
+                severity="WARNING",
+                code="DIAGRAM_ON_CENTERED_LAYOUT",
+                message=(
+                    f"Diagram '{src_path.name}' is placed on a centered-layout slide "
+                    f"(class: '{', '.join(centered)}'). Diagrams on centered layouts "
+                    f"may render misaligned. Consider using a standard content slide "
+                    f"or a cols-2 layout with the diagram in one column."
+                ),
+            ))
+
+    return issues
+
+
 # ==========================================
 # 2. Content & Readability Checks (Severity: WARNING)
 # ==========================================
@@ -261,8 +384,8 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
 def lint_bullet_hell(slide: SlideInfo) -> list[LintIssue]:
     """Check for bullet point overload (Magic Number 3 violation)."""
     issues: list[LintIssue] = []
-    # If the slide uses 'checklist' or 'timetable', multiple items are natural
-    if "checklist" in slide.classes or "timetable" in slide.classes:
+    # If the slide uses 'checklist', 'timetable', 'toc*', or 'steps', multiple items are natural
+    if slide.classes.intersection({"checklist", "timetable", "toc", "toc-focus", "steps", "timeline"}):
         return issues
 
     count = len(slide.list_items)
@@ -373,6 +496,7 @@ def lint_slide(slide: SlideInfo, structural_only: bool = False) -> list[LintIssu
     issues.extend(lint_missing_class_directive(slide))
     issues.extend(lint_centered_lists(slide))
     issues.extend(lint_oversized_icons(slide))
+    issues.extend(lint_diagram_embedding(slide))
 
     # Readability checks (Warnings)
     if not structural_only:

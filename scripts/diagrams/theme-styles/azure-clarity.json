@@ -1,0 +1,48 @@
+{
+  "theme": "azure-clarity",
+  "name": "Azure Clarity",
+  "mode": "light",
+  "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif",
+  "colors": {
+    "primary": "#2C7BE5",
+    "primaryDark": "#1B5FC0",
+    "primaryLight": "#D0EBFF",
+    "primaryPale": "#EDF5FF",
+    "accent": "#1B4F72",
+    "text": "#1A1A2E",
+    "textMuted": "#5A6C7D",
+    "background": "#FAFCFF",
+    "surface": "#FFFFFF",
+    "border": "#B8D4E8",
+    "borderLight": "#E0ECF5",
+    "line": "#2C7BE5",
+    "success": "#27AE60",
+    "warning": "#F39C12",
+    "danger": "#E74C3C"
+  },
+  "mermaid": {
+    "theme": "base",
+    "themeVariables": {
+      "primaryColor": "#EDF5FF",
+      "primaryTextColor": "#1A1A2E",
+      "primaryBorderColor": "#2C7BE5",
+      "lineColor": "#2C7BE5",
+      "secondaryColor": "#D0EBFF",
+      "tertiaryColor": "#FAFCFF",
+      "mainBkg": "#EDF5FF",
+      "nodeBorder": "#2C7BE5",
+      "clusterBkg": "#FAFCFF",
+      "clusterBorder": "#B8D4E8",
+      "titleColor": "#1A1A2E",
+      "edgeLabelBackground": "#FFFFFF",
+      "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif"
+    }
+  },
+  "drawio": {
+    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#EDF5FF;strokeColor=#2C7BE5;fontColor=#1A1A2E;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#2C7BE5;strokeColor=#1B5FC0;fontColor=#FFFFFF;fontStyle=1;",
+    "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#D0EBFF;strokeColor=#2C7BE5;fontColor=#1A1A2E;",
+    "containerStyle": "swimlane;startSize=28;fillColor=#FAFCFF;strokeColor=#B8D4E8;fontColor=#1A1A2E;fontStyle=1;",
+    "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2C7BE5;strokeWidth=1.5;endArrow=block;endFill=1;"
+  }
+}

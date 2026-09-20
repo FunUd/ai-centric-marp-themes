@@ -323,24 +323,40 @@ ai-centric-marp-themes/
 │   ├── warm-sunnyday.css      # Warm friendly theme
 │   └── slate-minimal.css      # Monochrome minimalist theme
 ├── slides/
-│   └── sample-slide/
-│       ├── azure-clarity-sample.md
-│       ├── crimson-clarity-sample.md
-│       ├── nebula-glass-sample.md
-│       ├── prism-edge-sample.md
-│       ├── warm-sunnyday-sample.md
-│       ├── slate-minimal-sample.md
+│   ├── sample-slide/
+│   │   ├── azure-clarity-sample.md
+│   │   ├── crimson-clarity-sample.md
+│   │   ├── nebula-glass-sample.md
+│   │   ├── prism-edge-sample.md
+│   │   ├── warm-sunnyday-sample.md
+│   │   ├── slate-minimal-sample.md
+│   │   └── assets/
+│   └── diagram-demo/
+│       ├── diagram-demo.md            # Diagram system demo deck
 │       └── assets/
+│           └── diagrams/              # Generated SVG diagrams
 ├── scripts/
-│   └── sync-skills.py             # Setup tool for AI agent skills
+│   ├── sync-skills.py                 # Setup tool for AI agent skills
+│   └── diagrams/
+│       ├── render-slide-diagram.py    # Mermaid / draw.io → themed SVG
+│       ├── validate-slide-diagram.py  # Canvas constraint validator
+│       ├── templates/
+│       │   ├── mermaid/               # .mmd templates (5 patterns)
+│       │   └── drawio/                # .drawio templates (3 patterns)
+│       └── theme-styles/              # Per-theme color palette JSON (6 themes)
 ├── skills/
+│   ├── marp-diagram-creator/          # Diagram creation skill
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       ├── diagram-patterns.md
+│   │       └── template-catalog.md
 │   ├── slide-content-designer/SKILL.md
 │   ├── marp-slide-creator/
 │   │   ├── SKILL.md
 │   │   └── scripts/
 │   │       ├── marp-diagnostics.py        # Overflow / layout diagnostics helper
 │   │       ├── marp-dom-extractor.py      # Playwright DOM metrics extractor for text-only AI review
-│   │       ├── marp-lint.py               # Pre-render linter for structural mistakes
+│   │       ├── marp-lint.py               # Pre-render linter (structural + diagram embedding checks)
 │   │       └── setup-slide-project.py     # Project scaffolding helper
 │   ├── marp-svg-icon-placer/SKILL.md
 │   ├── slide-expert-api-architecture/SKILL.md
@@ -364,12 +380,19 @@ ai-centric-marp-themes/
 
 - **`themes/`** — Theme CSS files ready to use with Marp.
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme.
+- **`slides/diagram-demo/`** — Demo deck for the diagram creation system (Mermaid & draw.io). See [Diagram Creation](#diagram-creation) above.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
 - **`skills/marp-slide-creator/scripts/`** — Scripting toolkit for high-quality Marp generation:
-  - `marp-lint.py`: Catches structural mistakes (missing class directives, centered lists) *before* rendering.
+  - `marp-lint.py`: Catches structural mistakes (missing class directives, centered lists, diagram embedding errors) *before* rendering.
   - `marp-diagnostics.py`: Surfaces overflow and broken-image risks *after* rendering to HTML, with support for exporting clean, bespoke-UI-free screenshots for visual inspection.
   - `marp-dom-extractor.py`: Playwright-based metrics extractor for AI-driven layout review.
   - `setup-slide-project.py`: Project scaffolding helper.
+- **`scripts/diagrams/`** — Diagram generation engine for slide-optimized SVGs:
+  - `render-slide-diagram.py`: Renders Mermaid or draw.io sources into theme-aware SVGs, with automatic canvas validation.
+  - `validate-slide-diagram.py`: Validates SVG/draw.io files against slide canvas constraints.
+  - `templates/mermaid/`: Five ready-to-use Mermaid (`.mmd`) diagram templates.
+  - `templates/drawio/`: Three ready-to-use draw.io (`.drawio`) diagram templates.
+  - `theme-styles/`: Per-theme color palette definitions (JSON) for all 6 themes.
 
 ### Skill Routing
 
@@ -380,7 +403,8 @@ If the deck will be exported to PDF or PPTX, design to the static slide canvas f
 1. Topic, audience, output format, outline, or structure still unclear -> `slide-content-designer`
 2. Outline approved, or you need Marp Markdown, layout fixes, overflow checks, or export -> `marp-slide-creator`
 3. SVG icons need to be selected, copied, or recolored -> `marp-svg-icon-placer`
-4. One domain-specific presentation type is involved -> pick one matching `slide-expert-*` skill
+4. A diagram (flowchart, sequence, architecture, matrix) needs to be created or embedded -> `marp-diagram-creator`
+5. One domain-specific presentation type is involved -> pick one matching `slide-expert-*` skill
 
    | Skill | Use case |
    |-------|----------|
@@ -395,6 +419,80 @@ If the deck will be exported to PDF or PPTX, design to the static slide canvas f
    | `slide-expert-self-introduction` | Personal background, skills, interests for new assignments |
 5. Theme-specific layout polish is needed -> pick one matching `theme-expert-*` skill after the theme is known
 6. Generic Marp layout mechanics are needed -> open `theme-expert-common` only for the shared class reference
+
+---
+
+## Diagram Creation
+
+The `marp-diagram-creator` skill generates theme-aware, slide-safe SVG diagrams from **Mermaid** and **draw.io** sources. All tools are permissive OSS (MIT / Apache-2.0).
+
+### Supported Engines
+
+| Engine | Best For |
+|---|---|
+| **Mermaid** (`@mermaid-js/mermaid-cli`, MIT) | Flowcharts, sequence diagrams, state machines, 3-tier architecture |
+| **draw.io** (Apache-2.0 mxGraph XML) | Cloud infrastructure, complex multi-container systems, 2-axis matrices |
+
+### Generating a Diagram
+
+```powershell
+# From a Mermaid template
+python scripts/diagrams/render-slide-diagram.py `
+  -i scripts/diagrams/templates/mermaid/sequence-api.mmd `
+  -o slides/my-deck/assets/diagrams/api-flow.svg `
+  --theme azure-clarity --layout full
+
+# From a draw.io template
+python scripts/diagrams/render-slide-diagram.py `
+  -i scripts/diagrams/templates/drawio/system-architecture.drawio `
+  -o slides/my-deck/assets/diagrams/system-arch.svg `
+  --theme prism-edge --layout full
+
+# Inline Mermaid code
+python scripts/diagrams/render-slide-diagram.py `
+  --code "flowchart LR; A[入力] --> B[処理] --> C[出力]" `
+  -o slides/my-deck/assets/diagrams/simple-flow.svg `
+  --theme nebula-glass
+```
+
+### Embedding in a Slide
+
+```markdown
+# システム構成
+
+![width:1050px center](assets/diagrams/system-arch.svg)
+```
+
+Safe embedding widths by layout:
+
+| Layout | `_class` directive | Max safe width |
+|---|---|---|
+| Full slide | (default) | `width:1050px` |
+| 2-column | `cols-2`, `split-2`, `split-asym` | `width:500px` |
+| 3-column | `cols-3`, `split-3` | `width:340px` |
+
+### Lint Integration
+
+`marp-lint.py` checks diagram embeddings automatically:
+
+- **`DIAGRAM_MISSING_WIDTH`** (WARNING) — Diagram SVG embedded without `width:NNNpx`.
+- **`DIAGRAM_OVERFLOW_WIDTH`** (ERROR) — Width exceeds the safe maximum for the current layout.
+- **`DIAGRAM_ON_CENTERED_LAYOUT`** (WARNING) — Diagram on a cover/key-message slide where alignment may break.
+
+### Available Templates
+
+| Template | Engine | Description |
+|---|---|---|
+| `flowchart-linear.mmd` | Mermaid | Left-to-right linear process flow |
+| `sequence-api.mmd` | Mermaid | REST API auth + order sequence |
+| `architecture-3tier.mmd` | Mermaid | Classic 3-tier web architecture |
+| `flowchart-col2.mmd` | Mermaid | 2-column-safe compact flowchart |
+| `state-machine.mmd` | Mermaid | State transition diagram |
+| `system-architecture.drawio` | draw.io | 3-layer system architecture with swimlanes |
+| `comparison-matrix.drawio` | draw.io | 2×2 priority/cost evaluation matrix |
+| `cloud-infrastructure.drawio` | draw.io | Cloud VPC/subnet/ALB infrastructure |
+
+See `slides/diagram-demo/diagram-demo.md` for a live demo of all templates rendered with the Azure Clarity theme.
 
 ---
 

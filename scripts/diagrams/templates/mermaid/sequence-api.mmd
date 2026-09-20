@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor Client as クライアント
+    participant API as API Gateway
+    participant Auth as 認証サービス
+    participant DB as データベース
+
+    Client->>API: POST /api/v1/orders (JWT)
+    activate API
+    API->>Auth: トークン検証
+    activate Auth
+    Auth-->>API: 検証OK (UserID)
+    deactivate Auth
+    API->>DB: 注文レコード作成
+    activate DB
+    DB-->>API: 注文ID返却
+    deactivate DB
+    API-->>Client: 201 Created
+    deactivate API

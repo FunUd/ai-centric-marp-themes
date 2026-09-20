@@ -1,0 +1,23 @@
+flowchart LR
+    subgraph Presentation ["プレゼンテーション層"]
+        UI1[Webアプリ]
+        UI2[モバイルアプリ]
+    end
+
+    subgraph Application ["アプリケーション層"]
+        GW[API Gateway]
+        SRV1[認証サービス]
+        SRV2[業務ロジック]
+    end
+
+    subgraph Data ["データ層"]
+        DB[(RDB / PostgreSQL)]
+        CACHE[(キャッシュ / Redis)]
+    end
+
+    UI1 --> GW
+    UI2 --> GW
+    GW --> SRV1
+    GW --> SRV2
+    SRV2 --> DB
+    SRV2 --> CACHE

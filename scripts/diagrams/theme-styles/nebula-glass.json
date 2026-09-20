@@ -1,0 +1,50 @@
+{
+  "theme": "nebula-glass",
+  "name": "Nebula Glass",
+  "mode": "dark",
+  "fontFamily": "'Poppins', 'Noto Sans JP', sans-serif",
+  "colors": {
+    "primary": "#8B5CF6",
+    "primaryDark": "#6D28D9",
+    "primaryLight": "#C4B5FD",
+    "primaryPale": "#1E1838",
+    "accent": "#22D3EE",
+    "text": "#F5F7FB",
+    "textMuted": "#A7B4C8",
+    "background": "#040712",
+    "surface": "#101525",
+    "border": "#38BDF8",
+    "borderLight": "rgba(255, 255, 255, 0.16)",
+    "line": "#22D3EE",
+    "success": "#34D399",
+    "warning": "#FBBF24",
+    "danger": "#FB7185"
+  },
+  "mermaid": {
+    "theme": "dark",
+    "themeVariables": {
+      "darkMode": true,
+      "background": "transparent",
+      "primaryColor": "#1E1838",
+      "primaryTextColor": "#F5F7FB",
+      "primaryBorderColor": "#8B5CF6",
+      "lineColor": "#22D3EE",
+      "secondaryColor": "#152438",
+      "tertiaryColor": "#0F172A",
+      "mainBkg": "#101525",
+      "nodeBorder": "#8B5CF6",
+      "clusterBkg": "#0A0F1D",
+      "clusterBorder": "#38BDF8",
+      "titleColor": "#F5F7FB",
+      "edgeLabelBackground": "#0F172A",
+      "fontFamily": "'Poppins', 'Noto Sans JP', sans-serif"
+    }
+  },
+  "drawio": {
+    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#1E1838;strokeColor=#8B5CF6;fontColor=#F5F7FB;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#C4B5FD;fontColor=#FFFFFF;fontStyle=1;",
+    "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#152438;strokeColor=#22D3EE;fontColor=#F5F7FB;",
+    "containerStyle": "swimlane;startSize=28;fillColor=#0A0F1D;strokeColor=#38BDF8;fontColor=#F5F7FB;fontStyle=1;",
+    "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#22D3EE;strokeWidth=1.5;endArrow=block;endFill=1;"
+  }
+}

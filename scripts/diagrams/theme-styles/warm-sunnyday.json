@@ -1,0 +1,48 @@
+{
+  "theme": "warm-sunnyday",
+  "name": "Warm Sunnyday",
+  "mode": "light",
+  "fontFamily": "'Zen Maru Gothic', 'Poppins', sans-serif",
+  "colors": {
+    "primary": "#FF8C42",
+    "primaryDark": "#D45D00",
+    "primaryLight": "#FFDAB9",
+    "primaryPale": "#FFF0E5",
+    "accent": "#6E3B3B",
+    "text": "#4A4A4A",
+    "textMuted": "#8E7C75",
+    "background": "#FFFDF9",
+    "surface": "#FFFFFF",
+    "border": "#F5D3B8",
+    "borderLight": "#FBEFE6",
+    "line": "#FF8C42",
+    "success": "#78C2AD",
+    "warning": "#FFC074",
+    "danger": "#F38181"
+  },
+  "mermaid": {
+    "theme": "base",
+    "themeVariables": {
+      "primaryColor": "#FFF0E5",
+      "primaryTextColor": "#4A4A4A",
+      "primaryBorderColor": "#FF8C42",
+      "lineColor": "#FF8C42",
+      "secondaryColor": "#FFDAB9",
+      "tertiaryColor": "#FFFDF9",
+      "mainBkg": "#FFF0E5",
+      "nodeBorder": "#FF8C42",
+      "clusterBkg": "#FFFDF9",
+      "clusterBorder": "#F5D3B8",
+      "titleColor": "#4A4A4A",
+      "edgeLabelBackground": "#FFFFFF",
+      "fontFamily": "'Zen Maru Gothic', 'Poppins', sans-serif"
+    }
+  },
+  "drawio": {
+    "primaryNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FFF0E5;strokeColor=#FF8C42;fontColor=#4A4A4A;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FF8C42;strokeColor=#D45D00;fontColor=#FFFFFF;fontStyle=1;",
+    "secondaryNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FFDAB9;strokeColor=#FF8C42;fontColor=#4A4A4A;",
+    "containerStyle": "swimlane;startSize=28;fillColor=#FFFDF9;strokeColor=#F5D3B8;fontColor=#4A4A4A;fontStyle=1;rounded=1;arcSize=10;",
+    "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#FF8C42;strokeWidth=1.5;endArrow=block;endFill=1;"
+  }
+}

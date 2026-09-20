@@ -325,6 +325,48 @@ Use the simplest visual that communicates the idea clearly:
 3. Use `.drawio.svg` when Mermaid is too limited, when precise layout matters, or when the diagram needs richer shape control.
 4. If drawio still cannot represent it cleanly, or the quality is not good enough, ask the user to provide a source image.
 
+### Integrating `marp-diagram-creator` Skill
+
+When a task requires creating or embedding a diagram, **activate the `marp-diagram-creator` skill**. It handles engine selection (Mermaid vs draw.io), theme-aware rendering, and canvas validation.
+
+**When to activate:**
+- User asks to "add a diagram", "visualize the flow/architecture", "draw a sequence/flowchart"
+- A slide needs a diagram that goes beyond a simple SVG icon
+- Any `.mmd` or `.drawio` file needs to be rendered into a slide-ready SVG
+
+**Integration workflow with this skill:**
+
+```
+1. Activate marp-diagram-creator skill
+2. Identify: target theme + slide layout (full / col2 / asym / col3)
+3. Generate diagram SVG:
+     python scripts/diagrams/render-slide-diagram.py \
+       -i scripts/diagrams/templates/mermaid/<template>.mmd \
+       -o slides/<deck>/assets/diagrams/<name>.svg \
+       --theme <theme-name> --layout <layout>
+4. Validate output (auto-runs inside render-slide-diagram.py, or manually):
+     python scripts/diagrams/validate-slide-diagram.py \
+       slides/<deck>/assets/diagrams/<name>.svg --layout <layout>
+5. Embed SVG in Marp slide:
+     ![width:<N>px center](assets/diagrams/<name>.svg)
+6. Run marp-lint.py — the DIAGRAM_MISSING_WIDTH / DIAGRAM_OVERFLOW_WIDTH
+   checks will catch embedding mistakes before rendering.
+```
+
+**Safe diagram widths by layout:**
+
+| Layout | `_class` directive | Max safe width |
+|---|---|---|
+| Full slide | (default) | `width:1050px` |
+| 2-column | `cols-2`, `split-2`, `split-asym` | `width:500px` |
+| 3-column | `cols-3`, `split-3` | `width:340px` |
+| Asymmetric main col | `split-asym` (wide side) | `width:680px` |
+
+**Output path convention:** Always save generated diagram SVGs to:
+```
+slides/<deck-name>/assets/diagrams/<diagram-name>.svg
+```
+
 ### Mermaid Diagrams
 
 **⚠️ IMPORTANT: Do NOT use inline Mermaid code blocks in Marp slides.**
