@@ -12,8 +12,10 @@ A guide for creating effective technical sharing and study group presentation sl
 
 **DO NOT generate any slide content for a new or substantially revised deck until you have explicitly confirmed the outline with the user.**
 
+> **Quality Standards:** Adhere to `skills/slide-content-designer/references/quality-guidelines.md`. Enforce message-driven titles (conclusions over nouns), bold key labels in lists, and Magic Number 3 (max 3-4 points per slide).
+
 Before writing any new slide content, you MUST:
-1. Present a proposed outline (section titles + slide count + estimated time) based on the guidelines below.
+1. Present a proposed outline (section titles with conclusions + slide count + estimated time) based on the guidelines below.
 2. Ask: "Does this structure work for you? Let me know if you'd like any changes."
 3. Wait for explicit approval before proceeding.
 

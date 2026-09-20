@@ -5,82 +5,117 @@ description: Activate this skill ONLY when the deck needs planning, outlining, o
 
 # Slide Content Designer
 
-This skill provides a structured workflow for creating high-quality presentation slides, focusing on the planning and structuring phase.
+This skill provides a structured workflow for creating high-impact, persuasive, and crystal-clear presentation slides, focusing on **content depth, narrative structure, and readability**.
 
 Use this skill whenever a user wants to create or edit a presentation, outline a talk, review slide structure, or needs help figuring out what to say in their slides.
 
 If the outline is already approved and the work is mainly Marp implementation, layout repair, overflow cleanup, or export, skip this skill and go straight to `marp-slide-creator`.
 
-If the presentation details are incomplete or unclear, load this skill first and use it to clarify the audience, theme, format, slide count, and allotted time before drafting.
-
-> **Note:** This skill focuses on *content, structure, and design principles*. For Marp-specific Markdown generation, use `marp-slide-creator` after the outline is finalized.
+> **Quality Bible:** Always consult `references/quality-guidelines.md` for in-depth principles on message-driven titles, narrative frameworks (SCQA, PREP, BAB, Pyramid), anti-bullet-point formatting, and the 3-second readability rule.
 > 
 > **Domain-Specific Outlines:** If the user wants to create a specific type of presentation (e.g., API Architecture, Progress Report, Tech Sharing), prioritize activating the corresponding `slide-expert-*` skill instead of this generic one. Do not load both simultaneously.
 
+---
+
 ## MANDATORY: Confirm Before Drafting a New Outline
 
-**DO NOT generate any slide content for a new or substantially revised deck until you have explicitly confirmed the outline with the user.**
+**DO NOT generate any final slide content or Marp Markdown until you have explicitly confirmed the outline with the user.**
 
 Before writing any new slide content, you MUST:
-1. Present a proposed outline (section titles + slide count + estimated time)
-2. Ask: "Does this structure work for you? Let me know if you'd like any changes."
-3. Wait for explicit approval before proceeding.
+1. Conduct Discovery 2.0 (clarify purpose, audience, and core proof).
+2. Propose a structured outline (Slide # + **Message-driven Title** + Intended Layout + 2-3 Core Points).
+3. Ask: *"Does this structure and narrative arc work for you? Let me know if you'd like any changes."*
+4. Wait for explicit approval before proceeding.
 
-Skipping this step is not allowed for new outlines or major restructures.
+---
 
-## 1. Discovery & Brainstorming
+## 1. Discovery 2.0: Deep Intake & Value Definition
 
-Even when the request appears detailed, **do not start writing slides immediately**. First, clarify open questions, then present the outline for approval.
+Do not jump to outlining with superficial information. Even when the user's prompt seems detailed, verify these 4 pillars:
 
-If the topic or core message is unclear, initiate brainstorming:
+1. **The Goal (Action / Decision)**:
+   - What must happen after this presentation? (e.g., Budget approved, architecture greenlit, team adoption, clear understanding)
+2. **The Audience & Objections (WIIFM)**:
+   - Who is in the room? (Executives, tech leads, cross-functional partners)
+   - What is their biggest skepticism or concern? What's in it for them?
+3. **The Core Takeaway (So What?)**:
+   - What is the single sentence the audience must remember next week?
+4. **Facts & Figures (Proof)**:
+   - What concrete numbers, benchmarks, Before/After metrics, or real examples substantiate the claim? *(Ban vague claims like "improved performance" without metrics).*
 
-1. **Define the Audience**: Who is the target audience? (e.g., junior engineers, executives)
-2. **Extract the Core Message**: Distill the most important takeaway into one sentence. Ask: *"What is the one thing you want the audience to remember?"*
-3. **Reverse-Engineer the Structure**: Build backwards from the conclusion. Ask: *"What context, evidence, and steps does the audience need to understand this message?"*
+---
 
-## 2. Planning & Scope
+## 2. Narrative Frameworks (Storytelling)
 
-Always ask for the allotted presentation time and the target output format (HTML preview only, PDF, PPTX, or both) to determine scope.
+Choose one of the 4 proven narrative patterns based on presentation intent (see `references/quality-guidelines.md` for full details):
 
-**Output rule**: If PDF/PPTX is a target, plan for a fixed slide canvas. Do not rely on scrollable panels, clipped regions, or hover-only details.
+### Pattern A: SCQA (Problem-Solving & Project Proposals)
+- **Situation**: Ground truth context everyone agrees on.
+- **Complication**: The bottleneck, shift in environment, or blocker.
+- **Question**: "How do we resolve this blocker effectively?"
+- **Answer**: Your proposed solution and architecture.
+- **Action & Impact**: Measurable expected outcomes and next steps.
 
-**Rule of Thumb**: Use **1 minute per slide** as the default, then let a domain-specific skill override that when its topic normally needs more or less time.
+### Pattern B: PREP (Tech Selection, Architecture Choices, Opinion)
+- **Point**: The core recommendation/decision upfront.
+- **Reason**: Underlying rationale, trade-offs evaluated.
+- **Example / Proof**: Benchmark data, prototype results, case comparison.
+- **Point**: Reiteration of conclusion with rollout strategy.
 
-**Template Types**:
-- **LT (5-10 mins)**: Conclusion-first approach. Focus on 1 point. (5-10 slides)
-- **Standard (20-60 mins)**: Background → Problem → Solution → Evidence → Summary
-- **Tutorial (30+ mins)**: Slower pace with step-by-step instructions
+### Pattern C: Before-After-Bridge (Improvement, Refactoring, Tool Migration)
+- **Before**: Current pain points, technical debt, wasted man-hours.
+- **After**: The ideal future state (e.g., 60% faster deploys, zero downtime).
+- **Bridge**: The roadmap, tooling, and migration steps to get there.
 
-**Action**: Explicitly propose target slide count and high-level outline for approval before drafting.
+### Pattern D: Pyramid Principle (Executive Status Reports, Reviews)
+- **Top Line Message**: Overall health and high-level takeaway.
+- **Pillar 1 / 2 / 3 (MECE)**: 3 supporting pillars (e.g., Schedule, Quality, Cost).
+- **Decisions Required**: Specific approvals requested from stakeholders.
 
-**Visual Check Confirmation**: Always ask if the user wants to perform AI visual layout checks (using vision models) or stay with text-based linting. Explain that visual checks provide higher quality but incur higher token costs.
+---
 
+## 3. The "So What?" Title Rule (MANDATORY)
 
-## 3. Structural Best Practices
+Slide titles MUST NOT be generic noun topics (e.g., "Overview", "Architecture", "Status", "Conclusion").
+**Titles must state the primary conclusion or takeaway of the slide.**
 
-When drafting content, apply these rules:
+- ❌ Bad: `## System Architecture`
+- ✅ Good: `## Microservices decouple release cycles, cutting deploy time by 60%`
+- ❌ Bad: `## Performance Evaluation`
+- ✅ Good: `## Go rewrite delivers 3.5x throughput reduction under 10k RPS load`
+- ❌ Bad: `## Next Steps`
+- ✅ Good: `## Complete phase 1 rollout by Q3 to unlock automated failover`
 
-- **1 Slide = 1 Message**: Never overload a slide. Each slide conveys one key point. If multiple major points exist, split it.
-- **MECE Principle**: Ensure structure is Mutually Exclusive and Collectively Exhaustive. Seamless flow with no gaps or repetition.
-- **Storyline/Flow**: Clear narrative arc: Hook → Problem → Solution → Evidence → Call to Action
+*Note: You may use category badges (`<span class="badge blue">Architecture</span>`) to preserve contextual tagging.*
 
-## 4. Visual & Design Principles
+---
 
-Keep these in mind when drafting text to ensure content *can* be designed well later:
+## 4. Anti-Bullet-Point & Readability Standards
 
-- **Visual Order**: Plan for neatly aligned content. Keep lists symmetrical.
-- **White Space**: Treat white space as active. Use concise bullet points, not paragraphs.
-- **Minimize Text**: People cannot read dense slides and listen simultaneously. Reduce to keywords or short phrases.
-- **Suggest Visuals**: Explicitly suggest where images, diagrams, charts, or icons would be better than text (e.g., *[Insert Diagram Here]*).
+When planning content for each slide:
+- **Magic Number 3**: Target 3 (maximum 4) core items per slide.
+- **Keyword Labeling**: Ban raw bullet paragraphs. Enforce `**[Key Label]**: Brief explanation`.
+- **Structural Mapping**:
+  - Parallel comparisons → Propose `cols-2` / `cols-3` or `split-2`.
+  - Sequential workflows → Propose `steps` or `timeline`.
+  - Matrices / Quadrants → Propose `grid-quadrant`.
+- **Target Density**: Plan for 200–350 characters total per content slide. Excess text belongs in presenter notes (`<!-- notes -->`).
 
-## 5. Workflow Execution
+---
 
-1. **Ask & Clarify**: Time limit? Audience? Core message? Output format?
-2. **Brainstorm (if needed)**: Help user find core message
-3. **Outline**: Propose section-by-section outline with slide titles and estimated slide count.
-4. **Visual Check Opt-in**: Ask: *"Would you like to perform visual layout checks using AI vision later? (High quality, but higher token cost) or stick to text-based linting?"*
-5. **WAIT for approval**: Present outline and ask for confirmation — **do not proceed without an explicit OK**
-6. **Draft (outline-level only)**: After outline is approved, write slide-level bullet points using placeholders like `[Insert diagram here]` or `[List 3 key benefits]` — **do not write final prose or Marp Markdown yet**
-7. **Hand off to `marp-slide-creator`**: Once slide-level content is confirmed, activate `marp-slide-creator` to generate the final Marp Markdown
+## 5. Standard Workflow Execution
 
-> **Placeholder rule**: Keep each slide entry at outline-level (title + 2–4 bullet points max) until the user explicitly approves the full structure. Expanding into full text before approval wastes tokens and makes restructuring costly.
+1. **Clarify & Intake**: Allotted time (default 1 min/slide for business, 2 min/slide for technical), audience, core takeaway, and target output format (HTML/PDF/PPTX).
+2. **Propose Storyline & Outline**:
+   Present an outline formatted as:
+   ```markdown
+   ### Proposed Outline ([Framework Name], [N] Slides, ~[X] Mins)
+   
+   1. [Cover]: Title + Subtitle
+   2. [Executive Summary / Hook]: So What? statement
+   3. [Section 1 Title (Conclusion-driven)]: Proposed layout (e.g., cols-2) + 3 key points
+   ...
+   ```
+3. **Visual Check Opt-in**: Ask: *"Would you like to perform visual layout checks using AI vision later? (High quality, but higher token cost) or stick to text-based linting?"*
+4. **WAIT for Approval**: Do not write slide Markdown until confirmed.
+5. **Handoff to `marp-slide-creator`**: Once confirmed, invoke `marp-slide-creator` to generate production-ready Marp Markdown.

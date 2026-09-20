@@ -1553,27 +1553,27 @@ section .checklist {
 section.checklist ul li,
 section .checklist li {
   position: relative;
-  padding-left: 36px;
+  padding-left: 1.6em;
   margin-bottom: 12px;
   line-height: 1.5;
 }
 
 section.checklist ul li::before,
 section .checklist li::before {
-  content: '✓';
+  content: '';
   position: absolute;
   left: 0;
-  top: 4px;
-  color: var(--pe-white);
-  background: var(--pe-success);
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 0.28em;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, var(--pe-primary) 0%, var(--pe-cyan) 100%);
+  background-size: 60%, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  width: 0.9em;
+  height: 0.9em;
+  display: block;
   border-radius: var(--pe-radius);
-  font-size: 14px;
-  font-weight: bold;
 }
 
 /* ============================================================

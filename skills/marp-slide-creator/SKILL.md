@@ -159,18 +159,57 @@ Once you have reviewed the images and made necessary corrections to the Markdown
 ```powershell
 Remove-Item -Path "slides/my-deck/assets/screenshots" -Recurse -Force
 ```
-## 5. Content Overflow Solutions
+
+## 5. Readability & Content Structure (Anti-Bullet-Point Principle)
+
+Presentation slides are visual communication tools, not long-form documents. Apply the **3-Second Rule**: an audience member should grasp the core takeaway within 3 seconds of looking at the slide.
+
+### 5.1 Ban the "Bullet Point Hell" (Unstructured Text Walls)
+Never dump 5–7 lines of raw bullet text. Instead, format content into structured, scannable units:
+
+- **Bold Key Labeling (MANDATORY for lists)**:
+  Always prefix bullet items with a concise bold keyword or short phrase:
+  ```markdown
+  <!-- ❌ BAD: Raw sentence fragments -->
+  - We experienced significant latency spikes during morning peak hours
+  - Database connection pool was completely exhausted
+  - Cache hit ratio dropped below 40% due to cache stampede
+
+  <!-- ✅ GOOD: Bold Key Labels + concise explanations -->
+  - **Latency Spikes**: p99 response time degraded to 4.2s during morning peak
+  - **Connection Exhaustion**: DB pool capped at 100 conns, starving API workers
+  - **Cache Stampede**: Uncached keys caused 85% DB read fallback
+  ```
+
+### 5.2 Convert Lists into Visual Structures
+Whenever a slide has 2–4 parallel concepts, do not default to standard bullets:
+- **Parallel Concepts / Comparisons**: Use `<div class="columns">` with `<!-- _class: cols-2 -->` or `cols-3` (cards) or `split-2`.
+- **Sequential Workflows**: Use `<!-- _class: steps -->` with numbered list `1. **Step**: Details`.
+- **Timelines / Chronology**: Use `<!-- _class: timeline -->`.
+- **2x2 Trade-offs / Quadrants**: Use `<!-- _class: grid-quadrant -->`.
+
+### 5.3 Cognitive Density & Limits
+- **Magic Number 3**: Stick to 3 (max 4) key concepts per slide.
+- **Line Length**: Keep bullet explanations under 40 characters per line.
+- **Slide Word Count**: Target 200–350 characters total per slide. Over 400 characters is a document, not a presentation slide—move details to presenter notes (`<!-- notes -->`) or split the slide.
+
+### 5.4 "So What?" Heading Rule
+Headings must declare the conclusion, not just the topic.
+- ❌ `## Microservices Transition`
+- ✅ `## Microservices decouple teams, cutting release lead time by 60%`
+
+## 6. Content Overflow Solutions
 
 Priority order (most design-friendly first):
 
-### 5.1 Content Refinement
+### 6.1 Content Refinement
 - Bulletize paragraphs
 - Remove redundancy
 - Stick to "1 slide = 1 message"
 - Use active voice
 - Move lists off centered-layout slides (`cover`, `key-message`, etc.) — lists on those slides render centered, not left-aligned
 
-### 5.2 Per-Slide Font Size
+### 6.2 Per-Slide Font Size
 ```markdown
 <style scoped>
 section { font-size: 20px; }
@@ -178,7 +217,7 @@ section li { font-size: 18px; }
 </style>
 ```
 
-### 5.3 Global Font Size
+### 6.3 Global Font Size
 ```markdown
 ---
 style: |
@@ -186,14 +225,14 @@ style: |
 ---
 ```
 
-### 5.4 CSS Utility Classes
+### 6.4 CSS Utility Classes
 ```markdown
 <div class="text-small">
 Content here
 </div>
 ```
 
-### 5.5 Split Slides
+### 6.5 Split Slides
 ```markdown
 # Topic (1/2)
 - First half
@@ -204,26 +243,26 @@ Content here
 - Second half
 ```
 
-### 5.6 Image Resize
+### 6.6 Image Resize
 ```markdown
 ![width:500px](image.jpg)
 ![bg right:45%](image.jpg)
 ```
 
-### 5.7 Table Overflow
+### 6.7 Table Overflow
 ```markdown
 <style scoped>
 section table { font-size: 16px; }
 </style>
 ```
 
-### 5.8 Export-Safe Code and Diagrams
+### 6.8 Export-Safe Code and Diagrams
 - Avoid `overflow-x: auto`, clipped panes, or hidden scrollbars for content that must survive PDF/PPTX export.
 - Keep code examples short enough to fit on the slide; if not, split them across slides or move the full version to notes or an appendix.
 - Simplify Mermaid diagrams before shrinking them. If the diagram would need scrolling, switch to multiple slides or use `.drawio.svg`.
 - Prefer readable excerpts over tiny text that only works in browser preview.
 
-## 6. Quality Checklist
+## 7. Quality Checklist
 
 ### 🚨 Critical Structure (MUST verify — these cause silent failures):
 - [ ] **Every `<div class="columns">` slide has `<!-- _class: cols-2 -->` (or cols-3/split-2/split-3/split-asym/split-asym-reverse) in its directive** — without this, the layout does NOT activate and content stacks vertically
@@ -232,6 +271,13 @@ section table { font-size: 16px; }
 - [ ] **No bullet/numbered lists on centered-layout slides** (`cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`) — lists render centered, not left-aligned
 - [ ] **No catalog SVG icons used larger than width:200px** — icons are for inline/decorative use only (≤48px for cards, ≤36px for headings)
 - [ ] `marp-lint.py` reports zero issues
+
+### 📖 Content, Message & Readability:
+- [ ] **Headings state conclusions/takeaways** (not just generic nouns like "Overview", "Architecture", or "Next Steps")
+- [ ] **Lists use bold key labels** (`- **[Key Label]**: explanation`) rather than unstructured walls of text
+- [ ] **Magic Number 3 applied**: max 3–4 key points/cards per slide
+- [ ] **Concrete metrics and evidence used** instead of vague claims ("faster", "improved")
+- [ ] **No slide exceeds ~350 characters** of total body text (split or move excess to presenter notes)
 
 ### Structure (verify before preview):
 - [ ] Column layouts use `<div class="col">` or `<div>` for each column
@@ -262,7 +308,7 @@ section table { font-size: 16px; }
 - [ ] Concise bullet points
 - [ ] Images serve a purpose
 
-## 7. Visual Aids & Icons
+## 8. Visual Aids & Icons
 
 ### SVG Icons
 
