@@ -388,8 +388,8 @@ ai-centric-marp-themes/
   - `marp-dom-extractor.py`: Playwright-based metrics extractor for AI-driven layout review.
   - `setup-slide-project.py`: Project scaffolding helper.
 - **`scripts/diagrams/`** — Diagram generation engine for slide-optimized SVGs:
-  - `render-slide-diagram.py`: Renders Mermaid or draw.io sources into theme-aware SVGs, with automatic canvas validation.
-  - `validate-slide-diagram.py`: Validates SVG/draw.io files against slide canvas constraints.
+  - `render-slide-diagram.py`: Renders Mermaid, draw.io, or structured JSON sources into theme-aware SVGs, with automatic canvas validation.
+  - `validate-slide-diagram.py`: Validates SVG/draw.io files against slide canvas and JSON geometry constraints.
   - `templates/mermaid/`: Five ready-to-use Mermaid (`.mmd`) diagram templates.
   - `templates/drawio/`: Three ready-to-use draw.io (`.drawio`) diagram templates.
   - `theme-styles/`: Per-theme color palette definitions (JSON) for all 6 themes.
@@ -424,7 +424,7 @@ If the deck will be exported to PDF or PPTX, design to the static slide canvas f
 
 ## Diagram Creation
 
-The `marp-diagram-creator` skill generates theme-aware, slide-safe SVG diagrams from **Mermaid** and **draw.io** sources. All tools are permissive OSS (MIT / Apache-2.0).
+The `marp-diagram-creator` skill generates theme-aware, slide-safe SVG diagrams from **Mermaid**, **draw.io**, and structured **JSON** sources. All tools are permissive OSS (MIT / Apache-2.0).
 
 ### Supported Engines
 
@@ -432,6 +432,7 @@ The `marp-diagram-creator` skill generates theme-aware, slide-safe SVG diagrams 
 |---|---|
 | **Mermaid** (`@mermaid-js/mermaid-cli`, MIT) | Flowcharts, sequence diagrams, state machines, 3-tier architecture |
 | **draw.io** (Apache-2.0 mxGraph XML) | Cloud infrastructure, complex multi-container systems, 2-axis matrices |
+| **JSON SVG** (stdlib Python) | Pie/donut charts, pyramids, cycles, timelines, org charts, radial concepts |
 
 ### Generating a Diagram
 
@@ -453,6 +454,12 @@ python scripts/diagrams/render-slide-diagram.py `
   --code "flowchart LR; A[入力] --> B[処理] --> C[出力]" `
   -o slides/my-deck/assets/diagrams/simple-flow.svg `
   --theme nebula-glass
+
+# From a JSON chart template
+python scripts/diagrams/render-slide-diagram.py `
+  -i scripts/diagrams/templates/charts/revenue-pie.json `
+  -o slides/my-deck/assets/diagrams/revenue-pie.svg `
+  --theme azure-clarity --layout full
 ```
 
 ### Embedding in a Slide
@@ -491,6 +498,13 @@ Safe embedding widths by layout:
 | `system-architecture.drawio` | draw.io | 3-layer system architecture with swimlanes |
 | `comparison-matrix.drawio` | draw.io | 2×2 priority/cost evaluation matrix |
 | `cloud-infrastructure.drawio` | draw.io | Cloud VPC/subnet/ALB infrastructure |
+| `charts/revenue-pie.json` | JSON SVG | Pie chart with themed legend |
+| `charts/revenue-donut.json` | JSON SVG | Donut chart with center label |
+| `concepts/team-pyramid.json` | JSON SVG | Layered pyramid |
+| `concepts/improvement-cycle.json` | JSON SVG | Circular improvement process |
+| `concepts/team-radial.json` | JSON SVG | Radial concept map |
+| `timelines/product-roadmap.json` | JSON SVG | Horizontal roadmap timeline |
+| `organization/team-org-chart.json` | JSON SVG | Hierarchical organization chart |
 
 See `slides/diagram-demo/diagram-demo.md` for a live demo of all templates rendered with the Azure Clarity theme.
 

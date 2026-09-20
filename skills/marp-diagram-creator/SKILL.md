@@ -29,6 +29,7 @@ Select the most suitable engine based on diagram characteristics:
 |---|---|---|
 | **Mermaid** | Standard flowcharts, API sequence diagrams, 3-tier architectures, simple state machines | Fast code generation, minimal token overhead, version-controllable text DSL |
 | **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems, 2-axis / 4-quadrant matrices | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
+| **JSON SVG** | Pie/donut charts, pyramids, cycles, timelines, org charts, radial concepts | Deterministic slide-safe geometry and structured validation |
 
 ---
 
@@ -55,10 +56,24 @@ python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/me
 
 # From draw.io template / .drawio file
 python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/drawio/system-architecture.drawio -o slides/<deck-name>/assets/system-arch.svg --theme nebula-glass --layout full
+
+# From a JSON chart/concept template
+python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
 ```
+
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `timeline`, `org-chart`, and `radial`; `theme`, `layout`, `width`, and `height` are optional.
 
 #### Option B: Customize from Template
 Copy a template from `scripts/diagrams/templates/` to `slides/<deck-name>/assets/`, customize the node labels and connections, then run `render-slide-diagram.py` to produce the final SVG.
+
+#### draw.io Connector Routing
+
+For draw.io architecture diagrams, connectors must be routed around node rectangles. Do not rely on
+`edgeStyle=orthogonalEdgeStyle` alone: the slide renderer resolves edges independently from the
+draw.io editor. Use explicit `<Array as="points">` waypoints for intentional routes, and use
+`exitX`/`exitY` plus `entryX`/`entryY` when a connector must leave or enter from a specific side.
+Connectors without waypoints are automatically routed around non-container vertices, and the
+validator fails when a route crosses an intermediate node.
 
 ### Step 3: Automated Validation (Crucial for Anti-Breakage)
 Every generated SVG is automatically checked against slide boundaries. You can also run the validator manually:

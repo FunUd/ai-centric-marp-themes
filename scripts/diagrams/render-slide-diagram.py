@@ -28,6 +28,11 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from diagram_routing import edge_endpoints, get_edge_waypoints, route_edge
+
+from diagram_models import parse_diagram_data
+from svg_diagram_renderer import render_diagram
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 THEME_STYLES_DIR = SCRIPT_DIR / "theme-styles"
 VALIDATOR_PATH = SCRIPT_DIR / "validate-slide-diagram.py"
@@ -146,6 +151,7 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
     cell_map = {c.get("id"): c for c in cells if c.get("id")}
 
     svg_elements: list[str] = []
+    edge_elements: list[str] = []   # drawn first (below boxes)
     # Collect styles
     font_fam = theme_data.get("fontFamily", "sans-serif")
     text_color = theme_data.get("colors", {}).get("text", "#1A1A2E")
@@ -180,6 +186,20 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
                 y += float(p_geom.get("y", "0"))
             parent_id = p_cell.get("parent")
         return x, y, w, h
+
+    def get_absolute_origin(cell_id: str | None) -> tuple[float, float]:
+        x, y = 0.0, 0.0
+        parent_id = cell_id
+        while parent_id and parent_id not in ("0", "1"):
+            parent = cell_map.get(parent_id)
+            if parent is None:
+                break
+            geometry = parent.find("mxGeometry")
+            if geometry is not None:
+                x += float(geometry.get("x", "0"))
+                y += float(geometry.get("y", "0"))
+            parent_id = parent.get("parent")
+        return x, y
 
     # 1. Render Containers / Swimlanes first
     for cell in cells:
@@ -255,7 +275,12 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
                     f"<text x='{cx}' y='{cur_y}' text-anchor='middle' font-family=\"{font_fam}\" font-size='{f_size}' font-weight='{f_weight}' fill='{f_color}'>{escaped_line}</text>"
                 )
 
-    # 3. Render Connectors / Edges
+    # 3. Render Connectors / Edges  (into edge_elements — rendered BELOW boxes)
+    vertex_obstacles = [
+        get_absolute_geom(cell)
+        for cell in cells
+        if cell.get("vertex") == "1" and "swimlane" not in parse_style_map(cell.get("style", ""))
+    ]
     for cell in cells:
         if cell.get("edge") != "1":
             continue
@@ -270,49 +295,48 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
         stroke = st.get("strokeColor", "#2C7BE5")
         stroke_w = st.get("strokeWidth", "1.5")
 
-        # Smart point routing: horizontal vs vertical
-        if abs((sx + sw / 2) - (tx + tw / 2)) > abs((sy + sh / 2) - (ty + th / 2)):
-            # Horizontal connection
-            if sx < tx:
-                p1 = (sx + sw, sy + sh / 2)
-                p2 = (tx, ty + th / 2)
-            else:
-                p1 = (sx, sy + sh / 2)
-                p2 = (tx + tw, ty + th / 2)
-            mid_x = (p1[0] + p2[0]) / 2
-            path_d = f"M {p1[0]} {p1[1]} L {mid_x} {p1[1]} L {mid_x} {p2[1]} L {p2[0]} {p2[1]}"
-            arrow_dir = "right" if p1[0] < p2[0] else "left"
+        source_geometry = (sx, sy, sw, sh)
+        target_geometry = (tx, ty, tw, th)
+        p1, p2 = edge_endpoints(source_geometry, target_geometry, cell.get("style", ""))
+        waypoints = get_edge_waypoints(cell)
+        if waypoints:
+            origin_x, origin_y = get_absolute_origin(cell.get("parent"))
+            points = [p1] + [(x + origin_x, y + origin_y) for x, y in waypoints] + [p2]
         else:
-            # Vertical connection
-            if sy < ty:
-                p1 = (sx + sw / 2, sy + sh)
-                p2 = (tx + tw / 2, ty)
-            else:
-                p1 = (sx + sw / 2, sy)
-                p2 = (tx + tw / 2, ty + th)
-            mid_y = (p1[1] + p2[1]) / 2
-            path_d = f"M {p1[0]} {p1[1]} L {p1[0]} {mid_y} L {p2[0]} {mid_y} L {p2[0]} {p2[1]}"
-            arrow_dir = "down" if p1[1] < p2[1] else "up"
+            points = route_edge(source_geometry, target_geometry, cell.get("style", ""), vertex_obstacles)
 
-        # Edge Path
-        svg_elements.append(
+        path_d = " ".join(
+            [f"M {points[0][0]:.1f} {points[0][1]:.1f}"]
+            + [f"L {x:.1f} {y:.1f}" for x, y in points[1:]]
+        )
+
+        previous, current = points[-2], points[-1]
+        if abs(current[0] - previous[0]) >= abs(current[1] - previous[1]):
+            arrow_dir = "right" if current[0] > previous[0] else "left"
+        else:
+            arrow_dir = "down" if current[1] > previous[1] else "up"
+
+        # Edge path (no fill, so it never covers boxes visually)
+        edge_elements.append(
             f"<path d='{path_d}' fill='none' stroke='{stroke}' stroke-width='{stroke_w}' />"
         )
-        # Arrowhead
+
+        # Arrowhead at p2
         ax, ay = p2[0], p2[1]
         sz = 5
         if arrow_dir == "right":
-            arrow_pts = f"{ax},{ay} {ax-sz*1.5},{ay-sz} {ax-sz*1.5},{ay+sz}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz*1.5:.1f},{ay-sz:.1f} {ax-sz*1.5:.1f},{ay+sz:.1f}"
         elif arrow_dir == "left":
-            arrow_pts = f"{ax},{ay} {ax+sz*1.5},{ay-sz} {ax+sz*1.5},{ay+sz}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax+sz*1.5:.1f},{ay-sz:.1f} {ax+sz*1.5:.1f},{ay+sz:.1f}"
         elif arrow_dir == "down":
-            arrow_pts = f"{ax},{ay} {ax-sz},{ay-sz*1.5} {ax+sz},{ay-sz*1.5}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz:.1f},{ay-sz*1.5:.1f} {ax+sz:.1f},{ay-sz*1.5:.1f}"
         else:
-            arrow_pts = f"{ax},{ay} {ax-sz},{ay+sz*1.5} {ax+sz},{ay+sz*1.5}"
-        svg_elements.append(f"<polygon points='{arrow_pts}' fill='{stroke}' />")
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz:.1f},{ay+sz*1.5:.1f} {ax+sz:.1f},{ay+sz*1.5:.1f}"
+        edge_elements.append(f"<polygon points='{arrow_pts}' fill='{stroke}' />")
 
-    # Wrap in SVG
-    elements_markup = "\n  ".join(svg_elements)
+    # Wrap in SVG — edges rendered first (z-order: edges < boxes < text)
+    all_elements = edge_elements + svg_elements
+    elements_markup = "\n  ".join(all_elements)
     svg_out = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {page_w} {page_h}" width="{page_w}" height="{page_h}" style="background-color: transparent;">
   <defs/>
   {elements_markup}
@@ -347,6 +371,43 @@ def render_drawio(
 
     print(f"Rendered draw.io diagram to '{output_path}' with theme '{theme_data.get('theme')}'")
     return True
+
+
+def render_json_diagram_from_data(
+    data: dict,
+    output_path: Path,
+    theme_data: dict,
+    layout: str,
+) -> bool:
+    """Render a validated JSON diagram definition to standalone SVG."""
+    try:
+        svg_content = render_diagram(data, theme_data, layout)
+    except (TypeError, ValueError, KeyError) as error:
+        print(f"[ERROR] JSON diagram validation failed: {error}", file=sys.stderr)
+        return False
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(svg_content, encoding="utf-8")
+    print(f"Rendered JSON diagram to '{output_path}' with theme '{theme_data.get('theme')}'")
+    return True
+
+
+def render_json_diagram(
+    input_path: Path,
+    output_path: Path,
+    theme_data: dict,
+    layout: str,
+) -> bool:
+    """Load and render a JSON diagram, reporting syntax location on failure."""
+    try:
+        with input_path.open("r", encoding="utf-8") as file:
+            data = json.load(file)
+    except json.JSONDecodeError as error:
+        print(f"[ERROR] JSON parse error in {input_path} at line {error.lineno}: {error.msg}", file=sys.stderr)
+        return False
+    except OSError as error:
+        print(f"[ERROR] Failed to read JSON file {input_path}: {error}", file=sys.stderr)
+        return False
+    return render_json_diagram_from_data(data, output_path, theme_data, layout)
 
 
 def main():
@@ -385,8 +446,10 @@ def main():
             success = render_mermaid(content, args.output, theme_data, args.layout)
         elif suffix in (".drawio", ".xml"):
             success = render_drawio(args.input, args.output, theme_data, args.layout)
+        elif suffix == ".json":
+            success = render_json_diagram(args.input, args.output, theme_data, args.layout)
         else:
-            print(f"[ERROR] Unknown input format '{suffix}'. Expected .mmd or .drawio", file=sys.stderr)
+            print(f"[ERROR] Unknown input format '{suffix}'. Expected .mmd, .drawio, or .json", file=sys.stderr)
             sys.exit(1)
     else:
         print("[ERROR] Either --input or --code must be specified", file=sys.stderr)

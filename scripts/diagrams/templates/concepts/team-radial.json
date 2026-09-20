@@ -1,0 +1,10 @@
+{
+  "type": "radial",
+  "title": "効果的なチーム",
+  "center": "成果",
+  "items": [
+    {"label": "目的", "children": ["判断基準", "優先順位"]},
+    {"label": "役割", "children": ["責任", "連携"]},
+    {"label": "対話", "children": ["共有", "学習"]}
+  ]
+}

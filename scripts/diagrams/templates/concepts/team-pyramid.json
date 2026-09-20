@@ -1,0 +1,10 @@
+{
+  "type": "pyramid",
+  "title": "チーム成熟度",
+  "direction": "up",
+  "levels": [
+    {"label": "成果", "description": "測定可能な結果"},
+    {"label": "協働", "description": "役割と対話"},
+    {"label": "基盤", "description": "目的と信頼"}
+  ]
+}

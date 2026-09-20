@@ -1,0 +1,12 @@
+{
+  "type": "timeline",
+  "title": "プロダクトロードマップ",
+  "orientation": "horizontal",
+  "periods": ["Q1", "Q2", "Q3", "Q4"],
+  "items": [
+    {"period": "Q1", "label": "調査", "status": "done"},
+    {"period": "Q2", "label": "試験導入", "status": "active"},
+    {"period": "Q3", "label": "本番展開", "status": "planned"},
+    {"period": "Q4", "label": "最適化", "status": "planned"}
+  ]
+}

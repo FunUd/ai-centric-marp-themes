@@ -1,0 +1,12 @@
+{
+  "type": "cycle",
+  "title": "継続的改善",
+  "direction": "clockwise",
+  "center": "学習",
+  "items": [
+    {"label": "観察"},
+    {"label": "対話"},
+    {"label": "実験"},
+    {"label": "振り返り"}
+  ]
+}

@@ -1,5 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 420" width="1080" height="420" style="background-color: transparent;">
   <defs/>
+  <path d='M 190.0 97.0 L 190.0 141.0 L 200.0 141.0 L 200.0 185.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='200.0,185.0 195.0,177.5 205.0,177.5' fill='#2C7BE5' />
+  <path d='M 450.0 76.0 L 375.0 76.0 L 375.0 210.0 L 300.0 210.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='300.0,210.0 307.5,205.0 307.5,215.0' fill='#2C7BE5' />
+  <path d='M 300.0 210.0 L 350.0 210.0 L 350.0 210.0 L 400.0 210.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='400.0,210.0 392.5,205.0 392.5,215.0' fill='#2C7BE5' />
+  <path d='M 300.0 210.0 L 465.0 210.0 L 465.0 210.0 L 630.0 210.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='630.0,210.0 622.5,205.0 622.5,215.0' fill='#2C7BE5' />
+  <path d='M 630.0 210.0 L 515.0 210.0 L 515.0 343.0 L 400.0 343.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='400.0,343.0 407.5,338.0 407.5,348.0' fill='#2C7BE5' />
+  <path d='M 720.0 235.0 L 720.0 276.0 L 590.0 276.0 L 590.0 317.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='590.0,317.0 585.0,309.5 595.0,309.5' fill='#2C7BE5' />
+  <path d='M 810.0 210.0 L 795.0 210.0 L 795.0 343.0 L 780.0 343.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='780.0,343.0 772.5,338.0 772.5,348.0' fill='#2C7BE5' />
+  <path d='M 870.0 317.0 L 870.0 276.0 L 935.0 276.0 L 935.0 235.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
+  <polygon points='935.0,235.0 930.0,242.5 940.0,242.5' fill='#2C7BE5' />
   <rect x='20.0' y='20.0' width='1040.0' height='90.0' fill='#FAFCFF' stroke='#B8D4E8' stroke-width='1.5' rx='6' ry='6' />
   <rect x='20.0' y='20.0' width='1040.0' height='26.0' fill='#B8D4E8' opacity='0.12' />
   <line x1='20.0' y1='46.0' x2='1060.0' y2='46.0' stroke='#B8D4E8' stroke-width='1' />
@@ -44,20 +60,4 @@
   <rect x='780.0' y='317.0' width='180.0' height='52.0' fill='#FFFFFF' stroke='#2C7BE5' stroke-width='1.5' rx='6' ry='6' />
   <text x='870.0' y='337.5' text-anchor='middle' font-family="'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>メッセージキュー</text>
   <text x='870.0' y='352.35' text-anchor='middle' font-family="'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(SQS / Kafka)</text>
-  <path d='M 190.0 97.0 L 190.0 141.0 L 200.0 141.0 L 200.0 185.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='200.0,185.0 195.0,177.5 205.0,177.5' fill='#2C7BE5' />
-  <path d='M 450.0 76.0 L 375.0 76.0 L 375.0 210.0 L 300.0 210.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='300.0,210.0 307.5,205.0 307.5,215.0' fill='#2C7BE5' />
-  <path d='M 300.0 210.0 L 350.0 210.0 L 350.0 210.0 L 400.0 210.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='400.0,210.0 392.5,205.0 392.5,215.0' fill='#2C7BE5' />
-  <path d='M 300.0 210.0 L 465.0 210.0 L 465.0 210.0 L 630.0 210.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='630.0,210.0 622.5,205.0 622.5,215.0' fill='#2C7BE5' />
-  <path d='M 630.0 210.0 L 515.0 210.0 L 515.0 343.0 L 400.0 343.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='400.0,343.0 407.5,338.0 407.5,348.0' fill='#2C7BE5' />
-  <path d='M 720.0 235.0 L 720.0 276.0 L 590.0 276.0 L 590.0 317.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='590.0,317.0 585.0,309.5 595.0,309.5' fill='#2C7BE5' />
-  <path d='M 810.0 210.0 L 795.0 210.0 L 795.0 343.0 L 780.0 343.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='780.0,343.0 787.5,338.0 787.5,348.0' fill='#2C7BE5' />
-  <path d='M 870.0 317.0 L 870.0 276.0 L 935.0 276.0 L 935.0 235.0' fill='none' stroke='#2C7BE5' stroke-width='1.5' />
-  <polygon points='935.0,235.0 930.0,242.5 940.0,242.5' fill='#2C7BE5' />
 </svg>
