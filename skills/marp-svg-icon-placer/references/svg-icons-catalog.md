@@ -3,6 +3,8 @@
 A catalog of AI-friendly SVG icons available for use in Marp presentations.
 Search this file to find the best icon for your use case.
 
+License: icons in `icons/` are derived from [Phosphor Icons](https://phosphoricons.com/) (MIT). See `icons/LICENSE`.
+
 ## 1. Business & Strategy
 
 ### Target (Bullseye & Arrow)

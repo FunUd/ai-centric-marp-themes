@@ -36,6 +36,7 @@ freely, as long as they are not sold by themselves. They may be bundled,
 embedded, and redistributed with any software.
 
 Full license text: https://openfontlicense.org/open-font-license-official-text/
+A copy is bundled as `OFL.txt` in this directory.
 
 ### Previously bundled (still present, used by azure-clarity)
 
