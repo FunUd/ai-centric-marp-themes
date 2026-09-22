@@ -77,6 +77,8 @@ footer: "© 2026 Your Company"
 13. コールアウトとバッジ
 14. グラデーションテキスト
 15. コードブロック
+16. ステップ表示（矢印付き）
+17. 軸付きマトリクス
 
 ---
 
@@ -397,6 +399,63 @@ def calculate_growth(current, previous):
 revenue_growth = calculate_growth(2100, 1200)
 print(f"Revenue Growth: {revenue_growth:.1f}%")
 ```
+
+---
+
+<!-- _class: steps arrows -->
+
+# 導入手順（フロー表示）
+
+1. **アセスメント**
+   現状の課題と要件を整理します
+2. **設計**
+   最適なアーキテクチャを設計します
+3. **実装**
+   アジャイル開発で段階的に構築します
+4. **運用**
+   監視・改善を継続します
+
+`steps` に `arrows` を足すだけで、カード間に矢印が出ます。
+
+---
+
+<!-- _class: grid-quadrant axes -->
+
+# 優先度マトリクス（軸付き）
+
+<div class="grid">
+<span class="axis-y">重要度</span>
+<div class="cell">
+
+### 計画
+
+- 技術調査
+- 人材育成
+
+</div>
+<div class="cell">
+
+### 最優先
+
+- 障害対応
+
+</div>
+<div class="cell">
+
+### 保留
+
+- 低優先タスク
+
+</div>
+<div class="cell">
+
+### 委任
+
+- 軽微な修正
+
+</div>
+<span class="axis-x">緊急度</span>
+</div>
 
 ---
 

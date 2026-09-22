@@ -35,14 +35,65 @@
       "clusterBorder": "#D1D9E6",
       "titleColor": "#111827",
       "edgeLabelBackground": "#FFFFFF",
-      "fontFamily": "'Space Grotesk', 'Noto Sans JP', sans-serif"
-    }
+      "fontFamily": "'Space Grotesk', 'Noto Sans JP', sans-serif",
+      "fontSize": "15px"
+    },
+    "flowchart": {
+      "curve": "basis",
+      "padding": 10,
+      "nodeSpacing": 40,
+      "rankSpacing": 50
+    },
+    "sequence": {
+      "actorFontSize": 14,
+      "messageFontSize": 14,
+      "noteFontSize": 13,
+      "actorLineColor": "#4F46E5",
+      "messageColor": "#4F46E5"
+    },
+    "fontSize": 15
   },
   "drawio": {
-    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#4F46E5;fontColor=#111827;strokeWidth=1.5;",
-    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#4F46E5;strokeColor=#312E81;fontColor=#FFFFFF;fontStyle=1;",
+    "primaryNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#4F46E5;fontColor=#111827;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#4F46E5;strokeColor=#312E81;fontColor=#FFFFFF;fontStyle=1;",
     "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#C7D2FE;strokeColor=#4F46E5;fontColor=#111827;",
     "containerStyle": "swimlane;startSize=28;fillColor=#FAFBFC;strokeColor=#D1D9E6;fontColor=#111827;fontStyle=1;",
     "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;endFill=1;"
+  },
+  "shapes": {
+    "nodeRadius": 0,
+    "nodeRadiusLg": 0,
+    "markerRadius": 0,
+    "strokeWidth": 1.5,
+    "strokeWidthBold": 2.5,
+    "nodePaddingX": 12,
+    "nodePaddingY": 8
+  },
+  "effects": {
+    "nodeShadowEnabled": true,
+    "nodeShadowColor": "rgba(30, 41, 59, 0.06)",
+    "nodeShadowBlur": 12,
+    "nodeShadowOffsetY": 4,
+    "glowEnabled": false,
+    "glowColor": null,
+    "glowBlur": 0,
+    "glassEnabled": false,
+    "glassFill": null,
+    "glassStroke": null
+  },
+  "typography": {
+    "titleSize": 22,
+    "labelSize": 15,
+    "captionSize": 12,
+    "titleWeight": "bold",
+    "labelWeight": "normal"
+  },
+  "signature": {
+    "source": "themes/prism-edge.css",
+    "gradientFrom": "#4F46E5",
+    "gradientTo": "#06B6D4",
+    "topBorderWidth": 4,
+    "hasGlass": true,
+    "hasGlow": false
   }
 }

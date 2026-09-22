@@ -20,7 +20,7 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from diagram_routing import edge_endpoints, get_edge_waypoints, route_edge, segment_intersects_rect
+from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, segment_intersects_rect, snap_edge_points
 
 # Layout canvas constraints (pixels)
 LAYOUT_LIMITS = {
@@ -312,19 +312,28 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
             source_geometry = vertices[source_id]
             target_geometry = vertices[target_id]
             waypoints = get_edge_waypoints(edge)
+            edge_style = edge.get("style", "")
+            source_shape = node_shape(cell_map[source_id].get("style") or "")
+            target_shape = node_shape(cell_map[target_id].get("style") or "")
             if waypoints:
                 origin_x, origin_y = get_absolute_origin(edge.get("parent"))
-                points = [
-                    *edge_endpoints(source_geometry, target_geometry, edge.get("style", ""))[:1],
-                    *[(x + origin_x, y + origin_y) for x, y in waypoints],
-                    edge_endpoints(source_geometry, target_geometry, edge.get("style", ""))[1],
-                ]
+                first, last = edge_endpoints(source_geometry, target_geometry, edge_style)
+                points = snap_edge_points(
+                    source_geometry,
+                    target_geometry,
+                    edge_style,
+                    [first, *[(x + origin_x, y + origin_y) for x, y in waypoints], last],
+                    source_shape,
+                    target_shape,
+                )
             else:
                 points = route_edge(
                     source_geometry,
                     target_geometry,
-                    edge.get("style", ""),
+                    edge_style,
                     [geometry for _, geometry in obstacles],
+                    source_shape=source_shape,
+                    target_shape=target_shape,
                 )
             for start, end in zip(points, points[1:]):
                 for vertex_id, obstacle in obstacles:

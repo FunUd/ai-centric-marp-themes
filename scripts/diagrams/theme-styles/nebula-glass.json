@@ -37,14 +37,65 @@
       "clusterBorder": "#38BDF8",
       "titleColor": "#F5F7FB",
       "edgeLabelBackground": "#0F172A",
-      "fontFamily": "'Poppins', 'Noto Sans JP', sans-serif"
-    }
+      "fontFamily": "'Poppins', 'Noto Sans JP', sans-serif",
+      "fontSize": "15px"
+    },
+    "flowchart": {
+      "curve": "basis",
+      "padding": 10,
+      "nodeSpacing": 40,
+      "rankSpacing": 50
+    },
+    "sequence": {
+      "actorFontSize": 14,
+      "messageFontSize": 14,
+      "noteFontSize": 13,
+      "actorLineColor": "#22D3EE",
+      "messageColor": "#22D3EE"
+    },
+    "fontSize": 15
   },
   "drawio": {
     "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#1E1838;strokeColor=#8B5CF6;fontColor=#F5F7FB;strokeWidth=1.5;",
-    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#C4B5FD;fontColor=#FFFFFF;fontStyle=1;",
+    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=#6D28D9;fontColor=#FFFFFF;fontStyle=1;",
     "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#152438;strokeColor=#22D3EE;fontColor=#F5F7FB;",
     "containerStyle": "swimlane;startSize=28;fillColor=#0A0F1D;strokeColor=#38BDF8;fontColor=#F5F7FB;fontStyle=1;",
     "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#22D3EE;strokeWidth=1.5;endArrow=block;endFill=1;"
+  },
+  "shapes": {
+    "nodeRadius": 14,
+    "nodeRadiusLg": 20,
+    "markerRadius": 7,
+    "strokeWidth": 1.5,
+    "strokeWidthBold": 2.5,
+    "nodePaddingX": 12,
+    "nodePaddingY": 8
+  },
+  "effects": {
+    "nodeShadowEnabled": false,
+    "nodeShadowColor": null,
+    "nodeShadowBlur": 0,
+    "nodeShadowOffsetY": 0,
+    "glowEnabled": true,
+    "glowColor": "#8B5CF6",
+    "glowBlur": 10,
+    "glassEnabled": true,
+    "glassFill": "#1E1838",
+    "glassStroke": "#8B5CF6"
+  },
+  "typography": {
+    "titleSize": 22,
+    "labelSize": 15,
+    "captionSize": 12,
+    "titleWeight": "bold",
+    "labelWeight": "normal"
+  },
+  "signature": {
+    "source": "themes/nebula-glass.css",
+    "gradientFrom": "#8B5CF6",
+    "gradientTo": "#22D3EE",
+    "topBorderWidth": 0,
+    "hasGlass": true,
+    "hasGlow": true
   }
 }

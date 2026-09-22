@@ -35,14 +35,65 @@
       "clusterBorder": "#B8D4E8",
       "titleColor": "#1A1A2E",
       "edgeLabelBackground": "#FFFFFF",
-      "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif"
-    }
+      "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif",
+      "fontSize": "15px"
+    },
+    "flowchart": {
+      "curve": "basis",
+      "padding": 10,
+      "nodeSpacing": 40,
+      "rankSpacing": 50
+    },
+    "sequence": {
+      "actorFontSize": 14,
+      "messageFontSize": 14,
+      "noteFontSize": 13,
+      "actorLineColor": "#2C7BE5",
+      "messageColor": "#2C7BE5"
+    },
+    "fontSize": 15
   },
   "drawio": {
-    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#EDF5FF;strokeColor=#2C7BE5;fontColor=#1A1A2E;strokeWidth=1.5;",
-    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#2C7BE5;strokeColor=#1B5FC0;fontColor=#FFFFFF;fontStyle=1;",
+    "primaryNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF5FF;strokeColor=#2C7BE5;fontColor=#1A1A2E;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#2C7BE5;strokeColor=#1B5FC0;fontColor=#FFFFFF;fontStyle=1;",
     "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#D0EBFF;strokeColor=#2C7BE5;fontColor=#1A1A2E;",
     "containerStyle": "swimlane;startSize=28;fillColor=#FAFCFF;strokeColor=#B8D4E8;fontColor=#1A1A2E;fontStyle=1;",
     "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2C7BE5;strokeWidth=1.5;endArrow=block;endFill=1;"
+  },
+  "shapes": {
+    "nodeRadius": 0,
+    "nodeRadiusLg": 0,
+    "markerRadius": 0,
+    "strokeWidth": 1.5,
+    "strokeWidthBold": 2.5,
+    "nodePaddingX": 12,
+    "nodePaddingY": 8
+  },
+  "effects": {
+    "nodeShadowEnabled": true,
+    "nodeShadowColor": "rgba(44, 123, 229, 0.08)",
+    "nodeShadowBlur": 12,
+    "nodeShadowOffsetY": 4,
+    "glowEnabled": false,
+    "glowColor": null,
+    "glowBlur": 0,
+    "glassEnabled": false,
+    "glassFill": null,
+    "glassStroke": null
+  },
+  "typography": {
+    "titleSize": 22,
+    "labelSize": 15,
+    "captionSize": 12,
+    "titleWeight": "bold",
+    "labelWeight": "normal"
+  },
+  "signature": {
+    "source": "themes/azure-clarity.css",
+    "gradientFrom": "#2C7BE5",
+    "gradientTo": "#D0EBFF",
+    "topBorderWidth": 4,
+    "hasGlass": false,
+    "hasGlow": false
   }
 }

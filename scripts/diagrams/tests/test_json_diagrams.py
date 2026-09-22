@@ -50,7 +50,6 @@ def test_all_json_diagram_types_render(tmp_path: Path) -> None:
         {"type": "donut", "items": [{"label": "A", "value": 1}]},
         {"type": "pyramid", "levels": [{"label": "A"}, {"label": "B"}, {"label": "C"}]},
         {"type": "cycle", "items": [{"label": "A"}, {"label": "B"}, {"label": "C"}]},
-        {"type": "timeline", "periods": ["Q1"], "items": [{"period": "Q1", "label": "A"}]},
         {"type": "org-chart", "root": {"label": "A", "children": [{"label": "B"}]}},
         {"type": "radial", "center": "A", "items": [{"label": "B"}, {"label": "C"}, {"label": "D"}]},
     ]

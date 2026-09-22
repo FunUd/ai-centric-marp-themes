@@ -5,8 +5,10 @@ from typing import Any
 
 
 LAYOUTS = {"full", "col2", "asym", "col3"}
-DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "timeline", "org-chart", "radial"}
+DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel"}
 LAYOUT_WIDTHS = {"full": 1080, "col2": 520, "asym": 710, "col3": 340}
+LAYOUT_HEIGHTS = {"full": 420, "col2": 360, "asym": 420, "col3": 300}
+TYPE_LAYOUT_HEIGHTS = {("radial", "asym"): 260}
 
 
 def _finite_number(value: Any, field: str) -> float:
@@ -63,19 +65,6 @@ def _validate_type(data: dict[str, Any]) -> None:
         for index, item in enumerate(items):
             if not str(item.get("label", "")).strip():
                 raise ValueError(f"items[{index}].label must not be empty")
-    elif kind == "timeline":
-        periods = data.get("periods")
-        if not isinstance(periods, list) or not periods or not all(isinstance(p, str) and p.strip() for p in periods):
-            raise ValueError("periods must be a non-empty list of labels")
-        if data.get("orientation", "horizontal") not in {"horizontal", "vertical"}:
-            raise ValueError("orientation must be horizontal or vertical")
-        for index, item in enumerate(_items(data)):
-            if item.get("period") not in periods:
-                raise ValueError(f"items[{index}].period is not in periods")
-            if item.get("status", "planned") not in {"done", "active", "planned", "blocked"}:
-                raise ValueError(f"items[{index}].status is invalid")
-            if not str(item.get("label", "")).strip():
-                raise ValueError(f"items[{index}].label must not be empty")
     elif kind == "org-chart":
         root = data.get("root")
         if not isinstance(root, dict) or not str(root.get("label", "")).strip():
@@ -100,6 +89,19 @@ def _validate_type(data: dict[str, Any]) -> None:
         for index, item in enumerate(items):
             if not str(item.get("label", "")).strip():
                 raise ValueError(f"items[{index}].label must not be empty")
+    elif kind == "funnel":
+        levels = data.get("levels")
+        if not isinstance(levels, list) or not 3 <= len(levels) <= 6:
+            raise ValueError("levels must contain between 3 and 6 entries")
+        if data.get("direction", "down") not in {"down", "up"}:
+            raise ValueError("direction must be down or up")
+        for index, level in enumerate(levels):
+            if not isinstance(level, dict) or not str(level.get("label", "")).strip():
+                raise ValueError(f"levels[{index}].label must not be empty")
+            if "value" in level:
+                value = _finite_number(level["value"], f"levels[{index}].value")
+                if value < 0:
+                    raise ValueError(f"levels[{index}].value must not be negative")
 
 
 def parse_diagram_data(data: dict[str, Any]) -> dict[str, Any]:
@@ -113,7 +115,8 @@ def parse_diagram_data(data: dict[str, Any]) -> dict[str, Any]:
     if layout not in LAYOUTS:
         raise ValueError("layout must be one of: " + ", ".join(sorted(LAYOUTS)))
     width = _finite_number(data.get("width", LAYOUT_WIDTHS[layout]), "width")
-    height = _finite_number(data.get("height", 420), "height")
+    default_height = TYPE_LAYOUT_HEIGHTS.get((kind, layout), LAYOUT_HEIGHTS[layout])
+    height = _finite_number(data.get("height", default_height), "height")
     if width <= 0 or height <= 0:
         raise ValueError("width and height must be positive")
     normalized = dict(data)

@@ -431,8 +431,8 @@ The `marp-diagram-creator` skill generates theme-aware, slide-safe SVG diagrams 
 | Engine | Best For |
 |---|---|
 | **Mermaid** (`@mermaid-js/mermaid-cli`, MIT) | Flowcharts, sequence diagrams, state machines, 3-tier architecture |
-| **draw.io** (Apache-2.0 mxGraph XML) | Cloud infrastructure, complex multi-container systems, 2-axis matrices |
-| **JSON SVG** (stdlib Python) | Pie/donut charts, pyramids, cycles, timelines, org charts, radial concepts |
+| **draw.io** (Apache-2.0 mxGraph XML) | Cloud infrastructure, complex multi-container systems |
+| **JSON SVG** (stdlib Python) | Pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels |
 
 ### Generating a Diagram
 
@@ -496,14 +496,12 @@ Safe embedding widths by layout:
 | `flowchart-col2.mmd` | Mermaid | 2-column-safe compact flowchart |
 | `state-machine.mmd` | Mermaid | State transition diagram |
 | `system-architecture.drawio` | draw.io | 3-layer system architecture with swimlanes |
-| `comparison-matrix.drawio` | draw.io | 2×2 priority/cost evaluation matrix |
 | `cloud-infrastructure.drawio` | draw.io | Cloud VPC/subnet/ALB infrastructure |
 | `charts/revenue-pie.json` | JSON SVG | Pie chart with themed legend |
 | `charts/revenue-donut.json` | JSON SVG | Donut chart with center label |
 | `concepts/team-pyramid.json` | JSON SVG | Layered pyramid |
 | `concepts/improvement-cycle.json` | JSON SVG | Circular improvement process |
 | `concepts/team-radial.json` | JSON SVG | Radial concept map |
-| `timelines/product-roadmap.json` | JSON SVG | Horizontal roadmap timeline |
 | `organization/team-org-chart.json` | JSON SVG | Hierarchical organization chart |
 
 See `slides/diagram-demo/diagram-demo.md` for a live demo of all templates rendered with the Azure Clarity theme.

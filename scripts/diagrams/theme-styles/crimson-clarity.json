@@ -35,14 +35,65 @@
       "clusterBorder": "#EAC1C1",
       "titleColor": "#211010",
       "edgeLabelBackground": "#FFFFFF",
-      "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif"
-    }
+      "fontFamily": "'Segoe UI', 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif",
+      "fontSize": "15px"
+    },
+    "flowchart": {
+      "curve": "basis",
+      "padding": 10,
+      "nodeSpacing": 40,
+      "rankSpacing": 50
+    },
+    "sequence": {
+      "actorFontSize": 14,
+      "messageFontSize": 14,
+      "noteFontSize": 13,
+      "actorLineColor": "#D32F2F",
+      "messageColor": "#D32F2F"
+    },
+    "fontSize": 15
   },
   "drawio": {
-    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#D32F2F;fontColor=#211010;strokeWidth=1.5;",
-    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#D32F2F;strokeColor=#B71C1C;fontColor=#FFFFFF;fontStyle=1;",
+    "primaryNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#D32F2F;fontColor=#211010;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#D32F2F;strokeColor=#B71C1C;fontColor=#FFFFFF;fontStyle=1;",
     "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#D32F2F;fontColor=#211010;",
     "containerStyle": "swimlane;startSize=28;fillColor=#FFFBFB;strokeColor=#EAC1C1;fontColor=#211010;fontStyle=1;",
     "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#D32F2F;strokeWidth=1.5;endArrow=block;endFill=1;"
+  },
+  "shapes": {
+    "nodeRadius": 0,
+    "nodeRadiusLg": 0,
+    "markerRadius": 0,
+    "strokeWidth": 1.5,
+    "strokeWidthBold": 2.5,
+    "nodePaddingX": 12,
+    "nodePaddingY": 8
+  },
+  "effects": {
+    "nodeShadowEnabled": true,
+    "nodeShadowColor": "rgba(211, 47, 47, 0.08)",
+    "nodeShadowBlur": 12,
+    "nodeShadowOffsetY": 4,
+    "glowEnabled": false,
+    "glowColor": null,
+    "glowBlur": 0,
+    "glassEnabled": false,
+    "glassFill": null,
+    "glassStroke": null
+  },
+  "typography": {
+    "titleSize": 22,
+    "labelSize": 15,
+    "captionSize": 12,
+    "titleWeight": "bold",
+    "labelWeight": "normal"
+  },
+  "signature": {
+    "source": "themes/crimson-clarity.css",
+    "gradientFrom": "#D32F2F",
+    "gradientTo": "#FFEBEE",
+    "topBorderWidth": 4,
+    "hasGlass": false,
+    "hasGlow": false
   }
 }

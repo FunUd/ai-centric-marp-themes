@@ -85,6 +85,17 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 - `<!-- _class: grid-quadrant -->` for a 2x2 comparison or summary matrix
 - `<!-- _class: grid-sharp -->` when you want a cleaner border-only matrix
+- `<!-- _class: grid-quadrant axes -->` for a 2-axis matrix (priority, SWOT). The `<div class="grid">` must contain EXACTLY one `<span class="axis-y">`, four `<div class="cell">`, and one `<span class="axis-x">` in this order:
+  ```html
+  <div class="grid">
+  <span class="axis-y">重要度</span>
+  <div class="cell">...</div>
+  <div class="cell">...</div>
+  <div class="cell">...</div>
+  <div class="cell">...</div>
+  <span class="axis-x">緊急度</span>
+  </div>
+  ```
 
 ### Density Control
 
@@ -124,6 +135,7 @@ Load it only when you need the generic class syntax or when a theme skill explic
   2. **Step title**
      Description text here.
   ```
+- Add `arrows` (`<!-- _class: steps arrows -->`) to show flow connectors between step items. Markdown is unchanged.
 - `<!-- _class: timeline -->` for ordered milestones
 - Keep the date and description on the same line for timeline items
 

@@ -64,6 +64,32 @@ Use these exact HTML snippets to ensure correct structure and avoid layout break
 </div>
 ```
 
+## 2-Axis Matrix (grid-quadrant axes)
+```html
+<!-- _class: grid-quadrant axes -->
+
+<div class="grid">
+  <span class="axis-y">Y Axis Label</span>
+  <div class="cell">
+    <h3>Top Left</h3>
+    <p>Content</p>
+  </div>
+  <div class="cell">
+    <h3>Top Right</h3>
+    <p>Content</p>
+  </div>
+  <div class="cell">
+    <h3>Bottom Left</h3>
+    <p>Content</p>
+  </div>
+  <div class="cell">
+    <h3>Bottom Right</h3>
+    <p>Content</p>
+  </div>
+  <span class="axis-x">X Axis Label</span>
+</div>
+```
+
 ## Profile Layout (profile)
 ```html
 <!-- _class: profile -->

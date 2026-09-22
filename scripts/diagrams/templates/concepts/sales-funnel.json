@@ -1,0 +1,11 @@
+{
+  "type": "funnel",
+  "title": "営業ファネル",
+  "direction": "down",
+  "levels": [
+    { "label": "認知", "value": 1000 },
+    { "label": "関心", "value": 400 },
+    { "label": "検討", "value": 120 },
+    { "label": "成約", "value": 30 }
+  ]
+}

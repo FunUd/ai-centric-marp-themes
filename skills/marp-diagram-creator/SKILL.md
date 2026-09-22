@@ -28,8 +28,12 @@ Select the most suitable engine based on diagram characteristics:
 | Engine | Best For | Pros |
 |---|---|---|
 | **Mermaid** | Standard flowcharts, API sequence diagrams, 3-tier architectures, simple state machines | Fast code generation, minimal token overhead, version-controllable text DSL |
-| **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems, 2-axis / 4-quadrant matrices | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
-| **JSON SVG** | Pie/donut charts, pyramids, cycles, timelines, org charts, radial concepts | Deterministic slide-safe geometry and structured validation |
+| **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
+| **JSON SVG** | Pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels | Deterministic slide-safe geometry and structured validation |
+| **CSS Native** | Timelines, steps, 2-axis matrices, checklists (text-only, ≤5 items) | 100% theme match, no images needed |
+
+Decision tree: simple shape? → numeric data? → JSON SVG : items≤5? → CSS Native : JSON SVG. Complex shape? → fixed layout? → draw.io : Mermaid.
+Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline → CSS Native; complex arch → draw.io; state machine → Mermaid/draw.io.
 
 ---
 
@@ -61,7 +65,19 @@ python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/dr
 python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
 ```
 
-JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `timeline`, `org-chart`, and `radial`; `theme`, `layout`, `width`, and `height` are optional.
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, and `funnel`; `theme`, `layout`, `width`, and `height` are optional.
+
+Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) / `grid-quadrant` (+ `axes`) slide classes instead.
+
+#### JSON SVG quality rules
+
+- Treat `full`, `col2`, `asym`, and `col3` as geometry profiles, not only output widths. Let the renderer choose the default dimensions unless the diagram has a documented custom aspect ratio.
+- Do not place seven detailed diagrams into one presentation slide. Use a catalog slide only for comparison; use separate slides when labels, timelines, hierarchy, or child nodes must be readable.
+- Keep one visual title: either use the JSON `title` or the surrounding slide/card heading. Do not duplicate long titles inside and outside the SVG.
+- Prefer short labels. The renderer wraps long labels, but wrapping is a rescue mechanism, not a substitute for concise content. Use Japanese labels of roughly 6-12 characters per node and move explanations into `description` or presenter notes.
+- Generate the SVG, run `validate-slide-diagram.py --strict`, and inspect a rendered Marp screenshot before reporting completion. A passing XML/bounds check is not visual approval.
+- For compact layouts, generate with the target layout (`col2`/`col3`) rather than generating a `full` SVG and shrinking it in Markdown.
+- If a diagram has more than six visible labels, prefer a legend or a second slide over reducing the font size.
 
 #### Option B: Customize from Template
 Copy a template from `scripts/diagrams/templates/` to `slides/<deck-name>/assets/`, customize the node labels and connections, then run `render-slide-diagram.py` to produce the final SVG.
@@ -129,3 +145,9 @@ Before completing your task:
 2. [ ] **No Text Truncation**: Are all text labels readable without clipping or overlapping?
 3. [ ] **Canvas Fit**: Does the image fit comfortably within the slide without pushing the footer down or overlapping headers?
 4. [ ] **Visual Inspection**: If Playwright / Vision is active, check the rendered screenshot using `marp-diagnostics.py`.
+
+### Art Direction (anti-cheap rules)
+- **60-30-10**: base (pale/surface) 60%, primary 30%, accent/status 10%. Never place two saturated hues side-by-side in pies.
+- **One accent only**: a single primary node per diagram; others stay pale/surface.
+- **Edges**: theme line color, 1.5px+. Black arrowheads (`#0b0b0b`) and gray `rgba(185,185,185,1)` shadows are defects — the postprocessor now strips them.
+- **Banned**: rainbow fills, 3D gradients, <12px labels, unbroken 20+ char node text.

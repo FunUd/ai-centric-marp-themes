@@ -19,6 +19,7 @@ def load_module(name: str, filename: str):
     return module
 
 
+load_module("svg_filters", "svg_filters.py")
 models = load_module("diagram_models", "diagram_models.py")
 renderer = load_module("svg_diagram_renderer", "svg_diagram_renderer.py")
 
@@ -37,6 +38,12 @@ def test_layout_defaults_use_slide_safe_widths() -> None:
     diagram = models.parse_diagram_data({"type": "pie", "layout": "col2", "items": [{"label": "A", "value": 1}]})
 
     assert diagram["width"] == 520
+
+
+def test_col3_default_height_is_compact_for_embedded_diagrams() -> None:
+    diagram = models.parse_diagram_data({"type": "cycle", "layout": "col3", "items": [{"label": "A"}, {"label": "B"}, {"label": "C"}]})
+
+    assert diagram["height"] == 300
 
 
 @pytest.mark.parametrize(

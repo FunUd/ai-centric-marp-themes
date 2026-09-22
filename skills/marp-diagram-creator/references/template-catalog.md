@@ -22,7 +22,6 @@
 |---|---|---|---|
 | `system-architecture.drawio` | Full (全幅) | クライアント層、API層、データ層を上下に配置したスライド専用3層システム構成図。 | ○ (`hediet.vscode-drawio`) |
 | `cloud-infrastructure.drawio` | Full (全幅) | クラウドVPC、DMZ/パブリックサブネット、プライベートコンテナクラスタ、RDS/Redisを網羅したインフラ図。 | ○ (`hediet.vscode-drawio`) |
-| `comparison-matrix.drawio` | Full (全幅) | 2軸4象限（優先順位マトリクス、SWOT分析、施策対比）の標準レイアウト。 | ○ (`hediet.vscode-drawio`) |
 
 ## 3. JSON SVG テンプレート (`scripts/diagrams/templates/`)
 
@@ -33,7 +32,7 @@
 | `concepts/team-pyramid.json` | ピラミッド | Full / Col2 | 成熟度・優先度などの積み上げ。 |
 | `concepts/improvement-cycle.json` | 循環図 | Full / Col2 | 継続的改善や反復プロセス。 |
 | `concepts/team-radial.json` | 放射状概念図 | Full / Col2 | 中心概念とカテゴリの関係。 |
-| `timelines/product-roadmap.json` | タイムライン | Full | 時系列の計画と状態。 |
+| `concepts/sales-funnel.json` | ファネル | Full / Col2 | 営業ファネル、コンバージョン絞り込み。 |
 | `organization/team-org-chart.json` | 組織図 | Full | 階層と親子関係。 |
 
 ---

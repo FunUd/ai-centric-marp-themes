@@ -28,10 +28,13 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from diagram_routing import edge_endpoints, get_edge_waypoints, route_edge
+from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, snap_edge_points
 
+from design_tokens import best_text_on, drawio_rect_radius, load_design_tokens
 from diagram_models import parse_diagram_data
 from svg_diagram_renderer import render_diagram
+from svg_filters import build_filter_defs
+from svg_theme_postprocessor import postprocess_svg
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 THEME_STYLES_DIR = SCRIPT_DIR / "theme-styles"
@@ -39,13 +42,15 @@ VALIDATOR_PATH = SCRIPT_DIR / "validate-slide-diagram.py"
 
 
 def load_theme_style(theme_name: str) -> dict:
-    """Load theme configuration JSON."""
-    theme_file = THEME_STYLES_DIR / f"{theme_name}.json"
-    if not theme_file.exists():
-        # Fallback to azure-clarity
-        theme_file = THEME_STYLES_DIR / "azure-clarity.json"
-    with open(theme_file, "r", encoding="utf-8") as f:
-        return json.load(f)
+    """Load normalized theme configuration including design tokens."""
+    return load_design_tokens(theme_name)
+
+
+def _write_svg(output_path: Path, svg_content: str, theme_data: dict, postprocess: bool) -> None:
+    if postprocess:
+        svg_content = postprocess_svg(svg_content, theme_data)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(svg_content, encoding="utf-8")
 
 
 def render_mermaid(
@@ -53,6 +58,7 @@ def render_mermaid(
     output_path: Path,
     theme_data: dict,
     layout: str,
+    postprocess: bool = True,
 ) -> bool:
     """Render Mermaid syntax to SVG using @mermaid-js/mermaid-cli with theme injection."""
     mermaid_config = theme_data.get("mermaid", {})
@@ -67,8 +73,6 @@ def render_mermaid(
 
         with open(mmd_file, "w", encoding="utf-8") as f:
             f.write(input_content)
-
-        output_path.parent.mkdir(parents=True, exist_ok=True)
 
         cmd = [
             "npx",
@@ -90,18 +94,39 @@ def render_mermaid(
             print(f"[ERROR] Mermaid CLI failed:\n{res.stderr}", file=sys.stderr)
             return False
 
+    if postprocess and output_path.exists():
+        _write_svg(output_path, output_path.read_text(encoding="utf-8"), theme_data, True)
+
     return True
 
 
 def _recolor_drawio_xml(root: ET.Element, theme_data: dict) -> None:
-    """Update draw.io cell styles with active theme colors."""
+    """Update draw.io cell styles with active theme colors.
+
+    Semantic status fills (success/warning/danger) are preserved so
+    state machines and timelines keep their meaning across themes.
+    Font colors follow the final fill luminance so light nodes keep dark
+    text even on dark themes (e.g. white boxes on Nebula Glass).
+    """
     colors = theme_data.get("colors", {})
     p_pale = colors.get("primaryPale", "#EDF5FF")
     p_main = colors.get("primary", "#2C7BE5")
     p_dark = colors.get("primaryDark", "#1B5FC0")
+    line_main = colors.get("line", p_main)
     txt_main = colors.get("text", "#1A1A2E")
     bg_main = colors.get("background", "#FAFCFF")
     border_main = colors.get("border", "#B8D4E8")
+    status_fills = {
+        (colors.get("success", "#27AE60") or "").lower(),
+        (colors.get("warning", "#F39C12") or "").lower(),
+        (colors.get("danger", "#E74C3C") or "").lower(),
+        "#27ae60", "#f39c12", "#e74c3c", "#10b981", "#f59e0b", "#ef4444",
+        "#78c2ad", "#ffc074", "#f38181", "#34d399", "#fbbf24", "#fb7185",
+    }
+
+    def _fill_of(style: str) -> str:
+        match = re.search(r"fillColor=([^;]+)", style)
+        return (match.group(1) if match else "").lower()
 
     for cell in root.iter("mxCell"):
         style = cell.get("style", "")
@@ -112,20 +137,24 @@ def _recolor_drawio_xml(root: ET.Element, theme_data: dict) -> None:
         if "swimlane" in style:
             style = re.sub(r"fillColor=[^;]+", f"fillColor={bg_main}", style)
             style = re.sub(r"strokeColor=[^;]+", f"strokeColor={border_main}", style)
-            style = re.sub(r"fontColor=[^;]+", f"fontColor={txt_main}", style)
-        # Recolor accent shapes (inverted background)
+            style = re.sub(r"fontColor=[^;]+", f"fontColor={best_text_on(bg_main, txt_main)}", style)
+        # Recolor accent shapes (inverted background) — keep status fills.
         elif "fontColor=#FFFFFF" in style or "fontColor=#ffffff" in style:
-            style = re.sub(r"fillColor=[^;]+", f"fillColor={p_main}", style)
+            if _fill_of(style) not in status_fills:
+                style = re.sub(r"fillColor=[^;]+", f"fillColor={p_main}", style)
             style = re.sub(r"strokeColor=[^;]+", f"strokeColor={p_dark}", style)
-        # Recolor standard shapes
+        # Recolor standard shapes (keep semantic status fills)
         elif cell.get("vertex") == "1":
-            if "fillColor=#FFFFFF" not in style:
+            if "fillColor=#FFFFFF" not in style and _fill_of(style) not in status_fills:
                 style = re.sub(r"fillColor=[^;]+", f"fillColor={p_pale}", style)
+                font_fill = p_pale
+            else:
+                font_fill = _fill_of(style) or p_pale
             style = re.sub(r"strokeColor=[^;]+", f"strokeColor={p_main}", style)
-            style = re.sub(r"fontColor=[^;]+", f"fontColor={txt_main}", style)
-        # Recolor connectors
+            style = re.sub(r"fontColor=[^;]+", f"fontColor={best_text_on(font_fill, txt_main)}", style)
+        # Recolor connectors (theme line color, e.g. cyan on Nebula Glass)
         elif cell.get("edge") == "1":
-            style = re.sub(r"strokeColor=[^;]+", f"strokeColor={p_main}", style)
+            style = re.sub(r"strokeColor=[^;]+", f"strokeColor={line_main}", style)
 
         cell.set("style", style)
 
@@ -151,7 +180,9 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
     cell_map = {c.get("id"): c for c in cells if c.get("id")}
 
     svg_elements: list[str] = []
-    edge_elements: list[str] = []   # drawn first (below boxes)
+    container_elements: list[str] = []  # swimlane boxes (bottom layer)
+    chrome_elements: list[str] = []  # header bars, titles (above edges)
+    edge_elements: list[str] = []   # connectors (above containers, below nodes)
     # Collect styles
     font_fam = theme_data.get("fontFamily", "sans-serif")
     text_color = theme_data.get("colors", {}).get("text", "#1A1A2E")
@@ -212,21 +243,22 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             stroke = st.get("strokeColor", "#B8D4E8")
             start_size = float(st.get("startSize", "26"))
             title = html.escape(cell.get("value", "") or "")
-            arc = "rx='6' ry='6'" if "rounded" in st else ""
+            rx_val = drawio_rect_radius(theme_data, st)
+            arc = f"rx='{rx_val}' ry='{rx_val}'" if rx_val else ""
 
-            # Container Box
-            svg_elements.append(
+            # Container Box (bottom layer — edges must stay visible above it)
+            container_elements.append(
                 f"<rect x='{x}' y='{y}' width='{w}' height='{h}' fill='{fill}' stroke='{stroke}' stroke-width='1.5' {arc} />"
             )
-            # Header Bar
-            svg_elements.append(
+            # Header Bar (chrome — kept above edges so titles stay readable)
+            chrome_elements.append(
                 f"<rect x='{x}' y='{y}' width='{w}' height='{start_size}' fill='{stroke}' opacity='0.12' />"
             )
-            svg_elements.append(
+            chrome_elements.append(
                 f"<line x1='{x}' y1='{y + start_size}' x2='{x + w}' y2='{y + start_size}' stroke='{stroke}' stroke-width='1' />"
             )
             if title:
-                svg_elements.append(
+                chrome_elements.append(
                     f"<text x='{x + 12}' y='{y + start_size - 8}' font-family=\"{font_fam}\" font-size='12' font-weight='bold' fill='{text_color}'>{title}</text>"
                 )
 
@@ -241,7 +273,7 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
         fill = st.get("fillColor", "#FFFFFF")
         stroke = st.get("strokeColor", "#2C7BE5")
         stroke_w = st.get("strokeWidth", "1.5")
-        f_color = st.get("fontColor", text_color)
+        f_color = st.get("fontColor", best_text_on(fill, text_color))
         f_size = st.get("fontSize", "11")
         f_weight = "bold" if "fontStyle" in st and st["fontStyle"] == "1" else "normal"
         val = (cell.get("value", "") or "").replace("&#xa;", "\n")
@@ -257,9 +289,16 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             )
         # Standard Rect / Card
         else:
-            rx = "rx='6' ry='6'" if "rounded" in st or "rounded=1" in cell.get("style", "") else ""
+            rx_val = drawio_rect_radius(theme_data, st)
+            rx = f"rx='{rx_val}' ry='{rx_val}'" if rx_val else ""
+            filter_attr = ""
+            effects = theme_data.get("effects", {})
+            if effects.get("glowEnabled"):
+                filter_attr = " filter='url(#theme-glow)'"
+            elif effects.get("nodeShadowEnabled"):
+                filter_attr = " filter='url(#theme-shadow)'"
             svg_elements.append(
-                f"<rect x='{x}' y='{y}' width='{w}' height='{h}' fill='{fill}' stroke='{stroke}' stroke-width='{stroke_w}' {rx} />"
+                f"<rect x='{x}' y='{y}' width='{w}' height='{h}' fill='{fill}' stroke='{stroke}' stroke-width='{stroke_w}' {rx}{filter_attr} />"
             )
 
         # Text inside shape
@@ -275,7 +314,7 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
                     f"<text x='{cx}' y='{cur_y}' text-anchor='middle' font-family=\"{font_fam}\" font-size='{f_size}' font-weight='{f_weight}' fill='{f_color}'>{escaped_line}</text>"
                 )
 
-    # 3. Render Connectors / Edges  (into edge_elements — rendered BELOW boxes)
+    # 3. Render Connectors / Edges  (above containers, below nodes)
     vertex_obstacles = [
         get_absolute_geom(cell)
         for cell in cells
@@ -297,13 +336,25 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
 
         source_geometry = (sx, sy, sw, sh)
         target_geometry = (tx, ty, tw, th)
-        p1, p2 = edge_endpoints(source_geometry, target_geometry, cell.get("style", ""))
+        edge_style = cell.get("style", "")
+        source_shape = node_shape((cell_map[src_id].get("style") or ""))
+        target_shape = node_shape((cell_map[tgt_id].get("style") or ""))
+        p1, p2 = edge_endpoints(source_geometry, target_geometry, edge_style)
         waypoints = get_edge_waypoints(cell)
         if waypoints:
             origin_x, origin_y = get_absolute_origin(cell.get("parent"))
-            points = [p1] + [(x + origin_x, y + origin_y) for x, y in waypoints] + [p2]
+            points = snap_edge_points(
+                source_geometry,
+                target_geometry,
+                edge_style,
+                [p1] + [(x + origin_x, y + origin_y) for x, y in waypoints] + [p2],
+                source_shape,
+                target_shape,
+            )
         else:
-            points = route_edge(source_geometry, target_geometry, cell.get("style", ""), vertex_obstacles)
+            points = route_edge(
+                source_geometry, target_geometry, edge_style, vertex_obstacles, source_shape=source_shape, target_shape=target_shape
+            )
 
         path_d = " ".join(
             [f"M {points[0][0]:.1f} {points[0][1]:.1f}"]
@@ -321,8 +372,8 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             f"<path d='{path_d}' fill='none' stroke='{stroke}' stroke-width='{stroke_w}' />"
         )
 
-        # Arrowhead at p2
-        ax, ay = p2[0], p2[1]
+        # Arrowhead at the (snapped) path end, stabbing along travel direction
+        ax, ay = current[0], current[1]
         sz = 5
         if arrow_dir == "right":
             arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz*1.5:.1f},{ay-sz:.1f} {ax-sz*1.5:.1f},{ay+sz:.1f}"
@@ -334,11 +385,14 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz:.1f},{ay+sz*1.5:.1f} {ax+sz:.1f},{ay+sz*1.5:.1f}"
         edge_elements.append(f"<polygon points='{arrow_pts}' fill='{stroke}' />")
 
-    # Wrap in SVG — edges rendered first (z-order: edges < boxes < text)
-    all_elements = edge_elements + svg_elements
+    # Wrap in SVG — z-order: container boxes < edges < header chrome < nodes < text
+    # (edges above container fills so connectors stay visible; nodes above edges)
+    all_elements = container_elements + edge_elements + chrome_elements + svg_elements
     elements_markup = "\n  ".join(all_elements)
+    filter_defs = build_filter_defs(theme_data.get("effects", {}))
+    defs_block = filter_defs if filter_defs else "<defs/>"
     svg_out = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {page_w} {page_h}" width="{page_w}" height="{page_h}" style="background-color: transparent;">
-  <defs/>
+  {defs_block}
   {elements_markup}
 </svg>"""
     return svg_out
@@ -349,6 +403,7 @@ def render_drawio(
     output_path: Path,
     theme_data: dict,
     layout: str,
+    postprocess: bool = True,
 ) -> bool:
     """Recolor draw.io XML and export to standalone SVG."""
     try:
@@ -365,12 +420,22 @@ def render_drawio(
         print("[ERROR] Failed to convert draw.io model to SVG", file=sys.stderr)
         return False
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(svg_content)
+    _write_svg(output_path, svg_content, theme_data, postprocess)
 
     print(f"Rendered draw.io diagram to '{output_path}' with theme '{theme_data.get('theme')}'")
     return True
+
+
+def _advisory_note(data: dict, layout: str) -> str:
+    """Return a usage note for JSON types with known text limitations."""
+    kind = data.get("type")
+    if kind == "funnel" and layout == "col3":
+        if any("value" in level for level in data.get("levels", [])):
+            return (
+                "value pills share a narrow gutter on col3. "
+                "Prefer label-only levels and put figures in slide text."
+            )
+    return ""
 
 
 def render_json_diagram_from_data(
@@ -388,6 +453,9 @@ def render_json_diagram_from_data(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(svg_content, encoding="utf-8")
     print(f"Rendered JSON diagram to '{output_path}' with theme '{theme_data.get('theme')}'")
+    note = _advisory_note(data, layout)
+    if note:
+        print(f"[NOTE] {note}")
     return True
 
 
@@ -428,13 +496,15 @@ def main():
         help="Target slide layout (default: full)",
     )
     parser.add_argument("--no-validate", action="store_true", help="Skip post-render validation")
+    parser.add_argument("--no-postprocess", action="store_true", help="Skip SVG theme post-processing")
 
     args = parser.parse_args()
     theme_data = load_theme_style(args.theme)
+    postprocess = not args.no_postprocess
 
     success = False
     if args.code:
-        success = render_mermaid(args.code, args.output, theme_data, args.layout)
+        success = render_mermaid(args.code, args.output, theme_data, args.layout, postprocess)
     elif args.input:
         if not args.input.exists():
             print(f"[ERROR] Input file not found: {args.input}", file=sys.stderr)
@@ -443,9 +513,9 @@ def main():
         if suffix in (".mmd", ".mermaid"):
             with open(args.input, "r", encoding="utf-8") as f:
                 content = f.read()
-            success = render_mermaid(content, args.output, theme_data, args.layout)
+            success = render_mermaid(content, args.output, theme_data, args.layout, postprocess)
         elif suffix in (".drawio", ".xml"):
-            success = render_drawio(args.input, args.output, theme_data, args.layout)
+            success = render_drawio(args.input, args.output, theme_data, args.layout, postprocess)
         elif suffix == ".json":
             success = render_json_diagram(args.input, args.output, theme_data, args.layout)
         else:

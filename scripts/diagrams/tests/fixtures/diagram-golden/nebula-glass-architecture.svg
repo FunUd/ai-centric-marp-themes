@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 420" width="1080" height="420" style="background-color: transparent;">
+  <defs><filter id="theme-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5.0" result="blur"/><feFlood flood-color="#8B5CF6" flood-opacity="0.55" result="color"/><feComposite in="color" in2="blur" operator="in" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect x='20.0' y='20.0' width='1040.0' height='90.0' fill='#040712' stroke='#38BDF8' stroke-width='1.5' rx='14' ry='14'  filter="url(#theme-glow)"/>
+  <rect x='20.0' y='145.0' width='1040.0' height='110.0' fill='#040712' stroke='#38BDF8' stroke-width='1.5' rx='14' ry='14'  filter="url(#theme-glow)"/>
+  <rect x='20.0' y='285.0' width='1040.0' height='95.0' fill='#040712' stroke='#38BDF8' stroke-width='1.5' rx='14' ry='14'  filter="url(#theme-glow)"/>
+  <path d='M 200.0 97.0 L 200.0 185.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='200.0,185.0 195.0,177.5 205.0,177.5' fill='#22D3EE' />
+  <path d='M 450.0 76.0 L 300.0 76.0 L 299.5 185.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='299.5,185.0 294.5,177.5 304.5,177.5' fill='#22D3EE' />
+  <path d='M 300.0 210.0 L 400.0 210.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='400.0,210.0 392.5,205.0 392.5,215.0' fill='#22D3EE' />
+  <path d='M 299.5 185.0 L 300.0 177.0 L 588.0 177.0 L 588.0 210.0 L 630.0 210.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='630.0,210.0 622.5,205.0 622.5,215.0' fill='#22D3EE' />
+  <path d='M 630.5 235.0 L 630.0 243.0 L 355.0 243.0 L 355.0 317.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='355.0,317.0 350.0,309.5 360.0,309.5' fill='#22D3EE' />
+  <path d='M 720.0 235.0 L 720.0 327.0 L 680.0 327.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='680.0,327.0 687.5,322.0 687.5,332.0' fill='#22D3EE' />
+  <path d='M 780.0 235.0 L 780.5 317.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='780.5,317.0 775.5,309.5 785.5,309.5' fill='#22D3EE' />
+  <path d='M 935.0 317.0 L 935.0 235.0' fill='none' stroke='#22D3EE' stroke-width='1.5' />
+  <polygon points='935.0,235.0 930.0,242.5 940.0,242.5' fill='#22D3EE' />
+  <rect x='20.0' y='20.0' width='1040.0' height='26.0' fill='#38BDF8' opacity='0.12'  rx='14' ry='14' filter="url(#theme-glow)"/>
+  <line x1='20.0' y1='46.0' x2='1060.0' y2='46.0' stroke='#38BDF8' stroke-width='1' />
+  <text x='32.0' y='38.0' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='12' font-weight='bold' fill='#F5F7FB'>クライアント層 (Clients)</text>
+  <rect x='20.0' y='145.0' width='1040.0' height='26.0' fill='#38BDF8' opacity='0.12'  rx='14' ry='14' filter="url(#theme-glow)"/>
+  <line x1='20.0' y1='171.0' x2='1060.0' y2='171.0' stroke='#38BDF8' stroke-width='1' />
+  <text x='32.0' y='163.0' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='12' font-weight='bold' fill='#F5F7FB'>アプリケーション層 (API &amp; Services)</text>
+  <rect x='20.0' y='285.0' width='1040.0' height='26.0' fill='#38BDF8' opacity='0.12'  rx='14' ry='14' filter="url(#theme-glow)"/>
+  <line x1='20.0' y1='311.0' x2='1060.0' y2='311.0' stroke='#38BDF8' stroke-width='1' />
+  <text x='32.0' y='303.0' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='12' font-weight='bold' fill='#F5F7FB'>データ永続化層 (Database &amp; Cache)</text>
+  <rect x='100.0' y='55.0' width='180.0' height='42.0' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='190.0' y='70.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>Webブラウザ</text>
+  <text x='190.0' y='85.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(React / Next.js)</text>
+  <rect x='450.0' y='55.0' width='180.0' height='42.0' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='540.0' y='70.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>モバイルアプリ</text>
+  <text x='540.0' y='85.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(iOS / Android)</text>
+  <rect x='800.0' y='55.0' width='180.0' height='42.0' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='890.0' y='70.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>外部システム</text>
+  <text x='890.0' y='85.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(パートナーAPI)</text>
+  <rect x='100.0' y='185.0' width='200.0' height='50.0' fill='#8B5CF6' stroke='#6D28D9' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='200.0' y='204.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='bold' fill='#FFFFFF'>API Gateway / ALB</text>
+  <text x='200.0' y='219.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='bold' fill='#FFFFFF'>(レート制限・ルーティング)</text>
+  <rect x='400.0' y='185.0' width='180.0' height='50.0' fill='#1E1838' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='490.0' y='204.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#F5F7FB'>認証・ユーザー管理</text>
+  <text x='490.0' y='219.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#F5F7FB'>(Auth Service)</text>
+  <rect x='630.0' y='185.0' width='180.0' height='50.0' fill='#1E1838' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='720.0' y='204.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#F5F7FB'>コア業務ロジック</text>
+  <text x='720.0' y='219.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#F5F7FB'>(Core Service)</text>
+  <rect x='860.0' y='185.0' width='150.0' height='50.0' fill='#1E1838' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='935.0' y='204.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#F5F7FB'>非同期ワーカー</text>
+  <text x='935.0' y='219.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#F5F7FB'>(Event Worker)</text>
+  <path d='M 220.0 327.0 A 90.0 10 0 0 1 400.0 327.0 L 400.0 359.0 A 90.0 10 0 0 1 220.0 359.0 Z' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' />
+  <ellipse cx='310.0' cy='327.0' rx='90.0' ry='10' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' />
+  <text x='310.0' y='337.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>メインDB</text>
+  <text x='310.0' y='352.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(PostgreSQL Cluster)</text>
+  <path d='M 500.0 327.0 A 90.0 10 0 0 1 680.0 327.0 L 680.0 359.0 A 90.0 10 0 0 1 500.0 359.0 Z' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' />
+  <ellipse cx='590.0' cy='327.0' rx='90.0' ry='10' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' />
+  <text x='590.0' y='337.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>インメモリCache</text>
+  <text x='590.0' y='352.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(Redis Cluster)</text>
+  <rect x='780.0' y='317.0' width='180.0' height='52.0' fill='#FFFFFF' stroke='#8B5CF6' stroke-width='1.5' rx='14' ry='14' filter='url(#theme-glow)' />
+  <text x='870.0' y='337.5' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>メッセージキュー</text>
+  <text x='870.0' y='352.35' text-anchor='middle' font-family="'Poppins', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(SQS / Kafka)</text>
+</svg>

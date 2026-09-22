@@ -35,14 +35,65 @@
       "clusterBorder": "#F5D3B8",
       "titleColor": "#4A4A4A",
       "edgeLabelBackground": "#FFFFFF",
-      "fontFamily": "'Zen Maru Gothic', 'Poppins', sans-serif"
-    }
+      "fontFamily": "'Zen Maru Gothic', 'Poppins', sans-serif",
+      "fontSize": "15px"
+    },
+    "flowchart": {
+      "curve": "basis",
+      "padding": 10,
+      "nodeSpacing": 40,
+      "rankSpacing": 50
+    },
+    "sequence": {
+      "actorFontSize": 14,
+      "messageFontSize": 14,
+      "noteFontSize": 13,
+      "actorLineColor": "#FF8C42",
+      "messageColor": "#FF8C42"
+    },
+    "fontSize": 15
   },
   "drawio": {
-    "primaryNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FFF0E5;strokeColor=#FF8C42;fontColor=#4A4A4A;strokeWidth=1.5;",
-    "accentNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FF8C42;strokeColor=#D45D00;fontColor=#FFFFFF;fontStyle=1;",
+    "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF0E5;strokeColor=#FF8C42;fontColor=#4A4A4A;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8C42;strokeColor=#D45D00;fontColor=#FFFFFF;fontStyle=1;",
     "secondaryNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FFDAB9;strokeColor=#FF8C42;fontColor=#4A4A4A;",
     "containerStyle": "swimlane;startSize=28;fillColor=#FFFDF9;strokeColor=#F5D3B8;fontColor=#4A4A4A;fontStyle=1;rounded=1;arcSize=10;",
     "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#FF8C42;strokeWidth=1.5;endArrow=block;endFill=1;"
+  },
+  "shapes": {
+    "nodeRadius": 12,
+    "nodeRadiusLg": 24,
+    "markerRadius": 6,
+    "strokeWidth": 1.5,
+    "strokeWidthBold": 2.5,
+    "nodePaddingX": 12,
+    "nodePaddingY": 8
+  },
+  "effects": {
+    "nodeShadowEnabled": true,
+    "nodeShadowColor": "rgba(110, 59, 59, 0.08)",
+    "nodeShadowBlur": 12,
+    "nodeShadowOffsetY": 4,
+    "glowEnabled": false,
+    "glowColor": null,
+    "glowBlur": 0,
+    "glassEnabled": false,
+    "glassFill": null,
+    "glassStroke": null
+  },
+  "typography": {
+    "titleSize": 22,
+    "labelSize": 15,
+    "captionSize": 12,
+    "titleWeight": "bold",
+    "labelWeight": "normal"
+  },
+  "signature": {
+    "source": "themes/warm-sunnyday.css",
+    "gradientFrom": "#FF8C42",
+    "gradientTo": "#FFDAB9",
+    "topBorderWidth": 4,
+    "hasGlass": false,
+    "hasGlow": false
   }
 }

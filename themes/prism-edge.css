@@ -1141,6 +1141,67 @@ section.grid-quadrant .cell.side img {
 }
 
 /* ============================================================
+   Grid Quadrant + axes modifier — X/Y axis labels for matrices.
+   Usage: <!-- _class: grid-quadrant axes -->
+   <div class="grid"> must contain EXACTLY one .axis-y, four .cell,
+   and one .axis-x in this order.
+   ============================================================ */
+section.grid-quadrant.axes>div.grid,
+section.grid-quadrant.axes>.grid {
+  grid-template-columns: 36px 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
+  grid-template-areas:
+    "y c1 c2"
+    "y c3 c4"
+    ". x x";
+}
+
+section.grid-quadrant.axes .axis-y {
+  grid-area: y;
+  writing-mode: vertical-rl;
+  align-self: stretch;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(17px * var(--font-scale));
+  font-weight: 700;
+  color: var(--pe-primary-dark);
+  border-right: 2px solid var(--pe-primary-light);
+  padding-right: 8px;
+  letter-spacing: 0.2em;
+}
+
+section.grid-quadrant.axes .axis-x {
+  grid-area: x;
+  align-self: center;
+  justify-self: stretch;
+  text-align: center;
+  font-size: calc(17px * var(--font-scale));
+  font-weight: 700;
+  color: var(--pe-primary-dark);
+  border-top: 2px solid var(--pe-primary-light);
+  padding-top: 8px;
+  letter-spacing: 0.2em;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(1) {
+  grid-area: c1;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(2) {
+  grid-area: c2;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(3) {
+  grid-area: c3;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(4) {
+  grid-area: c4;
+}
+
+/* ============================================================
    Sharp Grid — border-only grid (no backgrounds)
    ============================================================ */
 section.grid-sharp>div.grid,
@@ -1245,6 +1306,26 @@ section.steps ol li p {
 
 section.steps ol li br {
   display: none;
+}
+
+/* ============================================================
+   Steps + arrows modifier — arrow connectors between cards.
+   Usage: <!-- _class: steps arrows --> (numbered list as usual)
+   ============================================================ */
+section.steps.arrows ol {
+  gap: 32px;
+}
+
+section.steps.arrows ol li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -22px;
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid var(--pe-primary);
+  border-right: 3px solid var(--pe-primary);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 /* ============================================================
