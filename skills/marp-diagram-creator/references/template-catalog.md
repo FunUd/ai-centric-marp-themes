@@ -33,6 +33,9 @@
 |---|---|---|---|
 | `charts/revenue-pie.json` | 円グラフ | Full / Col2 | 構成比の比較。 |
 | `charts/revenue-donut.json` | ドーナツ | Full / Col2 | 中央指標付きの構成比。 |
+| `charts/sales-bar.json` | 棒グラフ | Full / Col2 | 時系列・カテゴリ別の数量比較。 |
+| `charts/quarterly-line.json` | 折れ線グラフ | Full / Col2 | 複数系列の推移比較 (凡例付き)。 |
+| `charts/channel-stacked-bar.json` | 積み上げ棒グラフ | Full / Col2 | 内訳構成の推移比較。 |
 | `concepts/team-pyramid.json` | ピラミッド | Full / Col2 | 成熟度・優先度などの積み上げ。 |
 | `concepts/improvement-cycle.json` | 循環図 | Full / Col2 | 継続的改善や反復プロセス。 |
 | `concepts/team-radial.json` | 放射状概念図 | Full / Col2 | 中心概念とカテゴリの関係。 |

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- JSON diagram types `bar`, `line` (multi-series `categories`+`series`), and `stacked-bar` with shared cartesian frame (nice-tick axes, themed legends): `templates/charts/sales-bar.json`, `quarterly-line.json`, `channel-stacked-bar.json`.
 - Theme token pipeline: `scripts/diagrams/sync-tokens-from-css.py` (CSS `:root` → `theme-styles/*.json`, `--check` for CI drift), `design_tokens.py` (incl. luminance-based `best_text_on`), `svg_theme_postprocessor.py`, `svg_filters.py`.
 - Golden regression fixtures: `scripts/diagrams/tests/fixtures/diagram-golden/` (6 themes × 3 engines) with `regenerate-golden.py` and `test_golden.py`.
 - `sales-funnel.json` template; CSS-native `grid-quadrant axes` and `steps arrows` patterns with `prism-edge` samples.

@@ -15,7 +15,12 @@ from layout_spec import (
 
 
 LAYOUTS = set(_LAYOUT_ORDER)
-DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel"}
+DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel", "bar", "line", "stacked-bar"}
+# Cartesian (axis-based) types share the categories/series vocabulary.
+CARTESIAN_TYPES = {"bar", "line", "stacked-bar"}
+SERIES_TYPES = {"line", "stacked-bar"}
+CARTESIAN_MAX_CATEGORIES = 10
+CARTESIAN_MAX_SERIES = 4
 # Canonical render sizes live in layout_spec.py; aliases kept for importers.
 LAYOUT_WIDTHS = dict(_RENDER_WIDTHS)
 LAYOUT_HEIGHTS = dict(_RENDER_HEIGHTS)
@@ -54,10 +59,83 @@ def _validate_chart(data: dict[str, Any]) -> None:
             raise ValueError("inner_ratio must be between 0 and 1")
 
 
+def _non_negative(value: Any, field: str) -> float:
+    """Finite number >= 0. Negative values are rejected for now.
+
+    The renderer scale (`svg_diagram_renderer._y_scale`) already handles
+    arbitrary min/max ranges; enabling negatives later only requires
+    relaxing this check (plus zero-baseline styling tests). `stacked-bar`
+    stays non-negative by design (mixed-sign stacking is ambiguous).
+    """
+    number = _finite_number(value, field)
+    if number < 0:
+        raise ValueError(f"{field} must be non-negative (negative values are not yet supported)")
+    return number
+
+
+def _validate_y_max(data: dict[str, Any], data_max: float) -> None:
+    if "y_max" not in data:
+        return
+    ceiling = _finite_number(data.get("y_max"), "y_max")
+    if ceiling <= 0:
+        raise ValueError("y_max must be positive")
+    if ceiling < data_max:
+        raise ValueError("y_max must not be smaller than the largest data value")
+
+
+def _validate_categories(data: dict[str, Any]) -> list[str]:
+    categories = data.get("categories")
+    if not isinstance(categories, list) or not 2 <= len(categories) <= CARTESIAN_MAX_CATEGORIES:
+        raise ValueError(f"categories must contain between 2 and {CARTESIAN_MAX_CATEGORIES} entries")
+    for index, category in enumerate(categories):
+        if not isinstance(category, str) or not category.strip():
+            raise ValueError(f"categories[{index}] must not be empty")
+    return categories
+
+
+def _validate_series(data: dict[str, Any], kind: str, min_series: int) -> tuple[list[str], list[dict[str, Any]]]:
+    """Validate categories + series shapes (shared by `line` and `stacked-bar`)."""
+    categories = _validate_categories(data)
+    series = data.get("series")
+    if not isinstance(series, list) or not min_series <= len(series) <= CARTESIAN_MAX_SERIES:
+        raise ValueError(f"series must contain between {min_series} and {CARTESIAN_MAX_SERIES} entries")
+    for s_index, entry in enumerate(series):
+        if not isinstance(entry, dict) or not str(entry.get("label", "")).strip():
+            raise ValueError(f"series[{s_index}].label must not be empty")
+        values = entry.get("values")
+        if not isinstance(values, list) or len(values) != len(categories):
+            raise ValueError(f"series[{s_index}].values must have one entry per category")
+        for v_index, value in enumerate(values):
+            _non_negative(value, f"series[{s_index}].values[{v_index}]")
+    return categories, series
+
+
+def _series_max(series: list[dict[str, Any]], stacked: bool) -> float:
+    if stacked:
+        count = len(series[0]["values"])
+        return max(sum(float(entry["values"][index]) for entry in series) for index in range(count))
+    return max(float(value) for entry in series for value in entry["values"])
+
+
 def _validate_type(data: dict[str, Any]) -> None:
     kind = data["type"]
     if kind in {"pie", "donut"}:
         _validate_chart(data)
+    elif kind == "bar":
+        items = _items(data)
+        if not 2 <= len(items) <= CARTESIAN_MAX_CATEGORIES:
+            raise ValueError(f"items must contain between 2 and {CARTESIAN_MAX_CATEGORIES} entries")
+        for index, item in enumerate(items):
+            if not isinstance(item.get("label"), str) or not item["label"].strip():
+                raise ValueError(f"items[{index}].label must not be empty")
+            _non_negative(item.get("value"), f"items[{index}].value")
+        _validate_y_max(data, max(float(item["value"]) for item in items))
+    elif kind == "line":
+        _, series = _validate_series(data, kind, min_series=1)
+        _validate_y_max(data, _series_max(series, stacked=False))
+    elif kind == "stacked-bar":
+        _, series = _validate_series(data, kind, min_series=2)
+        _validate_y_max(data, _series_max(series, stacked=True))
     elif kind == "pyramid":
         levels = data.get("levels")
         if not isinstance(levels, list) or not 3 <= len(levels) <= 6:

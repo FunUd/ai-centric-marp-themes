@@ -30,7 +30,7 @@ The full decision table lives in `references/diagram-patterns.md` §3 — the su
 |---|---|---|
 | **Mermaid** | Standard flowcharts, API sequence diagrams, 3-tier architectures, simple state machines | Fast code generation, minimal token overhead, version-controllable text DSL |
 | **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems, fixed-precision layouts | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
-| **JSON SVG** | Numeric data visuals: pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels | Deterministic slide-safe geometry and structured validation |
+| **JSON SVG** | Numeric data visuals: bar/line/stacked-bar charts, pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels | Deterministic slide-safe geometry and structured validation |
 | **CSS Native** | Text-only patterns with ≤5 items: timelines, steps, 2-axis matrices, checklists | 100% theme match, no images needed |
 
 Decision tree (apply top-down):
@@ -73,7 +73,7 @@ python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/dr
 python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
 ```
 
-JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, and `funnel` (registry: `scripts/diagrams/diagram_models.py::DIAGRAM_TYPES`, enforced by `tests/test_diagram_registry.py`); `theme`, `layout`, `width`, and `height` are optional. To add a new type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `line`, and `stacked-bar` (registry: `scripts/diagrams/diagram_models.py::DIAGRAM_TYPES`, enforced by `tests/test_diagram_registry.py`); `theme`, `layout`, `width`, and `height` are optional. To add a new type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
 
 Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) / `grid-quadrant` (+ `axes`) slide classes instead.
 
@@ -85,6 +85,7 @@ Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the t
 - Prefer short labels. The renderer wraps long labels, but wrapping is a rescue mechanism, not a substitute for concise content. Use Japanese labels of roughly 6-12 characters per node and move explanations into `description` or presenter notes.
 - Generate the SVG, run `validate-slide-diagram.py --strict`, and inspect a rendered Marp screenshot before reporting completion. A passing XML/bounds check is not visual approval.
 - For compact layouts, generate with the target layout (`col2`/`col3`) rather than generating a `full` SVG and shrinking it in Markdown.
+- Cartesian charts (`bar`/`line`/`stacked-bar`): keep categories within the readable budget — `full` ≤8, `asym` ≤6, `col2` ≤5, `col3` ≤4. Values are non-negative in v1 (negatives are rejected with a forward-compatible message).
 - If a diagram has more than six visible labels, prefer a legend or a second slide over reducing the font size.
 
 #### Option B: Customize from Template

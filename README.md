@@ -505,6 +505,9 @@ Safe embedding widths by layout (canonical values: `scripts/diagrams/layout_spec
 | `cloud-infrastructure.drawio` | draw.io | Cloud VPC/subnet/ALB infrastructure |
 | `charts/revenue-pie.json` | JSON SVG | Pie chart with themed legend |
 | `charts/revenue-donut.json` | JSON SVG | Donut chart with center label |
+| `charts/sales-bar.json` | JSON SVG | Vertical bar chart with values |
+| `charts/quarterly-line.json` | JSON SVG | Multi-series line chart with legend |
+| `charts/channel-stacked-bar.json` | JSON SVG | Stacked bar chart with legend |
 | `concepts/team-pyramid.json` | JSON SVG | Layered pyramid |
 | `concepts/improvement-cycle.json` | JSON SVG | Circular improvement process |
 | `concepts/team-radial.json` | JSON SVG | Radial concept map |

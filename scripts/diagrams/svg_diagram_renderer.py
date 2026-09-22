@@ -675,6 +675,207 @@ def _funnel(data: dict, ctx: dict) -> list[str]:
     return elements
 
 
+def _fmt_tick(value: float) -> str:
+    """Compact axis tick label (supports negatives for future ranges)."""
+    sign = "-" if value < 0 else ""
+    magnitude = abs(value)
+    if magnitude >= 1_000_000:
+        return f"{sign}{magnitude / 1_000_000:g}M"
+    if magnitude >= 1000:
+        return f"{sign}{magnitude / 1000:g}k"
+    return f"{sign}{magnitude:g}"
+
+
+def _y_scale(y_min: float, y_max: float, ticks: int = 4) -> dict:
+    """Nice axis scale for an arbitrary [min, max] range.
+
+    Negative ranges already work (zero baseline floats mid-plot); v1 callers
+    always pass y_min=0 because the model rejects negatives. Enabling
+    negatives later requires no change here.
+    """
+    span = y_max - y_min
+    if not math.isfinite(span) or span <= 0:
+        y_min, y_max, span = 0.0, 1.0, 1.0
+    raw_step = span / max(1, ticks)
+    magnitude = 10 ** math.floor(math.log10(raw_step))
+    step = next(m * magnitude for m in (1, 2, 2.5, 5, 10) if m * magnitude >= raw_step)
+    floor = math.floor(y_min / step) * step
+    ceiling = math.ceil(y_max / step) * step
+    count = int(round((ceiling - floor) / step))
+    return {"min": floor, "max": ceiling, "step": step,
+            "ticks": [floor + index * step for index in range(count + 1)]}
+
+
+def _legend_row(ctx: dict, width: float, y: float, entries: list[tuple[str, str]]) -> list[str]:
+    """Centered single-row legend (swatch + label per series)."""
+    caption = float(ctx["typography"]["captionSize"])
+    gap, swatch = 18.0, 12.0
+    widths = [swatch + 6 + _text_width(label, caption) for label, _ in entries]
+    total = sum(widths) + gap * (len(entries) - 1)
+    elements: list[str] = []
+    cursor = (width - total) / 2
+    marker = _marker_rx(ctx)
+    for (label, color), block in zip(entries, widths):
+        style: dict[str, object] = {"fill": color, "stroke": "none", "role": "node"}
+        if marker:
+            style["rx"] = marker
+            style["ry"] = marker
+        elements.append(svg_rect(cursor, y - 11, swatch, swatch, **style))
+        elements.append(_text(cursor + swatch + 6, y, label, ctx, "captionSize", max_chars=10))
+        cursor += block + gap
+    return elements
+
+
+def _cartesian_frame(
+    data: dict,
+    ctx: dict,
+    x_labels: list[str],
+    y_min: float,
+    y_max: float,
+    legend: list[tuple[str, str]] | None = None,
+) -> dict:
+    """Shared axes, gridlines, and coordinate mapping for bar/line/stacked-bar.
+
+    Gridlines and axes use role="axis" (ignored by the validator's
+    node-crossing check); only bars/segments are role="node".
+    """
+    width, height = data["width"], data["height"]
+    title = data.get("title")
+    unit = str(data.get("unit", "") or "")
+    scale = _y_scale(y_min, y_max)
+    elements = _title(ctx, width, title)
+
+    cursor_y = 54.0 if title else 34.0
+    if legend:
+        elements += _legend_row(ctx, width, cursor_y, legend)
+        cursor_y += 22.0
+    # Left gutter sized from the widest tick label (top tick carries the
+    # unit). Prevents labels like "200 百万円" from clipping at x=0 under
+    # wide fallback fonts.
+    caption_size = float(ctx["typography"]["captionSize"])
+    tick_labels = [
+        _fmt_tick(tick) + (" " + unit if unit and position == len(scale["ticks"]) - 1 else "")
+        for position, tick in enumerate(scale["ticks"])
+    ]
+    widest = max((_text_width(label, caption_size) for label in tick_labels), default=0.0)
+    plot_left = min(width * 0.25, max(64.0, widest + 20.0))
+    plot_top = cursor_y + 12.0
+    plot_bottom = height - 34.0
+    plot_right = width - 20.0
+    plot_w = plot_right - plot_left
+    plot_h = max(1.0, plot_bottom - plot_top)
+    count = len(x_labels)
+    slot = plot_w / max(1, count)
+
+    def x_pos(index: int) -> float:
+        return plot_left + slot * (index + 0.5)
+
+    def y_pos(value: float) -> float:
+        ratio = (value - scale["min"]) / (scale["max"] - scale["min"])
+        return plot_top + plot_h * (1.0 - ratio)
+
+    muted = ctx["muted"]
+    # Horizontal gridlines + tick labels (top tick carries the unit, if any).
+    for y, label in ((y_pos(tick), text) for tick, text in zip(scale["ticks"], tick_labels)):
+        elements.append(svg_line(plot_left, y, plot_right, y, stroke=muted,
+                                 role="axis", **{"stroke-width": 1, "opacity": 0.45}))
+        elements.append(_text(plot_left - 8, y + 4, label, ctx, "captionSize",
+                              fill=muted, max_chars=14, **{"text-anchor": "end"}))
+    # Axes baselines.
+    elements.append(svg_line(plot_left, plot_top, plot_left, plot_bottom, stroke=muted,
+                             role="axis", **{"stroke-width": 1.2}))
+    elements.append(svg_line(plot_left, y_pos(scale["min"] if scale["min"] > 0 else 0), plot_right,
+                             y_pos(scale["min"] if scale["min"] > 0 else 0),
+                             stroke=ctx["line"], role="axis", **{"stroke-width": 1.5}))
+    # X labels.
+    for index, label in enumerate(x_labels):
+        elements.append(_text(x_pos(index), plot_bottom + 18, label, ctx, "captionSize",
+                              max_chars=8, **{"text-anchor": "middle"}))
+    return {"elements": elements, "x": x_pos, "y": y_pos, "slot": slot,
+            "plot_left": plot_left, "plot_top": plot_top, "plot_bottom": plot_bottom,
+            "scale": scale, "tick_labels": tick_labels}
+
+
+CARTESIAN_PALETTE = ["primary", "success", "warning", "accent", "danger", "dark"]
+
+
+def _series_colors(ctx: dict, count: int) -> list[str]:
+    return [ctx[CARTESIAN_PALETTE[index % len(CARTESIAN_PALETTE)]] for index in range(count)]
+
+
+def _bar(data: dict, ctx: dict) -> list[str]:
+    labels = [str(item["label"]) for item in data["items"]]
+    values = [float(item["value"]) for item in data["items"]]
+    ceiling = float(data.get("y_max", _y_scale(0.0, max(values))["max"]))
+    frame = _cartesian_frame(data, ctx, labels, 0.0, ceiling)
+    elements = frame["elements"]
+    bar_w = min(frame["slot"] * 0.62, 120.0)
+    show_values = bool(data.get("show_values", True))
+    for index, value in enumerate(values):
+        x, top, base = frame["x"](index), frame["y"](value), frame["y"](0.0)
+        elements.append(svg_rect(x - bar_w / 2, top, bar_w, max(0.0, base - top),
+                                 role="node", fill=ctx["primary"], stroke="none"))
+        if show_values:
+            elements.append(_text(x, top - 8, _fmt_tick(value), ctx, "captionSize",
+                                  max_chars=10, **{"text-anchor": "middle", "font-weight": "bold"}))
+    return elements
+
+
+def _line(data: dict, ctx: dict) -> list[str]:
+    categories = [str(category) for category in data["categories"]]
+    series = data["series"]
+    colors = _series_colors(ctx, len(series))
+    stacked_max = max(float(value) for entry in series for value in entry["values"])
+    ceiling = float(data.get("y_max", _y_scale(0.0, stacked_max)["max"]))
+    legend = [(str(entry["label"]), color) for entry, color in zip(series, colors)] if len(series) > 1 else None
+    frame = _cartesian_frame(data, ctx, categories, 0.0, ceiling, legend)
+    elements = frame["elements"]
+    show_values = bool(data.get("show_values", False))
+    for entry, color in zip(series, colors):
+        points = [(frame["x"](index), frame["y"](float(value))) for index, value in enumerate(entry["values"])]
+        path = "M " + " L ".join(f"{_num(x)} {_num(y)}" for x, y in points)
+        elements.append(svg_path(path, role="connector", fill="none", stroke=color, **{"stroke-width": 2.5}))
+        for (x, y), value in zip(points, entry["values"]):
+            elements.append(svg_circle(x, y, 4.5, role="marker", fill=ctx["surface"], stroke=color, **{"stroke-width": 2}))
+            if show_values:
+                elements.append(_text(x, y - 12, _fmt_tick(float(value)), ctx, "captionSize",
+                                      max_chars=10, **{"text-anchor": "middle"}))
+    return elements
+
+
+def _stacked_bar(data: dict, ctx: dict) -> list[str]:
+    categories = [str(category) for category in data["categories"]]
+    series = data["series"]
+    colors = _series_colors(ctx, len(series))
+    totals = [sum(float(entry["values"][index]) for entry in series) for index in range(len(categories))]
+    ceiling = float(data.get("y_max", _y_scale(0.0, max(totals))["max"]))
+    legend = [(str(entry["label"]), color) for entry, color in zip(series, colors)]
+    frame = _cartesian_frame(data, ctx, categories, 0.0, ceiling, legend)
+    elements = frame["elements"]
+    bar_w = min(frame["slot"] * 0.62, 120.0)
+    show_values = bool(data.get("show_values", True))
+    for index in range(len(categories)):
+        base = frame["y"](0.0)
+        running = 0.0
+        for entry, color in zip(series, colors):
+            running += float(entry["values"][index])
+            top = frame["y"](running)
+            seg_h = base - top
+            x = frame["x"](index)
+            elements.append(svg_rect(x - bar_w / 2, top, bar_w, max(0.0, seg_h),
+                                     role="node", fill=color, stroke=ctx["surface"], **{"stroke-width": 1.5}))
+            if show_values and seg_h >= 20:
+                elements.append(_text(x, top + seg_h / 2 + 4, _fmt_tick(float(entry["values"][index])),
+                                      ctx, "captionSize", fill=best_text_on(color, "#FFFFFF"),
+                                      max_chars=8, **{"text-anchor": "middle", "font-weight": "bold"}))
+            base = top
+        if show_values:
+            elements.append(_text(frame["x"](index), frame["y"](totals[index]) - 8, _fmt_tick(totals[index]),
+                                  ctx, "captionSize", max_chars=10,
+                                  **{"text-anchor": "middle", "font-weight": "bold"}))
+    return elements
+
+
 def render_diagram(data: dict, theme_data: dict, layout: str) -> str:
     data = parse_diagram_data({**data, "layout": data.get("layout", layout)})
     ctx = theme_context(theme_data)
@@ -687,6 +888,9 @@ def render_diagram(data: dict, theme_data: dict, layout: str) -> str:
         "org-chart": lambda: _org_chart(data, ctx),
         "radial": lambda: _radial(data, ctx),
         "funnel": lambda: _funnel(data, ctx),
+        "bar": lambda: _bar(data, ctx),
+        "line": lambda: _line(data, ctx),
+        "stacked-bar": lambda: _stacked_bar(data, ctx),
     }
     elements = renderers[kind]()
     defs_parts: list[str] = []

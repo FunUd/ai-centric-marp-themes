@@ -52,6 +52,18 @@ def test_all_json_diagram_types_render(tmp_path: Path) -> None:
         {"type": "cycle", "items": [{"label": "A"}, {"label": "B"}, {"label": "C"}]},
         {"type": "org-chart", "root": {"label": "A", "children": [{"label": "B"}]}},
         {"type": "radial", "center": "A", "items": [{"label": "B"}, {"label": "C"}, {"label": "D"}]},
+        {"type": "funnel", "levels": [{"label": "A"}, {"label": "B"}, {"label": "C"}]},
+        {"type": "bar", "items": [{"label": "A", "value": 1}, {"label": "B", "value": 2}]},
+        {
+            "type": "line",
+            "categories": ["A", "B"],
+            "series": [{"label": "S", "values": [1, 2]}],
+        },
+        {
+            "type": "stacked-bar",
+            "categories": ["A", "B"],
+            "series": [{"label": "S1", "values": [1, 2]}, {"label": "S2", "values": [3, 4]}],
+        },
     ]
 
     for index, definition in enumerate(definitions):
