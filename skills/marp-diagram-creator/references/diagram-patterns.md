@@ -1,52 +1,54 @@
-# スライド図解キャンバス規格書 & パターンカタログ (Diagram Patterns & Specifications)
+# Slide Diagram Canvas Spec & Pattern Catalog (Diagram Patterns & Specifications)
 
-本ドキュメントは、Marpスライドに図（Mermaid / draw.io）を配置する際、**型崩れ（オーバーフロー、縮小による文字潰れ、レイアウト崩壊）を絶対に防ぐための厳格な設計規格**です。
+This document is the strict design spec for placing diagrams (Mermaid / draw.io) on Marp slides
+while **absolutely preventing breakage (overflow, shrunken illegible text, layout collapse)**.
 
 ---
 
-## 1. スライドキャンバス規格 (Canvas Contract)
+## 1. Slide Canvas Spec (Canvas Contract)
 
-Marpの標準スライドサイズは **1280px × 720px** (16:9) です。
-上下左右のパディングやスライドタイトル（H1）、フッターの占有領域を除いた「図の安全配置エリア」は以下の通り規格化されます。
+The standard Marp slide size is **1280px × 720px** (16:9).
+Excluding padding and the space taken by the slide title (H1) and footer, the safe diagram
+placement area is standardized as follows.
 
-| レイアウト区分 | 最大有効幅 | 最大有効高 | 推奨アスペクト比 | 1ノード文字数上限 | 推奨ノード数 |
+| Layout | Max Width | Max Height | Recommended Aspect | Max Chars per Node | Recommended Nodes |
 |---|---|---|---|---|---|
-| **Full Slide (1カラム全幅)** | **1120px** | **460px** | **2.2:1 〜 2.5:1 (横長)** | 日本語20文字以内 | 3〜6ノード (横並び) |
-| **2-Column (左右2分割の片側)** | **520px** | **460px** | **1.1:1 〜 1.2:1 (正方形/縦長)** | 日本語15文字以内 | 3〜5ノード (縦並び) |
-| **Split-Asym (主面 65%)** | **710px** | **460px** | **1.5:1 〜 1.6:1 (標準横長)** | 日本語18文字以内 | 4〜6ノード |
-| **3-Column (3分割の片側)** | **340px** | **460px** | **0.7:1 〜 0.8:1 (縦長)** | 日本語10文字以内 | 2〜3ノード (縦並び) |
+| **Full Slide (single full-width column)** | **1120px** | **460px** | **2.2:1 – 2.5:1 (landscape)** | Japanese: max 20 chars | 3–6 nodes (horizontal) |
+| **2-Column (one side of a split)** | **520px** | **460px** | **1.1:1 – 1.2:1 (square/portrait)** | Japanese: max 15 chars | 3–5 nodes (vertical) |
+| **Split-Asym (65% main pane)** | **710px** | **460px** | **1.5:1 – 1.6:1 (standard landscape)** | Japanese: max 18 chars | 4–6 nodes |
+| **3-Column (one pane of three)** | **340px** | **460px** | **0.7:1 – 0.8:1 (portrait)** | Japanese: max 10 chars | 2–3 nodes (vertical) |
 
-> ⚠️ **絶対禁止事項 (Anti-Patterns)**:
-> - 高さ `460px` を超える図の作成（スライド下部オーバーフローの主因）。
-> - 縦長（高さが幅を大幅に上回る）の図を Full Slide に配置すること（縦460pxに縮小され、文字が極小化して読めなくなります）。
-> - 1ノードに長文（25文字以上）を詰め込むこと（枠線を突き破る、または極端な自動改行で崩れます）。
+> ⚠️ **Absolute prohibitions (Anti-Patterns)**:
+> - Creating diagrams taller than `460px` (the leading cause of bottom overflow).
+> - Placing tall/portrait diagrams (height far exceeding width) on a Full Slide (they get shrunk to 460px height and text becomes unreadably small).
+> - Stuffing long text (25+ chars) into a single node (breaks out of borders or collapses via extreme auto-wrapping).
 
 ---
 
-## 2. スライド配置パターンと構文
+## 2. Slide Placement Patterns and Syntax
 
-生成したSVGファイル（`assets/diagram.svg`）をスライドMarkdownに埋め込む際は、必ず以下の指定構文を使用します。
+When embedding a generated SVG file (`assets/diagram.svg`) into slide Markdown, always use the following syntax.
 
-### パターン A: Full Slide 中央配置 (デフォルト)
-スライド全体を使ってプロセスやアーキテクチャを堂々と見せる標準パターン。
+### Pattern A: Full Slide Centered (default)
+The standard pattern for showing a process or architecture across the whole slide.
 
 ```markdown
-# システムアーキテクチャ概要
+# System Architecture Overview
 
 ![width:1050px center](./assets/system-arch.svg)
 ```
-- ※ `width:` を指定してスライド横幅にフィットさせます。縦は自動比率計算されます。
-- ※ 縦が詰まる場合は `height:420px center` を指定してください。**両方同時に指定してアスペクト比を歪めてはなりません**。
+- ※ Specify `width:` to fit the slide width. Height scales automatically.
+- ※ If vertical space is tight, specify `height:420px center` instead. **Never specify both at once (distorts the aspect ratio).**
 
 ---
 
-### パターン B: 2カラム対比配置 (図 ＋ 箇条書き解説)
-左側に図、右側に要点箇条書きを配置する実務で最も多用されるパターン。
+### Pattern B: 2-Column Contrast (diagram + bullet notes)
+The most frequently used real-world pattern: diagram on the left, key bullets on the right.
 
 ```markdown
 <!-- _class: cols-2 -->
 
-# 認証・認可フロー
+# Auth Flow
 
 <div class="columns">
 <div class="col v-center text-center">
@@ -56,14 +58,14 @@ Marpの標準スライドサイズは **1280px × 720px** (16:9) です。
 </div>
 <div class="col v-center">
 
-### ポイント
+### Points
 
-- **JWTによるステートレス認証**
-  - セッションDBへのアクセス不要
-- **リフレッシュトークンの自動更新**
-  - 有効期限7日間、ローテーション運用
+- **Stateless auth with JWT**
+  - No session DB access needed
+- **Automatic refresh-token rotation**
+  - 7-day expiry, rotation in operation
 - **Role-Based Access Control**
-  - 管理者/一般ユーザーの権限分離
+  - Separated admin/standard-user privileges
 
 </div>
 </div>
@@ -71,13 +73,13 @@ Marpの標準スライドサイズは **1280px × 720px** (16:9) です。
 
 ---
 
-### パターン C: Split-Asym (図 65% : 補足 35%)
-少し大きめの図を見せつつ、サイドバーでキーポイントを補足するパターン。
+### Pattern C: Split-Asym (diagram 65% : notes 35%)
+Show a slightly larger diagram while supplementing key points in a sidebar.
 
 ```markdown
 <!-- _class: split-asym -->
 
-# クラウドインフラ構成
+# Cloud Infrastructure
 
 <div class="columns">
 <div class="col v-center text-center">
@@ -87,11 +89,11 @@ Marpの標準スライドサイズは **1280px × 720px** (16:9) です。
 </div>
 <div class="col v-center">
 
-### インフラ要件
+### Infra Requirements
 
-- マルチAZ冗長化
-- オートスケーリング (2〜10台)
-- 暗号化通信 (TLS 1.3)
+- Multi-AZ redundancy
+- Autoscaling (2–10 nodes)
+- Encrypted traffic (TLS 1.3)
 
 </div>
 </div>
@@ -99,19 +101,19 @@ Marpの標準スライドサイズは **1280px × 720px** (16:9) です。
 
 ---
 
-## 3. 図解種別と推奨エンジン判定基準
+## 3. Diagram-Type to Engine Decision Criteria
 
-> 正本: 本表がエンジン選定の正本。`SKILL.md` §2 の要約は本表と一致させること。
-> 判定は上から順に適用: ①数値データ可視化 → JSON SVG / ②テキストのみ≤5項目 → CSS Native / ③固定精度レイアウト → draw.io / ④その他 → Mermaid。
+> Canonical: this table is the source of truth for engine selection. The summary in `SKILL.md` §2 must stay consistent with it.
+> Apply top-down: ① numeric data → JSON SVG / ② text-only with ≤5 items → CSS Native / ③ fixed-precision layout → draw.io / ④ everything else → Mermaid.
 
-| 図の種別 | 推奨エンジン | 理由・選定基準 |
+| Diagram Type | Recommended Engine | Rationale |
 |---|---|---|
-| **数値データ可視化** (棒・折れ線・積み上げ・構成比・ピラミッド・循環・組織・放射・ファネル) | **JSON SVG** | スライド安全な幾何学が確定で生成され、構造バリデーションが効く。 |
-| **テキストのみ≤5項目** (手順・ステップ・マイルストン・チェックリスト) | **CSS Native** (`steps`+`arrows` / `timeline` / `checklist` / `timetable`) | テーマ一致率100%、画像不要。 |
-| **2軸マトリクス / 4象限図 (テキストのみ≤5項目)** | **CSS Native** (`grid-quadrant`+`axes`) | テーマ一致率100%、画像不要。座標精度が要る場合のみ draw.io。 |
-| **フローチャート (横プロセス)** | **Mermaid (`graph LR`)** | 直線的な処理ステップはMermaidが最も簡潔で高速。 |
-| **フローチャート (縦・条件分岐)** | **Mermaid (`graph TD`)** / 複雑なら **draw.io** | 分岐が多い場合は draw.io の方が矢印の交差を完璧に制御可能。 |
-| **シーケンス図 (API/メッセージ)** | **Mermaid (`sequenceDiagram`)** | 参加者3〜4名、メッセージ往復5〜6本のシーケンスはMermaidが最適。 |
-| **3層アーキテクチャ** | **Mermaid / draw.io** | 簡易連携ならMermaid、詳細構成ならdraw.io。 |
-| **クラウドインフラ・複合構成図** | **draw.io** | AWS/GCP/Azureアイコンや複雑な境界線・ネットワーク帯はdraw.io一択。 |
-| **状態遷移図** | **Mermaid (`stateDiagram-v2`)** | 4〜5状態の遷移ならMermaidが極めて高速。 |
+| **Numeric data visuals** (bar/line/stacked, composition, pyramid, cycle, org, radial, funnel) | **JSON SVG** | Deterministic slide-safe geometry with structural validation. |
+| **Text-only with ≤5 items** (steps, milestones, checklists) | **CSS Native** (`steps`+`arrows` / `timeline` / `checklist` / `timetable`) | 100% theme match, no images needed. |
+| **2-axis matrix / quadrant (text-only, ≤5 items)** | **CSS Native** (`grid-quadrant`+`axes`) | 100% theme match, no images needed. Use draw.io only when coordinate precision is required. |
+| **Flowchart (horizontal process)** | **Mermaid (`graph LR`)** | Simplest and fastest for linear process steps. |
+| **Flowchart (vertical / branching)** | **Mermaid (`graph TD`)** / **draw.io** for complex cases | draw.io gives perfect control over arrow crossings when branching is heavy. |
+| **Sequence diagram (API/messages)** | **Mermaid (`sequenceDiagram`)** | Best for 3–4 participants with 5–6 request/response messages. |
+| **3-tier architecture** | **Mermaid / draw.io** | Mermaid for simple interactions, draw.io for detailed layouts. |
+| **Cloud infra / composite diagrams** | **draw.io** | The only choice for AWS/GCP/Azure icons and complex boundaries/network zones. |
+| **State machine** | **Mermaid (`stateDiagram-v2`)** | Extremely fast for 4–5 state transitions. |

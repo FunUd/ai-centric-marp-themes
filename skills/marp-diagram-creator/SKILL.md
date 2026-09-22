@@ -61,7 +61,7 @@ Use `scripts/diagrams/render-slide-diagram.py` to compile Mermaid or draw.io int
 
 ```powershell
 # From Mermaid code string
-python scripts/diagrams/render-slide-diagram.py --code "flowchart LR; A[受付] --> B[処理]; B --> C[完了]" -o slides/<deck-name>/assets/flow.svg --theme azure-clarity --layout full
+python scripts/diagrams/render-slide-diagram.py --code "flowchart LR; A[Intake] --> B[Process]; B --> C[Done]" -o slides/<deck-name>/assets/flow.svg --theme azure-clarity --layout full
 
 # From Mermaid template / .mmd file
 python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/mermaid/sequence-api.mmd -o slides/<deck-name>/assets/api-sequence.svg --theme prism-edge --layout full
@@ -116,7 +116,7 @@ python scripts/diagrams/validate-slide-diagram.py slides/<deck-name>/assets/my-d
 
 #### Pattern 1: Full Slide
 ```markdown
-# 処理フロー概要
+# Process Flow Overview
 
 ![width:1050px center](./assets/flow.svg)
 ```
@@ -134,7 +134,7 @@ Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed 
 ```markdown
 <!-- _class: cols-2 -->
 
-# システム構成と特徴
+# System Architecture and Features
 
 <div class="columns">
 <div class="col v-center text-center">
@@ -144,11 +144,11 @@ Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed 
 </div>
 <div class="col v-center">
 
-### 主なアーキテクチャ設計
+### Key Architecture Decisions
 
-- **疎結合なマイクロサービス構成**
-- **Read/Write分離による高スループット**
-- **障害検知時の自動フェイルオーバー**
+- **Loosely coupled microservices**
+- **High throughput via read/write splitting**
+- **Automatic failover on fault detection**
 
 </div>
 </div>

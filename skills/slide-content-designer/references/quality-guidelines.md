@@ -1,179 +1,183 @@
-# スライド品質ガイドライン: 内容・構成・読みやすさの原則
+# Slide Quality Guidelines: Content, Structure, and Readability Principles
 
-本ガイドラインは、AIおよびスライド作成者が「伝わる・動かす・読みやすい」高品質なプレゼンテーションスライドを作成するための実践的指針です。
-デザインの美しさだけでなく、**「何が言いたいのか（内容）」「どのような筋道か（構成）」「一目で理解できるか（読みやすさ）」**を徹底的に高めます。
+These guidelines are practical directions for AI and slide authors to create high-quality
+presentation slides that "communicate, move, and read easily."
+Beyond visual beauty, they maximize **"what is being said (content)," "how the argument flows
+(structure)," and "whether it is understood at a glance (readability)."**
 
 ---
 
-## 1. 内容（Content）の品質基準: 「So What?」と具体性
+## 1. Content Quality Criteria: "So What?" and Specificity
 
-### 1.1 主張型（Message-driven）タイトルの徹底
-スライドのタイトルは、単なる名詞やトピック名（「〜について」「概要」「構成図」）にしてはいけません。
-**「そのスライドで最も伝えたい結論・示唆（So What?）」**をタイトルやリード文で宣言します。
+### 1.1 Enforce Message-Driven Titles
+Slide titles must not be bare nouns or topic names ("About…", "Overview", "Diagram").
+Declare **"the single most important conclusion or implication of the slide (So What?)"** in the title or lead.
 
-| ❌ 避けるべきトピックタイトル（名詞止め） | ✅ 推奨される主張型タイトル（結論・示唆） |
+| ❌ Topic titles to avoid (bare nouns) | ✅ Recommended message-driven titles (conclusion/implication) |
 |---|---|
-| `## システム構成` | `## マイクロサービス化によりデプロイ速度を60%短縮` |
-| `## 開発の進捗状況` | `## API開発はオンスケジュール、UI結合が1週間前倒しで完了` |
-| `## クラウド選定の比較` | `## コストと学習曲線の観点からAWSではなくCloudflareを採用` |
-| `## 課題と対策` | `## 属人化を解消するため自動テストとCIパイプラインを必須化` |
-| `## まとめ` | `## 今期は基盤刷新を完遂し、来期は新機能の高速リリースに集中` |
+| `## System Architecture` | `## Microservices Cut Deploy Time by 60%` |
+| `## Development Progress` | `## API Work On Schedule; UI Integration Finished a Week Early` |
+| `## Cloud Comparison` | `## Adopting Cloudflare over AWS for Cost and Learning Curve` |
+| `## Issues and Countermeasures` | `## Mandating Automated Tests and CI Pipelines to End Hero-Driven Ops` |
+| `## Summary` | `## Platform Renewal Done This Term; Next Term Focuses on Fast Feature Delivery` |
 
-> **ルール**: タイトルを読んだだけで、スライドの要点が8割伝わるように記述すること。
-> トピック名が必要な場合は、カテゴリバッジや小さなサブタイトルを併用する。
-> 例: `<span class="badge blue">システム構成</span>` + `## Go言語導入でAPIレスポンスを80msから15msへ短縮`
-
----
-
-### 1.2 抽象語の排除と定量的裏付け（Fact & Figure）
-「向上した」「改善した」「適切に管理」「柔軟な対応」などの抽象語は、具体性がなく読み手に説得力を与えません。
-**「どのような手段で」＋「どのような数値・事実で」**をセットで表現します。
-
-- ❌ 抽象的: *「セキュリティを大幅に強化しました」*
-- ✅ 具体的: *「全エンドポイントにOAuth2.0とmTLSを導入し、不正アクセス試行を100%遮断」*
-- ❌ 抽象的: *「開発効率の向上を図る」*
-- ✅ 具体的: *「共通コンポーネントライブラリを整備し、画面実装工数を平均30%削減」*
+> **Rule**: The slide's point should be 80% clear from the title alone.
+> When a topic name is needed, combine it with a category badge or small subtitle.
+> Example: `<span class="badge blue">System Architecture</span>` + `## Go Adoption Cuts API Response from 80ms to 15ms`
 
 ---
 
-### 1.3 聴衆目線の価値提示（WIIFM原則）
-**WIIFM（What's In It For Me? / 自分にとって何の得があるか）**:
-発表者の言いたいこと（プロダクトの仕様、苦労話）だけを並べるのではなく、聴衆にとってのベネフィットや影響を前面に出します。
+### 1.2 Eliminate Abstractions, Back with Facts & Figures
+Abstractions like "improved," "enhanced," "managed properly," or "flexible response" carry no
+specifics and persuade nobody. Always pair **"by what means"** with **"what numbers or facts."**
 
-1. **意思決定者（マネージャー・経営層）**: コスト、リスク、ROI、スケジュールへの影響
-2. **エンジニア仲間**: 技術的選定理由、アーキテクチャのトレードオフ、再利用性、運用のしやすさ
-3. **ビジネス・営業**: 顧客体験の向上、競争優位性、リリース時期
+- ❌ Abstract: *"We greatly strengthened security"*
+- ✅ Concrete: *"OAuth 2.0 and mTLS on all endpoints now block 100% of unauthorized access attempts"*
+- ❌ Abstract: *"We will improve development efficiency"*
+- ✅ Concrete: *"A shared component library cuts screen implementation effort by 30% on average"*
 
 ---
 
-## 2. 構成（Structure）の品質基準: 説得の論理ストーリーライン
+### 1.3 Audience-First Value (WIIFM Principle)
+**WIIFM (What's In It For Me?)**:
+Don't just list what the presenter wants to say (product specs, war stories) — lead with benefits
+and impact for the audience.
 
-プレゼンテーションの成否は、スライド単体ではなく「全体の論理の繋がり」で決まります。
-目的やテーマに応じて、以下の4大フレームワークから最適なストーリーを選択して組み立てます。
+1. **Decision makers (managers, executives)**: cost, risk, ROI, schedule impact
+2. **Fellow engineers**: selection rationale, architecture trade-offs, reusability, operability
+3. **Business / sales**: customer experience gains, competitive edge, release timing
+
+---
+
+## 2. Structure Quality Criteria: Persuasive Storylines
+
+Presentation success is decided not by individual slides but by "how the logic connects."
+Pick the best storyline from the four frameworks below according to purpose and theme.
 
 ```mermaid
 flowchart LR
-    A["導入 (Hook)"] --> B["展開 (Body)"] --> C["結び (Action)"]
-    subgraph Patterns["4大ストーリーライン"]
+    A["Hook (Intro)"] --> B["Body (Development)"] --> C["Action (Close)"]
+    subgraph Patterns["4 Core Storylines"]
         direction TB
-        P1["① SCQA型: 課題解決・企画提案"]
-        P2["② PREP型: 技術解説・意見主張"]
-        P3["③ Before-After-Bridge型: 改革・改善報告"]
-        P4["④ ピラミッド型: 体系的報告・総合分析"]
+        P1["1. SCQA: problem solving / proposals"]
+        P2["2. PREP: technical briefings / opinions"]
+        P3["3. Before-After-Bridge: change / improvement reports"]
+        P4["4. Pyramid: systematic reports / comprehensive analysis"]
     end
     B -.-> Patterns
 ```
 
-### 2.1 4大ストーリーライン・テンプレート
+### 2.1 The Four Storyline Templates
 
-#### ① SCQA型（課題解決・企画提案・プロジェクト立ち上げ）
-状況を共有した上で問題を提起し、必然性を持って解決策へ導くビジネスの王道シナリオ。
-1. **Situation（現状・前提）**: 誰もが合意できる客観的な事実や背景
-2. **Complication（問題・複雑化）**: 変化、ボトルネック、直面した障害
-3. **Question（問い・課題）**: 「では、どうすればこの課題を解決できるか？」
-4. **Answer（解決策・提案）**: 当提案（プロダクト・手法）による具体的解決
-5. **Impact / Action（効果と次の行動）**: 期待成果、リソース、ネクストステップ
+#### 1. SCQA (problem solving, proposals, project launches)
+Share the context, raise the problem, and lead inevitably to the solution — the business classic.
+1. **Situation**: objective facts and background everyone agrees on
+2. **Complication**: changes, bottlenecks, obstacles encountered
+3. **Question**: "So how do we solve this?"
+4. **Answer**: the concrete solution from this proposal (product, method)
+5. **Impact / Action**: expected outcomes, resources, next steps
 
-#### ② PREP型（技術選定・アーキテクチャ提案・意見表明）
-結論を冒頭と末尾に配置し、短時間で最も論理的かつクリアに伝える型。
-1. **Point（結論）**: 何をすべきか、何を主張するか
-2. **Reason（理由）**: なぜそう言えるのか、定性的・論理的根拠
-3. **Example（事例・検証データ）**: ベンチマーク、プロトタイプ結果、具体的実例
-4. **Point（再度の結論と展望）**: 結論の再確認と今後の展開
+#### 2. PREP (tech selection, architecture proposals, opinions)
+Put the conclusion first and last to communicate most logically and clearly in little time.
+1. **Point**: what should be done, what is claimed
+2. **Reason**: why — qualitative and logical grounds
+3. **Example**: benchmarks, prototype results, concrete cases
+4. **Point**: restated conclusion with outlook
 
-#### ③ Before-After-Bridge型（業務改善・新ツール導入・リファクタリング）
-変化の落差（ギャップ）を強調して、提案の価値を際立たせる型。
-1. **Before（現状のペイン）**: 従来の非効率、高コスト、ストレス
-2. **After（理想の未来）**: 改善後の快適な状態、得られる圧倒的成果
-3. **Bridge（架け橋・提案）**: BeforeからAfterへ到達するための具体的な手段・工程
+#### 3. Before-After-Bridge (process improvement, new tooling, refactoring)
+Emphasize the gap of change to make the proposal's value stand out.
+1. **Before**: current pain — inefficiency, high cost, stress
+2. **After**: the ideal future — comfort and overwhelming gains after improvement
+3. **Bridge**: the concrete means and steps to get from Before to After
 
-#### ④ ピラミッド型（定例報告・網羅的レビュー・総合戦略）
-主要メッセージを頂点とし、それを支える3つの柱でMECE（モレなくダブりなく）に構造化する型。
-1. **Top Message**: プロジェクト全体のステータスまたは総括メッセージ
-2. **Key Pillar 1**: スケジュール・マイルストーンの進捗と根拠
-3. **Key Pillar 2**: 品質・テスト結果とリスク対策
-4. **Key Pillar 3**: コスト・リソース状況
-5. **Decisions / Next Actions**: 決裁を仰ぐ事項、今後のアクション
-
----
-
-### 2.2 スライド間の接続（トランジション＆Wayfinding）
-- **伏線と回収**: 前のスライドの末尾にある「課題や問い」が、次のスライドの「回答」となるように繋げる。
-- **現在地の明示（Wayfinding）**:
-  - 全体が10スライド以上になる場合、大セクションの切り替わりには「中扉（セクションディバイダー）」または「アジェンダ振り返り（`toc-focus`）」を挟み、聴衆の迷子を防ぐ。
+#### 4. Pyramid (status reports, exhaustive reviews, overall strategy)
+Top with the key message, supported by three MECE (mutually exclusive, collectively exhaustive) pillars.
+1. **Top Message**: overall project status or summary message
+2. **Key Pillar 1**: schedule/milestone progress with evidence
+3. **Key Pillar 2**: quality/test results and risk countermeasures
+4. **Key Pillar 3**: cost/resource status
+5. **Decisions / Next Actions**: items needing approval, upcoming actions
 
 ---
 
-## 3. 読みやすさ（Readability & Cognitive Load）の品質基準: 3秒ルールの実践
+### 2.2 Transitions Between Slides (Wayfinding)
+- **Setup and payoff**: end each slide on the "question" that the next slide "answers."
+- **Show where you are (Wayfinding)**:
+  - For decks of 10+ slides, insert a section divider or agenda recap (`toc-focus`) at major section breaks so the audience never gets lost.
 
-スライドは「読むもの」ではなく「見るもの」です。
-**「表示されてから3秒以内にキーメッセージが把握できる」**情報構造を設計します。
+---
 
-### 3.1 箇条書き脱却（Anti-Bullet-Point）ルール
-AIが最も陥りやすい罠が「単なる文章の箇条書き（Bullet Point Hell）」です。箇条書きを多用せず、以下のように構造化します。
+## 3. Readability & Cognitive Load Criteria: Practicing the 3-Second Rule
 
-#### パターンA: 【キーラベル＋簡潔な説明】（必須フォーマット）
-箇条書きを使う場合でも、必ず太字のキーフレーズ（ラベル）を先頭に置きます。
+Slides are not "read" — they are "seen."
+Design the information structure so **the key message lands within 3 seconds of appearing.**
+
+### 3.1 Escape Bullets (Anti-Bullet-Point) Rules
+The easiest trap for AI is plain sentence bullets (Bullet Point Hell). Structure instead of listing:
+
+#### Pattern A: [Key Label + Concise Explanation] (mandatory format)
+Even when using bullets, always lead with a bold key phrase (label).
 
 ```markdown
-<!-- ❌ 悪い例: 長い文章がぶつ切りで並んでいるだけ -->
-- 昨年度から導入を開始した新しいクラウド基盤ですが、運用コストが想定より高くなっています
-- 監視アラートの通知設定が不十分であったため障害検知に時間がかかりました
-- 今後は自動化ツールを導入して工数の削減を進めていく予定です
+<!-- ❌ Bad: just chopped-up long sentences -->
+- The new cloud platform we started adopting last fiscal year is costing more to operate than expected
+- Alert notification settings were insufficient, so fault detection took a long time
+- We plan to introduce automation tooling to reduce manual effort going forward
 
-<!-- ✅ 良い例: キーラベル＋簡潔な説明で瞬時に理解できる -->
-- **運用コストの高騰**: 想定比+35%（クラウド移行に伴うリソース過剰確保が主因）
-- **障害検知の遅延**: アラート閾値の不備により初動対応に45分を要した
-- **運用自動化の推進**: TerraformとAnsibleを導入し、月間40時間の運用工数を削減
+<!-- ✅ Good: key label + concise explanation reads instantly -->
+- **Surging ops cost**: +35% vs. plan (mainly over-provisioned resources from cloud migration)
+- **Slow fault detection**: poor alert thresholds delayed initial response by 45 minutes
+- **Driving ops automation**: Terraform + Ansible to cut 40 hours of monthly ops work
 ```
 
-#### パターンB: カード・2カラム対比への変換（`cols-2`, `cols-3`, `split-2`）
-並列する2〜3個の重要ポイントは、箇条書きではなくカードレイアウト（`cols-2` / `cols-3`）に変換します。
+#### Pattern B: Convert to Cards / 2-Column Contrast (`cols-2`, `cols-3`, `split-2`)
+Turn 2–3 parallel key points into card layouts (`cols-2` / `cols-3`), not bullets.
 
-#### パターンC: プロセスのステップ化（`steps` / `timeline`）
-順序や手順、時系列のデータは、箇条書きではなく `steps` や `timeline` クラスを用います。
+#### Pattern C: Turn Processes into Steps (`steps` / `timeline`)
+Use the `steps` or `timeline` classes — not bullets — for sequences, procedures, and timelines.
 
 ---
 
-### 3.2 視線誘導（Zの法則 / Fの法則）とアイアンカー
-人間の視線は**「左上 → 右上 → 左下 → 右下」**へと流れます。
+### 3.2 Eye Guidance (Z-Pattern / F-Pattern) and Anchors
+Human eyes flow **"top-left → top-right → bottom-left → bottom-right."**
 
 ```
-[1. 主張タイトル / リード文 (結論・So What?)]  ← ここで8割理解
+[1. Claim title / lead (conclusion / So What?)]  ← 80% understood here
 ┌─────────────────────────┬─────────────────────────┐
-│ [2. メイン視覚要素]     │ [3. 詳細・補足説明]     │
-│ ・キー数値 (Big Number) │ ・根拠・背景            │
-│ ・比較カード / 図解     │ ・ネクストアクション    │
+│ [2. Main visual]        │ [3. Details]            │
+│ - Big Number            │ - Evidence, background  │
+│ - Comparison cards /    │ - Next actions          │
+│   diagrams              │                         │
 └─────────────────────────┴─────────────────────────┘
 ```
 
-1. **左上・上部（アンカー）**: 最重要メッセージ（主張タイトル）
-2. **中央・左側**: 最も視覚的な要素（図解、大きな数字、比較カードの主役）
-3. **右側・下部**: 補足説明、根拠、詳細
+1. **Top / top-left (anchor)**: the most important message (claim title)
+2. **Center / left**: the most visual element (diagram, big number, hero comparison card)
+3. **Right / bottom**: supporting explanation, evidence, details
 
 ---
 
-### 3.3 認知負荷低減の数値基準（Readability Thresholds）
+### 3.3 Readability Thresholds
 
-スライドを作成・生成する際は、以下の数値を厳守してください。
+Enforce the following numbers when creating or generating slides.
 
-| 項目 | 推奨値 / 上限値 | 理由 |
+| Item | Recommended / Max | Reason |
 |---|---|---|
-| **1スライドの主メッセージ** | **厳密に1つ**（1 Slide = 1 Message） | 複数混ざると印象が拡散する |
-| **箇条書き項目数** | **最大3〜4項目**（Magic Number 3） | 5個以上は記憶に残らない（分割またはカード化） |
-| **1行の文字数** | **25〜40文字以内** | 40文字を超えると視線移動で疲労する |
-| **インデント階層** | **最大2階層まで** | 3階層以上のネストは構造破綻のサイン |
-| **スライド内総文字数** | **200〜350文字程度** | 400文字超は「文書（Document）」でありスライドではない |
+| **Main message per slide** | **Strictly one** (1 Slide = 1 Message) | Mixed messages dilute impact |
+| **Bullet count** | **Max 3–4** (Magic Number 3) | 5+ items are not remembered (split or cardify) |
+| **Chars per line** | **Within 25–40 chars** | Beyond 40 chars, eye travel causes fatigue |
+| **Indent depth** | **Max 2 levels** | 3+ levels signal broken structure |
+| **Total chars per slide** | **Around 200–350 chars** | Beyond 400 chars it is a document, not a slide |
 
 ---
 
-## 4. 品質セルフチェックシート
+## 4. Quality Self-Check Sheet
 
-スライドを作成・出力する前に、以下の問いに「YES」と答えられるか確認してください。
+Before producing or outputting slides, confirm every answer is "YES."
 
-- [ ] **タイトル**: 「〜について」ではなく、結論・主張になっているか？
-- [ ] **具体性**: 「向上」「改善」などの抽象語を、数値や具体的手段で裏付けているか？
-- [ ] **ストーリー**: 前のスライドの課題が、このスライドの解決策へ論理的に繋がっているか？
-- [ ] **箇条書き**: 単なる文章の羅列にならず、太字のキーラベルやカード構造になっているか？
-- [ ] **情報密度**: 項目数は3〜4個以内に収まり、余白（ホワイトスペース）が十分に確保されているか？
-- [ ] **3秒チェック**: スライドをぱっと見た瞬間、最も重要なポイントが目に飛び込んでくるか？
+- [ ] **Title**: Is it a conclusion/claim rather than an "About…" topic?
+- [ ] **Specificity**: Are abstractions like "improve" backed by numbers or concrete means?
+- [ ] **Story**: Does the previous slide's problem connect logically to this slide's solution?
+- [ ] **Bullets**: Are they key-labeled or card-structured instead of plain sentence lists?
+- [ ] **Density**: 3–4 items max with enough whitespace?
+- [ ] **3-second check**: Does the most important point jump out at a glance?

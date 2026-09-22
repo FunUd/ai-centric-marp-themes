@@ -1,56 +1,56 @@
-# スライド図解テンプレートカタログ (Slide Diagram Template Catalog)
+# Slide Diagram Template Catalog
 
-本カタログは、スライド作成時に即座に利用できるプリセットテンプレートの一覧と、それぞれの特徴・適用シーンをまとめたものです。
+This catalog lists the preset templates available for immediate use when creating slides, with their characteristics and applicable scenes.
 
-> 保守: 本カタログ・`README.md` の Available Templates 表・ディスク上のテンプレートは
-> `python scripts/diagrams/check-catalog-sync.py` で同期検証される。新規追加時は
-> `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md` の手順に従うこと。
-
----
-
-## 1. Mermaid テンプレート (`scripts/diagrams/templates/mermaid/`)
-
-| ファイル名 | タイプ | 推奨レイアウト | 用途・説明 |
-|---|---|---|---|
-| `flowchart-linear.mmd` | フローチャート | Full (全幅) | 横方向（左から右）へ進む標準的な業務・処理フロー。各ステップにアイコンや注記を追加可能。 |
-| `flowchart-col2.mmd` | フローチャート | 2-Column (左右分割) | 上から下へ進む条件分岐付きフロー。開始・判定・終了の端点を備え、縦長スペースに最適。 |
-| `sequence-api.mmd` | シーケンス図 | Full (全幅) | クライアント、API Gateway、認証、DB間のリクエスト/レスポンス往復。autonumber付き。 |
-| `architecture-3tier.mmd` | アーキテクチャ図 | Full (全幅) | プレゼンテーション層、アプリケーション層、データ層の3層構造とサービス間連携。 |
-| `state-machine.mmd` | 状態遷移図 | 2-Column / Full | 下書き、審査中、承認済、差戻し、公開中等のステートマシン遷移。 |
+> Maintenance: this catalog, the Available Templates table in `README.md`, and the on-disk templates
+> are sync-checked via `python scripts/diagrams/check-catalog-sync.py`. When adding a new template,
+> follow the procedure in `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
 
 ---
 
-## 2. draw.io テンプレート (`scripts/diagrams/templates/drawio/`)
+## 1. Mermaid Templates (`scripts/diagrams/templates/mermaid/`)
 
-| ファイル名 | 推奨レイアウト | 用途・説明 | VS Code 再編集 |
+| Filename | Type | Recommended Layout | Purpose |
 |---|---|---|---|
-| `system-architecture.drawio` | Full (全幅) | クライアント層、API層、データ層を上下に配置したスライド専用3層システム構成図。 | ○ (`hediet.vscode-drawio`) |
-| `cloud-infrastructure.drawio` | Full (全幅) | クラウドVPC、DMZ/パブリックサブネット、プライベートコンテナクラスタ、RDS/Redisを網羅したインフラ図。 | ○ (`hediet.vscode-drawio`) |
-
-## 4. JSON SVG テンプレート (`scripts/diagrams/templates/`)
-
-| ファイル名 | タイプ | 推奨レイアウト | 用途・説明 |
-|---|---|---|---|
-| `charts/revenue-pie.json` | 円グラフ | Full / Col2 | 構成比の比較。 |
-| `charts/revenue-donut.json` | ドーナツ | Full / Col2 | 中央指標付きの構成比。 |
-| `charts/sales-bar.json` | 棒グラフ | Full / Col2 | 時系列・カテゴリ別の数量比較。 |
-| `charts/quarterly-line.json` | 折れ線グラフ | Full / Col2 | 複数系列の推移比較 (凡例付き)。 |
-| `charts/channel-stacked-bar.json` | 積み上げ棒グラフ | Full / Col2 | 内訳構成の推移比較。 |
-| `concepts/team-pyramid.json` | ピラミッド | Full / Col2 | 成熟度・優先度などの積み上げ。 |
-| `concepts/improvement-cycle.json` | 循環図 | Full / Col2 | 継続的改善や反復プロセス。 |
-| `concepts/team-radial.json` | 放射状概念図 | Full / Col2 | 中心概念とカテゴリの関係。 |
-| `concepts/sales-funnel.json` | ファネル | Full / Col2 | 営業ファネル、コンバージョン絞り込み。 |
-| `organization/team-org-chart.json` | 組織図 | Full | 階層と親子関係。 |
+| `flowchart-linear.mmd` | Flowchart | Full | Standard left-to-right business/process flow. Icons and annotations can be added to each step. |
+| `flowchart-col2.mmd` | Flowchart | 2-Column | Top-to-bottom flow with conditional branches, start/decision/end terminals. Best for vertical space. |
+| `sequence-api.mmd` | Sequence diagram | Full | Request/response round-trips between client, API Gateway, auth, and DB. With autonumber. |
+| `architecture-3tier.mmd` | Architecture diagram | Full | Classic 3-tier web architecture (presentation / application / data) with service interactions. |
+| `state-machine.mmd` | State machine | 2-Column / Full | State transitions such as draft, in review, approved, returned, and published. |
 
 ---
 
-## 3. テーマ別スタイルの対応表
+## 2. draw.io Templates (`scripts/diagrams/templates/drawio/`)
 
-| テーマ | モード | 主要色 (Primary) | アクセント色 | 特徴 |
+| Filename | Recommended Layout | Purpose | Re-editable in VS Code |
+|---|---|---|---|
+| `system-architecture.drawio` | Full | Slide-optimized 3-layer system diagram (client / API / data layers stacked vertically). | Yes (`hediet.vscode-drawio`) |
+| `cloud-infrastructure.drawio` | Full | Cloud infrastructure covering VPC, DMZ/public subnets, private container clusters, RDS/Redis. | Yes (`hediet.vscode-drawio`) |
+
+## 3. JSON SVG Templates (`scripts/diagrams/templates/`)
+
+| Filename | Type | Recommended Layout | Purpose |
+|---|---|---|---|
+| `charts/revenue-pie.json` | Pie chart | Full / Col2 | Comparing composition ratios. |
+| `charts/revenue-donut.json` | Donut chart | Full / Col2 | Composition ratios with a center metric. |
+| `charts/sales-bar.json` | Bar chart | Full / Col2 | Comparing quantities across time periods or categories. |
+| `charts/quarterly-line.json` | Line chart | Full / Col2 | Multi-series trend comparison (with legend). |
+| `charts/channel-stacked-bar.json` | Stacked bar chart | Full / Col2 | Comparing breakdown composition over time. |
+| `concepts/team-pyramid.json` | Pyramid | Full / Col2 | Stacked layers such as maturity or priority. |
+| `concepts/improvement-cycle.json` | Cycle | Full / Col2 | Continuous improvement and iterative processes. |
+| `concepts/team-radial.json` | Radial concept map | Full / Col2 | Relationships between a central concept and categories. |
+| `concepts/sales-funnel.json` | Funnel | Full / Col2 | Sales funnels and conversion narrowing. |
+| `organization/team-org-chart.json` | Org chart | Full | Hierarchies and reporting lines. |
+
+---
+
+## 4. Per-Theme Style Reference
+
+| Theme | Mode | Primary | Accent | Character |
 |---|---|---|---|---|
-| **Azure Clarity** | ライト | `#2C7BE5` (Blue) | `#1B4F72` (Navy) | 信頼感のある王道ビジネスブルー。角丸ゼロでシャープ。 |
-| **Crimson Clarity** | ライト | `#D32F2F` (Red) | `#5C0000` (Dark Red) | エネルギーと決断力のあるコーポレートレッド。 |
-| **Prism Edge** | ライト | `#4F46E5` (Indigo) | `#06B6D4` (Cyan) | 洗練されたインディゴ＆シアン。モダンな幾何学感。 |
-| **Nebula Glass** | ダーク | `#8B5CF6` (Violet) | `#22D3EE` (Cyan) | ダーク背景 (`#040712`) とネオン発光。サイバー感。 |
-| **Warm Sunnyday** | ライト | `#FF8C42` (Orange) | `#6E3B3B` (Brown) | 親しみやすい暖色オレンジ。角丸大のやわらかいデザイン。 |
-| **Slate Minimal** | ライト | `#475569` (Slate) | `#111111` (Ink Black) | 余計な装飾を削ぎ落としたミニマリスト・モノトーン。 |
+| **Azure Clarity** | Light | `#2C7BE5` (Blue) | `#1B4F72` (Navy) | Trustworthy mainstream business blue. Sharp with zero rounding. |
+| **Crimson Clarity** | Light | `#D32F2F` (Red) | `#5C0000` (Dark Red) | Energetic, decisive corporate red. |
+| **Prism Edge** | Light | `#4F46E5` (Indigo) | `#06B6D4` (Cyan) | Refined indigo & cyan. Modern geometric feel. |
+| **Nebula Glass** | Dark | `#8B5CF6` (Violet) | `#22D3EE` (Cyan) | Dark background (`#040712`) with neon glow. Cyber feel. |
+| **Warm Sunnyday** | Light | `#FF8C42` (Orange) | `#6E3B3B` (Brown) | Friendly warm orange. Soft design with large rounding. |
+| **Slate Minimal** | Light | `#475569` (Slate) | `#111111` (Ink Black) | Minimalist monochrome stripped of decoration. |

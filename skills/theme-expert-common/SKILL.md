@@ -88,12 +88,12 @@ Load it only when you need the generic class syntax or when a theme skill explic
 - `<!-- _class: grid-quadrant axes -->` for a 2-axis matrix (priority, SWOT). The `<div class="grid">` must contain EXACTLY one `<span class="axis-y">`, four `<div class="cell">`, and one `<span class="axis-x">` in this order:
   ```html
   <div class="grid">
-  <span class="axis-y">重要度</span>
+  <span class="axis-y">Importance</span>
   <div class="cell">...</div>
   <div class="cell">...</div>
   <div class="cell">...</div>
   <div class="cell">...</div>
-  <span class="axis-x">緊急度</span>
+  <span class="axis-x">Urgency</span>
   </div>
   ```
 
