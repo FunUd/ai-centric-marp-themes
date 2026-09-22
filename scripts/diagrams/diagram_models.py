@@ -1,14 +1,25 @@
 from __future__ import annotations
 
 import math
+import sys
+from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from layout_spec import (
+    LAYOUTS as _LAYOUT_ORDER,
+    RENDER_DEFAULT_HEIGHT as _RENDER_HEIGHTS,
+    RENDER_DEFAULT_WIDTH as _RENDER_WIDTHS,
+    TYPE_LAYOUT_HEIGHTS as _TYPE_LAYOUT_HEIGHTS,
+)
 
-LAYOUTS = {"full", "col2", "asym", "col3"}
+
+LAYOUTS = set(_LAYOUT_ORDER)
 DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel"}
-LAYOUT_WIDTHS = {"full": 1080, "col2": 520, "asym": 710, "col3": 340}
-LAYOUT_HEIGHTS = {"full": 420, "col2": 360, "asym": 420, "col3": 300}
-TYPE_LAYOUT_HEIGHTS = {("radial", "asym"): 260}
+# Canonical render sizes live in layout_spec.py; aliases kept for importers.
+LAYOUT_WIDTHS = dict(_RENDER_WIDTHS)
+LAYOUT_HEIGHTS = dict(_RENDER_HEIGHTS)
+TYPE_LAYOUT_HEIGHTS = dict(_TYPE_LAYOUT_HEIGHTS)
 
 
 def _finite_number(value: Any, field: str) -> float:

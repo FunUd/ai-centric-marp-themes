@@ -1,0 +1,46 @@
+name: diagram-checks
+
+on:
+  push:
+    paths:
+      - "scripts/diagrams/**"
+      - "skills/marp-diagram-creator/**"
+      - "skills/marp-slide-creator/**"
+      - "themes/*.css"
+      - "README.md"
+  pull_request:
+    paths:
+      - "scripts/diagrams/**"
+      - "skills/marp-diagram-creator/**"
+      - "skills/marp-slide-creator/**"
+      - "themes/*.css"
+      - "README.md"
+  workflow_dispatch:
+
+jobs:
+  diagram-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run diagram test suite
+        run: python -m pytest scripts/diagrams/tests/ -q
+
+      - name: Check theme token sync (CSS is source of truth)
+        run: python scripts/diagrams/sync-tokens-from-css.py --check
+
+      - name: Check template catalog sync
+        run: python scripts/diagrams/check-catalog-sync.py
+
+      - name: Validate all diagram templates against every layout
+        run: |
+          for f in scripts/diagrams/templates/drawio/*.drawio; do
+            python scripts/diagrams/validate-slide-diagram.py "$f" --layout full || exit 1
+          done
+          for f in scripts/diagrams/templates/mermaid/*.mmd; do
+            echo "--- $f exists"
+          done

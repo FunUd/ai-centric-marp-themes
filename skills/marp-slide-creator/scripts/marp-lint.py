@@ -268,16 +268,21 @@ DIAGRAM_PATH_KEYWORDS = frozenset(
     ["diagram", "chart", "flow", "arch", "seq", "state", "drawio", "mmd", "render"]
 )
 
-# Max safe diagram widths per layout class (px)
+# Max safe diagram widths per layout class (px).
+# Canonical values: scripts/diagrams/layout_spec.py::CANVAS_MAX.
+# This file is copied to agent dirs by sync-skills.py, so the numbers are
+# mirrored here — update both places when the spec changes.
 DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
     "full":  1120,   # full-width single column
     "col2":  520,    # 2-column layouts
-    "col3":  360,    # 3-column layouts
+    "col3":  340,    # 3-column layouts
     "asym":  710,    # asymmetric split
 }
 
-# Layout class sets → layout key
-_COL2_CLASSES = {"cols-2", "split-2", "split-asym", "split-asym-reverse", "split-glass", "glass-card-layout"}
+# Layout class sets → layout key.
+# NOTE: split-asym / split-asym-reverse are 710px asymmetric layouts, NOT col2.
+_ASYM_CLASSES = {"split-asym", "split-asym-reverse"}
+_COL2_CLASSES = {"cols-2", "split-2", "split-glass", "glass-card-layout"}
 _COL3_CLASSES = {"cols-3", "split-3"}
 
 
@@ -291,11 +296,11 @@ def _slide_layout_key(slide: SlideInfo) -> str:
     """Infer the applicable layout constraint key from the slide's _class directives."""
     if slide.classes.intersection(_COL3_CLASSES):
         return "col3"
+    # Asymmetric layouts must be checked BEFORE col2 (they are wider: 710px).
+    if slide.classes.intersection(_ASYM_CLASSES):
+        return "asym"
     if slide.classes.intersection(_COL2_CLASSES):
         return "col2"
-    # split-asym / asymmetric layouts
-    if slide.classes.intersection({"split-asym", "split-asym-reverse"}):
-        return "asym"
     return "full"
 
 

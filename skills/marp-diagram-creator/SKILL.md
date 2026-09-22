@@ -21,19 +21,26 @@ Activate this skill when the user asks to:
 
 ---
 
-## 2. Choosing the Engine (Mermaid vs draw.io)
+## 2. Choosing the Engine (Mermaid vs draw.io vs JSON SVG vs CSS Native)
 
-Select the most suitable engine based on diagram characteristics:
+Select the most suitable engine based on diagram characteristics.
+The full decision table lives in `references/diagram-patterns.md` §3 — the summary below must stay consistent with it:
 
 | Engine | Best For | Pros |
 |---|---|---|
 | **Mermaid** | Standard flowcharts, API sequence diagrams, 3-tier architectures, simple state machines | Fast code generation, minimal token overhead, version-controllable text DSL |
-| **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
-| **JSON SVG** | Pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels | Deterministic slide-safe geometry and structured validation |
-| **CSS Native** | Timelines, steps, 2-axis matrices, checklists (text-only, ≤5 items) | 100% theme match, no images needed |
+| **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems, fixed-precision layouts | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
+| **JSON SVG** | Numeric data visuals: pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels | Deterministic slide-safe geometry and structured validation |
+| **CSS Native** | Text-only patterns with ≤5 items: timelines, steps, 2-axis matrices, checklists | 100% theme match, no images needed |
 
-Decision tree: simple shape? → numeric data? → JSON SVG : items≤5? → CSS Native : JSON SVG. Complex shape? → fixed layout? → draw.io : Mermaid.
-Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline → CSS Native; complex arch → draw.io; state machine → Mermaid/draw.io.
+Decision tree (apply top-down):
+
+1. **Numeric data to visualize?** (shares, counts, conversions) → **JSON SVG**
+2. **Text-only and ≤5 items?** (steps, milestones, 2-axis matrix, checklist) → **CSS Native** (`steps`+`arrows`, `timeline`, `grid-quadrant`+`axes`)
+3. **Fixed-precision layout required?** (VPC/subnets, swimlanes, exact coordinates) → **draw.io**
+4. **Otherwise** (flows, sequences, state machines, simple architecture) → **Mermaid**
+
+Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline (≤5 items) → CSS Native; complex arch → draw.io; state machine → Mermaid.
 
 ---
 
@@ -41,10 +48,11 @@ Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline → CSS Native; 
 
 ### Step 1: Identify Context & Constraints
 1. **Target Slide Theme**: Identify the theme (`azure-clarity`, `crimson-clarity`, `prism-edge`, `nebula-glass`, `warm-sunnyday`, `slate-minimal`).
-2. **Slide Layout**:
+2. **Slide Layout** (canonical values: `scripts/diagrams/layout_spec.py`):
    - `full`: Full-width diagram (`max 1120px × 460px`, aspect ratio ~2.3:1)
    - `col2`: 2-column layout (`max 520px × 460px`, aspect ratio ~1.15:1)
    - `asym`: Split asymmetric layout (`max 710px × 460px`, aspect ratio ~1.55:1)
+   - `col3`: 3-column layout (`max 340px × 460px`, aspect ratio ~0.75:1)
 
 ### Step 2: Generate the Diagram File
 
@@ -65,7 +73,7 @@ python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/dr
 python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
 ```
 
-JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, and `funnel`; `theme`, `layout`, `width`, and `height` are optional.
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, and `funnel` (registry: `scripts/diagrams/diagram_models.py::DIAGRAM_TYPES`, enforced by `tests/test_diagram_registry.py`); `theme`, `layout`, `width`, and `height` are optional. To add a new type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
 
 Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) / `grid-quadrant` (+ `axes`) slide classes instead.
 
@@ -111,6 +119,15 @@ python scripts/diagrams/validate-slide-diagram.py slides/<deck-name>/assets/my-d
 
 ![width:1050px center](./assets/flow.svg)
 ```
+
+Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed the `CANVAS_MAX` gate enforced by `marp-lint.py`):
+
+| Layout | Example `width:` | Hard max |
+|---|---|---|
+| Full slide | `width:1050px` | 1120px |
+| 2-column (`cols-2`, `split-2`) | `width:500px` | 520px |
+| Asymmetric (`split-asym`, `split-asym-reverse`) | `width:680px` | 710px |
+| 3-column (`cols-3`, `split-3`) | `width:320px` | 340px |
 
 #### Pattern 2: 2-Column (Diagram + Key Points)
 ```markdown

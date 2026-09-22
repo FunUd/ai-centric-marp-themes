@@ -2,6 +2,10 @@
 
 本カタログは、スライド作成時に即座に利用できるプリセットテンプレートの一覧と、それぞれの特徴・適用シーンをまとめたものです。
 
+> 保守: 本カタログ・`README.md` の Available Templates 表・ディスク上のテンプレートは
+> `python scripts/diagrams/check-catalog-sync.py` で同期検証される。新規追加時は
+> `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md` の手順に従うこと。
+
 ---
 
 ## 1. Mermaid テンプレート (`scripts/diagrams/templates/mermaid/`)
@@ -23,7 +27,7 @@
 | `system-architecture.drawio` | Full (全幅) | クライアント層、API層、データ層を上下に配置したスライド専用3層システム構成図。 | ○ (`hediet.vscode-drawio`) |
 | `cloud-infrastructure.drawio` | Full (全幅) | クラウドVPC、DMZ/パブリックサブネット、プライベートコンテナクラスタ、RDS/Redisを網羅したインフラ図。 | ○ (`hediet.vscode-drawio`) |
 
-## 3. JSON SVG テンプレート (`scripts/diagrams/templates/`)
+## 4. JSON SVG テンプレート (`scripts/diagrams/templates/`)
 
 | ファイル名 | タイプ | 推奨レイアウト | 用途・説明 |
 |---|---|---|---|

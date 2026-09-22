@@ -331,18 +331,20 @@ ai-centric-marp-themes/
 │   │   ├── warm-sunnyday-sample.md
 │   │   ├── slate-minimal-sample.md
 │   │   └── assets/
-│   └── diagram-demo/
-│       ├── diagram-demo.md            # Diagram system demo deck
-│       └── assets/
-│           └── diagrams/              # Generated SVG diagrams
 ├── scripts/
 │   ├── sync-skills.py                 # Setup tool for AI agent skills
 │   └── diagrams/
 │       ├── render-slide-diagram.py    # Mermaid / draw.io → themed SVG
 │       ├── validate-slide-diagram.py  # Canvas constraint validator
+│       ├── layout_spec.py             # Canonical layout geometry (single source of truth)
+│       ├── check-catalog-sync.py      # Template registry consistency check
+│       ├── ADD_NEW_DIAGRAM_TYPE.md    # Procedure for adding JSON diagram types
 │       ├── templates/
 │       │   ├── mermaid/               # .mmd templates (5 patterns)
-│       │   └── drawio/                # .drawio templates (3 patterns)
+│       │   ├── drawio/                # .drawio templates (2 patterns)
+│       │   ├── charts/                # JSON chart templates (pie/donut)
+│       │   ├── concepts/              # JSON concept templates (pyramid/cycle/radial/funnel)
+│       │   └── organization/          # JSON org-chart template
 │       └── theme-styles/              # Per-theme color palette JSON (6 themes)
 ├── skills/
 │   ├── marp-diagram-creator/          # Diagram creation skill
@@ -380,7 +382,6 @@ ai-centric-marp-themes/
 
 - **`themes/`** — Theme CSS files ready to use with Marp.
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme.
-- **`slides/diagram-demo/`** — Demo deck for the diagram creation system (Mermaid & draw.io). See [Diagram Creation](#diagram-creation) above.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
 - **`skills/marp-slide-creator/scripts/`** — Scripting toolkit for high-quality Marp generation:
   - `marp-lint.py`: Catches structural mistakes (missing class directives, centered lists, diagram embedding errors) *before* rendering.
@@ -390,8 +391,12 @@ ai-centric-marp-themes/
 - **`scripts/diagrams/`** — Diagram generation engine for slide-optimized SVGs:
   - `render-slide-diagram.py`: Renders Mermaid, draw.io, or structured JSON sources into theme-aware SVGs, with automatic canvas validation.
   - `validate-slide-diagram.py`: Validates SVG/draw.io files against slide canvas and JSON geometry constraints.
+  - `layout_spec.py`: Canonical layout geometry (`full`/`col2`/`asym`/`col3`) shared by the renderer, validator, and linter.
+  - `check-catalog-sync.py`: Verifies templates on disk stay in sync with the README table and `template-catalog.md`.
+  - `ADD_NEW_DIAGRAM_TYPE.md`: Step-by-step procedure for adding a new JSON diagram type.
   - `templates/mermaid/`: Five ready-to-use Mermaid (`.mmd`) diagram templates.
-  - `templates/drawio/`: Three ready-to-use draw.io (`.drawio`) diagram templates.
+  - `templates/drawio/`: Two ready-to-use draw.io (`.drawio`) diagram templates.
+  - `templates/charts|concepts|organization/`: Seven ready-to-use JSON diagram templates.
   - `theme-styles/`: Per-theme color palette definitions (JSON) for all 6 themes.
 
 ### Skill Routing
@@ -470,13 +475,14 @@ python scripts/diagrams/render-slide-diagram.py `
 ![width:1050px center](assets/diagrams/system-arch.svg)
 ```
 
-Safe embedding widths by layout:
+Safe embedding widths by layout (canonical values: `scripts/diagrams/layout_spec.py`):
 
-| Layout | `_class` directive | Max safe width |
-|---|---|---|
-| Full slide | (default) | `width:1050px` |
-| 2-column | `cols-2`, `split-2`, `split-asym` | `width:500px` |
-| 3-column | `cols-3`, `split-3` | `width:340px` |
+| Layout | `_class` directive | Recommended `width:` | Max safe width |
+|---|---|---|---|
+| Full slide | (default) | `width:1050px` | 1120px |
+| 2-column | `cols-2`, `split-2` | `width:500px` | 520px |
+| Asymmetric split | `split-asym`, `split-asym-reverse`, `split-glass` | `width:680px` | 710px |
+| 3-column | `cols-3`, `split-3` | `width:320px` | 340px |
 
 ### Lint Integration
 
@@ -502,9 +508,10 @@ Safe embedding widths by layout:
 | `concepts/team-pyramid.json` | JSON SVG | Layered pyramid |
 | `concepts/improvement-cycle.json` | JSON SVG | Circular improvement process |
 | `concepts/team-radial.json` | JSON SVG | Radial concept map |
+| `concepts/sales-funnel.json` | JSON SVG | Sales/conversion funnel |
 | `organization/team-org-chart.json` | JSON SVG | Hierarchical organization chart |
 
-See `slides/diagram-demo/diagram-demo.md` for a live demo of all templates rendered with the Azure Clarity theme.
+> Template registry is verified by `python scripts/diagrams/check-catalog-sync.py` (templates on disk vs. this table vs. `template-catalog.md`). See [Diagram Creation](#diagram-creation) templates in `scripts/diagrams/templates/` for live sources.
 
 ---
 

@@ -22,13 +22,12 @@ from pathlib import Path
 
 from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, segment_intersects_rect, snap_edge_points
 
-# Layout canvas constraints (pixels)
-LAYOUT_LIMITS = {
-    "full": {"max_w": 1140, "max_h": 470, "min_aspect": 1.2, "max_aspect": 4.5},
-    "col2": {"max_w": 540, "max_h": 470, "min_aspect": 0.6, "max_aspect": 2.2},
-    "asym": {"max_w": 730, "max_h": 470, "min_aspect": 0.9, "max_aspect": 3.0},
-    "col3": {"max_w": 360, "max_h": 470, "min_aspect": 0.4, "max_aspect": 1.8},
-}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from layout_spec import VALIDATOR_LIMITS as _VALIDATOR_LIMITS
+
+# Layout canvas constraints (pixels). Canonical values live in layout_spec.py;
+# the validator keeps ~20px slack above the documented CANVAS_MAX.
+LAYOUT_LIMITS = {key: dict(value) for key, value in _VALIDATOR_LIMITS.items()}
 
 
 def _parse_dimension(val: str | None) -> float | None:
