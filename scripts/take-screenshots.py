@@ -371,7 +371,17 @@ Examples:
         help="Print the total slide count for a file and exit",
     )
 
-    return parser, parser.parse_args()
+    args = parser.parse_args()
+
+    # argparse fills the leading optional `theme` positional before
+    # `slide_numbers`, so with --slide the first trailing token would be
+    # swallowed (e.g. `--slide deck.md all` -> theme="all", numbers=[]).
+    # In slide mode theme is meaningless: pull that token back.
+    if args.slide and args.theme is not None:
+        args.slide_numbers.insert(0, args.theme)
+        args.theme = None
+
+    return parser, args
 
 
 if __name__ == "__main__":
