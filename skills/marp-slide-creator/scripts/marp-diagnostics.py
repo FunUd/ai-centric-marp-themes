@@ -124,6 +124,12 @@ def print_summary(metrics: list[dict[str, Any]], html_path: Path, json_path: Pat
 
 
 def main() -> int:
+    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass  # stream replaced by a test harness or not reconfigurable
     parser = argparse.ArgumentParser(
         description="Export a Marp deck to HTML and run DOM-based diagnostics."
     )

@@ -965,6 +965,10 @@ section.key-message blockquote {
 
 section.key-message blockquote p {
   margin: 0;
+  /* The quote itself is 40px/accent; without inheriting, `section.key-message p`
+     shrinks the inner p to 22px muted gray and kills the impact of the quote. */
+  font-size: inherit;
+  color: inherit;
 }
 
 section.key-message p {

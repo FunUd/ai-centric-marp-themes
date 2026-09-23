@@ -73,13 +73,13 @@ python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/dr
 python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
 ```
 
-JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `line`, and `stacked-bar` (registry: `scripts/diagrams/diagram_models.py::DIAGRAM_TYPES`, enforced by `tests/test_diagram_registry.py`); `theme`, `layout`, `width`, and `height` are optional. To add a new type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `line`, and `stacked-bar` (registry: `scripts/diagrams/diagram_models.py::DIAGRAM_TYPES`, enforced by `tests/test_diagram_registry.py`); `theme`, `layout`, `width`, `height`, and `aspect` are optional. `aspect` (canvas width/height ratio, e.g. `"aspect": 2.4`) derives `height` from `width` — never combine it with an explicit `height`. Every engine also accepts `--aspect 2.4` (or `--aspect 16:9`), and Mermaid sources may declare `%% aspect: 16:9`; for Mermaid/draw.io the finished canvas is padded to the target ratio (content centered, never scaled) as long as it fits the layout's feasible range. To add a new type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
 
 Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) / `grid-quadrant` (+ `axes`) slide classes instead.
 
 #### JSON SVG quality rules
 
-- Treat `full`, `col2`, `asym`, and `col3` as geometry profiles, not only output widths. Let the renderer choose the default dimensions unless the diagram has a documented custom aspect ratio.
+- Treat `full`, `col2`, `asym`, and `col3` as geometry profiles, not only output widths. Let the renderer choose the default dimensions unless the diagram has a documented custom aspect ratio (set it via JSON `"aspect"`, `--aspect 2.4|16:9`, or a Mermaid `%% aspect:` directive — see `references/diagram-patterns.md` §1).
 - Do not place seven detailed diagrams into one presentation slide. Use a catalog slide only for comparison; use separate slides when labels, timelines, hierarchy, or child nodes must be readable.
 - Keep one visual title: either use the JSON `title` or the surrounding slide/card heading. Do not duplicate long titles inside and outside the SVG.
 - Prefer short labels. The renderer wraps long labels, but wrapping is a rescue mechanism, not a substitute for concise content. Use Japanese labels of roughly 6-12 characters per node and move explanations into `description` or presenter notes.

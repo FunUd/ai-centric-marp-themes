@@ -902,6 +902,14 @@ section.key-message p {
   max-width: 800px;
 }
 
+section.key-message blockquote p {
+  margin: 0;
+  /* Keep `> quote` statements on key-message slides at the blockquote's own
+     26px serif size; `section.key-message p` would otherwise shrink them. */
+  font-size: inherit;
+  color: inherit;
+}
+
 /* ============================================================
    Density
    ============================================================ */

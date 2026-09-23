@@ -82,10 +82,19 @@ def _svg_segments(elem: ET.Element) -> list[tuple[tuple[float, float], tuple[flo
     return list(zip(points, points[1:]))
 
 
+# Sub-pixel tolerance for overlap checks. SVG attributes are rounded to two
+# decimals on emit (`svg_diagram_renderer._num`), so edge-sharing rectangles —
+# e.g. stacked-bar segments — can appear to overlap by up to ~0.01px purely
+# from rounding. Anything at or below this epsilon is not a visual defect.
+OVERLAP_EPSILON = 0.05
+
+
 def _rects_overlap(first: tuple[float, float, float, float], second: tuple[float, float, float, float]) -> bool:
     fx, fy, fw, fh = first
     sx, sy, sw, sh = second
-    return fx < sx + sw and sx < fx + fw and fy < sy + sh and sy < fy + fh
+    overlap_x = min(fx + fw, sx + sw) - max(fx, sx)
+    overlap_y = min(fy + fh, sy + sh) - max(fy, sy)
+    return overlap_x > OVERLAP_EPSILON and overlap_y > OVERLAP_EPSILON
 
 
 def _point_in_rect(point: tuple[float, float], rect: tuple[float, float, float, float]) -> bool:
@@ -142,14 +151,25 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
 
         # Aspect ratio checks
         if aspect < limits["min_aspect"]:
+            suggestions = (
+                f" Re-render with `--aspect {limits['min_aspect']}` (or a JSON `\"aspect\": "
+                f"{limits['min_aspect']}` field / Mermaid `%% aspect: {limits['min_aspect']}` "
+                f"directive) to pad the canvas to a slide-safe ratio."
+            )
             warnings.append(
                 f"Diagram is too tall/narrow (aspect ratio {aspect:.2f} < {limits['min_aspect']}). "
                 f"When placed on a slide, it will be heavily shrunk vertically, making fonts unreadable."
+                + suggestions
             )
         elif aspect > limits["max_aspect"]:
+            suggestions = (
+                f" Re-render with `--aspect {limits['max_aspect']}` (or a JSON `\"aspect\": "
+                f"{limits['max_aspect']}` field / Mermaid `%% aspect: {limits['max_aspect']}` "
+                f"directive) to pad the canvas to a slide-safe ratio."
+            )
             warnings.append(
                 f"Diagram is extremely wide/short (aspect ratio {aspect:.2f} > {limits['max_aspect']}). "
-                f"Consider using multi-row layout or splitting into columns."
+                f"Consider using multi-row layout or splitting into columns." + suggestions
             )
 
     # 2. JSON renderer geometry checks. Elements without diagram roles are ignored.
@@ -351,6 +371,12 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
 
 
 def main():
+    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass  # stream replaced by a test harness or not reconfigurable
     parser = argparse.ArgumentParser(description="Validate diagram file against slide constraints.")
     parser.add_argument("path", type=Path, help="Path to .svg or .drawio file")
     parser.add_argument(

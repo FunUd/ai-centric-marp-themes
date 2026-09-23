@@ -514,6 +514,12 @@ def lint_slide(slide: SlideInfo, structural_only: bool = False) -> list[LintIssu
 
 
 def main() -> int:
+    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass  # stream replaced by a test harness or not reconfigurable
     parser = argparse.ArgumentParser(
         description="Pre-render structural and readability linter for Marp Markdown files."
     )

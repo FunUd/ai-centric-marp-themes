@@ -358,13 +358,32 @@ def _pyramid(data: dict, ctx: dict) -> list[str]:
         mid = (y1 + y2) / 2
         mid_w = (w1 + w2) / 2
         label_color = best_text_on(fill, "#FFFFFF")
-        show_desc_inside = bool(description) and step >= 56 and _fits_inside(description, caption_size, mid_w)
+        # Descriptions use tighter padding than labels: a caption that is only
+        # slightly wider than the tier should still render inside the tier.
+        show_desc_inside = bool(description) and step >= 56 and _fits_inside(description, caption_size, mid_w, padding=16.0)
+
+        def outside_description(y: float) -> None:
+            """Leader line + description text placed to the right of the tier."""
+            edge_x = center + mid_w / 2
+            available = width - (edge_x + 14) - 6
+            wrap_chars = max(4, int(available // max(caption_size, 1.0)))
+            elements.append(svg_line(edge_x - 2, y, edge_x + 10, y, stroke=ctx["line"],
+                                     role="connector", **{"stroke-width": 1.2}))
+            elements.append(_text(edge_x + 14, y + 1, description, ctx, "captionSize", fill=ctx["muted"],
+                                  max_chars=wrap_chars, **{"dominant-baseline": "middle"}))
+
         if _fits_inside(label, label_size, mid_w):
             if show_desc_inside:
                 elements.append(_text(center, mid - 6, label, ctx, "labelSize", fill=label_color,
                                       max_chars=10, **{"text-anchor": "middle", "font-weight": "bold", "dominant-baseline": "middle"}))
                 elements.append(_text(center, mid + 14, description, ctx, "captionSize", fill=label_color,
                                       max_chars=14, **{"text-anchor": "middle", "dominant-baseline": "middle", "opacity": 0.85}))
+            elif description:
+                # Label fits but the description does not: keep the label inside
+                # and move the description outside instead of dropping it.
+                elements.append(_text(center, mid, label, ctx, "labelSize", fill=label_color,
+                                      max_chars=10, **{"text-anchor": "middle", "font-weight": "bold", "dominant-baseline": "middle"}))
+                outside_description(mid)
             else:
                 elements.append(_text(center, mid, label, ctx, "labelSize", fill=label_color,
                                       max_chars=10, **{"text-anchor": "middle", "font-weight": "bold", "dominant-baseline": "middle"}))

@@ -12,6 +12,7 @@ from layout_spec import (
     RENDER_DEFAULT_WIDTH as _RENDER_WIDTHS,
     TYPE_LAYOUT_HEIGHTS as _TYPE_LAYOUT_HEIGHTS,
 )
+from svg_aspect import parse_aspect
 
 
 LAYOUTS = set(_LAYOUT_ORDER)
@@ -204,8 +205,13 @@ def parse_diagram_data(data: dict[str, Any]) -> dict[str, Any]:
     if layout not in LAYOUTS:
         raise ValueError("layout must be one of: " + ", ".join(sorted(LAYOUTS)))
     width = _finite_number(data.get("width", LAYOUT_WIDTHS[layout]), "width")
-    default_height = TYPE_LAYOUT_HEIGHTS.get((kind, layout), LAYOUT_HEIGHTS[layout])
-    height = _finite_number(data.get("height", default_height), "height")
+    if "aspect" in data:
+        if data.get("height") is not None:
+            raise ValueError("aspect and height are mutually exclusive; specify only one")
+        height = width / parse_aspect(data["aspect"])
+    else:
+        default_height = TYPE_LAYOUT_HEIGHTS.get((kind, layout), LAYOUT_HEIGHTS[layout])
+        height = _finite_number(data.get("height", default_height), "height")
     if width <= 0 or height <= 0:
         raise ValueError("width and height must be positive")
     normalized = dict(data)

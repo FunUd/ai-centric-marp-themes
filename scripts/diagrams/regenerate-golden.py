@@ -40,7 +40,7 @@ def main() -> int:
                 sys.executable, str(SCRIPTS / "render-slide-diagram.py"),
                 "-i", str(src), "-o", str(dest), "--theme", theme, "--layout", "full",
             ]
-            res = subprocess.run(cmd, capture_output=True, text=True)
+            res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
             status = "OK" if res.returncode == 0 else "FAIL"
             if res.returncode != 0:
                 failures += 1

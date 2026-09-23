@@ -51,3 +51,26 @@ def test_pyramid_has_apex_and_progressive_layer_widths() -> None:
     # Straight sides: left/right edge slopes are consistent across tiers.
     left = [low for low, _ in widths]
     assert left[0] > left[1] > left[2]
+
+
+def test_pyramid_descriptions_are_never_silently_dropped() -> None:
+    """Every level description must be rendered somewhere in the output.
+
+    Regression: a description slightly too wide for its tier (e.g. 8 CJK
+    characters vs a 95.8px usable width) used to fall through the
+    label-fits branch and disappear entirely.
+    """
+    descriptions = ["AIが示唆を提示", "需要と解約を予測", "レポート自動生成", "データを一元集約", "品質と定義を整備"]
+    levels = [
+        {"label": "意思決定", "description": descriptions[0]},
+        {"label": "予測", "description": descriptions[1]},
+        {"label": "自動化", "description": descriptions[2]},
+        {"label": "統合", "description": descriptions[3]},
+        {"label": "基盤", "description": descriptions[4]},
+    ]
+    data = models.parse_diagram_data({"type": "pyramid", "levels": levels})
+    ctx = design_tokens.theme_context({"colors": {}})
+    svg = "".join(renderer._pyramid(data, ctx))
+
+    for description in descriptions:
+        assert description in svg, f"description missing from rendered pyramid: {description}"

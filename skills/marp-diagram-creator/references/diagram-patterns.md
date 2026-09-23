@@ -23,6 +23,13 @@ placement area is standardized as follows.
 > - Placing tall/portrait diagrams (height far exceeding width) on a Full Slide (they get shrunk to 460px height and text becomes unreadably small).
 > - Stuffing long text (25+ chars) into a single node (breaks out of borders or collapses via extreme auto-wrapping).
 
+> ※ **Canvas ratio control**: pin the SVG canvas ratio with `--aspect 2.4` (or `16:9`) on
+> `render-slide-diagram.py`, a JSON source field `"aspect": 2.4` (derives `height` from `width`;
+> never combine with `height`), or a Mermaid `%% aspect: 16:9` comment directive. JSON diagrams
+> reflow to the ratio; Mermaid/draw.io canvases are *padded* — content is centered, never scaled
+> or cropped — and padding beyond the layout's hard limits fails with the feasible range.
+> `validate-slide-diagram.py` warns when the final ratio falls outside the recommended band.
+
 ---
 
 ## 2. Slide Placement Patterns and Syntax

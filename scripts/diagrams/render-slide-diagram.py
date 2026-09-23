@@ -10,6 +10,11 @@ Usage:
     python scripts/diagrams/render-slide-diagram.py -i input.mmd -o output.svg --theme azure-clarity --layout full
     python scripts/diagrams/render-slide-diagram.py -i input.drawio -o output.svg --theme nebula-glass --layout full
     python scripts/diagrams/render-slide-diagram.py --code "flowchart LR; A-->B" -o output.svg --theme prism-edge
+    python scripts/diagrams/render-slide-diagram.py -i input.mmd -o output.svg --aspect 16:9
+
+Aspect control: ``--aspect 2.4|16:9`` (CLI), ``{"aspect": 2.4}`` (JSON source),
+or a ``%% aspect: 16:9`` comment directive (Mermaid). JSON reflows; Mermaid/draw.io
+canvases are padded — content is centered, never scaled or cropped.
 
 Exit codes:
     0  Success
@@ -32,6 +37,7 @@ from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, rout
 
 from design_tokens import best_text_on, drawio_rect_radius, load_design_tokens
 from diagram_models import parse_diagram_data
+from svg_aspect import extract_mermaid_aspect, pad_viewbox, parse_aspect
 from svg_diagram_renderer import render_diagram
 from svg_filters import build_filter_defs
 from svg_theme_postprocessor import postprocess_svg
@@ -464,8 +470,12 @@ def render_json_diagram(
     output_path: Path,
     theme_data: dict,
     layout: str,
+    aspect: float | None = None,
 ) -> bool:
-    """Load and render a JSON diagram, reporting syntax location on failure."""
+    """Load and render a JSON diagram, reporting syntax location on failure.
+
+    ``aspect`` (CLI ``--aspect``) overrides the source's ``aspect``/``height``.
+    """
     try:
         with input_path.open("r", encoding="utf-8") as file:
             data = json.load(file)
@@ -475,10 +485,19 @@ def render_json_diagram(
     except OSError as error:
         print(f"[ERROR] Failed to read JSON file {input_path}: {error}", file=sys.stderr)
         return False
+    if aspect is not None and isinstance(data, dict):
+        data.pop("height", None)
+        data["aspect"] = aspect
     return render_json_diagram_from_data(data, output_path, theme_data, layout)
 
 
 def main():
+    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass  # stream replaced by a test harness or not reconfigurable
     parser = argparse.ArgumentParser(description="Render Mermaid or draw.io diagram to slide-optimized SVG.")
     parser.add_argument("-i", "--input", type=Path, help="Input .mmd or .drawio file")
     parser.add_argument("--code", type=str, help="Direct Mermaid diagram string")
@@ -497,13 +516,31 @@ def main():
     )
     parser.add_argument("--no-validate", action="store_true", help="Skip post-render validation")
     parser.add_argument("--no-postprocess", action="store_true", help="Skip SVG theme post-processing")
+    parser.add_argument(
+        "--aspect",
+        type=str,
+        default=None,
+        help="Target canvas ratio as decimal (2.4) or W:H (16:9). JSON sources reflow "
+             "(height = width / aspect); Mermaid/draw.io canvases are padded — content "
+             "is centered, never scaled. Overrides source aspect/height.",
+    )
 
     args = parser.parse_args()
     theme_data = load_theme_style(args.theme)
     postprocess = not args.no_postprocess
 
+    cli_aspect: float | None = None
+    if args.aspect:
+        try:
+            cli_aspect = parse_aspect(args.aspect)
+        except ValueError as error:
+            print(f"[ERROR] {error}", file=sys.stderr)
+            sys.exit(1)
+
     success = False
+    pad_aspect: float | None = None  # applied by padding the finished Mermaid/draw.io SVG
     if args.code:
+        pad_aspect = _resolve_aspect(cli_aspect, args.code)
         success = render_mermaid(args.code, args.output, theme_data, args.layout, postprocess)
     elif args.input:
         if not args.input.exists():
@@ -513,11 +550,13 @@ def main():
         if suffix in (".mmd", ".mermaid"):
             with open(args.input, "r", encoding="utf-8") as f:
                 content = f.read()
+            pad_aspect = _resolve_aspect(cli_aspect, content)
             success = render_mermaid(content, args.output, theme_data, args.layout, postprocess)
         elif suffix in (".drawio", ".xml"):
+            pad_aspect = cli_aspect
             success = render_drawio(args.input, args.output, theme_data, args.layout, postprocess)
         elif suffix == ".json":
-            success = render_json_diagram(args.input, args.output, theme_data, args.layout)
+            success = render_json_diagram(args.input, args.output, theme_data, args.layout, aspect=cli_aspect)
         else:
             print(f"[ERROR] Unknown input format '{suffix}'. Expected .mmd, .drawio, or .json", file=sys.stderr)
             sys.exit(1)
@@ -529,17 +568,51 @@ def main():
         print("[ERROR] Rendering failed", file=sys.stderr)
         sys.exit(1)
 
+    if pad_aspect is not None and args.output.exists():
+        _pad_output_aspect(args.output, pad_aspect, args.layout)
+
     # Automated Validation
     if not args.no_validate and VALIDATOR_PATH.exists():
         print("Running automated layout validation...")
         val_res = subprocess.run(
             [sys.executable, str(VALIDATOR_PATH), str(args.output), "--layout", args.layout],
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         if val_res.returncode != 0:
-            print("[WARN] Diagram passed rendering but raised layout validation warnings/errors.")
+            print(
+                "[ERROR] Rendered SVG failed layout validation "
+                "(see validator output above); not reporting success.",
+                file=sys.stderr,
+            )
+            sys.exit(val_res.returncode)
 
     print(f"[SUCCESS] Slide diagram ready: {args.output}")
+
+
+def _resolve_aspect(cli_aspect: float | None, source_text: str) -> float | None:
+    """CLI --aspect wins; otherwise read an optional ``%% aspect:`` directive."""
+    if cli_aspect is not None:
+        return cli_aspect
+    try:
+        return extract_mermaid_aspect(source_text)
+    except ValueError as error:
+        print(f"[ERROR] {error}", file=sys.stderr)
+        sys.exit(1)
+
+
+def _pad_output_aspect(output_path: Path, aspect: float, layout: str) -> None:
+    """Pad the finished SVG canvas to ``aspect``; fail loudly if unreachable."""
+    try:
+        original = output_path.read_text(encoding="utf-8")
+        padded = pad_viewbox(original, aspect, layout)
+    except (OSError, ValueError) as error:
+        print(f"[ERROR] Cannot pad canvas to aspect {aspect:g}: {error}", file=sys.stderr)
+        sys.exit(1)
+    if padded != original:
+        output_path.write_text(padded, encoding="utf-8")
+        print(f"Padded canvas to aspect {aspect:g} (layout '{layout}')")
 
 
 if __name__ == "__main__":
