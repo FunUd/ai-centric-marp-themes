@@ -20,10 +20,10 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, segment_intersects_rect, snap_edge_points
-
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from layout_spec import VALIDATOR_LIMITS as _VALIDATOR_LIMITS
+from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, segment_intersects_rect, snap_edge_points  # noqa: E402
+
+from layout_spec import VALIDATOR_LIMITS as _VALIDATOR_LIMITS  # noqa: E402
 
 # Layout canvas constraints (pixels). Canonical values live in layout_spec.py;
 # the validator keeps ~20px slack above the documented CANVAS_MAX.
@@ -191,7 +191,10 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
                 f"Consider using multi-row layout or splitting into columns." + suggestions
             )
 
-    # 2. JSON renderer geometry checks. Elements without diagram roles are ignored.
+    # 2. JSON renderer geometry checks. Elements without diagram roles are ignored:
+    # Mermaid / draw.io-converted SVGs carry no data-diagram-role, so overlap and
+    # connector-crossing checks cannot run reliably there. Those engines are gated
+    # by canvas bounds, viewBox/aspect, and the text checks below instead.
     node_rects: list[tuple[float, float, float, float]] = []
     connectors: list[tuple[tuple[float, float], tuple[float, float]]] = []
     if w is not None and h is not None and w > 0 and h > 0:
@@ -319,22 +322,18 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
             if cid == "1":
                 has_id1 = True
 
-            # Geometry boundary check for top-level shapes
-            if cell.get("parent") == "1" and cell.get("vertex") == "1":
-                geom = cell.find("mxGeometry")
-                if geom is not None:
-                    x = _parse_dimension(geom.get("x")) or 0
-                    y = _parse_dimension(geom.get("y")) or 0
-                    w = _parse_dimension(geom.get("width")) or 0
-                    h = _parse_dimension(geom.get("height")) or 0
-                    if x + w > limits["max_w"]:
-                        errors.append(
-                            f"Cell id='{cid}' bounds ({x+w:.0f}px) exceed canvas width ({limits['max_w']}px)"
-                        )
-                    if y + h > limits["max_h"]:
-                        errors.append(
-                            f"Cell id='{cid}' bounds ({y+h:.0f}px) exceed canvas height ({limits['max_h']}px)"
-                        )
+            # Geometry boundary check: use absolute coords so nested swimlane
+            # children cannot overflow uncaught (relative x/y alone hides it).
+            if cell.get("vertex") == "1":
+                x, y, w, h = get_absolute_geom(cell)
+                if x + w > limits["max_w"]:
+                    errors.append(
+                        f"Cell id='{cid}' bounds ({x+w:.0f}px) exceed canvas width ({limits['max_w']}px)"
+                    )
+                if y + h > limits["max_h"]:
+                    errors.append(
+                        f"Cell id='{cid}' bounds ({y+h:.0f}px) exceed canvas height ({limits['max_h']}px)"
+                    )
 
         vertices = {
             cid: get_absolute_geom(cell)

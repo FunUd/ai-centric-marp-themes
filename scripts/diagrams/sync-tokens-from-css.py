@@ -42,12 +42,12 @@ THEME_FILES = {
 
 
 def parse_root_vars(css_text: str) -> dict[str, str]:
+    # Strip comments first: a `}` inside a comment would otherwise truncate :root.
+    css_text = re.sub(r"/\*.*?\*/", "", css_text, flags=re.DOTALL)
     match = re.search(r":root\s*\{(.*?)\}", css_text, re.DOTALL)
     if not match:
         return {}
     block = match.group(1)
-    # Strip comments to avoid capturing example vars.
-    block = re.sub(r"/\*.*?\*/", "", block, flags=re.DOTALL)
     out: dict[str, str] = {}
     for name, value in re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", block):
         out[name.strip()] = value.strip()
@@ -55,13 +55,19 @@ def parse_root_vars(css_text: str) -> dict[str, str]:
 
 
 def resolve_value(value: str | None, vars_: dict[str, str]) -> str | None:
-    """Resolve var(--x) references; return None for unresolvable values."""
+    """Resolve var(--x) / var(--x, fallback) references; None when unresolvable."""
     if not value:
         return None
     value = value.strip()
-    match = re.match(r"var\(\s*(--[\w-]+)\s*\)", value)
+    match = re.match(r"var\(\s*(--[\w-]+)\s*(?:,\s*(.+?))?\s*\)$", value)
     if match:
-        return resolve_value(vars_.get(match.group(1)), vars_)
+        ref, fallback = match.group(1), match.group(2)
+        resolved = resolve_value(vars_.get(ref), vars_)
+        if resolved:
+            return resolved
+        if fallback:
+            return resolve_value(fallback.strip(), vars_)
+        return None
     if re.match(r"^#[0-9a-fA-F]{3,8}$", value) or value.startswith("rgba(") or value.startswith("rgb("):
         return value
     return None
@@ -108,7 +114,8 @@ def build_updates(theme: str, vars_: dict[str, str], css_text: str, existing: di
     def keep(key: str, css_value: str | None) -> str:
         # Only adopt CSS values that resolve to concrete colors; otherwise
         # keep the curated JSON value (e.g. Nebula derived palette).
-        if css_value and (theme not in NEBULA_KEEP or key not in NEBULA_KEEP):
+        # For nebula-glass the NEBULA_KEEP keys are curated by design.
+        if css_value and not (theme == "nebula-glass" and key in NEBULA_KEEP):
             return css_value
         return existing_colors.get(key, css_value or "")
 
@@ -195,10 +202,13 @@ def drawio_updates(colors: dict, node_radius: float) -> dict[str, str]:
     match the palette written in the same pass.
     """
     rounded = 1 if node_radius else 0
+    # `line` is an optional future token; today build_updates() never emits it,
+    # so this falls back to `primary` by design.
+    line = colors.get("line", colors["primary"])
     return {
         "primaryNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={colors['primaryPale']};strokeColor={colors['primary']};fontColor={colors['text']};strokeWidth=1.5;",
         "accentNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={colors['primary']};strokeColor={colors['primaryDark']};fontColor=#FFFFFF;fontStyle=1;",
-        "edgeStyle": f"edgeStyle=orthogonalEdgeStyle;html=1;strokeColor={colors['line'] if 'line' in colors else colors['primary']};strokeWidth=1.5;endArrow=block;endFill=1;",
+        "edgeStyle": f"edgeStyle=orthogonalEdgeStyle;html=1;strokeColor={line};strokeWidth=1.5;endArrow=block;endFill=1;",
     }
 
 
@@ -239,12 +249,26 @@ def apply_to(data: dict, updates: dict) -> list[str]:
 
 
 def apply_updates(theme: str, updates: dict) -> tuple[bool, list[str]]:
+    import tempfile
+
     path = STYLES_DIR / f"{theme}.json"
-    data = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise RuntimeError(f"cannot read {path}: {error}") from error
     changes = apply_to(data, updates)
 
     if changes:
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=str(path.parent), delete=False
+            ) as tmp:
+                json.dump(data, tmp, indent=2, ensure_ascii=False)
+                tmp.write("\n")
+                tmp_path = Path(tmp.name)
+            tmp_path.replace(path)
+        except OSError as error:
+            raise RuntimeError(f"cannot write {path}: {error}") from error
     return bool(changes), changes
 
 
@@ -258,10 +282,15 @@ def main() -> int:
     drift: list[str] = []
     for theme in themes:
         css_path = THEMES_DIR / THEME_FILES[theme]
-        css_text = css_path.read_text(encoding="utf-8")
-        vars_ = parse_root_vars(css_text)
         path = STYLES_DIR / f"{theme}.json"
-        existing = json.loads(path.read_text(encoding="utf-8"))
+        try:
+            css_text = css_path.read_text(encoding="utf-8")
+            vars_ = parse_root_vars(css_text)
+            existing = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            print(f"[FAILED] {theme}: cannot read input: {error}", file=sys.stderr)
+            drift.append(theme)
+            continue
         updates = build_updates(theme, vars_, css_text, existing)
         if args.check:
             # Probe a copy with the very same code the write path uses, so the

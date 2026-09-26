@@ -164,7 +164,7 @@ section {
    ============================================================ */
 section h1 {
   color: var(--ws-accent);
-  font-size: 38px;
+  font-size: calc(38px * var(--font-scale));
   font-weight: 700;
   margin: 0 0 24px 0;
   padding-bottom: 12px;
@@ -190,7 +190,8 @@ section h3 {
 }
 
 section h4 {
-  color: var(--ws-primary);
+  /* --ws-primary on light bg fails AA; use the dark accent for small headings. */
+  color: var(--ws-accent);
   font-size: calc(20px * var(--font-scale));
   font-weight: 600;
   margin: 0 0 8px 0;
@@ -209,7 +210,8 @@ section p {
 }
 
 section a {
-  color: var(--ws-primary);
+  /* --ws-primary link text fails AA on light bg; keep the underline light. */
+  color: var(--ws-accent);
   text-decoration: none;
   border-bottom: 1px solid var(--ws-primary-light);
 }
@@ -235,11 +237,11 @@ section ol li {
 }
 
 section ul li::marker {
-  color: var(--ws-primary);
+  color: var(--ws-accent);
 }
 
 section ol li::marker {
-  color: var(--ws-primary);
+  color: var(--ws-accent);
   font-weight: 600;
 }
 
@@ -265,7 +267,9 @@ section table {
 }
 
 section table thead th {
-  background: var(--ws-primary);
+  /* --ws-primary (#FF8C42) with white text is ~2.4:1; use the dark
+     accent so header text keeps WCAG AA contrast. */
+  background: var(--ws-accent);
   color: var(--ws-white);
   padding: 10px 16px;
   text-align: left;
@@ -427,7 +431,7 @@ section img[alt~="shadow"] {
 /* ============================================================
    Header & Footer
    ============================================================ */
-header {
+section header {
   position: absolute;
   top: 16px;
   left: 75px;
@@ -443,7 +447,7 @@ header {
   border-bottom: 1px solid var(--ws-border-light);
 }
 
-footer {
+section footer {
   position: absolute;
   bottom: 16px;
   left: 75px;
@@ -562,6 +566,12 @@ section.cover::after {
   background: radial-gradient(circle, var(--ws-primary-light) 0%, transparent 70%);
   opacity: 0.5;
   z-index: 0;
+}
+
+/* Keep slide text above the decorative circle (same stacking level otherwise). */
+section.cover > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================================================
@@ -703,6 +713,7 @@ section.cols-3 .col {
   padding: 24px;
   border: 1px solid var(--ws-border-light);
   height: 100%;
+  box-sizing: border-box;
   overflow: hidden;
 }
 
@@ -895,7 +906,7 @@ section.timetable table thead th:first-child {
 
 section.timetable table tbody td:first-child {
   font-weight: 600;
-  color: var(--ws-primary);
+  color: var(--ws-accent);
   white-space: nowrap;
 }
 
@@ -1419,15 +1430,18 @@ section .text-accent {
 }
 
 section .text-green {
-  color: var(--ws-success);
+  /* --ws-success (#78C2AD) fails AA as body text; use the dark emerald. */
+  color: #047857;
 }
 
 section .text-orange {
-  color: var(--ws-warning);
+  /* --ws-warning (#FFC074) fails AA as body text; use the dark amber. */
+  color: #92400E;
 }
 
 section .text-red {
-  color: var(--ws-danger);
+  /* --ws-danger (#F38181) fails AA as body text; use the dark red. */
+  color: #B91C1C;
 }
 
 section .text-sub {

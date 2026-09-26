@@ -47,7 +47,12 @@ VALIDATOR_LIMITS = {
 }
 
 # Marp ``_class`` directives mapped to a layout profile.
-# NOTE: ``split-asym`` / ``split-asym-reverse`` are asymmetric (710px), NOT col2.
+# NOTE 1: ``split-asym`` / ``split-asym-reverse`` are asymmetric (710px), NOT col2.
+# NOTE 2: ``split-glass`` is a 50/50 grid (nebula-glass.css: 1fr 1fr) and
+#         ``glass-card-layout`` is a single centered column, so both are budgeted
+#         as col2 -- the narrowest of the three so an over-wide embed is caught.
+#         ``glass-card-layout`` therefore has more room than its budget allows;
+#         that errs toward a false DIAGRAM_OVERFLOW_WIDTH, never a silent overflow.
 CLASS_TO_LAYOUT = {
     "cols-2": "col2",
     "split-2": "col2",

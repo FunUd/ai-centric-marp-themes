@@ -50,19 +50,60 @@ def resolve_default_outputs(markdown_path: Path) -> tuple[Path, Path]:
 
 
 def run_command(command: list[str], env: dict[str, str] | None = None) -> None:
-    subprocess.run(command, check=True, env=env)
+    subprocess.run(
+        command,
+        check=True,
+        env=env,
+        timeout=300,
+        encoding="utf-8",
+        errors="replace",
+    )
 
 
 def npm_cache_env() -> dict[str, str]:
+    """Point npm at a writable cache.
+
+    Previously hard-coded to ``C:\\tmp\\npm-cache`` on Windows, which silently
+    created a directory at the drive root and failed outright for a user without
+    write access there. Now it uses the platform's own temp location, or the
+    user's local app data on Windows, and is overridable.
+    """
     env = os.environ.copy()
-    if os.name == "nt":
-        cache_dir = Path(r"C:\tmp\npm-cache")
+    override = env.get("NPM_CONFIG_CACHE")
+    if override:
+        cache_dir = Path(override)
+    elif os.name == "nt":
+        local_appdata = env.get("LOCALAPPDATA")
+        base = Path(local_appdata) if local_appdata else Path(tempfile.gettempdir())
+        cache_dir = base / "npm-cache"
     else:
         cache_dir = Path(tempfile.gettempdir()) / "npm-cache"
 
-    cache_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        cache_dir.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        # A read-only or missing temp dir must not abort the export.
+        cache_dir = Path(tempfile.gettempdir())
     env["npm_config_cache"] = str(cache_dir)
     return env
+
+
+# Pinned default for standalone installs. Keep in sync with
+# scripts/diagrams/tool_versions.py::PINNED_VERSIONS.
+MARP_CLI = "@marp-team/marp-cli@4.2.3"
+
+
+def _marp_cli_spec() -> str:
+    """Pinned `@marp-team/marp-cli@<version>` unless overridden.
+
+    This script is copied standalone into agent directories, so the repository's
+    ``scripts/diagrams/tool_versions.py`` may be absent. ``MARP_CLI_SPEC`` overrides it
+    either way.
+    """
+    override = os.environ.get("MARP_CLI_SPEC")
+    if override:
+        return override
+    return MARP_CLI
 
 
 def export_html(markdown_path: Path, html_path: Path, marp_bin: str, theme: str | None = None) -> list[str]:
@@ -78,7 +119,7 @@ def export_html(markdown_path: Path, html_path: Path, marp_bin: str, theme: str 
     except (FileNotFoundError, subprocess.CalledProcessError):
         # Fallback to npx if primary failed
         fallback_bin = resolve_executable("npx") or "npx"
-        fallback = [fallback_bin, "-y", "@marp-team/marp-cli", "--no-stdin", "--allow-local-files", str(markdown_path), "-o", str(html_path)]
+        fallback = [fallback_bin, "--yes", _marp_cli_spec(), "--no-stdin", "--allow-local-files", str(markdown_path), "-o", str(html_path)]
         if theme:
             fallback.extend(["--theme", theme])
         run_command(fallback, env=npm_cache_env())
@@ -145,7 +186,10 @@ def main() -> int:
     parser.add_argument(
         "--marp-bin",
         default="marp",
-        help="Marp CLI executable to try first (fallback: npx @marp-team/marp-cli)",
+        help=(
+            "Marp CLI executable to try first. Falls back to npx, pinned via "
+            "MARP_CLI_SPEC (e.g. @marp-team/marp-cli@4.2.3)."
+        ),
     )
     parser.add_argument(
         "--theme",

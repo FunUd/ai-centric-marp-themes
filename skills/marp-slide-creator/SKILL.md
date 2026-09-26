@@ -19,7 +19,8 @@ For local slide directives (`_class`, `_paginate`, etc.), **read `references/mar
 
 Several classes apply `text-align: center` to the entire slide section, which causes bullet lists to render centered instead of left-aligned:
 
-**Affected classes:** `cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`
+**Affected classes:** `cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `cover-nebula`, `hero`, `title-only`, `title-elegant`, `key-message`, `align-center`
+(`cover-wave/diagonal/noir/aurora/hero/title-only/title-elegant` are Prism Edge-only; `cover-nebula` is Nebula Glass-only. On other themes those names do nothing — check the theme's CSS first.)
 
 **Rule:** Do not place bullet lists (`-` or `*`) or numbered lists on slides that use these classes. Lists belong on content slides with the default (left-aligned) layout.
 
@@ -58,15 +59,50 @@ For syntax on inline images, background images, and image filters, **read `refer
 ### Workflow (MUST follow this order)
 
 ```
-1. Edit Markdown
-2. Run marp-lint.py (catches structural errors BEFORE rendering)
-3. If lint issues -> fix -> repeat from step 2
-4. Run marp-diagnostics.py (catches rendered-output issues)
-5. If DOM issues -> fix -> repeat from step 2
-6. Complete
+ 0. Edit Markdown
+    (edit-tool rule: ALWAYS end newString with a newline, and never place
+      content on the same line as `---`)
+ 1. Run post-edit-check.py (structural sanity + language contamination)
+ 2. Run marp-lint.py (catches structural errors BEFORE rendering)
+ 3. Resolve ALL lint warnings HERE — do not proceed with warnings pending
+ 4. Run marp-diagnostics.py (DOM metrics only; see note below)
+ 5. If DOM issues -> fix -> repeat from step 1
+ 6. Generate images ONCE with marp-cli --images png (single source of truth)
+ 7. Read every slide image EXACTLY ONCE in a single batch (see Stage 4)
+ 8. If visual issues -> fix -> repeat from step 1
+ 9. Cleanup temp files → Complete
 ```
 
-### Stage 1: Pre-Render Lint (MANDATORY FIRST STEP)
+**Why these rules exist (2026-09 regression post-mortem):**
+- A missing trailing newline glued a paragraph to its `---`, silently merging
+  two slides and breaking a `grid-quadrant` — `marp-lint.py` alone did NOT
+  catch it. Only step 1 catches this class of bug.
+- Two parallel image pipelines (`marp-diagnostics --screenshot-dir` vs
+  `marp-cli --images png`) produced different/stale outputs, causing repeated
+  re-reads of the same images and a large token waste. **Never use two image
+  sources for one deck.**
+- Proceeding to image review with pending lint warnings (DENSE_CONTENT etc.)
+  forced the edit→render cycle to restart multiple times.
+
+### Stage 0: Post-Edit Sanity Check (MANDATORY, run on every edit)
+
+```powershell
+python skills/marp-slide-creator/scripts/post-edit-check.py slides/my-deck/my-deck.md --expect <N>
+# after rendering, also cross-check the HTML:
+python skills/marp-slide-creator/scripts/post-edit-check.py slides/my-deck/my-deck.md --expect <N> --html slides/my-deck/preview.html
+```
+
+Detects what `marp-lint.py` cannot:
+- `SLIDE_SEPARATOR_GLUED`: `---` glued to text (silently merges slides)
+- `SLIDE_COUNT_MISMATCH`: slide count != `--expect` (use the approved outline count)
+- `MISSING_EOF_NEWLINE`: the root cause of glued separators
+- `LANGUAGE_CONTAMINATION`: simplified-Chinese-only characters in JP/EN content
+- `HTML_SECTION_MISMATCH`: rendered `<section>` count != Markdown slide count
+
+> **Markdown table borders `|---|` are recognized as valid and NOT flagged.**
+> Exit code 0 = pass. Do not continue while exit code is 1.
+
+### Stage 1: Pre-Render Lint (MANDATORY SECOND STEP)
 
 **Always run the pre-render linter BEFORE marp-diagnostics.py.** It catches structural issues that the DOM extractor CANNOT detect (because the CSS never activates when the structure is wrong).
 
@@ -81,15 +117,25 @@ It detects:
 
 > **⚠️ DO NOT skip this step.** The DOM extractor reports "no issues" even when layouts are completely broken because the content simply stacks vertically inside the slide's overflow:hidden container.
 
-### Stage 2: Unified Diagnostics & Screenshots
+### Stage 2: Unified Diagnostics (DOM metrics only)
 
-After lint passes clean, run the unified diagnostic helper to export HTML, run DOM analysis, and optionally generate bespoke-free slide screenshots in a single command:
+After lint passes clean, run the unified diagnostic helper to export HTML and run DOM analysis:
 
 ```powershell
-python skills/marp-slide-creator/scripts/marp-diagnostics.py --theme themes/prism-edge.css slides/my-deck/my-deck.md --screenshot-dir slides/my-deck/assets/screenshots
+python skills/marp-slide-creator/scripts/marp-diagnostics.py --theme themes/prism-edge.css slides/my-deck/my-deck.md
 ```
 
-This helper exports `slides/my-deck/preview.html`, saves individual slide screenshots to `slides/my-deck/assets/screenshots/slide-001.png`, `slide-002.png` etc. (with the Marp navigation toolbar and progress bar automatically hidden), and writes DOM analysis to `slides/my-deck/assets/dom-metrics.json`.
+> `--theme` takes a path to a theme CSS file. The themes ship in
+> `ai-centric-marp-themes/themes/`; copy the one you use into your deck repo
+> (e.g. `<deck>/themes/`) and point `--theme` at that copy, so the command works
+> from any working directory.
+
+This helper exports `slides/my-deck/preview.html` and writes DOM analysis to `slides/my-deck/assets/dom-metrics.json`.
+
+> **⚠️ Do NOT pass `--screenshot-dir` here.** `marp-diagnostics` screenshots and
+> `marp-cli --images png` outputs must never be mixed: two image pipelines
+> produced diverging/stale files in practice, which led to repeated re-reads of
+> the same slides. **Image generation happens in Stage 4 only.**
 
 ### Stage 3: DOM Metrics Extraction
 
@@ -99,10 +145,8 @@ If you already have a rendered HTML file and only want to run the extractor with
 ```powershell
 python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/preview.html -o slides/my-deck/assets/dom-metrics.json
 ```
-To also output screenshots during extraction:
-```powershell
-python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/preview.html -o slides/my-deck/assets/dom-metrics.json --screenshot-dir slides/my-deck/assets/screenshots
-```
+> Screenshots are intentionally NOT generated here — image generation happens
+> in Stage 4 only (single image pipeline).
 
 **Step 2: Analyze JSON**
 
@@ -136,15 +180,40 @@ When you (the AI) need to visually confirm the actual layout, contrast, and elem
 
 **⚠️ PERMISSION CHECK:** Before performing this stage, ensure the user has explicitly opted-in to "Visual layout checks" or "AI Vision". If not, do NOT proceed with image generation and stick to Stage 3 DOM Metrics.
 
-**Step 1: Generate Screenshots**
-Run the unified diagnostic helper with `--screenshot-dir` specified (see Stage 2). This will generate clean, bespoke-UI-free slide screenshots (e.g. `slide-001.png`, `slide-002.png`) inside the specified folder.
+**Step 1: Generate Images — SINGLE SOURCE OF TRUTH (marp-cli only)**
 
-**Step 2: Slide Identification Protocol (MANDATORY)**
+```powershell
+# Delete any previous images FIRST (stale images caused misidentification before)
+Remove-Item -Path "slides/my-deck/assets/screenshots" -Recurse -Force -ErrorAction SilentlyContinue
+
+# Pinned to package.json / tool_versions.py; override via MARP_CLI_SPEC.
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files `
+  --theme themes/<theme>.css slides/my-deck/my-deck.md `
+  --images png -o slides/my-deck/assets/screenshots/slide
+```
+
+Then normalize names to `slide-001.png` style (see note below) and **verify the
+file count equals the slide count from `post-edit-check.py` BEFORE reading
+any image.**
+
+> **Rules (post-mortem, 2026-09):**
+> - **Never use two image pipelines for one deck** (e.g. `marp-diagnostics
+>   --screenshot-dir` AND `marp-cli --images png`). Diverging/stale outputs
+>   caused repeated re-reads and large token waste.
+> - **Never read an image twice.** If an image seems inconsistent with its
+>   filename, that is a *hypothesis*, not a fact: check the file hash/count
+>   via shell first. Only regenerate after a confirmed mismatch — do not
+>   re-read the same file hoping it will change.
+> - If `marp-cli -o` emits extension-less `slide.001` files, rename them to
+>   `slide-001.png` with a single `ForEach-Object` loop before reading.
+
+**Step 2: Slide Identification Protocol (MANDATORY — run for EVERY image)**
 To avoid misidentifying slide numbers during visual inspection:
 1. **Render with Pagination**: If not already present, ensure `paginate: true` is set in the frontmatter.
-2. **Cross-reference Filename & Page Number**: When viewing an image (e.g., `slide-003.png`), confirm that the slide number rendered in the footer of the slide itself matches the page you intend to review.
-3. **Verify Content**: Before applying a fix, confirm that the slide title or key text in the image matches the slide you intend to edit in the Markdown file.
+2. **Three-point match**: filename number ↔ rendered page number in the footer ↔ expected title from the outline. All three must agree before judging the slide.
+3. **Verify Content**: Confirm the slide title/key text matches the Markdown slide you intend to edit.
 4. **Source of Truth**: The rendered page number in the image is the source of truth for *which* slide is being seen.
+5. **One pass**: Read all images ONCE in a single batch, record every issue with its slide number, then fix everything in one edit round. Do not stream image→fix→image; interleaving caused re-reads and lost track of which version was rendered.
 
 **Step 3: Inspect the Images (Visual Quality Checklist)**
 Use your file viewing tool (`view_file`) on the specific generated image(s) you need to check. This will load the image into your context. Inspect the slide against the following visual quality criteria:
@@ -155,9 +224,10 @@ Use your file viewing tool (`view_file`) on the specific generated image(s) you 
 
 **Step 4: Cleanup (MANDATORY)**
 
-Once you have reviewed the images and made necessary corrections to the Markdown, you **MUST** delete the temporary screenshot folder to keep the workspace clean.
+Once you have reviewed the images and made necessary corrections to the Markdown, you **MUST** delete the temporary images and render artifacts to keep the workspace clean.
 ```powershell
 Remove-Item -Path "slides/my-deck/assets/screenshots" -Recurse -Force
+Remove-Item -Path "slides/my-deck/preview.html", "slides/my-deck/assets/dom-metrics.json" -Force -ErrorAction SilentlyContinue
 ```
 
 ## 5. Readability & Content Structure (Anti-Bullet-Point Principle)
@@ -207,7 +277,7 @@ Priority order (most design-friendly first):
 - Remove redundancy
 - Stick to "1 slide = 1 message"
 - Use active voice
-- Move lists off centered-layout slides (`cover`, `key-message`, etc.) — lists on those slides render centered, not left-aligned
+- Move lists off centered-layout slides (`cover`, `cover-nebula`, `hero`, `title-only`, `title-elegant`, `key-message`, etc.) — lists on those slides render centered, not left-aligned
 
 ### 6.2 Per-Slide Font Size
 ```markdown
@@ -268,9 +338,10 @@ section table { font-size: 16px; }
 - [ ] **Every `<div class="columns">` slide has `<!-- _class: cols-2 -->` (or cols-3/split-2/split-3/split-asym/split-asym-reverse) in its directive** — without this, the layout does NOT activate and content stacks vertically
 - [ ] **Every `<div class="grid">` slide has `<!-- _class: grid-quadrant -->` or `<!-- _class: grid-sharp -->` in its directive** — same reason
 - [ ] **Every `<div class="profile-layout">` slide has `<!-- _class: profile -->`**
-- [ ] **No bullet/numbered lists on centered-layout slides** (`cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`) — lists render centered, not left-aligned
+- [ ] **No bullet/numbered lists on centered-layout slides** (`cover`, `key-message`, `align-center`, plus theme-specific `cover-wave/diagonal/noir/aurora/hero/title-only/title-elegant` on Prism Edge and `cover-nebula` on Nebula Glass) — lists render centered, not left-aligned
 - [ ] **No catalog SVG icons used larger than width:200px** — icons are for inline/decorative use only (≤48px for cards, ≤36px for headings)
-- [ ] `marp-lint.py` reports zero issues
+- [ ] `post-edit-check.py` passes (exit 0): no glued `---`, slide count matches `--expect`, no language contamination
+- [ ] `marp-lint.py` reports zero issues **(zero warnings too — resolve them before image review)**
 
 ### 📖 Content, Message & Readability:
 - [ ] **Headings state conclusions/takeaways** (not just generic nouns like "Overview", "Architecture", or "Next Steps")
@@ -283,7 +354,7 @@ section table { font-size: 16px; }
 - [ ] Column layouts use `<div class="col">` or `<div>` for each column
 - [ ] Grid layouts have exactly 4 `<div class="cell">` children
 - [ ] Inline classes (`badge`, `gradient-text`) use `<span>`, not `<div>`
-- [ ] Alignment classes (`v-center`) applied to column divs, not `_class` directive
+- [ ] Alignment classes (`v-center`/`text-center`) may be used at slide level or on column divs
 
 ### Layout:
 - [ ] No text overflow/cutoff
@@ -337,15 +408,17 @@ When a task requires creating or embedding a diagram, **activate the `marp-diagr
 **Integration workflow with this skill:**
 
 ```
-1. Activate marp-diagram-creator skill
+1. Activate marp-diagram-creator skill. It owns the diagram engine, which ships
+   inside that skill under `vendor/`. Resolve it once:
+     ENGINE=$(python <marp-diagram-creator-skill-dir>/scripts/print-engine-path.py)
 2. Identify: target theme + slide layout (full / col2 / asym / col3)
 3. Generate diagram SVG:
-     python scripts/diagrams/render-slide-diagram.py \
-       -i scripts/diagrams/templates/mermaid/<template>.mmd \
+     python "$ENGINE/render-slide-diagram.py" \
+       -i "$ENGINE/templates/mermaid/<template>.mmd" \
        -o slides/<deck>/assets/diagrams/<name>.svg \
        --theme <theme-name> --layout <layout>
 4. Validate output (auto-runs inside render-slide-diagram.py, or manually):
-     python scripts/diagrams/validate-slide-diagram.py \
+     python "$ENGINE/validate-slide-diagram.py" \
        slides/<deck>/assets/diagrams/<name>.svg --layout <layout>
 5. Embed SVG in Marp slide:
      ![width:<N>px center](assets/diagrams/<name>.svg)
@@ -353,14 +426,18 @@ When a task requires creating or embedding a diagram, **activate the `marp-diagr
    checks will catch embedding mistakes before rendering.
 ```
 
-**Safe diagram widths by layout:**
+> Inside a clone of `ai-centric-marp-themes` the engine is also at
+> `scripts/diagrams/` (the development source). Prefer `marp-diagram-creator`'s
+> vendored copy so this workflow keeps working when only the skills are installed.
 
-| Layout | `_class` directive | Max safe width |
-|---|---|---|
-| Full slide | (default) | `width:1050px` |
-| 2-column | `cols-2`, `split-2`, `split-asym` | `width:500px` |
-| 3-column | `cols-3`, `split-3` | `width:340px` |
-| Asymmetric main col | `split-asym` (wide side) | `width:680px` |
+**Safe diagram widths by layout (canonical: `layout_spec.py::EMBED_WIDTH` / `CANVAS_MAX`):**
+
+| Layout | `_class` directive | Recommended `width:` | Hard max |
+|---|---|---|---|
+| Full slide | (default) | `width:1050px` | 1120px |
+| 2-column | `cols-2`, `split-2`, `split-glass`, `glass-card-layout` | `width:500px` | 520px |
+| Asymmetric | `split-asym`, `split-asym-reverse` (wide side) | `width:680px` | 710px |
+| 3-column | `cols-3`, `split-3` | `width:320px` | 340px |
 
 **Output path convention:** Always save generated diagram SVGs to:
 ```
@@ -389,7 +466,8 @@ sequenceDiagram
 2. Convert to SVG using Mermaid CLI:
 
 ```powershell
-npx -y @mermaid-js/mermaid-cli -i slides/project-name/assets/diagrams/sequence.mmd -o slides/project-name/assets/diagrams/sequence.svg
+# Pinned to package.json / tool_versions.py; override via MERMAID_CLI_SPEC.
+npx -y @mermaid-js/mermaid-cli@12.0.0 -i slides/project-name/assets/diagrams/sequence.mmd -o slides/project-name/assets/diagrams/sequence.svg
 ```
 
 3. Insert the SVG in your slide:

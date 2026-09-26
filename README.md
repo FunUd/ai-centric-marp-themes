@@ -39,6 +39,9 @@ paginate: true
 
 ![Azure Clarity Cover](assets/screenshots/azure-clarity-cover.png)
 ![Azure Clarity TOC](assets/screenshots/azure-clarity-toc.png)
+![Azure Clarity TOC Focus](assets/screenshots/azure-clarity-toc-focus.png)
+![Azure Clarity Bullets](assets/screenshots/azure-clarity-bullets.png)
+![Azure Clarity Table](assets/screenshots/azure-clarity-table.png)
 ![Azure Clarity 2 Columns](assets/screenshots/azure-clarity-cols2.png)
 ![Azure Clarity 3 Columns](assets/screenshots/azure-clarity-cols3.png)
 ![Azure Clarity Grid](assets/screenshots/azure-clarity-grid.png)
@@ -73,6 +76,9 @@ paginate: true
 
 ![Crimson Clarity Cover](assets/screenshots/crimson-clarity-cover.png)
 ![Crimson Clarity TOC](assets/screenshots/crimson-clarity-toc.png)
+![Crimson Clarity TOC Focus](assets/screenshots/crimson-clarity-toc-focus.png)
+![Crimson Clarity Bullets](assets/screenshots/crimson-clarity-bullets.png)
+![Crimson Clarity Table](assets/screenshots/crimson-clarity-table.png)
 ![Crimson Clarity 2 Columns](assets/screenshots/crimson-clarity-cols2.png)
 ![Crimson Clarity 3 Columns](assets/screenshots/crimson-clarity-cols3.png)
 ![Crimson Clarity Grid](assets/screenshots/crimson-clarity-grid.png)
@@ -90,7 +96,7 @@ paginate: true
 
 An editorial premium theme with refined cover designs, restrained contrast, and polished visuals.
 
-- **Five cover variants**: Classic, Wave, Diagonal, Noir, Aurora
+- **Five cover variants**: Classic (`cover`, base style), Wave, Diagonal, Noir, Aurora
 - Glass panels, gradient text, accent borders
 - All Azure Clarity layouts inherited and enhanced
 
@@ -108,6 +114,7 @@ paginate: true
 ![Prism Edge Cover Wave](assets/screenshots/prism-edge-cover-wave.png)
 ![Prism Edge Cover Diagonal](assets/screenshots/prism-edge-cover-diagonal.png)
 ![Prism Edge Cover Noir](assets/screenshots/prism-edge-cover-noir.png)
+![Prism Edge Cover Aurora](assets/screenshots/prism-edge-cover-aurora.png)
 ![Prism Edge Title Elegant](assets/screenshots/prism-edge-title-elegant.png)
 ![Prism Edge Accent Left](assets/screenshots/prism-edge-accent.png)
 ![Prism Edge Columns](assets/screenshots/prism-edge-cols.png)
@@ -115,6 +122,7 @@ paginate: true
 ![Prism Edge Callout](assets/screenshots/prism-edge-callout.png)
 ![Prism Edge gradnum](assets/screenshots/prism-edge-gradnum.png)
 ![Prism Edge statnum](assets/screenshots/prism-edge-statnum.png)
+![Prism Edge Cover Aurora Closing](assets/screenshots/prism-edge-cover-aurora-end.png)
 
 </details>
 
@@ -211,7 +219,7 @@ paginate: true
 
 1. **Install [Marp for VS Code](https://marketplace.visualstudio.com/items?itemName=marp-team.marp-vscode)** or use the [Marp CLI](https://github.com/marp-team/marp-cli).
 
-2. **Copy the theme CSS** you want from the `themes/` folder into your Marp workspace (or configure `themeSet` in `marp.config.js`).
+2. **Copy the theme CSS** you want from the `themes/` folder into your Marp workspace (or configure `themeSet` in `marp.config.js`). If you use `prism-edge`, `nebula-glass`, `warm-sunnyday`, or `slate-minimal`, also copy `assets/fonts/` so the `@font-face` paths (`../assets/fonts/*.ttf`) keep resolving. Nebula Glass needs `Poppins-Bold/Regular`, `NotoSansJP-Variable`, and `JetBrainsMono-Regular`.
 
 3. **Reference the theme** in your slide deck's YAML frontmatter:
 
@@ -246,7 +254,7 @@ Run the synchronization script to install these skills into your editor's config
 python scripts/sync-skills.py
 ```
 
-This copies the contents of `skills/` (the single source of truth) into `.claude/`, `.agents/`, `.windsurf/`, `.kiro/`, `.codex/`, `.agent/` and `.github/`, so the AI understands the layout classes and best practices for these themes. Existing skill directories with those prefixes are replaced; nothing else is touched. Re-run it after editing anything under `skills/`.
+This copies the contents of `skills/` (the single source of truth) into `.claude/skills/`, `.agents/skills/`, `.windsurf/skills/`, `.kiro/skills/`, `.codex/skills/`, `.agent/skills/` and `.github/skills/`, so the AI understands the layout classes and best practices for these themes. Existing skill directories with the `theme-expert-`, `slide-expert-`, `marp-`, `theme-creator`, or `slide-content-designer` names are replaced; nothing else is touched. Re-run it after editing anything under `skills/`.
 
 **You can also copy a single skill directory anywhere** — including
 `~/.claude/skills/` for a personal, machine-wide install. `marp-diagram-creator`
@@ -328,14 +336,15 @@ Text tint and background utilities.
 | `text-blue` / `text-green` / `text-orange` / `text-red` | Fixed semantic tints, contrast-adjusted per theme |
 | `text-violet` / `text-cyan` / `text-rose` / `text-white` | *(Nebula Glass)* neon tints |
 | `text-magenta` | *(Prism Edge)* accent tint |
-| `bg-pale` / `bg-light` / `bg-dark` | Slide background tints *(except Nebula Glass)* |
+| `bg-pale` / `bg-light` | Slide background tints (all 6 themes) |
+| `bg-dark` | *(Prism Edge only)* dark background tint |
 
 ### Components
 
 | Component | Usage |
 |-----------|-------|
-| **Callouts** | `<div class="callout blue">...</div>` (types: `blue`, `green`, `orange`, `red`) — independent alert blocks |
-| **Badges** | `<span class="badge red">NEW</span>` (types: `blue`, `green`, `orange`, `red`) |
+| **Callouts** | `<div class="callout blue">...</div>` (types: `blue`, `green`, `orange`, `red`; Nebula Glass also accepts `violet`, `cyan`, `rose` and maps `blue`→cyan, `orange`/`red`→rose) — independent alert blocks |
+| **Badges** | `<span class="badge red">NEW</span>` (types: `blue`, `green`, `orange`, `red`; Nebula Glass also accepts `violet`, `cyan`, `rose` with the same mapping; Slate Minimal also accepts `ink`) |
 | **Glass Panel** | *(Prism Edge / Nebula Glass)* `<div class="glass-panel">...</div>` — frosted glass container |
 | **Gradient Text** | *(Prism Edge / Nebula Glass)* `<span class="gradient-text">Text</span>` — gradient fill |
 | **Glow Violet** | *(Nebula Glass)* `<span class="glow-violet">Text</span>` — subtle violet light emission |
@@ -446,7 +455,7 @@ ai-centric-marp-themes/
 - **`slides/sample-slide/`** — Comprehensive demo decks showcasing every layout and component for each theme, plus `quality-showcase.md` as the lint-clean reference deck.
 - **`assets/screenshots/`** — Generated by `python scripts/take-screenshots.py` and embedded throughout this README. Regenerate after editing any sample deck.
 - **`skills/`** — Detailed skill documentation for AI assistants (e.g., prompts, class references, best practices).
-- **`skills/marp-diagram-creator/`** — The only skill that *executes* code from this repository, so it is the only one that had to become self-contained. It ships a generated copy of the diagram engine under `vendor/` (renderer, validator, 17 templates, 6 theme palettes — 174 KB), so the skill works when installed to `~/.claude/skills/`, a colleague's machine, or a vendored checkout. `scripts/diagrams/` remains the development source; `python scripts/sync-skill-vendor.py --check` fails if the two drift. Repository-only tooling (`check-*.py`, `sync-*.py`, the test suite) is deliberately *not* vendored — it reads `README.md` and `themes/*.css` and cannot work outside a checkout.
+- **`skills/marp-diagram-creator/`** — The only skill that *executes* code from this repository, so it is the only one that had to become self-contained. It ships a generated copy of the diagram engine under `vendor/` (renderer, validator, 17 templates, 6 theme palettes — 34 files), so the skill works when installed to `~/.claude/skills/`, a colleague's machine, or a vendored checkout. `scripts/diagrams/` remains the development source; `python scripts/sync-skill-vendor.py --check` fails if the two drift. Repository-only tooling (`check-*.py`, `sync-*.py`, the test suite) is deliberately *not* vendored — it reads `README.md` and `themes/*.css` and cannot work outside a checkout.
 - **`skills/marp-slide-creator/scripts/`** — Scripting toolkit for high-quality Marp generation:
   - `post-edit-check.py`: Catches the edit-time damage `marp-lint.py` structurally cannot — a `---` glued to text (which silently merges two slides), a slide count that disagrees with the approved outline, a missing EOF newline, and out-of-language characters.
   - `marp-lint.py`: Catches structural mistakes (missing class directives, lists on title layouts, diagram embedding errors) *before* rendering. Its class semantics come from the generated `theme-classes.json`, so they stay in step with `themes/*.css`.
@@ -564,8 +573,8 @@ Safe embedding widths by layout (canonical values: `scripts/diagrams/layout_spec
 
 | Layout | `_class` directive | Recommended `width:` | Max safe width |
 |---|---|---|---|
-| Full slide | (default), `glass-card-layout` | `width:1050px` | 1120px |
-| 2-column | `cols-2`, `split-2`, `split-glass` | `width:500px` | 520px |
+| Full slide | (default) | `width:1050px` | 1120px |
+| 2-column | `cols-2`, `split-2`, `split-glass`, `glass-card-layout` | `width:500px` | 520px |
 | Asymmetric split | `split-asym`, `split-asym-reverse` | `width:680px` | 710px |
 | 3-column | `cols-3`, `split-3` | `width:320px` | 340px |
 
@@ -701,7 +710,7 @@ No build step required — changes are live on save.
 ## Requirements
 
 - [Marp for VS Code](https://marketplace.visualstudio.com/items?itemName=marp-team.marp-vscode) **or**
-- [Marp CLI](https://github.com/marp-team/marp-cli) v2.x+
+- [Marp CLI](https://github.com/marp-team/marp-cli) v4.2.3 (pinned in `package.json` / `scripts/diagrams/tool_versions.py`; override via `MARP_CLI_SPEC`)
 
 Slide dimensions: **1280 x 720 px** (16:9)
 

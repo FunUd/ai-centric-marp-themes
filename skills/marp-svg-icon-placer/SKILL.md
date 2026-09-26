@@ -16,7 +16,7 @@ python skills/marp-svg-icon-placer/scripts/copy-icons.py --search "target"
 
 **Step 2: If search returns candidates**, use the name directly.
 **Step 3: If no match**, run `--list` to see all icons, or refer to `references/svg-icons-catalog.md` for full metadata and usage examples.
-- **DO NOT** modify catalog files or SVG files in `icons/` directory
+- **DO NOT** modify the *installed copy* of catalog files or SVG files in `icons/` during normal slide work. If you are contributing a genuinely new icon to the catalog (Section 5 fallback), adding it to `references/icons/` + `svg-icons-catalog.md` is the documented maintainer exception.
 
 
 ## 2. Copy Icon to Slide Assets
@@ -105,7 +105,7 @@ Use `width:48px` for feature card icons. Place on its own line with blank lines.
 
 ### Pattern D: Background / Large Visual
 
-> **🚨 HARD RULE: Catalog icons MUST NOT exceed width:200px.**
+> **🚨 HARD RULE: Catalog icons MUST NOT exceed width:200px, and MUST NOT be used as `![bg ...]` backgrounds — with one narrow exception below.**
 >
 > Catalog icons are designed for small inline/decorative use ONLY:
 > - **Headings**: `width:28px` to `width:36px`
@@ -115,7 +115,6 @@ Use `width:48px` for feature card icons. Place on its own line with blank lines.
 >
 > **NEVER** use a catalog icon as:
 > - A hero/feature image (e.g., `width:300px` centered on slide)
-> - A background image (`![bg ...]`)
 > - Any element covering >15% of slide area
 >
 > For large visuals, hero art, or backgrounds:
@@ -123,7 +122,7 @@ Use `width:48px` for feature card icons. Place on its own line with blank lines.
 > - Ask the user to provide appropriate images
 > - Use `generate_image` tool if available
 
-For subtle decorative background use only (opacity ≤ 0.15):
+Exception — subtle decorative watermark only (opacity ≤ 0.15, never a content carrier):
 
 ```markdown
 ![bg right:40% opacity:0.1](./assets/cloud-network.svg)

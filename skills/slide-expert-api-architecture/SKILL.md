@@ -12,7 +12,7 @@ A specialized skill for creating slides that explain API and system architecture
 
 **DO NOT generate any slide content for a new or substantially revised deck until you have explicitly confirmed the outline with the user.**
 
-> **Quality Standards:** Adhere to `skills/slide-content-designer/references/quality-guidelines.md`. Enforce message-driven titles (conclusions over nouns), bold key labels in lists, and Magic Number 3 (max 3-4 points per slide).
+> **Quality Standards:** Follow the `slide-content-designer` skill quality guidelines (message-driven titles, bold key labels, Magic Number 3). Enforce message-driven titles (conclusions over nouns), bold key labels in lists, and Magic Number 3 (max 3-4 points per slide).
 
 Before writing any new slide content, you MUST:
 1. Present a proposed outline (section titles with conclusions + slide count + estimated time) based on the guidelines below.
@@ -225,5 +225,5 @@ For the detailed section-by-section slide structure, **please read `references/s
 Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
 Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.
 
-> **Diagram Warning for Implementation Phase:** When suggesting diagrams (like Sequence or Flowcharts), remind the user that inline Mermaid (` ```mermaid `) fails in Marp PDF exports. Diagrams must be placed as placeholder images (`![Diagram](./assets/diagram.svg)`) and generated offline with `scripts/diagrams/render-slide-diagram.py` (theme-aware, canvas-validated) via the `marp-diagram-creator` skill during the implementation phase.
+> **Diagram Warning for Implementation Phase:** When suggesting diagrams (like Sequence or Flowcharts), remind the user that inline Mermaid (` ```mermaid `) fails in Marp PDF exports. Diagrams must be placed as placeholder images (`![Diagram](./assets/diagram.svg)`) and generated offline with the `marp-diagram-creator` skill's vendored engine (resolve once via `ENGINE=$(python <marp-diagram-creator-skill-dir>/scripts/print-engine-path.py)`, then `python "$ENGINE/render-slide-diagram.py"`, theme-aware and canvas-validated) during the implementation phase.
 

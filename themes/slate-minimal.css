@@ -27,6 +27,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Slate Serif';
+  src: url('../assets/fonts/Caladea-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* Poppins —Sans body text (SIL OFL 1.1, Indian Type Foundry) */
 @font-face {
   font-family: 'Slate Sans';
@@ -38,9 +46,25 @@
 
 @font-face {
   font-family: 'Slate Sans';
+  src: url('../assets/fonts/Poppins-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Slate Sans';
   src: url('../assets/fonts/Poppins-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Slate Sans';
+  src: url('../assets/fonts/Poppins-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -130,7 +154,7 @@ section {
 section h1 {
   font-family: 'Slate Serif', 'Slate JP', serif;
   color: var(--sm-accent);
-  font-size: 44px;
+  font-size: calc(44px * var(--font-scale));
   font-weight: 400;
   margin: 0 0 40px 0;
   padding-bottom: 0;
@@ -280,7 +304,7 @@ section pre {
   background: #F8FAFC;
   padding: 32px;
   margin: 24px 0;
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid var(--sm-border-light);
   border-radius: 2px;
 }
@@ -361,7 +385,7 @@ section img[alt~="shadow"] {
 /* ============================================================
    Header & Footer
    ============================================================ */
-header {
+section header {
   position: absolute;
   top: 40px;
   left: 100px;
@@ -378,7 +402,7 @@ header {
   text-transform: uppercase;
 }
 
-footer {
+section footer {
   position: absolute;
   bottom: 40px;
   left: 100px;
@@ -861,7 +885,7 @@ section.profile .profile-content {
 }
 
 section.profile .profile-content h2 {
-  font-size: 40px;
+  font-size: calc(40px * var(--font-scale));
   margin-bottom: 8px;
   color: var(--sm-accent);
   border: none;
@@ -904,6 +928,15 @@ section.key-message p {
   max-width: 800px;
 }
 
+section.key-message blockquote {
+  padding: 0;
+  margin: 0;
+}
+
+section.key-message blockquote::before {
+  display: none;
+}
+
 section.key-message blockquote p {
   margin: 0;
   /* Keep `> quote` statements on key-message slides at the blockquote's own
@@ -917,10 +950,43 @@ section.key-message blockquote p {
    ============================================================ */
 section.dense {
   --font-scale: 0.85;
+  line-height: 1.5;
+}
+
+section.dense h1 {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+section.dense p,
+section.dense ul,
+section.dense ol {
+  margin-bottom: 10px;
+}
+
+section.dense li {
+  margin-bottom: 2px;
 }
 
 section.extra-dense {
   --font-scale: 0.75;
+  line-height: 1.4;
+  padding: 60px 80px;
+}
+
+section.extra-dense h1 {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+}
+
+section.extra-dense p,
+section.extra-dense ul,
+section.extra-dense ol {
+  margin-bottom: 8px;
+}
+
+section.extra-dense li {
+  margin-bottom: 1px;
 }
 
 /* ============================================================
@@ -992,18 +1058,21 @@ section.timeline ol li strong {
 /* ============================================================
    Checklist
    ============================================================ */
-section.checklist ul {
+section.checklist ul,
+section .checklist {
   list-style: none;
   padding-left: 0;
 }
 
-section.checklist ul li {
+section.checklist ul li,
+section .checklist li {
   position: relative;
   padding-left: 36px;
   margin-bottom: 16px;
 }
 
-section.checklist ul li::before {
+section.checklist ul li::before,
+section .checklist li::before {
   content: '—'; position: absolute; left: 0; top: 0;
  color: var(--sm-text-sub);
   font-weight: 400;
@@ -1121,6 +1190,19 @@ section.v-center {
   justify-content: center;
 }
 
+/* Inner-column form, matching the other themes. */
+section .v-top,
+section .v-center,
+section .v-middle,
+section .v-bottom {
+  display: flex !important;
+  flex-direction: column;
+}
+section .v-top { justify-content: flex-start; }
+section .v-center,
+section .v-middle { justify-content: center; }
+section .v-bottom { justify-content: flex-end; }
+
 /* `v-middle` is the documented alias of `v-center`; kept so the utility works
    identically in every theme. */
 section.v-middle {
@@ -1173,6 +1255,6 @@ section .bg-pale {
 }
 
 section .bg-light {
-  background-color: var(--sm-bg) !important;
+  background-color: var(--sm-primary-light) !important;
   padding: 24px;
 }

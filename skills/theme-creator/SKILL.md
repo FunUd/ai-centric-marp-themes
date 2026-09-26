@@ -45,6 +45,10 @@ Every theme must define these CSS variable categories:
 
 Use a consistent prefix for all variables: `--xx-` (2-letter theme abbreviation, e.g., `--ac-` for azure-clarity, `--pe-` for prism-edge).
 
+Reserved / global by design (do not rename per theme):
+- `--font-scale` on `section` — density system shared by all 6 themes; user CSS must treat it as reserved.
+- Marp defaults `--color-background/foreground/highlight/dimmed`, `--color-prettylights-syntax-*` — `:root`-global; last-loaded theme wins when multiple themes load via `themeSet`. Scope under `section` only if multi-theme installs matter.
+
 ### 1.3 Choose Typography
 
 **System fonts approach** (like Azure Clarity, Crimson Clarity):
@@ -120,7 +124,7 @@ These are non-negotiable requirements that every theme must satisfy:
 
 Every theme **must** implement these layout classes to remain compatible with the shared `theme-expert-common` skill. **Read the existing CSS files for the exact implementation pattern**—do not deviate from the established HTML structure.
 
-**Required classes:**
+**Required classes (universal — every theme must implement all of these):**
 - `cover` (with `subtitle` and `meta` modifiers)
 - `toc`, `toc-focus`
 - `cols-2`, `cols-3` (with `> div.columns` and `.col`)
@@ -135,10 +139,16 @@ Every theme **must** implement these layout classes to remain compatible with th
 - `checklist`
 - Callouts (`.callout.blue`, `.callout.green`, `.callout.orange`, `.callout.red`)
 - Badges (`.badge`, `.badge.blue`, `.badge.green`, `.badge.orange`, `.badge.red`)
-- Alignment (`text-left/center/right`, `align-left/center/right`, `v-top/center/bottom`)
-- Display control (`no-header`, `no-footer`, `no-pagination`, `pagination-left`, `with-header`)
+- Alignment (`text-left/center/right`, `align-left/center/right`, `v-top/center/bottom`, plus `v-middle` as alias of `v-center`, `pagination-left`, `with-header`)
 - Text utilities (`text-blue`, `text-accent`, `text-green`, `text-orange`, `text-red`, `text-sub`, `text-large`, `text-small`)
 - Background utilities (`bg-pale`, `bg-light`)
+
+**Optional theme-specific extensions (document with a *(Theme)* marker in the README; do not claim as universal):**
+- Prism Edge: `cover-wave/diagonal/noir/aurora`, `hero`, `title-only`, `title-elegant`, `split-asym/reverse`, `accent-left`, `bg-grid/noise`, `section-number`, `text-magenta`, `bg-dark`
+- Nebula Glass: `cover-nebula`, `split-glass`, `glass-card-layout`, `text-violet/cyan/rose/white`, `text-muted` (alias of `text-sub`), callout/badge `violet/cyan/rose`
+- Slate Minimal: `badge.ink`
+
+`check-class-docs.py` enforces this: an implemented class must be documented, and a class documented as universal must exist in every theme.
 
 ### 2.4 Building from an Existing Theme
 
@@ -263,7 +273,8 @@ Before considering the theme complete, verify:
 Export and visually check the sample slides:
 
 ```powershell
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/<theme-name>.css slides/sample-slide/<theme-name>-sample.md -o slides/sample-slide/preview.html
+# Pinned to package.json / tool_versions.py; override via MARP_CLI_SPEC.
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/<theme-name>.css slides/sample-slide/<theme-name>-sample.md -o slides/sample-slide/preview.html
 ```
 
 ### 5.3 Sync Skills
@@ -279,17 +290,25 @@ python scripts/sync-skills.py
 Update `README.md` to include the new theme:
 
 1. Add a theme description in the Themes section
-2. Add screenshot previews (if available)
+2. Add screenshot previews (register slides in `scripts/take-screenshots.py::THEME_CONFIG` and run it)
 3. Update any theme count references
+4. Add a `CHANGELOG.md` Unreleased entry
+5. Regenerate derived artifacts:
+   `python scripts/diagrams/sync-tokens-from-css.py` (theme-styles),
+   `python scripts/diagrams/sync-theme-classes.py` (theme-classes.json),
+   `python scripts/sync-skill-vendor.py` if the renderer changed
+6. If fonts were added, update `assets/fonts/NOTICE.md`
+7. Run `python scripts/diagrams/check-class-docs.py` and the pytest suite
 
 ## Quick Reference: CSS Variable Naming
 
 | Theme | Prefix | Example |
 |-------|--------|---------|
 | Azure Clarity | `--ac-` | `--ac-primary: #2C7BE5` |
-| Crimson Clarity | `--cc-` | `--cc-primary: #DC2626` |
+| Crimson Clarity | `--cc-` | `--cc-primary: #D32F2F` |
 | Prism Edge | `--pe-` | `--pe-primary: #4F46E5` |
-| Warm Sunnyday | `--ws-` | `--ws-primary: #F59E0B` |
-| Nebula Glass | `--ng-` | `--ng-primary: #7C3AED` |
+| Warm Sunnyday | `--ws-` | `--ws-primary: #FF8C42` |
+| Nebula Glass | `--ng-` | `--ng-primary: #8B5CF6` |
+| Slate Minimal | `--sm-` | `--sm-ink: #1E293B` |
 
 When creating a new theme, choose a unique 2-letter prefix that doesn't conflict with existing ones.

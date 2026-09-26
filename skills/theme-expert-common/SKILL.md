@@ -17,10 +17,10 @@ Load it only when you need the generic class syntax or when a theme skill explic
 - `grid-quadrant/sharp` → Requires `<div class="grid">` + exactly four `<div class="cell">` children. **DO NOT hallucinate wrapper divs like `<div class="cell side"><div>`. Use EXACTLY `<div class="cell">`.**
 - `profile` → Requires `<div class="profile-layout">` + `profile-image` + `profile-content`
 - Inline classes (`badge`, `gradient-text`) → Use `<span>`, not `<div>`
-- Alignment (`v-center`, `text-center`) → Apply to column divs, not slide-level `_class`
+- Alignment (`text-center`) → Safe at slide-level `_class`; `v-center`/`v-middle` work both at slide level and on inner column divs
 
 > **🚨 DO NOT HALLUCINATE CLASSES:**
-> Do not use classes that are not explicitly documented in the theme-specific skill or this common file (e.g., `accent-left`). If you need an asymmetrical layout, check if the theme specifically supports it (like `split-asym` in Prism Edge), otherwise use standard classes like `cols-2`.
+> Do not use classes that are not explicitly documented in the theme-specific skill or this common file (e.g., `glass-morphism`). If you need an asymmetrical layout, check if the theme specifically supports it (like `split-asym` or `accent-left` in Prism Edge), otherwise use standard classes like `cols-2`.
 
 **For the exact HTML structure of these patterns, please read `references/layout-snippets.md`.**
 
@@ -53,9 +53,9 @@ Load it only when you need the generic class syntax or when a theme skill explic
 > - `<div class="profile-layout">` → `profile` in `_class`
 
 > **🚨 CENTERED LIST PROHIBITION:**
-> Do NOT place bullet lists (`-`, `*`, `1.`) on slides with centered-layout classes: `cover`, `cover-wave`, `cover-diagonal`, `cover-noir`, `cover-aurora`, `key-message`, `align-center`. Lists will render centered instead of left-aligned. Move lists to content slides.
+> Do NOT place bullet lists (`-`, `*`, `1.`) on slides with centered-layout classes: `cover`, `key-message`, `align-center`, plus theme-specific `cover-wave/diagonal/noir/aurora/hero/title-only/title-elegant` (Prism Edge only) and `cover-nebula` (Nebula Glass only). Lists will render centered instead of left-aligned. Move lists to content slides. On other themes the theme-specific names do nothing — do not use them outside their theme.
 
-**When in doubt, check `slides/sample-slide/` for correct structure, and run `marp-lint.py` to catch these issues automatically.**
+**When in doubt, check `references/layout-snippets.md` for correct structure, and run `marp-lint.py` to catch these issues automatically.**
 
 ## Shared Patterns
 
@@ -146,9 +146,14 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 ### Callouts
 
-- `blue`, `green`, `orange`, and `red` are available.
+- `blue`, `green`, `orange`, and `red` are available in all themes.
+- Nebula Glass additionally accepts `violet`, `cyan`, `rose` (and maps `blue`→cyan, `orange`/`red`→rose).
 - Use these color-based names regardless of semantic meaning.
 - Use callouts sparingly and keep contrast strong.
+
+### Badges
+
+- `blue`, `green`, `orange`, `red` in all themes; Nebula Glass adds `violet/cyan/rose`, Slate Minimal adds `ink`.
 
 ### Alignment and Images
 

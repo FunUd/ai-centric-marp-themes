@@ -66,27 +66,29 @@ Apply to current slide only. Prefix with `_`:
 
 For PDF/PPTX targets, treat the exported file as the source of truth. Re-check any slide that uses dense code, Mermaid, tables, or small text.
 
+# Pinned to package.json / scripts/diagrams/tool_versions.py
+# (override via MARP_CLI_SPEC). Do not float to latest.
 ```powershell
 # HTML
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.html
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.html
 
 # PDF
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.pdf
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.pdf
 
 # PowerPoint
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.pptx
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/theme.css slides.md -o output.pptx
 
 # PNG images (all slides)
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --theme themes/theme.css slides.md --images png
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/theme.css slides.md --images png
 ```
 
 ### PDF Options
 ```powershell
 # With presenter notes
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --pdf-notes slides.md -o output.pdf
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --pdf-notes slides.md -o output.pdf
 
 # With bookmarks
-npx -y @marp-team/marp-cli --no-stdin --allow-local-files --pdf-outlines slides.md -o output.pdf
+npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --pdf-outlines slides.md -o output.pdf
 ```
 
 ## 4. Quick Reference: Common Patterns
@@ -152,4 +154,4 @@ section {
 </style>
 ```
 
-> **Note:** This affects all text elements (paragraphs, lists, tables, etc.) except the main slide title (`h1`).
+> **Note:** This affects all text elements (paragraphs, lists, tables, etc.) and scales with `h1` as well (`h1` uses `calc(... * var(--font-scale))` in every theme).

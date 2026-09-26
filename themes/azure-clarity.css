@@ -73,7 +73,7 @@ section {
    ============================================================ */
 section h1 {
   color: var(--ac-accent);
-  font-size: 38px;
+  font-size: calc(38px * var(--font-scale));
   font-weight: 700;
   margin: 0 0 24px 0;
   padding-bottom: 12px;
@@ -334,7 +334,7 @@ section img[alt~="shadow"] {
 /* ============================================================
    Header & Footer
    ============================================================ */
-header {
+section header {
   position: absolute;
   top: 16px;
   left: 75px;
@@ -350,7 +350,7 @@ header {
   border-bottom: 1px solid var(--ac-border-light);
 }
 
-footer {
+section footer {
   position: absolute;
   bottom: 16px;
   left: 75px;
@@ -469,6 +469,12 @@ section.cover::after {
   background: radial-gradient(circle, var(--ac-primary-light) 0%, transparent 70%);
   opacity: 0.5;
   z-index: 0;
+}
+
+/* Keep slide text above the decorative circle (same stacking level otherwise). */
+section.cover > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================================================
@@ -610,6 +616,7 @@ section.cols-3 .col {
   padding: 24px;
   border: 1px solid var(--ac-border-light);
   height: 100%;
+  box-sizing: border-box;
   overflow: hidden;
 }
 
@@ -925,7 +932,7 @@ section.profile .profile-content {
 }
 
 section.profile h1 {
-  font-size: 32px;
+  font-size: calc(32px * var(--font-scale));
   margin-bottom: 4px;
   border-bottom: none;
   padding-bottom: 0;
@@ -1323,15 +1330,18 @@ section .text-accent {
 }
 
 section .text-green {
-  color: var(--ac-success);
+  /* --ac-success (#27AE60) fails AA as body text; use the dark emerald. */
+  color: #1E8449;
 }
 
 section .text-orange {
-  color: var(--ac-warning);
+  /* --ac-warning (#F39C12) fails AA as body text; use the dark amber. */
+  color: #92400E;
 }
 
 section .text-red {
-  color: var(--ac-danger);
+  /* --ac-danger (#E74C3C) fails AA as body text; use the dark red. */
+  color: #B91C1C;
 }
 
 section .text-sub {

@@ -9,13 +9,13 @@ This skill is for slides that need to feel ultra-modern, "high-sense," tech-prem
 It is the most advanced theme in the collection, surpassing Prism Edge in visual depth and sophistication.
 
 ## Theme File
-The theme is located at `themes/nebula-glass.css`.
+The theme is `themes/nebula-glass.css` in the `ai-centric-marp-themes` repository. To render a deck with it, copy the CSS into your own project (e.g. `<deck>/themes/nebula-glass.css`) and pass `--theme themes/nebula-glass.css` to Marp; the `@font-face` rules reference `../assets/fonts/`, so copy `assets/fonts/` alongside it to keep the bundled Poppins (Regular/Italic/Bold/BoldItalic), Noto Sans JP (Variable), and JetBrains Mono (Regular/Bold/Italic/BoldItalic) type.
 
 ## Nebula Glass-Specific Cues
 
 - Use `cover-nebula` for a sophisticated, architectural opening or closing. It features a left-aligned layout with a subtle top border and refined light beams.
-- Use `glass-card-layout` with a `<div class="card">` wrapper for a focused key message. Inside the card, text is left-aligned for better list presentation, while the title remains centered.
-- Use `split-glass` with a `<div class="glass-panel">` to create a modern, asymmetric layout.
+- Use `glass-card-layout` with a `<div class="card">` wrapper for a focused key message. Inside the card, text is left-aligned for better list presentation, while the title remains centered. This is a single centered column budgeted as 2-column, so keep diagrams at the 2-column budget (`width:500px`, max 520px) — see `layout_spec.py::CLASS_TO_LAYOUT`.
+- Use `split-glass` with a `<div class="glass-panel">` to create a 50/50 split where the right column is a glass panel. Diagram width budget is the 2-column limit (`width:500px`, max 520px), not the asymmetric one.
 - Use `steps` on a list (specifically `li`) for minimal, glass-style numbered indicators.
 - Use `<span class="gradient-text">` for elegant keyword emphasis.
 - Use `<span class="glow-violet">` or `<span class="glow-cyan">` for subtle light emission effects.

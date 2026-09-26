@@ -9,6 +9,14 @@ Point = tuple[float, float]
 Rect = tuple[float, float, float, float]
 
 
+def _safe_float(value: object, default: float = 0.0) -> float:
+    """Lenient float parse for draw.io XML: malformed numbers yield default."""
+    try:
+        return float(str(value) if value is not None else "")
+    except (TypeError, ValueError):
+        return default
+
+
 def parse_style(style: str) -> dict[str, str]:
     values: dict[str, str] = {}
     for item in style.split(";"):
@@ -22,7 +30,12 @@ def geometry_to_rect(cell: ET.Element) -> Rect:
     geometry = cell.find("mxGeometry")
     if geometry is None:
         return 0.0, 0.0, 0.0, 0.0
-    return tuple(float(geometry.get(key, "0")) for key in ("x", "y", "width", "height"))  # type: ignore[return-value]
+    return (
+        _safe_float(geometry.get("x", "0")),
+        _safe_float(geometry.get("y", "0")),
+        _safe_float(geometry.get("width", "0")),
+        _safe_float(geometry.get("height", "0")),
+    )
 
 
 def get_edge_waypoints(edge: ET.Element) -> list[Point]:
@@ -33,7 +46,7 @@ def get_edge_waypoints(edge: ET.Element) -> list[Point]:
     if points is None:
         return []
     return [
-        (float(point.get("x", "0")), float(point.get("y", "0")))
+        (_safe_float(point.get("x", "0")), _safe_float(point.get("y", "0")))
         for point in points.findall("mxPoint")
     ]
 
@@ -71,7 +84,7 @@ def _port_point(rect: Rect, other: Rect, style: dict[str, str], prefix: str) -> 
     coordinate_x = style.get(f"{prefix}X")
     coordinate_y = style.get(f"{prefix}Y")
     if coordinate_x is not None and coordinate_y is not None:
-        return x + width * float(coordinate_x), y + height * float(coordinate_y)
+        return x + width * _safe_float(coordinate_x), y + height * _safe_float(coordinate_y)
 
     other_x, other_y, other_width, other_height = other
     center = (x + width / 2, y + height / 2)

@@ -193,6 +193,35 @@ footer: "© 2026 Your Name"
 
 ---
 
+<!-- _class: dense -->
+
+# コールアウトとバッジ
+
+汎用的に使えるハイライト要素です。開始の報告 <span class="badge green">完了</span> や、
+新しい試み <span class="badge blue">NEW</span> を表現できます。
+
+<div class="callout blue">
+<h4>ℹ️ Information</h4>
+補足情報やヒントなど、補足として伝えたい内容に使います。
+</div>
+
+<div class="callout green">
+<h4>✅ Success</h4>
+成功や完了を伝えるメッセージです。ポジティブな結果を強調します。
+</div>
+
+<div class="callout orange">
+<h4>⚠️ Warning</h4>
+注意喚起です。仕様の制限や、気をつけるべきポイントを記載します。
+</div>
+
+<div class="callout red">
+<h4>🚨 Danger</h4>
+重大な警告です。非推奨の操作や、エラー状態を表現するのに使用します。
+</div>
+
+---
+
 <!-- _class: cover -->
 <!-- _paginate: false -->
 <!-- _header: "" -->

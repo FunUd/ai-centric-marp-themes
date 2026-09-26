@@ -47,5 +47,5 @@ Slate Minimal follows the **4 Principles of Minimalism** (Reduction, Alignment, 
 ## Design Tips
 
 - Keep text short and impactful. A minimalist theme falls apart if slides are cluttered with bullet points.
-- Use `key-message` or `title-only` layouts to make powerful, single-sentence statements.
+- Use `key-message` layouts to make powerful, single-sentence statements.
 - **Never add decorative borders.** If you feel a section needs visual separation, increase spacing first. If that's not enough, try a subtle background difference. Reach for a border only as a final option.

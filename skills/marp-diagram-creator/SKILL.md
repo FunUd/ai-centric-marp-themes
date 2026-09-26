@@ -7,7 +7,7 @@ description: Activate this skill when creating, embedding, or updating diagrams 
 
 This skill guides AI agents in generating and embedding high-quality, production-ready diagrams into Marp presentations using **Mermaid** and **draw.io**.
 
-All diagrams are strictly constrained to slide canvas bounds (`1120x460` for full slide, `520x460` for 2-column) and automatically synchronized with the presentation's active theme.
+All diagrams are strictly constrained to slide canvas bounds (`1120x460` full, `520x460` 2-col, `710x460` asym, `340x460` 3-col) and automatically synchronized with the presentation's active theme.
 
 ---
 
@@ -48,7 +48,7 @@ Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline (≤5 items) →
 
 ### Step 1: Identify Context & Constraints
 1. **Target Slide Theme**: Identify the theme (`azure-clarity`, `crimson-clarity`, `prism-edge`, `nebula-glass`, `warm-sunnyday`, `slate-minimal`).
-2. **Slide Layout** (canonical values: `scripts/diagrams/layout_spec.py`):
+2. **Slide Layout** (canonical values: `vendor/layout_spec.py`):
    - `full`: Full-width diagram (`max 1120px × 460px`, aspect ratio ~2.3:1)
    - `col2`: 2-column layout (`max 520px × 460px`, aspect ratio ~1.15:1)
    - `asym`: Split asymmetric layout (`max 710px × 460px`, aspect ratio ~1.55:1)
@@ -56,24 +56,50 @@ Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline (≤5 items) →
 
 ### Step 2: Generate the Diagram File
 
-#### Option A: Quick Generation via CLI (Recommended)
-Use `scripts/diagrams/render-slide-diagram.py` to compile Mermaid or draw.io into a themed SVG:
+#### Locating the Engine
 
-```powershell
-# From Mermaid code string
-python scripts/diagrams/render-slide-diagram.py --code "flowchart LR; A[Intake] --> B[Process]; B --> C[Done]" -o slides/<deck-name>/assets/flow.svg --theme azure-clarity --layout full
+The diagram engine ships **inside this skill**, under `vendor/`, so the skill
+works wherever it is installed. Resolve it once per session:
 
-# From Mermaid template / .mmd file
-python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/mermaid/sequence-api.mmd -o slides/<deck-name>/assets/api-sequence.svg --theme prism-edge --layout full
-
-# From draw.io template / .drawio file
-python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/drawio/system-architecture.drawio -o slides/<deck-name>/assets/system-arch.svg --theme nebula-glass --layout full
-
-# From a JSON chart/concept template
-python scripts/diagrams/render-slide-diagram.py -i scripts/diagrams/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
+```bash
+ENGINE=$(python <skill-dir>/scripts/print-engine-path.py)
 ```
 
-JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `line`, and `stacked-bar` (registry: `scripts/diagrams/diagram_models.py::DIAGRAM_TYPES`, enforced by `tests/test_diagram_registry.py`); `theme`, `layout`, `width`, `height`, and `aspect` are optional. `aspect` (canvas width/height ratio, e.g. `"aspect": 2.4`) derives `height` from `width` — never combine it with an explicit `height`. Every engine also accepts `--aspect 2.4` (or `--aspect 16:9`), and Mermaid sources may declare `%% aspect: 16:9`; for Mermaid/draw.io the finished canvas is padded to the target ratio (content centered, never scaled) as long as it fits the layout's feasible range. To add a new type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md`.
+`<skill-dir>` is the folder containing this `SKILL.md`:
+
+| Situation | `<skill-dir>` |
+|---|---|
+| Working in a clone of `ai-centric-marp-themes` | `skills/marp-diagram-creator` |
+| Installed for Claude Code / Cursor / Windsurf | `~/.claude/skills/marp-diagram-creator` (or the agent's equivalent) |
+| Synced by `scripts/sync-skills.py` | `.claude/skills/marp-diagram-creator` inside your deck repo |
+
+All commands below use `<ENGINE>` for that resolved path. If you prefer to type
+paths out, the in-repo form is
+`python skills/marp-diagram-creator/vendor/render-slide-diagram.py …`.
+
+#### Option A: Quick Generation via CLI (Recommended)
+Use `<ENGINE>/render-slide-diagram.py` to compile Mermaid, draw.io or JSON into a themed SVG (`<ENGINE>` already points at `vendor/`):
+
+```bash
+# From Mermaid code string
+python <ENGINE>/render-slide-diagram.py --code "flowchart LR; A[Intake] --> B[Process]; B --> C[Done]" -o slides/<deck-name>/assets/flow.svg --theme azure-clarity --layout full
+
+# From Mermaid template / .mmd file
+python <ENGINE>/render-slide-diagram.py -i <ENGINE>/templates/mermaid/sequence-api.mmd -o slides/<deck-name>/assets/api-sequence.svg --theme prism-edge --layout full
+
+# From draw.io template / .drawio file
+python <ENGINE>/render-slide-diagram.py -i <ENGINE>/templates/drawio/system-architecture.drawio -o slides/<deck-name>/assets/system-arch.svg --theme nebula-glass --layout full
+
+# From a JSON chart/concept template
+python <ENGINE>/render-slide-diagram.py -i <ENGINE>/templates/charts/revenue-pie.json -o slides/<deck-name>/assets/revenue-pie.svg --theme azure-clarity --layout full
+```
+
+> Inside this repository the equivalent is
+> `python skills/marp-diagram-creator/vendor/render-slide-diagram.py …`.
+> Both are the same file; `scripts/diagrams/` is the development source and is
+> kept byte-identical by `python scripts/sync-skill-vendor.py --check`.
+
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `line`, and `stacked-bar` (registry: `vendor/diagram_models.py::DIAGRAM_TYPES`; `scripts/diagrams/tests/test_diagram_registry.py` enforces it); `theme`, `layout`, `width`, `height`, and `aspect` are optional. `aspect` (canvas width/height ratio, e.g. `"aspect": 2.4`) derives `height` from `width` — never combine it with an explicit `height`. Every engine also accepts `--aspect 2.4` (or `--aspect 16:9`), and Mermaid sources may declare `%% aspect: 16:9`; for Mermaid/draw.io the finished canvas is padded to the target ratio (content centered, never scaled) as long as it fits the layout's feasible range.
 
 Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) / `grid-quadrant` (+ `axes`) slide classes instead.
 
@@ -89,7 +115,10 @@ Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the t
 - If a diagram has more than six visible labels, prefer a legend or a second slide over reducing the font size.
 
 #### Option B: Customize from Template
-Copy a template from `scripts/diagrams/templates/` to `slides/<deck-name>/assets/`, customize the node labels and connections, then run `render-slide-diagram.py` to produce the final SVG.
+Copy a template from `<ENGINE>/templates/` to `slides/<deck-name>/assets/`, customize the node labels and connections, then run `render-slide-diagram.py` to produce the final SVG.
+
+To add a new JSON diagram type, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md` inside
+a checkout of `ai-centric-marp-themes` (it documents the renderer internals, which are not vendored).
 
 #### draw.io Connector Routing
 
@@ -103,8 +132,18 @@ validator fails when a route crosses an intermediate node.
 ### Step 3: Automated Validation (Crucial for Anti-Breakage)
 Every generated SVG is automatically checked against slide boundaries. You can also run the validator manually:
 
-```powershell
-python scripts/diagrams/validate-slide-diagram.py slides/<deck-name>/assets/my-diagram.svg --layout full
+```bash
+python <ENGINE>/validate-slide-diagram.py slides/<deck-name>/assets/my-diagram.svg --layout full
+```
+
+The `check-*.py` and `sync-*.py` scripts are **not** vendored: they operate on the
+repository (reading `README.md`, `themes/*.css`, the test suite) and are
+meaningless outside it. From a checkout of `ai-centric-marp-themes` you can
+validate every template at the layouts it supports:
+
+```bash
+python scripts/diagrams/check-templates.py            # all engines, needs Node
+python scripts/diagrams/check-templates.py --skip-mermaid   # offline
 ```
 
 > ⚠️ **Zero Breakage Rule**:
@@ -126,7 +165,7 @@ Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed 
 | Layout | Example `width:` | Hard max |
 |---|---|---|
 | Full slide | `width:1050px` | 1120px |
-| 2-column (`cols-2`, `split-2`) | `width:500px` | 520px |
+| 2-column (`cols-2`, `split-2`, `split-glass`, `glass-card-layout`) | `width:500px` | 520px |
 | Asymmetric (`split-asym`, `split-asym-reverse`) | `width:680px` | 710px |
 | 3-column (`cols-3`, `split-3`) | `width:320px` | 340px |
 

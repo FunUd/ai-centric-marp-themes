@@ -63,13 +63,17 @@ def test_script_entry_point_runs_full_sync_without_writing(monkeypatch, capsys) 
     copytree/rmtree stubbed, so the real agent directories stay untouched."""
     import runpy
     import shutil as shutil_mod
+    import sys as sys_mod
 
     copied: list[tuple[Path, Path]] = []
     removed: list[Path] = []
     monkeypatch.setattr(shutil_mod, "copytree", lambda src, dst: copied.append((src, dst)))
     monkeypatch.setattr(shutil_mod, "rmtree", lambda path: removed.append(path))
+    monkeypatch.setattr(sys_mod, "argv", ["sync-skills.py"])
 
-    runpy.run_path(str(sync_skills_mod.__file__), run_name="__main__")
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_path(str(sync_skills_mod.__file__), run_name="__main__")
+    assert exc.value.code == 0
 
     roots = [t for t in sync_skills_mod.TARGET_ROOTS if t.exists()]
     skills = [d for d in sync_skills_mod.SOURCE_DIR.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
@@ -81,7 +85,7 @@ def test_script_entry_point_runs_full_sync_without_writing(monkeypatch, capsys) 
 def test_sync_reports_missing_source(monkeypatch, tmp_path: Path, capsys) -> None:
     monkeypatch.setattr(sync_skills_mod, "SOURCE_DIR", tmp_path / "no-such-dir")
 
-    assert sync_skills_mod.sync_skills() is None
+    assert sync_skills_mod.sync_skills() == 1
 
     assert "[ERROR] Source directory" in capsys.readouterr().out
 
@@ -108,6 +112,8 @@ def test_sync_copies_skills_and_cleans_stale_dirs(monkeypatch, tmp_path: Path, c
     _make_skill(target, "alpha", "# alpha v1")                # refreshed copy
     (target / "theme-expert-old").mkdir()                     # prefixed stale -> deleted
     (target / "marp-legacy").mkdir()                          # prefixed stale -> deleted
+    (target / "theme-creator-old").mkdir()                    # renamed theme-creator -> deleted
+    (target / "slide-content-designer-old").mkdir()           # renamed designer -> deleted
     (target / "unrelated").mkdir()                            # not prefixed -> kept
     missing_target = tmp_path / "targets" / "missing"         # -> skip branch
 
@@ -125,6 +131,8 @@ def test_sync_copies_skills_and_cleans_stale_dirs(monkeypatch, tmp_path: Path, c
     # Stale prefixed directories removed; unrelated directory untouched.
     assert not (target / "theme-expert-old").exists()
     assert not (target / "marp-legacy").exists()
+    assert not (target / "theme-creator-old").exists()
+    assert not (target / "slide-content-designer-old").exists()
     assert (target / "unrelated").exists()
     assert "[DEL STALE]" in out and "[COPY]" in out
 

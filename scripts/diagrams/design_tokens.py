@@ -93,7 +93,15 @@ def _merge_section(defaults: dict[str, Any], overrides: dict[str, Any] | None) -
 
 def load_design_tokens(theme_name: str) -> dict[str, Any]:
     """Load and normalize theme design tokens from theme-styles JSON."""
+    import sys
+
     resolved = theme_name if theme_name in VALID_THEMES else DEFAULT_THEME
+    if theme_name not in VALID_THEMES:
+        print(
+            f"[WARN] unknown theme {theme_name!r}; falling back to {DEFAULT_THEME!r} "
+            f"(valid: {sorted(VALID_THEMES)})",
+            file=sys.stderr,
+        )
     theme_file = THEME_STYLES_DIR / f"{resolved}.json"
     if not theme_file.exists():
         theme_file = THEME_STYLES_DIR / f"{DEFAULT_THEME}.json"

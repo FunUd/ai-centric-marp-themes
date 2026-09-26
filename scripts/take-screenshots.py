@@ -32,8 +32,22 @@ import argparse
 import subprocess
 import sys
 import os
+import tempfile
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+
+try:
+    from playwright.sync_api import sync_playwright
+except ModuleNotFoundError:  # --list-themes / --list need no browser
+    sync_playwright = None  # type: ignore[assignment]
+
+
+def _require_playwright():
+    if sync_playwright is None:
+        raise RuntimeError(
+            "Playwright is not installed. Run: pip install playwright && playwright install chromium "
+            "(offline modes --list-themes work without it)."
+        )
+    return sync_playwright
 
 # The pinned Node tool versions live with the diagram engine.
 sys.path.insert(0, str(Path(__file__).resolve().parent / "diagrams"))
@@ -92,6 +106,7 @@ THEME_CONFIG = {
             ("prism-edge-cover-wave.png",     0),   # cover-wave
             ("prism-edge-cover-diagonal.png", 1),   # cover-diagonal
             ("prism-edge-cover-noir.png",     2),   # cover-noir
+            ("prism-edge-cover-aurora.png",   3),   # cover-aurora
             ("prism-edge-title-elegant.png",  8),   # title-elegant
             ("prism-edge-accent.png",         9),   # accent-left
             ("prism-edge-cols.png",           15),  # cols-2
@@ -99,6 +114,7 @@ THEME_CONFIG = {
             ("prism-edge-callout.png",        21),  # callout (with-header dense)
             ("prism-edge-gradnum.png",        22),  # hero / gradient-text
             ("prism-edge-statnum.png",        11),  # split-2 / stat-number
+            ("prism-edge-cover-aurora-end.png", 27),  # cover-aurora closing
         ],
     },
     "azure-clarity": {
@@ -187,15 +203,12 @@ def build_html(slide_md: Path, output_html: Path):
             timeout=300,
             cwd=str(WORKSPACE),
         )
-    except subprocess.TimeoutExpired:
-        print("  ❌ Marp CLI timed out after 300s")
-        sys.exit(1)
+    except subprocess.TimeoutExpired as error:
+        raise RuntimeError("Marp CLI timed out after 300s") from error
     except OSError as error:
-        print(f"  ❌ Failed to launch Marp CLI: {error}")
-        sys.exit(1)
+        raise RuntimeError(f"Failed to launch Marp CLI: {error}") from error
     if result.returncode != 0:
-        print(f"  ❌ Marp CLI error:\n{result.stderr}")
-        sys.exit(1)
+        raise RuntimeError(f"Marp CLI error:\n{result.stderr}")
     print(f"  ✅ HTML generated")
 
 
@@ -221,9 +234,11 @@ def take_screenshots(theme_name: str, html_path: Path, screenshots: list, output
     # Sort by slide index so we always move forward (no back-navigation needed)
     sorted_shots = sorted(screenshots, key=lambda x: x[1])
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+    playwright = _require_playwright()
+    with playwright() as p:
+        browser = None
         try:
+            browser = p.chromium.launch(headless=True)
             page = browser.new_page(viewport={"width": 1280, "height": 720})
 
             url = html_path.resolve().as_uri()
@@ -269,7 +284,8 @@ def take_screenshots(theme_name: str, html_path: Path, screenshots: list, output
                 page.screenshot(path=str(out_path))
                 print(f"  📸 {filename} (slide {slide_index + 1}/{slide_count})")
         finally:
-            browser.close()
+            if browser is not None:
+                browser.close()
 
 
 def count_markdown_slides(slide_md: Path) -> int:
@@ -277,12 +293,25 @@ def count_markdown_slides(slide_md: Path) -> int:
 
     Marp splits on a line containing only ``---``. With frontmatter the first
     two separators are the frontmatter fences, so slide count == separators - 1.
+    Fenced code blocks and ``...`` frontmatter closes are ignored.
     """
     text = slide_md.read_text(encoding="utf-8")
-    separators = sum(
-        1 for line in text.splitlines() if line.strip() == "---"
-    )
-    return max(separators - 1, 1)
+    separators = 0
+    in_fence = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        if stripped == "---":
+            separators += 1
+    if separators == 0:
+        return 1
+    # A leading frontmatter block consumes the first separator pair.
+    has_frontmatter = text.lstrip().startswith("---")
+    return max(separators - (1 if has_frontmatter else 0), 1)
 
 
 def report_theme_registry() -> list[str]:
@@ -331,15 +360,17 @@ def list_slide_count(slide_md: Path):
     """Print the total number of slides in a Marp Markdown file."""
     slide_md = WORKSPACE / slide_md if not slide_md.is_absolute() else slide_md
     if not slide_md.exists():
-        print(f"❌ File not found: {slide_md}")
-        sys.exit(1)
+        raise RuntimeError(f"File not found: {slide_md}")
 
-    temp_html = WORKSPACE / "_list_temp.html"
+    playwright = _require_playwright()
+    with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp:
+        temp_html = Path(tmp.name)
     try:
         build_html(slide_md, temp_html)
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+        with playwright() as p:
+            browser = None
             try:
+                browser = p.chromium.launch(headless=True)
                 page = browser.new_page(viewport={"width": 1280, "height": 720})
                 page.goto(temp_html.resolve().as_uri(), wait_until="load")
                 page.wait_for_timeout(1200)
@@ -351,7 +382,8 @@ def list_slide_count(slide_md: Path):
                     "}"
                 )
             finally:
-                browser.close()
+                if browser is not None:
+                    browser.close()
         print(f"📊 {slide_md.name}: {slide_count} slides")
     finally:
         if temp_html.exists():
@@ -366,10 +398,11 @@ def take_ad_hoc_screenshots(slide_md: Path, slide_numbers, output_dir: Path):
     """
     slide_md = WORKSPACE / slide_md if not slide_md.is_absolute() else slide_md
     if not slide_md.exists():
-        print(f"❌ File not found: {slide_md}")
-        sys.exit(1)
+        raise RuntimeError(f"File not found: {slide_md}")
 
-    temp_html = WORKSPACE / "_adhoc_temp.html"
+    playwright = _require_playwright()
+    with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp:
+        temp_html = Path(tmp.name)
     print(f"\n{'='*50}")
     print(f"  File: {slide_md.name}")
     print(f"{'='*50}")
@@ -378,9 +411,10 @@ def take_ad_hoc_screenshots(slide_md: Path, slide_numbers, output_dir: Path):
         build_html(slide_md, temp_html)
 
         # Detect total slide count first
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+        with playwright() as p:
+            browser = None
             try:
+                browser = p.chromium.launch(headless=True)
                 page = browser.new_page(viewport={"width": 1280, "height": 720})
                 page.goto(temp_html.resolve().as_uri(), wait_until="load")
                 page.wait_for_timeout(1200)
@@ -392,7 +426,8 @@ def take_ad_hoc_screenshots(slide_md: Path, slide_numbers, output_dir: Path):
                     "}"
                 )
             finally:
-                browser.close()
+                if browser is not None:
+                    browser.close()
 
         # Build list of 0-based indices
         if slide_numbers == "all":
@@ -424,12 +459,13 @@ def take_ad_hoc_screenshots(slide_md: Path, slide_numbers, output_dir: Path):
 def process_theme(theme_name: str, output_dir: Path = None):
     """Capture all configured screenshots for a single theme."""
     if theme_name not in THEME_CONFIG:
-        print(f"❌ Unknown theme: {theme_name}")
-        print(f"   Available: {', '.join(THEME_CONFIG.keys())}")
-        sys.exit(1)
+        raise RuntimeError(
+            f"Unknown theme: {theme_name}. Available: {', '.join(THEME_CONFIG.keys())}"
+        )
 
     config = THEME_CONFIG[theme_name]
-    temp_html = WORKSPACE / f"_{theme_name}_temp.html"
+    with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp:
+        temp_html = Path(tmp.name)
 
     print(f"\n{'='*50}")
     print(f"  Theme: {theme_name}")
@@ -520,52 +556,64 @@ if __name__ == "__main__":
     if args.output and not output_dir.is_absolute():
         output_dir = WORKSPACE / output_dir
 
-    # --list mode: print slide count and exit
-    if args.list:
-        list_slide_count(Path(args.list))
-        sys.exit(0)
+    try:
+        # --list mode: print slide count and exit
+        if args.list:
+            list_slide_count(Path(args.list))
+            sys.exit(0)
 
-    # --list-themes mode: report the screenshot registry and its integrity
-    if args.list_themes:
-        missing = report_theme_registry()
-        sys.exit(1 if missing else 0)
+        # --list-themes mode: report the screenshot registry and its integrity
+        if args.list_themes:
+            missing = report_theme_registry()
+            sys.exit(1 if missing else 0)
 
-    # --slide mode: ad-hoc capture by file + slide numbers
-    if args.slide:
-        raw_numbers = args.slide_numbers
-        if not raw_numbers:
-            print("❌ Specify slide numbers (1-based) or 'all' when using --slide.")
-            print("   e.g. python scripts/take-screenshots.py --slide slides/foo.md 1 3 5")
-            print("   e.g. python scripts/take-screenshots.py --slide slides/foo.md all")
-            sys.exit(1)
-
-        if len(raw_numbers) == 1 and raw_numbers[0].lower() == "all":
-            slide_numbers = "all"
-        else:
-            try:
-                slide_numbers = [int(n) for n in raw_numbers]
-            except ValueError:
-                print(f"❌ Slide numbers must be integers or 'all': {raw_numbers}")
+        # --slide mode: ad-hoc capture by file + slide numbers
+        if args.slide:
+            raw_numbers = args.slide_numbers
+            if not raw_numbers:
+                print("❌ Specify slide numbers (1-based) or 'all' when using --slide.")
+                print("   e.g. python scripts/take-screenshots.py --slide slides/foo.md 1 3 5")
+                print("   e.g. python scripts/take-screenshots.py --slide slides/foo.md all")
                 sys.exit(1)
 
-        take_ad_hoc_screenshots(Path(args.slide), slide_numbers, output_dir)
+            if len(raw_numbers) == 1 and raw_numbers[0].lower() == "all":
+                slide_numbers = "all"
+            else:
+                try:
+                    slide_numbers = [int(n) for n in raw_numbers]
+                except ValueError:
+                    print(f"❌ Slide numbers must be integers or 'all': {raw_numbers}")
+                    sys.exit(1)
+
+            take_ad_hoc_screenshots(Path(args.slide), slide_numbers, output_dir)
+            print("\n✅ Done!")
+            sys.exit(0)
+
+        # Theme mode: capture all configured screenshots for a theme
+        target = args.theme
+        if not target:
+            parser.print_help()
+            sys.exit(1)
+
+        if target == "all":
+            failed: list[str] = []
+            for theme in THEME_CONFIG:
+                try:
+                    process_theme(theme, output_dir)
+                except RuntimeError as error:
+                    print(f"❌ {theme}: {error}")
+                    failed.append(theme)
+            if failed:
+                print(f"\n❌ Failed themes: {', '.join(failed)}")
+                sys.exit(1)
+        elif target in THEME_CONFIG:
+            process_theme(target, output_dir)
+        else:
+            print(f"❌ Unknown theme: {target}")
+            print(f"   Available: {', '.join(sorted(THEME_CONFIG))}, all")
+            sys.exit(1)
+
         print("\n✅ Done!")
-        sys.exit(0)
-
-    # Theme mode: capture all configured screenshots for a theme
-    target = args.theme
-    if not target:
-        parser.print_help()
+    except RuntimeError as error:
+        print(f"❌ {error}")
         sys.exit(1)
-
-    if target == "all":
-        for theme in THEME_CONFIG:
-            process_theme(theme, output_dir)
-    elif target in THEME_CONFIG:
-        process_theme(target, output_dir)
-    else:
-        print(f"❌ Unknown theme: {target}")
-        print(f"   Available: {', '.join(sorted(THEME_CONFIG))}, all")
-        sys.exit(1)
-
-    print("\n✅ Done!")

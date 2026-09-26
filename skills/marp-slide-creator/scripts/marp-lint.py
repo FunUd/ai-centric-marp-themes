@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 import re
 import sys
 from dataclasses import dataclass, field
@@ -34,24 +35,55 @@ LAYOUT_REQUIREMENTS: dict[str, list[str]] = {
     "profile-layout": ["profile"],
 }
 
-# Classes that center text — bullet lists are broken on these
-CENTERED_CLASSES = {
-    "cover", "cover-wave", "cover-diagonal", "cover-noir", "cover-aurora",
-    "key-message", "align-center",
-}
+# Class semantics live in scripts/diagrams/theme_classes.py and are shipped as
+# a generated manifest, because this file is copied standalone into agent
+# directories and cannot import from scripts/. Regenerate with:
+#     python scripts/diagrams/sync-theme-classes.py
+THEME_CLASSES_PATH = Path(__file__).resolve().parent / "theme-classes.json"
 
-# Classes that are title-only or special, exempt from WEAK_TITLE checks
-EXEMPT_TITLE_CLASSES = {
-    "cover", "cover-wave", "cover-diagonal", "cover-noir", "cover-aurora",
-    "toc", "toc-focus", "key-message", "hero", "title-only", "title-elegant",
-}
+
+def _load_theme_classes() -> dict:
+    try:
+        data = json.loads(THEME_CLASSES_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        print(
+            f"[ERROR] Cannot read theme class manifest: {THEME_CLASSES_PATH}\n"
+            f"        {error}\n"
+            f"        Regenerate: python scripts/diagrams/sync-theme-classes.py",
+            file=sys.stderr,
+        )
+        raise SystemExit(1) from error
+    return data
+
+
+_THEME_CLASSES = _load_theme_classes()
+
+# Title and single-message layouts, where a bullet list is a design error.
+LIST_UNSUITABLE_CLASSES = set(_THEME_CLASSES["list_unsuitable"])
+
+# Layouts where a generic heading is intended (covers, title slides, TOCs).
+EXEMPT_TITLE_CLASSES = set(_THEME_CLASSES["title_exempt"])
+
+# Layouts where many list items are structural, not a readability problem.
+LIST_EXEMPT_CLASSES = set(_THEME_CLASSES["list_exempt"])
 
 # Max icon size in pixels before it's flagged as too large
 ICON_MAX_WIDTH_PX = 200
 
 # Readability thresholds
-MAX_RECOMMENDED_BULLETS = 5  # >= 5 items triggers BULLET_HELL
-MAX_RECOMMENDED_CHARS = 400  # Total plain text chars before DENSE_CONTENT warning
+MAX_RECOMMENDED_BULLETS = 4   # single-column bullet limit; see BULLET_MAX_PER_LAYOUT
+MIN_LABELLED_CHARS = 35       # bullet length above which a bold key label is expected
+UNLABELLED_LIST_MIN = 2       # report once this many long bullets lack labels
+MAX_RECOMMENDED_CHARS = 400   # total plain text chars before DENSE_CONTENT
+
+# Layout class -> diagram width budget (px), from the generated manifest.
+# Canonical values: scripts/diagrams/layout_spec.py::CANVAS_MAX
+DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
+    "full":  1120,   # full-width single column
+    "col2":  520,    # 2-column layouts
+    "col3":  340,    # 3-column layouts
+    "asym":  710,    # asymmetric split
+}
 
 # Regex patterns
 CLASS_DIRECTIVE_RE = re.compile(r"<!--\s*_class:\s*(.+?)\s*-->")
@@ -129,12 +161,16 @@ def parse_slides(markdown: str) -> list[SlideInfo]:
     raw_slides = SLIDE_SEPARATOR.split(markdown)
     slides: list[SlideInfo] = []
 
-    for i, raw in enumerate(raw_slides, start=1):
+    for raw in raw_slides:
         raw = raw.strip()
         if not raw:
             continue
 
-        slide = SlideInfo(number=i, raw_content=raw)
+        # Number by emitted slide, not by split index: a blank slide between two
+        # `---` separators must not shift every later number, or the reported
+        # slide no longer matches the section index Marp and the DOM extractor
+        # use for the same deck.
+        slide = SlideInfo(number=len(slides) + 1, raw_content=raw)
 
         # Strip fenced code blocks before analysis to avoid false positives
         # (e.g. SVG paths inside code examples triggering diagram/icon checks)
@@ -199,26 +235,39 @@ def lint_missing_class_directive(slide: SlideInfo) -> list[LintIssue]:
 
 
 def lint_centered_lists(slide: SlideInfo) -> list[LintIssue]:
-    """Check for bullet/numbered lists on centered-layout slides."""
+    """Check for bullet/numbered lists on title and single-message layouts.
+
+    These layouts exist to land one idea. A list either renders as centred dots
+    or dilutes the message, so it is flagged either way — including on themes
+    that deliberately left-align their covers.
+    """
     issues: list[LintIssue] = []
-    if slide.list_items and slide.classes.intersection(CENTERED_CLASSES):
-        if not slide.has_scoped_list_override:
-            centered = slide.classes.intersection(CENTERED_CLASSES)
+    if slide.list_items and not slide.has_scoped_list_override:
+        unsuitable = slide.classes.intersection(LIST_UNSUITABLE_CLASSES)
+        if unsuitable:
             issues.append(LintIssue(
                 slide=slide.number,
                 severity="ERROR",
                 code="CENTERED_LIST",
                 message=(
-                    f'Slide uses class "{", ".join(centered)}" which centers text, '
-                    f"causing bullet lists to render centered instead of left-aligned. "
-                    f"Move lists to a standard content slide or add scoped left alignment."
+                    f'Slide uses class "{", ".join(sorted(unsuitable))}", a title or '
+                    f"single-message layout that does not suit a bullet list: the list "
+                    f"either renders centered or dilutes the message. Move the list to a "
+                    f"standard content slide, or add a scoped left-align override."
                 ),
             ))
     return issues
 
 
 def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
-    """Check for SVG icons used at sizes exceeding 200px."""
+    """Check for SVG icons used at sizes exceeding 200px.
+
+    Diagrams are skipped via the same predicate `lint_diagram_embedding` uses.
+    They previously were skipped on a narrower, hard-coded pair of keywords
+    ("diagram", "chart"), so a diagram named `assets/flow.svg` was classified as
+    an icon here while being classified as a diagram there — producing a false
+    `OVERSIZED_ICON` ERROR on a correct `width:500px` two-column embed.
+    """
     issues: list[LintIssue] = []
     for alt, src in slide.images:
         if alt.startswith("bg"):
@@ -228,8 +277,7 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
         if src_path.suffix.lower() not in {".svg"}:
             continue
 
-        src_lower = src.lower()
-        if "diagram" in src_lower or "chart" in src_lower:
+        if _is_diagram_src(src):
             continue
 
         width_match = IMG_WIDTH_RE.search(alt)
@@ -260,30 +308,16 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
 
 
 # ---------------------------------------------------------------------------
-# Diagram-specific lint checks (Phase 5.1 addition)
+# Diagram classification and layout resolution
+#
+# Shared by lint_oversized_icons and lint_diagram_embedding so a file can never
+# be an icon to one check and a diagram to the other.
 # ---------------------------------------------------------------------------
 
 # Keywords that identify a path as a diagram (not an icon)
 DIAGRAM_PATH_KEYWORDS = frozenset(
     ["diagram", "chart", "flow", "arch", "seq", "state", "drawio", "mmd", "render"]
 )
-
-# Max safe diagram widths per layout class (px).
-# Canonical values: scripts/diagrams/layout_spec.py::CANVAS_MAX.
-# This file is copied to agent dirs by sync-skills.py, so the numbers are
-# mirrored here — update both places when the spec changes.
-DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
-    "full":  1120,   # full-width single column
-    "col2":  520,    # 2-column layouts
-    "col3":  340,    # 3-column layouts
-    "asym":  710,    # asymmetric split
-}
-
-# Layout class sets → layout key.
-# NOTE: split-asym / split-asym-reverse are 710px asymmetric layouts, NOT col2.
-_ASYM_CLASSES = {"split-asym", "split-asym-reverse"}
-_COL2_CLASSES = {"cols-2", "split-2", "split-glass", "glass-card-layout"}
-_COL3_CLASSES = {"cols-3", "split-3"}
 
 
 def _is_diagram_src(src: str) -> bool:
@@ -292,15 +326,26 @@ def _is_diagram_src(src: str) -> bool:
     return any(kw in src_lower for kw in DIAGRAM_PATH_KEYWORDS)
 
 
+# Layout class -> layout profile, from the generated manifest (which sources
+# scripts/diagrams/layout_spec.py::CLASS_TO_LAYOUT). One definition, so the
+# diagram width budget and the bullet-count budget can never disagree.
+DIAGRAM_LAYOUT_CLASSES: dict[str, str] = dict(_THEME_CLASSES["diagram_layout"])
+_LAYOUT_CLASSES: dict[str, set[str]] = {}
+for _cls, _profile in DIAGRAM_LAYOUT_CLASSES.items():
+    _LAYOUT_CLASSES.setdefault(_profile, set()).add(_cls)
+
+
+# Narrowest profile first: when a slide carries several layout classes the
+# tightest constraint is the one that must hold. `asym` (710px) is wider than
+# `col2` (520px), so col2 wins over asym when both appear.
+_LAYOUT_PRIORITY = ("col3", "col2", "asym")
+
+
 def _slide_layout_key(slide: SlideInfo) -> str:
     """Infer the applicable layout constraint key from the slide's _class directives."""
-    if slide.classes.intersection(_COL3_CLASSES):
-        return "col3"
-    # Asymmetric layouts must be checked BEFORE col2 (they are wider: 710px).
-    if slide.classes.intersection(_ASYM_CLASSES):
-        return "asym"
-    if slide.classes.intersection(_COL2_CLASSES):
-        return "col2"
+    for profile in _LAYOUT_PRIORITY:
+        if slide.classes.intersection(_LAYOUT_CLASSES.get(profile, ())):
+            return profile
     return "full"
 
 
@@ -364,18 +409,19 @@ def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
                     ),
                 ))
 
-        # --- Check 3: diagram on centered-layout slide ---
-        centered = slide.classes.intersection(CENTERED_CLASSES)
-        if centered:
+        # --- Check 3: diagram on a title / single-message layout ---
+        unsuitable = slide.classes.intersection(LIST_UNSUITABLE_CLASSES)
+        if unsuitable:
             issues.append(LintIssue(
                 slide=slide.number,
                 severity="WARNING",
                 code="DIAGRAM_ON_CENTERED_LAYOUT",
                 message=(
-                    f"Diagram '{src_path.name}' is placed on a centered-layout slide "
-                    f"(class: '{', '.join(centered)}'). Diagrams on centered layouts "
-                    f"may render misaligned. Consider using a standard content slide "
-                    f"or a cols-2 layout with the diagram in one column."
+                    f"Diagram '{src_path.name}' is placed on a title or single-message "
+                    f"layout (class: '{', '.join(sorted(unsuitable))}'). A diagram needs "
+                    f"a content slide with room to breathe; here it will be cramped or "
+                    f"misaligned. Use a standard content slide, or a cols-2 layout with "
+                    f"the diagram in one column."
                 ),
             ))
 
@@ -386,25 +432,26 @@ def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
 # 2. Content & Readability Checks (Severity: WARNING)
 # ==========================================
 
+# Max bullets per layout profile (3 per column, 4 for a single column).
+# Keyed by the same layout profile used for diagram widths, so the two checks
+# can never disagree about what counts as a 2- or 3-column slide.
+BULLET_MAX_PER_LAYOUT: dict[str, int] = {
+    "full": 4,
+    "col2": 6,
+    "asym": 6,   # 65/35 split still has two text columns
+    "col3": 9,
+}
+
+
 def lint_bullet_hell(slide: SlideInfo) -> list[LintIssue]:
     """Check for bullet point overload (Magic Number 3 violation)."""
     issues: list[LintIssue] = []
-    # If the slide uses 'checklist', 'timetable', 'toc*', or 'steps', multiple items are natural
-    if slide.classes.intersection({"checklist", "timetable", "toc", "toc-focus", "steps", "timeline"}):
+    # On checklists / steps / timelines / TOCs many items are the structure.
+    if slide.classes.intersection(LIST_EXEMPT_CLASSES):
         return issues
 
     count = len(slide.list_items)
-    
-    # Adapt threshold for multi-column layouts (each column can cleanly hold 3 items)
-    is_3col = bool(slide.classes.intersection({"cols-3", "split-3"}))
-    is_2col = bool(slide.classes.intersection({"cols-2", "split-2", "split-asym", "split-asym-reverse"}))
-
-    if is_3col:
-        max_allowed = 9  # 3 per column
-    elif is_2col:
-        max_allowed = 6  # 3 per column
-    else:
-        max_allowed = 4  # single column
+    max_allowed = BULLET_MAX_PER_LAYOUT[_slide_layout_key(slide)]
 
     if count > max_allowed:
         issues.append(LintIssue(
@@ -456,11 +503,11 @@ def lint_unlabeled_list(slide: SlideInfo) -> list[LintIssue]:
     for item in slide.list_items:
         # Check if item starts with bold text like **Label**: or **[Label]**
         is_labeled = item.startswith("**") or item.startswith("<b>") or item.startswith("<strong>")
-        # If not labeled and text length is substantial (> 35 chars)
-        if not is_labeled and len(item) > 35:
+        # If not labeled and text length is substantial
+        if not is_labeled and len(item) > MIN_LABELLED_CHARS:
             unlabeled_long_items += 1
 
-    if unlabeled_long_items >= 2:
+    if unlabeled_long_items >= UNLABELLED_LIST_MIN:
         issues.append(LintIssue(
             slide=slide.number,
             severity="WARNING",
@@ -486,7 +533,8 @@ def lint_dense_content(slide: SlideInfo) -> list[LintIssue]:
             severity="WARNING",
             code="DENSE_CONTENT",
             message=(
-                f"Slide body has ~{slide.plain_text_len} plain characters (recommended 200-350 max). "
+                f"Slide body has ~{slide.plain_text_len} plain characters "
+                f"(recommended {int(MAX_RECOMMENDED_CHARS * 0.5)}-{int(MAX_RECOMMENDED_CHARS * 0.875)} max). "
                 f"Excess text reduces presentation impact. Trim filler words, move background "
                 f"to presenter notes (<!-- ... -->), or split the slide."
             ),

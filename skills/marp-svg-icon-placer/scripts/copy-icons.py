@@ -19,6 +19,9 @@ import sys
 from pathlib import Path
 
 ICONS_SOURCE_DIR = Path("skills/marp-svg-icon-placer/references/icons")
+# NOTE: this script lives in marp-svg-icon-placer and requires that skill to be
+# installed alongside the caller. setup-slide-project.py mentions this script,
+# so installing marp-slide-creator alone is not enough for icon copying.
 SLIDES_BASE_DIR = Path("slides")
 
 

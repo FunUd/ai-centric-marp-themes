@@ -308,6 +308,12 @@ def test_main_theme_mode_all_iterates_every_theme(monkeypatch, tmp_path: Path, c
 
 
 def test_build_html_success_invokes_marp_cli(monkeypatch) -> None:
+    """`build_html` must build an argv list, not a shell string.
+
+    A shell string meant deck paths were re-parsed by the shell, and it is a
+    needless injection surface. The list also lets the Marp CLI version be
+    pinned.
+    """
     captured: dict = {}
 
     def fake_run(cmd, **kwargs):
@@ -319,9 +325,51 @@ def test_build_html_success_invokes_marp_cli(monkeypatch) -> None:
 
     shots.build_html(Path("deck.md"), Path("out.html"))
 
-    assert "@marp-team/marp-cli" in captured["cmd"]
-    assert str(shots.THEME_DIR) in captured["cmd"]
+    cmd = captured["cmd"]
+    assert isinstance(cmd, list), f"expected an argv list, got {type(cmd).__name__}"
+    assert all(isinstance(part, str) for part in cmd)
+    assert any(part.startswith("@marp-team/marp-cli@") for part in cmd), cmd
+    assert str(shots.THEME_DIR) in cmd
+    assert "--allow-local-files" in cmd
     assert captured["cwd"] == str(shots.WORKSPACE)
+    assert "shell" not in captured.get("kwargs", {})
+
+
+def test_build_html_uses_the_pinned_marp_cli(monkeypatch) -> None:
+    """Regression guard against reintroducing an unpinned `npx -y <pkg>`."""
+    captured: dict = {}
+
+    def fake_run(cmd, **kwargs):
+        captured["cmd"] = cmd
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(shots.subprocess, "run", fake_run)
+    shots.build_html(Path("deck.md"), Path("out.html"))
+
+    spec = next(p for p in captured["cmd"] if p.startswith("@marp-team/marp-cli"))
+    version = spec.rsplit("@", 1)[1]
+    assert version and version[0].isdigit(), f"unpinned spec: {spec}"
+    assert not version.startswith(("^", "~"))
+
+
+def test_build_html_preserves_paths_containing_spaces(monkeypatch) -> None:
+    """A deck path with a space must arrive as one argv element.
+
+    This is what the shell string used to get wrong: quoting happened to cover
+    it, but nothing in the code guaranteed it.
+    """
+    captured: dict = {}
+
+    def fake_run(cmd, **kwargs):
+        captured["cmd"] = cmd
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(shots.subprocess, "run", fake_run)
+    spaced = Path("my deck/some deck.md")
+    shots.build_html(spaced, Path("out dir/out.html"))
+
+    assert str(spaced) in captured["cmd"]
+    assert str(Path("out dir/out.html")) in captured["cmd"]
 
 
 def test_build_html_exits_on_failure(monkeypatch, capsys) -> None:
@@ -330,11 +378,8 @@ def test_build_html_exits_on_failure(monkeypatch, capsys) -> None:
 
     monkeypatch.setattr(shots.subprocess, "run", fake_run)
 
-    with pytest.raises(SystemExit) as exc:
+    with pytest.raises(RuntimeError, match="marp exploded"):
         shots.build_html(Path("deck.md"), Path("out.html"))
-
-    assert exc.value.code == 1
-    assert "marp exploded" in capsys.readouterr().out
 
 
 def test_hide_controls_applies_css_and_parks_mouse() -> None:
@@ -391,11 +436,8 @@ def test_take_screenshots_default_output_dir(monkeypatch, tmp_path: Path, monkey
 
 
 def test_list_slide_count_missing_file(capsys) -> None:
-    with pytest.raises(SystemExit) as exc:
+    with pytest.raises(RuntimeError, match="File not found"):
         shots.list_slide_count(Path("does-not-exist.md"))
-
-    assert exc.value.code == 1
-    assert "File not found" in capsys.readouterr().out
 
 
 def test_list_slide_count_prints_and_cleans_up(monkeypatch, tmp_path: Path, capsys) -> None:
@@ -417,11 +459,8 @@ def test_list_slide_count_prints_and_cleans_up(monkeypatch, tmp_path: Path, caps
 
 
 def test_ad_hoc_missing_file_exits(capsys) -> None:
-    with pytest.raises(SystemExit) as exc:
+    with pytest.raises(RuntimeError, match="File not found"):
         shots.take_ad_hoc_screenshots(Path("missing.md"), [1], Path("/tmp/out"))
-
-    assert exc.value.code == 1
-    assert "File not found" in capsys.readouterr().out
 
 
 def test_ad_hoc_all_selects_every_slide(monkeypatch, tmp_path: Path) -> None:
@@ -487,12 +526,8 @@ def test_ad_hoc_returns_when_no_valid_slides(monkeypatch, tmp_path: Path, capsys
 
 
 def test_process_theme_unknown_theme_exits(capsys) -> None:
-    with pytest.raises(SystemExit) as exc:
+    with pytest.raises(RuntimeError, match="Unknown theme: not-a-theme"):
         shots.process_theme("not-a-theme")
-
-    assert exc.value.code == 1
-    assert "Unknown theme: not-a-theme" in capsys.readouterr().out
-    assert "nebula-glass" in capsys.readouterr().out or True  # available list printed
 
 
 def test_process_theme_runs_pipeline_and_cleans_temp(monkeypatch, tmp_path: Path) -> None:
@@ -525,3 +560,113 @@ def test_cli_help_exits_zero() -> None:
 
     assert result.returncode == 0
     assert "Capture screenshots of Marp slides" in result.stdout
+
+
+def test_cli_help_lists_every_configured_theme() -> None:
+    """The help text must not go stale as themes are added to THEME_CONFIG."""
+    result = subprocess.run(
+        [sys.executable, str(SCRIPTS_DIR / "take-screenshots.py"), "--help"],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+
+    for theme in shots.THEME_CONFIG:
+        assert theme in result.stdout, f"{theme} missing from --help"
+
+
+# --- screenshot registry integrity ------------------------------------------
+#
+# The registry maps (filename, 0-based slide index) pairs into sample decks.
+# Nothing stops a sample deck from gaining or losing a slide, which would
+# silently shift every index after it and produce mislabelled PNGs. These
+# tests read the real sample decks, so they fail the moment the registry drifts.
+
+
+def test_every_screenshot_index_is_within_its_deck() -> None:
+    for theme, config in shots.THEME_CONFIG.items():
+        slide_count = shots.count_markdown_slides(Path(config["slide"]))
+        for filename, index in config["screenshots"]:
+            assert 0 <= index < slide_count, (
+                f"{theme}/{filename}: index {index} out of range "
+                f"(deck has {slide_count} slides) — the sample deck changed; "
+                f"update THEME_CONFIG"
+            )
+
+
+def test_every_configured_theme_has_a_sample_deck_on_disk() -> None:
+    for theme, config in shots.THEME_CONFIG.items():
+        assert Path(config["slide"]).is_file(), f"{theme}: missing sample deck"
+
+
+def test_report_theme_registry_finds_no_problems(capsys) -> None:
+    problems = shots.report_theme_registry()
+
+    out = capsys.readouterr().out
+    assert problems == [], out
+    assert "All screenshot indices are in range" in out
+
+
+def test_report_theme_registry_flags_an_out_of_range_index(monkeypatch, capsys) -> None:
+    config = {
+        "broken": {
+            "slide": shots.THEME_CONFIG["azure-clarity"]["slide"],
+            "screenshots": [("broken.png", 9999)],
+        }
+    }
+    monkeypatch.setattr(shots, "THEME_CONFIG", config)
+
+    problems = shots.report_theme_registry()
+
+    out = capsys.readouterr().out
+    assert len(problems) == 1
+    assert "broken.png" in problems[0]
+    assert "Problems:" in out
+
+
+def test_report_theme_registry_flags_a_missing_deck(monkeypatch, capsys) -> None:
+    config = {"gone": {"slide": shots.WORKSPACE / "nope.md", "screenshots": []}}
+    monkeypatch.setattr(shots, "THEME_CONFIG", config)
+
+    problems = shots.report_theme_registry()
+
+    assert len(problems) == 1
+    assert "sample deck not found" in problems[0]
+    assert "sample deck not found" in capsys.readouterr().out
+
+
+def test_main_list_themes_mode_exits_zero(monkeypatch, capsys) -> None:
+    """--list-themes must work without Marp CLI or a browser."""
+    assert _runpy_main(monkeypatch, "--list-themes") == 0
+
+    out = capsys.readouterr().out
+    assert "screenshots across" in out
+    assert "All screenshot indices are in range" in out
+
+
+def test_list_themes_reports_drift_as_a_failure(monkeypatch, capsys) -> None:
+    """A drifted registry must be reported as a failure so it can gate CI.
+
+    Called directly rather than through runpy: run_path re-executes the module
+    in a fresh namespace, so monkeypatching the already-imported copy's
+    THEME_CONFIG would not be visible to it.
+    """
+    config = {
+        "broken": {
+            "slide": shots.THEME_CONFIG["azure-clarity"]["slide"],
+            "screenshots": [("broken.png", 9999)],
+        }
+    }
+    monkeypatch.setattr(shots, "THEME_CONFIG", config)
+
+    assert shots.report_theme_registry() != []
+    assert "Problems:" in capsys.readouterr().out
+
+
+def test_count_markdown_slides_matches_the_real_sample_deck() -> None:
+    # 30 slides at the time of writing: 31 `---` separators (2 frontmatter + 29 slide breaks).
+    # Assert a lower bound so appending a slide does not break the contract;
+    # index drift itself is guarded by test_every_screenshot_index_is_within_its_deck.
+    deck = shots.THEME_CONFIG["azure-clarity"]["slide"]
+    assert shots.count_markdown_slides(Path(deck)) >= 30

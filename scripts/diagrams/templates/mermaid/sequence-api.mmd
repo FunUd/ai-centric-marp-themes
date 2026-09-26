@@ -11,9 +11,8 @@ sequenceDiagram
     activate Auth
     Auth-->>API: 検証OK (UserID)
     deactivate Auth
-    API->>DB: 注文レコード作成
+    API->>DB: 注文レコード作成 → 注文ID返却
     activate DB
-    DB-->>API: 注文ID返却
     deactivate DB
     API-->>Client: 201 Created
     deactivate API
