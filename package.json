@@ -1,0 +1,12 @@
+{
+  "name": "ai-centric-marp-themes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pinned Node tooling used by the diagram renderer and screenshot scripts. Not an npm package; this file exists so `npx` resolves a known version instead of whatever is latest.",
+  "license": "MIT",
+  "//": "Keep in sync with PINNED_VERSIONS in scripts/diagrams/tool_versions.py, which the Python call sites read. Overridable at runtime via MARP_CLI_SPEC / MERMAID_CLI_SPEC.",
+  "devDependencies": {
+    "@marp-team/marp-cli": "4.2.3",
+    "@mermaid-js/mermaid-cli": "12.0.0"
+  }
+}

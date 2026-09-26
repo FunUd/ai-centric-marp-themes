@@ -50,7 +50,13 @@ def spec_for(package: str) -> str:
     override = ENV_OVERRIDES.get(package)
     if override and os.environ.get(override):
         return os.environ[override]
-    return f"{package}@{PINNED_VERSIONS[package]}"
+    try:
+        version = PINNED_VERSIONS[package]
+    except KeyError as error:
+        raise ValueError(
+            f"unknown package {package!r}; pinned: {sorted(PINNED_VERSIONS)}"
+        ) from error
+    return f"{package}@{version}"
 
 
 def declared_devdependencies() -> dict[str, str]:
@@ -58,8 +64,23 @@ def declared_devdependencies() -> dict[str, str]:
         return {}
     import json
 
-    data = json.loads(PACKAGE_JSON.read_text(encoding="utf-8"))
-    return dict(data.get("devDependencies", {}))
+    try:
+        data = json.loads(PACKAGE_JSON.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise RuntimeError(f"cannot read {PACKAGE_JSON}: {error}") from error
+    deps = data.get("devDependencies", {})
+    if not isinstance(deps, dict):
+        raise RuntimeError(f"{PACKAGE_JSON} devDependencies is not an object")
+    return dict(deps)
+
+
+def _npx_executable() -> str:
+    found = shutil.which("npx") or shutil.which("npx.cmd")
+    if found:
+        return found
+    # On Windows CreateProcess does not consult PATHEXT, so bare "npx" raises
+    # FileNotFoundError. Prefer npx.cmd there.
+    return "npx.cmd" if os.name == "nt" else "npx"
 
 
 def npx_command(package: str, *args: str) -> list[str]:
@@ -69,13 +90,12 @@ def npx_command(package: str, *args: str) -> list[str]:
     ``subprocess`` raises ``FileNotFoundError`` because CreateProcess does not
     consult PATHEXT.
     """
-    npx = shutil.which("npx") or shutil.which("npx.cmd") or "npx"
-    return [npx, "--yes", spec_for(package), *args]
+    return [_npx_executable(), "--yes", spec_for(package), *args]
 
 
 def installed_version(package: str) -> str | None:
     """Version ``npx`` currently resolves, or None if it cannot be determined."""
-    npx = shutil.which("npx") or shutil.which("npx.cmd") or "npx"
+    npx = _npx_executable()
     try:
         result = subprocess.run(
             [npx, "--yes", spec_for(package), "--version"],
@@ -89,7 +109,13 @@ def installed_version(package: str) -> str | None:
         return None
     if result.returncode != 0:
         return None
-    for token in result.stdout.split():
-        if token and token[0].isdigit():
-            return token.lstrip("v")
-    return None
+    # npm may print warnings before the version; take the last version-like token.
+    found: str | None = None
+    for token in result.stdout.strip().split():
+        cleaned = token.strip().lstrip("v").rstrip(",;")
+        if cleaned and cleaned[0].isdigit() and all(c.isdigit() or c == "." for c in cleaned.split("-")[0].replace(".", "")):
+            # Accept dotted numeric versions like 4.2.3; ignore progress noise.
+            parts = cleaned.split(".")
+            if all(p.isdigit() for p in parts[:2]):
+                found = cleaned
+    return found
