@@ -22,6 +22,7 @@ on:
       - "assets/**"
       - ".github/workflows/**"
       - "README.md"
+      - "package.json"
   pull_request:
     paths:
       - "themes/**"
@@ -31,6 +32,7 @@ on:
       - "assets/**"
       - ".github/workflows/**"
       - "README.md"
+      - "package.json"
   workflow_dispatch:
 
 jobs:
@@ -91,6 +93,9 @@ jobs:
         # skill works outside this repository. Keep it byte-identical.
         run: python scripts/sync-skill-vendor.py --check
 
+      - name: Check skill sync state
+        run: python scripts/sync-skills.py --check
+
       - name: Check template catalog sync
         run: python scripts/diagrams/check-catalog-sync.py
 
@@ -117,10 +122,11 @@ jobs:
             python skills/marp-slide-creator/scripts/marp-lint.py "$deck" --structural-only
           done
 
-  # Windows covers what ubuntu cannot: cp932 console handling and the npx.cmd
-  # invocation shape in tool_versions.py. Browser + mermaid runs stay on
-  # ubuntu (faster, cached); here stdlib-only checks plus the offline
-  # template gate.
+  # Windows covers what ubuntu cannot: cp932 console handling.
+  # Browser + mermaid runs stay on ubuntu (faster, cached); here stdlib-only
+  # checks plus the offline template gate. Note: this job runs
+  # check-templates.py --skip-mermaid and never invokes npx, so the npx.cmd
+  # resolution shape is covered by unit tests, not by this runner.
   windows-checks:
     runs-on: windows-latest
     timeout-minutes: 30
@@ -160,6 +166,9 @@ jobs:
 
       - name: Check vendored diagram engine is in sync
         run: python scripts/sync-skill-vendor.py --check
+
+      - name: Check skill sync state
+        run: python scripts/sync-skills.py --check
 
       - name: Check template catalog sync
         run: python scripts/diagrams/check-catalog-sync.py

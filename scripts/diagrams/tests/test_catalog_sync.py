@@ -77,6 +77,47 @@ def test_mentions_in_extracts_template_filenames(tmp_path: Path) -> None:
     assert catalog.mentions_in(doc) == {"revenue-pie.json", "alpha.mmd", "beta.drawio"}
 
 
+def test_mentions_in_scopes_readme_to_the_templates_table(tmp_path: Path) -> None:
+    """Regression: the README documents other JSON files (`theme-classes.json`,
+    `theme-styles/*.json`). Scanning the whole document reported them as stale
+    templates and failed the gate."""
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        "## Project Structure\n"
+        "`scripts/theme-classes.json` and `assets/theme-styles/azure.json` are not templates.\n"
+        "\n"
+        "### Available Templates\n"
+        "\n"
+        "| Template | Engine |\n"
+        "|---|---|\n"
+        "| `flowchart-linear.mmd` | Mermaid |\n"
+        "\n"
+        "## Next Section\n"
+        "Mentioning `other.drawio` here must not count.\n",
+        encoding="utf-8",
+    )
+
+    assert catalog.mentions_in(readme) == {"flowchart-linear.mmd"}
+
+
+def test_mentions_in_returns_empty_when_readme_has_no_templates_table(tmp_path: Path) -> None:
+    readme = tmp_path / "README.md"
+    readme.write_text("No table here, just a stray `thing.mmd` mention.\n", encoding="utf-8")
+
+    assert catalog.mentions_in(readme) == set()
+
+
+def test_mentions_in_reads_table_up_to_the_next_heading(tmp_path: Path) -> None:
+    """The table must not bleed into whatever follows it."""
+    readme = tmp_path / "README.md"
+    readme.write_text(
+        "### Available Templates\n\n| a.mmd |\n\n### Lint Integration\n\n`b.mmd` is prose.\n",
+        encoding="utf-8",
+    )
+
+    assert catalog.mentions_in(readme) == {"a.mmd"}
+
+
 def test_main_passes_against_real_repository(capsys) -> None:
     """The repo itself must stay in sync (this is the CI gate)."""
     assert catalog.main() == 0
@@ -92,7 +133,12 @@ def _fake_sources(tmp_path: Path, catalog_text: str, readme_text: str) -> Path:
     catalog_path = tmp_path / "template-catalog.md"
     catalog_path.write_text(catalog_text, encoding="utf-8")
     readme_path = tmp_path / "README.md"
-    readme_path.write_text(readme_text, encoding="utf-8")
+    # Wrap README content in the Available Templates table the script scans,
+    # so fixtures describe templates rather than prose.
+    readme_path.write_text(
+        f"{catalog.README_TABLE_HEADING}\n\n{readme_text}\n",
+        encoding="utf-8",
+    )
     return script_dir, catalog_path, readme_path
 
 
@@ -139,7 +185,7 @@ def test_main_passes_when_all_sources_agree(monkeypatch, tmp_path: Path, capsys)
     script_dir, catalog_path, readme_path = _fake_sources(
         tmp_path,
         catalog_text="on-disk.mmd\n",
-        readme_text="on-disk.mmd\n",
+        readme_text="| `on-disk.mmd` | Mermaid |\n",
     )
     monkeypatch.setattr(catalog, "SCRIPT_DIR", script_dir)
     monkeypatch.setattr(catalog, "CATALOG_PATH", catalog_path)

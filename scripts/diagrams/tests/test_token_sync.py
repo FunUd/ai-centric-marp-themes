@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -33,12 +34,65 @@ def _theme(name: str) -> dict:
 
 
 def test_sync_check_passes_for_all_themes() -> None:
+    """`--check` must find zero drift in every synced field.
+
+    Probes a deep copy with the write path (`apply_to`), so this asserts the
+    same contract CI enforces: colors, shapes, effects, signature and the
+    derived draw.io styles all agree with `themes/*.css`.
+    """
+    import copy
+    import json
+
     for theme in ("azure-clarity", "crimson-clarity", "prism-edge", "nebula-glass", "warm-sunnyday", "slate-minimal"):
         css_text = (sync_mod.THEMES_DIR / sync_mod.THEME_FILES[theme]).read_text(encoding="utf-8")
         vars_ = sync_mod.parse_root_vars(css_text)
-        existing = __import__("json").loads((sync_mod.STYLES_DIR / f"{theme}.json").read_text(encoding="utf-8"))
+        existing = json.loads((sync_mod.STYLES_DIR / f"{theme}.json").read_text(encoding="utf-8"))
         updates = sync_mod.build_updates(theme, vars_, css_text, existing)
-        assert existing.get("signature") == updates["signature"], theme
+        probe = copy.deepcopy(existing)
+        assert sync_mod.apply_to(probe, updates) == [], theme
+        assert probe == existing, f"{theme}: --check probe mutated the document"
+
+
+def test_sync_check_detects_non_signature_color_drift() -> None:
+    """Regression: `--check` used to compare only `signature`, so a CSS color
+    change that leaves the signature untouched passed CI while
+    `theme-styles/*.json` went stale. Every color key must be gated."""
+    import copy
+    import json
+
+    theme = "azure-clarity"
+    css_text = (sync_mod.THEMES_DIR / sync_mod.THEME_FILES[theme]).read_text(encoding="utf-8")
+    vars_ = sync_mod.parse_root_vars(css_text)
+    existing = json.loads((sync_mod.STYLES_DIR / f"{theme}.json").read_text(encoding="utf-8"))
+    updates = sync_mod.build_updates(theme, vars_, css_text, existing)
+
+    # `text` is not part of `signature`, so the old gate would stay silent.
+    assert "text" not in updates["signature"]
+
+    drifted = copy.deepcopy(existing)
+    drifted["colors"]["text"] = "#123456"
+    changes = sync_mod.apply_to(drifted, updates)
+    assert any(line.startswith("colors.text: #123456 -> ") for line in changes), changes
+
+
+def test_sync_check_detects_css_side_color_drift_and_drawio_cascade() -> None:
+    """A CSS-side edit must surface the color *and* the draw.io style derived
+    from it, so the gate can never report clean while the JSON is stale."""
+    import copy
+    import json
+
+    theme = "azure-clarity"
+    css_path = sync_mod.THEMES_DIR / sync_mod.THEME_FILES[theme]
+    css_text = css_path.read_text(encoding="utf-8")
+    existing = json.loads((sync_mod.STYLES_DIR / f"{theme}.json").read_text(encoding="utf-8"))
+
+    edited = re.sub(r"(--ac-text:\s*)#[0-9A-Fa-f]{6}", r"\g<1>#123456", css_text, count=1)
+    assert edited != css_text, "fixture edit did not apply"
+    updates = sync_mod.build_updates(theme, sync_mod.parse_root_vars(edited), edited, existing)
+
+    changes = sync_mod.apply_to(copy.deepcopy(existing), updates)
+    assert any(line.startswith("colors.text: ") for line in changes), changes
+    assert any(line.startswith("drawio.primaryNodeStyle synced") for line in changes), changes
 
 
 def test_gradient_defs_present_for_light_themes() -> None:

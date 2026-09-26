@@ -157,6 +157,17 @@ def main() -> int:
 
     # 1. Manifest completeness — the gate must never have blind spots.
     problems: list[str] = []
+    try:
+        from layout_spec import LAYOUTS as _LAYOUTS
+    except (ImportError, OSError):
+        _LAYOUTS = ("full", "col2", "asym", "col3")
+    for name, layouts in ALLOWED_LAYOUTS.items():
+        for layout in layouts:
+            if layout not in _LAYOUTS:
+                problems.append(
+                    f"[LAYOUT] ALLOWED_LAYOUTS[{name!r}] has unknown layout {layout!r} "
+                    f"(expected one of {list(_LAYOUTS)})."
+                )
     for name in undeclared(on_disk):
         problems.append(
             f"[UNDECLARED] templates/{name} is not in check-templates.py::ALLOWED_LAYOUTS — "

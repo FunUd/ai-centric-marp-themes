@@ -292,7 +292,15 @@ def test_render_mermaid_success_postprocesses_output(monkeypatch, tmp_path: Path
 
     assert ok is True
     cmd = calls[0]
-    assert cmd[0] == "npx" and "@mermaid-js/mermaid-cli" in cmd
+    # argv list, pinned to an exact version, no shell.
+    assert isinstance(cmd, list) and all(isinstance(part, str) for part in cmd)
+    import os
+
+    assert os.path.basename(cmd[0]).lower().startswith("npx"), cmd
+    spec = next(part for part in cmd if part.startswith("@mermaid-js/mermaid-cli"))
+    assert spec.count("@") == 2, f"unpinned mermaid spec: {spec}"
+    version = spec.rsplit("@", 1)[1]
+    assert version[0].isdigit() and not version.startswith(("^", "~")), spec
     # The mermaid config written for the CLI carries the theme tokens.
     assert configs[0] == AZURE.get("mermaid", {})
     written = output.read_text(encoding="utf-8")

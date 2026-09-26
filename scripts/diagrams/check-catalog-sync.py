@@ -25,21 +25,54 @@ README_PATH = ROOT_DIR / "README.md"
 
 def templates_on_disk() -> set[str]:
     found: set[str] = set()
+    seen_basename: dict[str, str] = {}
     for pattern in ("mermaid/*.mmd", "drawio/*.drawio", "charts/*.json", "concepts/*.json", "organization/*.json"):
         for path in sorted((SCRIPT_DIR / "templates").glob(pattern)):
+            # Basename is the registry key used by README/catalog tables.
+            # Two different directories must never share one.
+            if path.name in seen_basename and seen_basename[path.name] != pattern:
+                raise RuntimeError(
+                    f"duplicate template basename {path.name!r} in {seen_basename[path.name]} and {pattern}"
+                )
+            seen_basename[path.name] = pattern
             found.add(path.name)
     return found
 
 
+TEMPLATE_RE = re.compile(r"[\w-]+\.(?:mmd|drawio|json)")
+
+# The README mentions plenty of JSON files that are not templates
+# (`theme-classes.json`, `theme-styles/*.json`), so only the Available
+# Templates table is scanned. Anchoring on the heading keeps a new unrelated
+# `*.json` mention elsewhere in the README out of this check.
+README_TABLE_HEADING = "### Available Templates"
+
+
 def mentions_in(path: Path) -> set[str]:
-    text = path.read_text(encoding="utf-8")
-    return set(re.findall(r"[\w-]+\.(?:mmd|drawio|json)", text))
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, ValueError) as error:
+        raise RuntimeError(f"cannot read {path}: {error}") from error
+    if path.name == "README.md":
+        start = text.find(README_TABLE_HEADING)
+        if start == -1:
+            return set()
+        # The table runs until the next heading of any level.
+        rest = text[start + len(README_TABLE_HEADING):]
+        end = re.search(r"^#{1,6}\s", rest, re.MULTILINE)
+        section = rest[: end.start()] if end else rest
+        return set(TEMPLATE_RE.findall(section))
+    return set(TEMPLATE_RE.findall(text))
 
 
 def main() -> int:
-    on_disk = templates_on_disk()
-    raw_catalog = mentions_in(CATALOG_PATH)
-    raw_readme = mentions_in(README_PATH)
+    try:
+        on_disk = templates_on_disk()
+        raw_catalog = mentions_in(CATALOG_PATH)
+        raw_readme = mentions_in(README_PATH)
+    except (OSError, ValueError, RuntimeError) as error:
+        print(f"FAILED: cannot read inputs: {error}", file=sys.stderr)
+        return 1
 
     errors: list[str] = []
     for name in sorted(on_disk - raw_catalog):
