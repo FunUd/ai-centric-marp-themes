@@ -1,0 +1,10 @@
+# Binary assets: keep line-ending conversion and diff off.
+*.png binary
+*.jpg binary
+*.ttf binary
+*.html binary -diff
+
+# Screenshots are regenerable via `python scripts/take-screenshots.py all`.
+# Uncomment to use Git LFS if clone size becomes a problem:
+# assets/screenshots/*.png filter=lfs diff=lfs merge=lfs -text
+# assets/fonts/*.ttf filter=lfs diff=lfs merge=lfs -text
