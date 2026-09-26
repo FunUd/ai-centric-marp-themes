@@ -4,12 +4,17 @@ Marp Theme Screenshot Script
 Generates HTML with Marp CLI and captures each slide with Playwright.
 
 Usage:
-  # Capture all screenshots for a theme
+  # Capture every configured screenshot for one theme
   python scripts/take-screenshots.py nebula-glass
   python scripts/take-screenshots.py prism-edge
   python scripts/take-screenshots.py azure-clarity
   python scripts/take-screenshots.py crimson-clarity
+  python scripts/take-screenshots.py slate-minimal
+  python scripts/take-screenshots.py warm-sunnyday
   python scripts/take-screenshots.py all
+
+  # List which themes have configured screenshots
+  python scripts/take-screenshots.py --list-themes
 
   # Specify a slide file and slide numbers directly (1-based)
   python scripts/take-screenshots.py --slide slides/sample-slide/nebula-glass-sample.md 1
@@ -29,6 +34,20 @@ import sys
 import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+
+# The pinned Node tool versions live with the diagram engine.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "diagrams"))
+from tool_versions import npx_command  # noqa: E402
+
+MARP_CLI = "@marp-team/marp-cli"
+
+# Windows consoles default to cp932, which cannot encode the status emoji this
+# script prints. Force UTF-8 so the run does not die on its own progress output.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError, ValueError):
+        pass
 
 WORKSPACE = Path(__file__).parent.parent
 THEME_DIR = WORKSPACE / "themes"
@@ -74,6 +93,7 @@ THEME_CONFIG = {
             ("prism-edge-cover-diagonal.png", 1),   # cover-diagonal
             ("prism-edge-cover-noir.png",     2),   # cover-noir
             ("prism-edge-title-elegant.png",  8),   # title-elegant
+            ("prism-edge-accent.png",         9),   # accent-left
             ("prism-edge-cols.png",           15),  # cols-2
             ("prism-edge-grid.png",           17),  # grid-sharp
             ("prism-edge-callout.png",        21),  # callout (with-header dense)
@@ -119,18 +139,60 @@ THEME_CONFIG = {
             ("crimson-clarity-profile.png",  29),  # profile
         ],
     },
+    "slate-minimal": {
+        "slide": WORKSPACE / "slides/sample-slide/slate-minimal-sample.md",
+        "screenshots": [
+            ("slate-minimal-cover.png",       0),  # cover
+            ("slate-minimal-agenda.png",      1),  # toc-focus
+            ("slate-minimal-profile.png",     2),  # profile
+            ("slate-minimal-grid.png",        5),  # grid-sharp
+            ("slate-minimal-cols.png",        6),  # split-2
+            ("slate-minimal-callout.png",     9),  # cols-3 + callouts
+            ("slate-minimal-timeline.png",   10),  # timeline
+            ("slate-minimal-key-message.png",11),  # key-message
+        ],
+    },
+    "warm-sunnyday": {
+        "slide": WORKSPACE / "slides/sample-slide/warm-sunnyday-sample.md",
+        "screenshots": [
+            ("warm-sunnyday-cover.png",    0),  # cover
+            ("warm-sunnyday-profile.png", 2),  # profile
+            ("warm-sunnyday-cols.png",     3),  # cols-2
+            ("warm-sunnyday-steps.png",    7),  # steps
+            ("warm-sunnyday-callouts.png", 8),  # callout (dense)
+        ],
+    },
 }
 
 
 def build_html(slide_md: Path, output_html: Path):
     """Generate HTML from a Marp Markdown file using Marp CLI."""
     print(f"  📄 Generating HTML: {slide_md.name} ...")
-    cmd = (
-        f'npx @marp-team/marp-cli "{slide_md}" '
-        f'--output "{output_html}" '
-        f'--html --theme-set "{THEME_DIR}" --allow-local-files'
-    )
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(WORKSPACE), shell=True)
+    # argv list, not a shell string: deck paths legitimately contain spaces and
+    # brackets, and a shell would also re-interpret any metacharacter in them.
+    cmd = [
+        *npx_command(MARP_CLI, str(slide_md)),
+        "--output", str(output_html),
+        "--html",
+        "--theme-set", str(THEME_DIR),
+        "--allow-local-files",
+    ]
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=300,
+            cwd=str(WORKSPACE),
+        )
+    except subprocess.TimeoutExpired:
+        print("  ❌ Marp CLI timed out after 300s")
+        sys.exit(1)
+    except OSError as error:
+        print(f"  ❌ Failed to launch Marp CLI: {error}")
+        sys.exit(1)
     if result.returncode != 0:
         print(f"  ❌ Marp CLI error:\n{result.stderr}")
         sys.exit(1)
@@ -161,52 +223,108 @@ def take_screenshots(theme_name: str, html_path: Path, screenshots: list, output
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        page = browser.new_page(viewport={"width": 1280, "height": 720})
+        try:
+            page = browser.new_page(viewport={"width": 1280, "height": 720})
 
-        url = html_path.resolve().as_uri()
-        page.goto(url, wait_until="load")
-        page.wait_for_timeout(1200)  # Wait for bespoke.js initialization
+            url = html_path.resolve().as_uri()
+            page.goto(url, wait_until="load")
+            page.wait_for_timeout(1200)  # Wait for bespoke.js initialization
 
-        # Detect total slide count (prefer <section id=...> over <svg>)
-        slide_count = page.evaluate(
-            "() => { "
-            "  const sections = document.querySelectorAll('section[id]'); "
-            "  if (sections.length > 0) return sections.length; "
-            "  return document.querySelectorAll('svg').length; "
-            "}"
-        )
-        print(f"  📊 Total slides: {slide_count}")
+            # Detect total slide count (prefer <section id=...> over <svg>)
+            slide_count = page.evaluate(
+                "() => { "
+                "  const sections = document.querySelectorAll('section[id]'); "
+                "  if (sections.length > 0) return sections.length; "
+                "  return document.querySelectorAll('svg').length; "
+                "}"
+            )
+            print(f"  📊 Total slides: {slide_count}")
 
-        # Click body to ensure keyboard focus
-        page.click("body")
-        page.wait_for_timeout(200)
+            # Click body to ensure keyboard focus
+            page.click("body")
+            page.wait_for_timeout(200)
 
-        # Hide control UI before starting
-        hide_controls(page)
-
-        current_index = 0
-
-        for filename, slide_index in sorted_shots:
-            if slide_index >= slide_count:
-                print(f"  ⚠️  Slide {slide_index + 1} does not exist (total: {slide_count})")
-                continue
-
-            # Advance from current position to target slide using ArrowRight
-            steps = slide_index - current_index
-            for _ in range(steps):
-                page.keyboard.press("ArrowRight")
-                page.wait_for_timeout(150)
-
-            current_index = slide_index
-
-            # Re-apply control hiding after transition (bespoke may re-inject UI)
+            # Hide control UI before starting
             hide_controls(page)
 
-            out_path = out_dir / filename
-            page.screenshot(path=str(out_path))
-            print(f"  📸 {filename} (slide {slide_index + 1}/{slide_count})")
+            current_index = 0
 
-        browser.close()
+            for filename, slide_index in sorted_shots:
+                if slide_index >= slide_count:
+                    print(f"  ⚠️  Slide {slide_index + 1} does not exist (total: {slide_count})")
+                    continue
+
+                # Advance from current position to target slide using ArrowRight
+                steps = slide_index - current_index
+                for _ in range(steps):
+                    page.keyboard.press("ArrowRight")
+                    page.wait_for_timeout(150)
+
+                current_index = slide_index
+
+                # Re-apply control hiding after transition (bespoke may re-inject UI)
+                hide_controls(page)
+
+                out_path = out_dir / filename
+                page.screenshot(path=str(out_path))
+                print(f"  📸 {filename} (slide {slide_index + 1}/{slide_count})")
+        finally:
+            browser.close()
+
+
+def count_markdown_slides(slide_md: Path) -> int:
+    """Count slides from the Markdown source (no browser required).
+
+    Marp splits on a line containing only ``---``. With frontmatter the first
+    two separators are the frontmatter fences, so slide count == separators - 1.
+    """
+    text = slide_md.read_text(encoding="utf-8")
+    separators = sum(
+        1 for line in text.splitlines() if line.strip() == "---"
+    )
+    return max(separators - 1, 1)
+
+
+def report_theme_registry() -> list[str]:
+    """Print the screenshot registry and validate every slide index.
+
+    Catches the classic failure mode of this script: a sample deck gains or
+    loses a slide, the hard-coded indices silently shift, and the regenerated
+    PNGs are mislabelled without any error. Returns a list of problems.
+    """
+    problems: list[str] = []
+    total = 0
+
+    for theme in sorted(THEME_CONFIG):
+        config = THEME_CONFIG[theme]
+        slide_md = Path(config["slide"])
+        if not slide_md.is_file():
+            problems.append(f"{theme}: sample deck not found: {slide_md}")
+            print(f"❌ {theme}: sample deck not found: {slide_md}")
+            continue
+
+        slide_count = count_markdown_slides(slide_md)
+        entries = sorted(config["screenshots"], key=lambda item: item[1])
+        print(f"\n{theme}  ({slide_md.name}: {slide_count} slides, {len(entries)} screenshots)")
+        for filename, index in entries:
+            total += 1
+            in_range = 0 <= index < slide_count
+            if not in_range:
+                problems.append(
+                    f"{theme}: {filename} points at slide index {index} "
+                    f"but the deck has {slide_count} slides"
+                )
+            marker = "  " if in_range else "❌"
+            print(f"  {marker} {filename:38} slide {index + 1} of {slide_count}")
+
+    print(f"\n{total} screenshots across {len(THEME_CONFIG)} themes")
+    if problems:
+        print("\n❌ Problems:")
+        for problem in problems:
+            print(f"  - {problem}")
+    else:
+        print("✅ All screenshot indices are in range")
+    return problems
 
 
 def list_slide_count(slide_md: Path):
@@ -221,17 +339,19 @@ def list_slide_count(slide_md: Path):
         build_html(slide_md, temp_html)
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page(viewport={"width": 1280, "height": 720})
-            page.goto(temp_html.resolve().as_uri(), wait_until="load")
-            page.wait_for_timeout(1200)
-            slide_count = page.evaluate(
-                "() => { "
-                "  const sections = document.querySelectorAll('section[id]'); "
-                "  if (sections.length > 0) return sections.length; "
-                "  return document.querySelectorAll('svg').length; "
-                "}"
-            )
-            browser.close()
+            try:
+                page = browser.new_page(viewport={"width": 1280, "height": 720})
+                page.goto(temp_html.resolve().as_uri(), wait_until="load")
+                page.wait_for_timeout(1200)
+                slide_count = page.evaluate(
+                    "() => { "
+                    "  const sections = document.querySelectorAll('section[id]'); "
+                    "  if (sections.length > 0) return sections.length; "
+                    "  return document.querySelectorAll('svg').length; "
+                    "}"
+                )
+            finally:
+                browser.close()
         print(f"📊 {slide_md.name}: {slide_count} slides")
     finally:
         if temp_html.exists():
@@ -260,17 +380,19 @@ def take_ad_hoc_screenshots(slide_md: Path, slide_numbers, output_dir: Path):
         # Detect total slide count first
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page(viewport={"width": 1280, "height": 720})
-            page.goto(temp_html.resolve().as_uri(), wait_until="load")
-            page.wait_for_timeout(1200)
-            slide_count = page.evaluate(
-                "() => { "
-                "  const sections = document.querySelectorAll('section[id]'); "
-                "  if (sections.length > 0) return sections.length; "
-                "  return document.querySelectorAll('svg').length; "
-                "}"
-            )
-            browser.close()
+            try:
+                page = browser.new_page(viewport={"width": 1280, "height": 720})
+                page.goto(temp_html.resolve().as_uri(), wait_until="load")
+                page.wait_for_timeout(1200)
+                slide_count = page.evaluate(
+                    "() => { "
+                    "  const sections = document.querySelectorAll('section[id]'); "
+                    "  if (sections.length > 0) return sections.length; "
+                    "  return document.querySelectorAll('svg').length; "
+                    "}"
+                )
+            finally:
+                browser.close()
 
         # Build list of 0-based indices
         if slide_numbers == "all":
@@ -348,7 +470,7 @@ Examples:
     parser.add_argument(
         "theme",
         nargs="?",
-        help="Theme name (nebula-glass / prism-edge / azure-clarity / crimson-clarity / all)",
+        help=f"Theme name ({' / '.join(sorted(THEME_CONFIG))} / all)",
     )
     parser.add_argument(
         "--slide",
@@ -369,6 +491,12 @@ Examples:
         "--list", "-l",
         metavar="FILE",
         help="Print the total slide count for a file and exit",
+    )
+    parser.add_argument(
+        "--list-themes",
+        action="store_true",
+        help="Print the screenshot registry (theme, slide count, entries) and "
+             "verify every index is in range. Exits 1 if any entry is invalid.",
     )
 
     args = parser.parse_args()
@@ -396,6 +524,11 @@ if __name__ == "__main__":
     if args.list:
         list_slide_count(Path(args.list))
         sys.exit(0)
+
+    # --list-themes mode: report the screenshot registry and its integrity
+    if args.list_themes:
+        missing = report_theme_registry()
+        sys.exit(1 if missing else 0)
 
     # --slide mode: ad-hoc capture by file + slide numbers
     if args.slide:
@@ -428,7 +561,11 @@ if __name__ == "__main__":
     if target == "all":
         for theme in THEME_CONFIG:
             process_theme(theme, output_dir)
-    else:
+    elif target in THEME_CONFIG:
         process_theme(target, output_dir)
+    else:
+        print(f"❌ Unknown theme: {target}")
+        print(f"   Available: {', '.join(sorted(THEME_CONFIG))}, all")
+        sys.exit(1)
 
     print("\n✅ Done!")

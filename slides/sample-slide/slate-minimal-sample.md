@@ -139,8 +139,7 @@ p  { font-size: 21px; color: var(--text-muted); }
 </div>
 <div class="col">
 
-<!-- ![shadow](https://dummyimage.com/800x600/e2e8f0/94a3b8.png&text=Architecture) -->
-![assets](./assets/sample_image.jpg)
+![sample image width:600px](./assets/sample_image.jpg)
 
 </div>
 </div>

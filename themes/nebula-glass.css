@@ -118,6 +118,7 @@ section h1 {
   background: linear-gradient(135deg, #FFFFFF 56%, rgba(255,255,255,0.56) 80%, rgba(255,255,255,0.28));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 section h2 {
@@ -270,6 +271,7 @@ section pre {
   border: 1px solid var(--ng-glass-border-strong);
   border-radius: var(--ng-radius-lg);
   padding: 30px;
+  -webkit-backdrop-filter: var(--ng-glass-blur);
   backdrop-filter: var(--ng-glass-blur);
   margin: 24px 0;
   box-shadow:
@@ -290,6 +292,7 @@ section blockquote {
   margin: 30px 0;
   padding: 28px 36px;
   border-radius: 0 var(--ng-radius-lg) var(--ng-radius-lg) 0;
+  -webkit-backdrop-filter: var(--ng-glass-blur);
   backdrop-filter: var(--ng-glass-blur);
   box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.6);
 }
@@ -306,8 +309,11 @@ section blockquote p {
    Layout Classes
    ============================================================ */
 
-/* Cover Nebula — Refined & Architectural */
-section.cover-nebula {
+/* Cover Nebula — Refined & Architectural
+   `cover` is accepted as an alias so a deck can switch themes without editing
+   its class directives; nebula-glass has a single cover design. */
+section.cover-nebula,
+section.cover {
   justify-content: center;
   align-items: flex-start;
   text-align: left;
@@ -323,27 +329,33 @@ section.cover-nebula {
 
 /* cover-nebula ではヘッダー・フッター・ページ番号を非表示 */
 section.cover-nebula header,
-section.cover-nebula footer {
+section.cover-nebula footer,
+section.cover header,
+section.cover footer {
   display: none;
 }
 
-section.cover-nebula::after {
+section.cover-nebula::after,
+section.cover::after {
   display: none;
 }
 
-section.cover-nebula h1 {
+section.cover-nebula h1,
+section.cover h1 {
   font-size: 76px;
   margin-bottom: 14px;
   max-width: 13ch;
   background: linear-gradient(135deg, #FFFFFF 58%, rgba(255,255,255,0.5) 82%, rgba(255,255,255,0.28));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
   letter-spacing: -0.04em;
   line-height: 1.05;
   text-shadow: none;
 }
 
-section.cover-nebula h2 {
+section.cover-nebula h2,
+section.cover h2 {
   font-size: 18px;
   font-weight: 500;
   text-transform: uppercase;
@@ -356,7 +368,8 @@ section.cover-nebula h2 {
   opacity: 0.9;
 }
 
-section.cover-nebula p {
+section.cover-nebula p,
+section.cover p {
   color: var(--ng-text-muted);
   font-size: 0.88em;
   margin-top: 34px;
@@ -375,6 +388,7 @@ section.glass-card-layout .card {
   border: 1px solid var(--ng-glass-border-strong);
   border-radius: var(--ng-radius-lg);
   padding: 56px 72px;
+  -webkit-backdrop-filter: var(--ng-glass-blur);
   backdrop-filter: var(--ng-glass-blur);
   box-shadow:
     0 40px 80px -34px rgba(0, 0, 0, 0.72),
@@ -409,6 +423,7 @@ section.split-glass .glass-panel {
   border: 1px solid var(--ng-glass-border-strong);
   border-radius: var(--ng-radius-lg);
   padding: 32px 30px;
+  -webkit-backdrop-filter: var(--ng-glass-blur);
   backdrop-filter: var(--ng-glass-blur);
   box-shadow:
     0 24px 52px -26px rgba(0, 0, 0, 0.64),
@@ -457,6 +472,7 @@ section.steps li::before {
     inset 0 0 0 1px rgba(255, 255, 255, 0.02),
     0 0 18px rgba(139, 92, 246, 0.18);
   font-family: 'Nebula Header', sans-serif;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -543,6 +559,7 @@ section.cols-3 .col {
   border: 1px solid var(--ng-glass-border);
   border-radius: var(--ng-radius-lg);
   padding: 30px 34px;
+  -webkit-backdrop-filter: var(--ng-glass-blur);
   backdrop-filter: var(--ng-glass-blur);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
@@ -577,6 +594,7 @@ section.grid-quadrant .cell {
   border: 1px solid var(--ng-glass-border);
   border-radius: var(--ng-radius-lg);
   padding: 26px 30px;
+  -webkit-backdrop-filter: var(--ng-glass-blur);
   backdrop-filter: var(--ng-glass-blur);
   display: flex;
   flex-direction: column;
@@ -670,19 +688,20 @@ section.grid-quadrant.axes .cell:nth-of-type(4) {
    Utilities
    ============================================================ */
 
-.gradient-text {
+section .gradient-text {
   background: linear-gradient(90deg, #C4B5FD 0%, #93C5FD 48%, #67E8F9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-weight: 700;
 }
 
-.glow-violet {
+section .glow-violet {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
   filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.6)) drop-shadow(0 0 14px rgba(139, 92, 246, 0.22));
 }
-.glow-cyan {
+section .glow-cyan {
   color: var(--ng-secondary) !important;
   -webkit-text-fill-color: var(--ng-secondary) !important;
   filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.45));
@@ -731,6 +750,12 @@ section::after {
 section.no-header header   { display: none; }
 section.no-footer footer   { display: none; }
 section.no-pagination::after { display: none; }
+
+/* Move the page number to the bottom-left, matching the other themes. */
+section.pagination-left::after {
+  right: auto;
+  left: 40px;
+}
 
 /* headerがある場合はpaddingを増やしてタイトルが被らないようにする */
 /* headerがない場合はデフォルトのpadding-top: 60pxのままタイトルが上に詰まる */
@@ -945,7 +970,7 @@ section.timeline ol li::before {
   position: absolute;
   left: 0;
   top: 0;
-  transform: translateY(calc(0.5lh - 50%));
+  transform: translateY(calc(0.5em - 50%));
   width: 14px;
   height: 14px;
   background: var(--ng-bg);
@@ -1014,6 +1039,7 @@ section .callout {
   margin: 16px 0;
   border-left: 3px solid var(--ng-primary);
   background: rgba(16, 21, 37, 0.62);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-radius: 0 var(--ng-radius-lg) var(--ng-radius-lg) 0;
   font-size: 0.9em;
@@ -1167,9 +1193,18 @@ section.text-left,  section .text-left  { text-align: left; }
 section.text-center, section .text-center { text-align: center; }
 section.text-right, section .text-right { text-align: right; }
 
+/* `align-*` is the whole-slide form of the same idea; kept so the utility works
+   identically in every theme. */
+section.align-left,   section .align-left   { text-align: left !important; }
+section.align-center, section .align-center { text-align: center !important; }
+section.align-right,  section .align-right  { text-align: right !important; }
+
 section.v-top    { justify-content: flex-start; }
 section.v-center { justify-content: center; }
 section.v-bottom { justify-content: flex-end; }
+/* `v-middle` is the documented alias of `v-center`; kept so the utility works
+   identically in every theme. */
+section.v-middle { justify-content: center; }
 
 /* ============================================================
    Color Utilities
@@ -1177,8 +1212,18 @@ section.v-bottom { justify-content: flex-end; }
 section .text-violet { color: #A78BFA !important; -webkit-text-fill-color: #A78BFA !important; }
 section .text-cyan   { color: #67E8F9 !important; -webkit-text-fill-color: #67E8F9 !important; }
 section .text-rose   { color: #FDB4BF !important; -webkit-text-fill-color: #FDB4BF !important; }
-section .text-muted  { color: var(--ng-text-muted) !important; -webkit-text-fill-color: var(--ng-text-muted) !important; }
+/* `text-muted` is the nebula name; `text-sub` is the shared alias. */
+section .text-muted,
+section .text-sub  { color: var(--ng-text-muted) !important; -webkit-text-fill-color: var(--ng-text-muted) !important; }
 section .text-white  { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+
+/* Shared tint utilities, tinted for the dark surface so contrast holds. */
+section .text-accent { color: var(--ng-primary) !important; -webkit-text-fill-color: var(--ng-primary) !important; }
+section .text-blue   { color: #93C5FD !important; -webkit-text-fill-color: #93C5FD !important; }
+section .text-green  { color: #6EE7B7 !important; -webkit-text-fill-color: #6EE7B7 !important; }
+section .text-orange { color: #FDBA74 !important; -webkit-text-fill-color: #FDBA74 !important; }
+section .text-red    { color: #FDA4AF !important; -webkit-text-fill-color: #FDA4AF !important; }
+
 section .text-large  { font-size: 1.25em; }
 section .text-small  { font-size: 0.8em; }
 

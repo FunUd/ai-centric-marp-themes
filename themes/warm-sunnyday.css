@@ -97,23 +97,25 @@
    CSS Variables — テーマカラーの変更はここだけでOK
    ============================================================ */
 :root {
-  --ac-primary: #FF8C42;
-  --ac-primary-dark: #D45D00;
-  --ac-primary-light: #FFDAB9;
-  --ac-primary-pale: #FFF0E5;
-  --ac-accent: #6E3B3B;
-  --ac-text: #4A4A4A;
-  --ac-text-sub: #8E7C75;
-  --ac-white: #FFFFFF;
-  --ac-bg: #FFFDF9;
-  --ac-border: #F5D3B8;
-  --ac-border-light: #FBEFE6;
-  --ac-success: #78C2AD;
-  --ac-warning: #FFC074;
-  --ac-danger: #F38181;
-  --ac-shadow: rgba(110, 59, 59, 0.08);
-  --ac-radius: 12px;
-  --ac-radius-lg: 24px;
+  --ws-primary: #FF8C42;
+  --ws-primary-dark: #D45D00;
+  --ws-primary-light: #FFDAB9;
+  --ws-primary-pale: #FFF0E5;
+  --ws-accent: #6E3B3B;
+  --ws-text: #4A4A4A;
+  --ws-text-sub: #6F5F59;
+  --ws-white: #FFFFFF;
+  --ws-bg: #FFFDF9;
+  --ws-border: #F5D3B8;
+  --ws-border-light: #FBEFE6;
+  --ws-success: #78C2AD;
+  --ws-warning: #FFC074;
+  --ws-danger: #F38181;
+  --ws-info: #2980B9;
+  --ws-info-pale: #EBF5FB;
+  --ws-shadow: rgba(110, 59, 59, 0.08);
+  --ws-radius: 12px;
+  --ws-radius-lg: 24px;
   
   /* Override Marp's default syntax highlighting colors */
   --color-prettylights-syntax-comment: #94a3b8;
@@ -141,8 +143,8 @@ section {
   width: 1280px;
   height: 720px;
   padding: 45px 70px 50px 70px;
-  background: var(--ac-bg);
-  color: var(--ac-text);
+  background: var(--ws-bg);
+  color: var(--ws-text);
   font-family: 'Warm Poppins', 'Warm JP', sans-serif;
   --font-scale: 1;
   font-size: calc(24px * var(--font-scale));
@@ -161,18 +163,18 @@ section {
    Typography
    ============================================================ */
 section h1 {
-  color: var(--ac-accent);
+  color: var(--ws-accent);
   font-size: 38px;
   font-weight: 700;
   margin: 0 0 24px 0;
   padding-bottom: 12px;
-  border-bottom: 3px solid var(--ac-primary);
+  border-bottom: 3px solid var(--ws-primary);
   line-height: 1.3;
   letter-spacing: -0.015em;
 }
 
 section h2 {
-  color: var(--ac-accent);
+  color: var(--ws-accent);
   font-size: calc(30px * var(--font-scale));
   font-weight: 600;
   margin: 0 0 16px 0;
@@ -181,14 +183,14 @@ section h2 {
 }
 
 section h3 {
-  color: var(--ac-primary-dark);
+  color: var(--ws-primary-dark);
   font-size: calc(24px * var(--font-scale));
   font-weight: 600;
   margin: 0 0 12px 0;
 }
 
 section h4 {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-size: calc(20px * var(--font-scale));
   font-weight: 600;
   margin: 0 0 8px 0;
@@ -196,7 +198,7 @@ section h4 {
 
 section h5,
 section h6 {
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   font-size: calc(18px * var(--font-scale));
   font-weight: 500;
   margin: 0 0 8px 0;
@@ -207,13 +209,13 @@ section p {
 }
 
 section a {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   text-decoration: none;
-  border-bottom: 1px solid var(--ac-primary-light);
+  border-bottom: 1px solid var(--ws-primary-light);
 }
 
 section a:hover {
-  border-bottom-color: var(--ac-primary);
+  border-bottom-color: var(--ws-primary);
 }
 
 /* ============================================================
@@ -233,11 +235,11 @@ section ol li {
 }
 
 section ul li::marker {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
 }
 
 section ol li::marker {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-weight: 600;
 }
 
@@ -249,7 +251,7 @@ section ol ul {
   margin-top: 4px;
   margin-bottom: 4px;
   font-size: 0.92em;
-  color: var(--ac-text);
+  color: var(--ws-text);
 }
 
 /* ============================================================
@@ -263,8 +265,8 @@ section table {
 }
 
 section table thead th {
-  background: var(--ac-primary);
-  color: var(--ac-white);
+  background: var(--ws-primary);
+  color: var(--ws-white);
   padding: 10px 16px;
   text-align: left;
   font-weight: 600;
@@ -272,33 +274,33 @@ section table thead th {
 }
 
 section table thead th:first-child {
-  border-radius: var(--ac-radius) 0 0 0;
+  border-radius: var(--ws-radius) 0 0 0;
 }
 
 section table thead th:last-child {
-  border-radius: 0 var(--ac-radius) 0 0;
+  border-radius: 0 var(--ws-radius) 0 0;
 }
 
 section table tbody td {
   padding: 10px 16px;
-  border-bottom: 1px solid var(--ac-border-light);
-  background: var(--ac-white);
+  border-bottom: 1px solid var(--ws-border-light);
+  background: var(--ws-white);
 }
 
 section table tbody tr:nth-child(even) td {
-  background: var(--ac-bg);
+  background: var(--ws-bg);
 }
 
 section table tbody tr:hover td {
-  background: var(--ac-primary-light);
+  background: var(--ws-primary-light);
 }
 
 /* ============================================================
    Code & Blockquote
    ============================================================ */
 section code {
-  background: var(--ac-primary-pale);
-  color: var(--ac-primary-dark);
+  background: var(--ws-primary-pale);
+  color: var(--ws-primary-dark);
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 0.88em;
@@ -307,7 +309,7 @@ section code {
 
 section pre {
   background: #1a1f2e;
-  border-radius: var(--ac-radius);
+  border-radius: var(--ws-radius);
   padding: 20px 24px;
   margin: 16px 0;
   overflow-x: auto;
@@ -377,7 +379,7 @@ section blockquote {
   background: #f1f5f9;
   margin: 16px 0;
   padding: 16px 24px;
-  border-radius: 0 var(--ac-radius) var(--ac-radius) 0;
+  border-radius: 0 var(--ws-radius) var(--ws-radius) 0;
   color: #475569;
   font-size: 22px;
 }
@@ -390,12 +392,12 @@ section blockquote p {
    Text Emphasis
    ============================================================ */
 section strong {
-  color: var(--ac-primary-dark);
+  color: var(--ws-primary-dark);
   font-weight: 700;
 }
 
 section em {
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   font-style: italic;
 }
 
@@ -410,7 +412,7 @@ section mark {
 section img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--ac-radius);
+  border-radius: var(--ws-radius);
 }
 
 section img[alt~="center"] {
@@ -419,7 +421,7 @@ section img[alt~="center"] {
 }
 
 section img[alt~="shadow"] {
-  box-shadow: 0 8px 24px var(--ac-shadow);
+  box-shadow: 0 8px 24px var(--ws-shadow);
 }
 
 /* ============================================================
@@ -432,13 +434,13 @@ header {
   right: 75px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--ac-border-light);
+  border-bottom: 1px solid var(--ws-border-light);
 }
 
 footer {
@@ -447,7 +449,7 @@ footer {
   left: 75px;
   right: 75px;
   font-size: 12px;
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   z-index: 20;
   display: flex;
   justify-content: space-between;
@@ -462,9 +464,9 @@ section::after {
   bottom: 18px;
   right: 30px;
   font-size: 13px;
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   font-weight: 500;
-  background: var(--ac-primary-pale);
+  background: var(--ws-primary-pale);
   padding: 3px 12px;
   border-radius: 12px;
   content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
@@ -504,29 +506,29 @@ section.cover {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: linear-gradient(135deg, var(--ac-bg) 0%, var(--ac-primary-pale) 40%, var(--ac-primary-light) 100%);
+  background: linear-gradient(135deg, var(--ws-bg) 0%, var(--ws-primary-pale) 40%, var(--ws-primary-light) 100%);
   padding: 80px;
 }
 
 
 section.cover h1 {
   font-size: 52px;
-  color: var(--ac-accent);
+  color: var(--ws-accent);
   border-bottom: none;
   padding-bottom: 0;
   margin-bottom: 16px;
-  text-shadow: 0 2px 8px rgba(27, 79, 114, 0.08);
+  text-shadow: 0 2px 8px rgba(110, 59, 59, 0.08);
 }
 
 section.cover h2 {
   font-size: 28px;
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-weight: 400;
   margin-bottom: 32px;
 }
 
 section.cover p {
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   font-size: 18px;
   margin-bottom: 8px;
 }
@@ -535,13 +537,13 @@ section.cover p {
 section.cover.subtitle h2 {
   font-weight: 500;
   padding-bottom: 24px;
-  border-bottom: 2px solid var(--ac-border);
+  border-bottom: 2px solid var(--ws-border);
   margin-bottom: 24px;
 }
 
 /* cover + meta: メタ情報エリアの装飾 */
 section.cover.meta p {
-  background: rgba(44, 123, 229, 0.06);
+  background: rgba(255, 140, 66, 0.06);
   display: inline-block;
   padding: 4px 20px;
   border-radius: 20px;
@@ -557,7 +559,7 @@ section.cover::after {
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--ac-primary-light) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--ws-primary-light) 0%, transparent 70%);
   opacity: 0.5;
   z-index: 0;
 }
@@ -597,7 +599,7 @@ section.toc ol li {
 
 section.toc ol li::before {
   content: counter(toc-counter, decimal-leading-zero);
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-weight: 700;
   font-size: 18px;
   margin-right: 16px;
@@ -630,11 +632,11 @@ section.toc-focus ol li {
   padding: 15px 0;
   font-size: calc(28px * var(--font-scale));
   font-weight: 600;
-  color: var(--ac-accent);
+  color: var(--ws-accent);
   display: flex;
   align-items: center;
   border: none;
-  border-bottom: 1px solid var(--ac-border-light);
+  border-bottom: 1px solid var(--ws-border-light);
   box-shadow: none;
   transition: all 0.3s ease;
   border-radius: 0;
@@ -646,7 +648,7 @@ section.toc-focus ol li:last-child {
 
 section.toc-focus ol li::before {
   content: counter(toc-counter, decimal-leading-zero);
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-size: 36px;
   font-weight: 300;
   margin-right: 32px;
@@ -656,12 +658,12 @@ section.toc-focus ol li::before {
   justify-content: center;
   align-items: center;
   background: transparent;
-  border-right: 2px solid var(--ac-primary-light);
+  border-right: 2px solid var(--ws-primary-light);
   border-radius: 0;
 }
 
 section.toc-focus ol li:hover {
-  background: linear-gradient(90deg, var(--ac-primary-pale) 0%, transparent 100%);
+  background: linear-gradient(90deg, var(--ws-primary-pale) 0%, transparent 100%);
   padding-left: 16px;
 }
 
@@ -696,21 +698,21 @@ section.cols-3>.columns {
 /* カラムカードスタイル */
 section.cols-2 .col,
 section.cols-3 .col {
-  background: var(--ac-primary-pale);
-  border-radius: var(--ac-radius-lg);
+  background: var(--ws-primary-pale);
+  border-radius: var(--ws-radius-lg);
   padding: 24px;
-  border: 1px solid var(--ac-border-light);
+  border: 1px solid var(--ws-border-light);
   height: 100%;
   overflow: hidden;
 }
 
 section.cols-2 .col h3,
 section.cols-3 .col h3 {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-size: calc(22px * var(--font-scale));
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 2px solid var(--ac-primary-light);
+  border-bottom: 2px solid var(--ws-primary-light);
 }
 
 /* ============================================================
@@ -747,15 +749,15 @@ section.grid-quadrant>.grid {
 }
 
 section.grid-quadrant .cell {
-  background: var(--ac-primary-pale);
-  border-radius: var(--ac-radius-lg);
+  background: var(--ws-primary-pale);
+  border-radius: var(--ws-radius-lg);
   padding: 20px 24px;
-  border: 1px solid var(--ac-border-light);
+  border: 1px solid var(--ws-border-light);
   overflow: hidden;
 }
 
 section.grid-quadrant .cell h3 {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-size: calc(20px * var(--font-scale));
   margin-bottom: 8px;
 }
@@ -809,8 +811,8 @@ section.grid-quadrant.axes .axis-y {
   justify-content: center;
   font-size: calc(17px * var(--font-scale));
   font-weight: 700;
-  color: var(--ac-primary-dark);
-  border-right: 2px solid var(--ac-primary-light);
+  color: var(--ws-primary-dark);
+  border-right: 2px solid var(--ws-primary-light);
   padding-right: 8px;
   letter-spacing: 0.2em;
 }
@@ -822,8 +824,8 @@ section.grid-quadrant.axes .axis-x {
   text-align: center;
   font-size: calc(17px * var(--font-scale));
   font-weight: 700;
-  color: var(--ac-primary-dark);
-  border-top: 2px solid var(--ac-primary-light);
+  color: var(--ws-primary-dark);
+  border-top: 2px solid var(--ws-primary-light);
   padding-top: 8px;
   letter-spacing: 0.2em;
 }
@@ -860,8 +862,8 @@ section.grid-sharp .cell {
   background: transparent;
   border-radius: 0;
   padding: 24px 28px;
-  border-right: 1px solid var(--ac-border-light);
-  border-bottom: 1px solid var(--ac-border-light);
+  border-right: 1px solid var(--ws-border-light);
+  border-bottom: 1px solid var(--ws-border-light);
   overflow: hidden;
 }
 
@@ -874,7 +876,7 @@ section.grid-sharp .cell:nth-last-child(-n+2) {
 }
 
 section.grid-sharp .cell h3 {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-size: calc(20px * var(--font-scale));
   margin-bottom: 8px;
   font-weight: 600;
@@ -893,7 +895,7 @@ section.timetable table thead th:first-child {
 
 section.timetable table tbody td:first-child {
   font-weight: 600;
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   white-space: nowrap;
 }
 
@@ -912,11 +914,11 @@ section.steps ol {
 section.steps ol li {
   counter-increment: step-counter;
   flex: 1;
-  background: var(--ac-primary-pale);
-  border-radius: var(--ac-radius-lg);
+  background: var(--ws-primary-pale);
+  border-radius: var(--ws-radius-lg);
   padding: 24px 20px 20px;
   position: relative;
-  border-top: 4px solid var(--ac-primary);
+  border-top: 4px solid var(--ws-primary);
   font-size: calc(18px * var(--font-scale));
   line-height: 1.5;
   margin: 0;
@@ -928,8 +930,8 @@ section.steps ol li::before {
   width: max-content;
   font-size: 12px;
   font-weight: 700;
-  color: var(--ac-white);
-  background: var(--ac-primary);
+  color: var(--ws-white);
+  background: var(--ws-primary);
   padding: 3px 12px;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -939,7 +941,7 @@ section.steps ol li::before {
 section.steps ol li strong {
   display: block;
   font-size: calc(20px * var(--font-scale));
-  color: var(--ac-accent);
+  color: var(--ws-accent);
   margin-bottom: 6px;
 }
 
@@ -966,8 +968,8 @@ section.steps.arrows ol li:not(:last-child)::after {
   right: -22px;
   width: 12px;
   height: 12px;
-  border-top: 3px solid var(--ac-primary);
-  border-right: 3px solid var(--ac-primary);
+  border-top: 3px solid var(--ws-primary);
+  border-right: 3px solid var(--ws-primary);
   transform: translateY(-50%) rotate(45deg);
 }
 
@@ -1005,8 +1007,8 @@ section.profile .profile-image img {
   height: 200px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--ac-primary-light);
-  box-shadow: 0 8px 24px var(--ac-shadow);
+  border: 4px solid var(--ws-primary-light);
+  box-shadow: 0 8px 24px var(--ws-shadow);
 }
 
 /* 右カラム：テキストエリア */
@@ -1024,7 +1026,7 @@ section.profile h1 {
 
 section.profile h2 {
   font-size: calc(18px * var(--font-scale));
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-weight: 400;
   margin-bottom: 16px;
 }
@@ -1042,7 +1044,7 @@ section.key-message {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: linear-gradient(135deg, var(--ac-primary-pale), var(--ac-primary-light));
+  background: linear-gradient(135deg, var(--ws-primary-pale), var(--ws-primary-light));
 }
 
 section.key-message blockquote {
@@ -1050,7 +1052,7 @@ section.key-message blockquote {
   background: transparent;
   font-size: calc(40px * var(--font-scale));
   font-weight: 700;
-  color: var(--ac-accent);
+  color: var(--ws-accent);
   line-height: 1.4;
   max-width: 900px;
   padding: 0;
@@ -1065,7 +1067,7 @@ section.key-message blockquote p {
 }
 
 section.key-message p {
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
   font-size: calc(22px * var(--font-scale));
 }
 
@@ -1171,7 +1173,7 @@ section.timeline ol::before {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, var(--ac-primary), var(--ac-primary-light));
+  background: linear-gradient(180deg, var(--ws-primary), var(--ws-primary-light));
   border-radius: 3px;
 }
 
@@ -1198,18 +1200,18 @@ section.timeline ol li::before {
   position: absolute;
   left: 0;
   top: 0;
-  transform: translateY(calc(0.5lh - 50%));
+  transform: translateY(calc(0.5em - 50%));
   width: 15px;
   height: 15px;
-  background: var(--ac-primary);
+  background: var(--ws-primary);
   border-radius: 50%;
-  border: 3px solid var(--ac-white);
-  box-shadow: 0 0 0 3px var(--ac-primary-light);
+  border: 3px solid var(--ws-white);
+  box-shadow: 0 0 0 3px var(--ws-primary-light);
 }
 
 section.timeline ol li strong {
   display: inline;
-  color: var(--ac-primary);
+  color: var(--ws-primary);
   font-size: 16px;
   font-weight: 700;
   margin-right: 0.5em;
@@ -1238,14 +1240,14 @@ section .checklist li::before {
   position: absolute;
   left: 0;
   top: 4px;
-  color: var(--ac-white);
-  background: var(--ac-success);
+  color: var(--ws-white);
+  background: var(--ws-success);
   width: 22px;
   height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--ac-radius);
+  border-radius: var(--ws-radius);
   font-size: 14px;
   font-weight: bold;
 }
@@ -1256,9 +1258,9 @@ section .checklist li::before {
 section .callout {
   padding: 16px 20px;
   margin: 16px 0;
-  border-left: 6px solid var(--ac-primary);
-  background: var(--ac-primary-pale);
-  border-radius: 0 var(--ac-radius) var(--ac-radius) 0;
+  border-left: 6px solid var(--ws-primary);
+  background: var(--ws-primary-pale);
+  border-radius: 0 var(--ws-radius) var(--ws-radius) 0;
   font-size: 0.95em;
 }
 
@@ -1273,12 +1275,16 @@ section .callout p:last-child {
 }
 
 section .callout.blue {
-  border-left-color: var(--ac-primary);
-  background: var(--ac-primary-pale);
+  border-left-color: var(--ws-info);
+  background: var(--ws-info-pale);
+}
+
+section .callout.blue h4 {
+  color: var(--ws-info);
 }
 
 section .callout.green {
-  border-left-color: var(--ac-success);
+  border-left-color: var(--ws-success);
   background: #f0f9f4;
 }
 
@@ -1287,7 +1293,7 @@ section .callout.green h4 {
 }
 
 section .callout.orange {
-  border-left-color: var(--ac-warning);
+  border-left-color: var(--ws-warning);
   background: #fff8f0;
 }
 
@@ -1296,7 +1302,7 @@ section .callout.orange h4 {
 }
 
 section .callout.red {
-  border-left-color: var(--ac-danger);
+  border-left-color: var(--ws-danger);
   background: #fdf2f1;
 }
 
@@ -1316,29 +1322,33 @@ section .badge {
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  border-radius: var(--ac-radius);
-  background-color: var(--ac-primary-light);
-  color: var(--ac-primary-dark);
+  border-radius: var(--ws-radius);
+  background-color: var(--ws-primary-light);
+  color: var(--ws-primary-dark);
 }
 
 section .badge.blue {
-  background-color: var(--ac-primary);
-  color: var(--ac-white);
+  background-color: var(--ws-white);
+  color: #8A3B00;
+  border: 1px solid var(--ws-primary);
 }
 
 section .badge.green {
-  background-color: var(--ac-success);
-  color: var(--ac-white);
+  background-color: var(--ws-white);
+  color: #047857;
+  border: 1px solid var(--ws-success);
 }
 
 section .badge.orange {
-  background-color: var(--ac-warning);
-  color: var(--ac-white);
+  background-color: var(--ws-white);
+  color: #9A6A00;
+  border: 1px solid var(--ws-warning);
 }
 
 section .badge.red {
-  background-color: var(--ac-danger);
-  color: var(--ac-white);
+  background-color: var(--ws-white);
+  color: #B91C1C;
+  border: 1px solid var(--ws-danger);
 }
 
 /* ============================================================
@@ -1401,27 +1411,27 @@ section .v-bottom {
    Highlight colors utility
    ============================================================ */
 section .text-blue {
-  color: var(--ac-primary);
+  color: var(--ws-primary);
 }
 
 section .text-accent {
-  color: var(--ac-accent);
+  color: var(--ws-accent);
 }
 
 section .text-green {
-  color: var(--ac-success);
+  color: var(--ws-success);
 }
 
 section .text-orange {
-  color: var(--ac-warning);
+  color: var(--ws-warning);
 }
 
 section .text-red {
-  color: var(--ac-danger);
+  color: var(--ws-danger);
 }
 
 section .text-sub {
-  color: var(--ac-text-sub);
+  color: var(--ws-text-sub);
 }
 
 section .text-large {
@@ -1433,13 +1443,13 @@ section .text-small {
 }
 
 section .bg-pale {
-  background: var(--ac-primary-pale);
+  background: var(--ws-primary-pale);
   padding: 16px;
-  border-radius: var(--ac-radius);
+  border-radius: var(--ws-radius);
 }
 
 section .bg-light {
-  background: var(--ac-primary-light);
+  background: var(--ws-primary-light);
   padding: 16px;
-  border-radius: var(--ac-radius);
+  border-radius: var(--ws-radius);
 }

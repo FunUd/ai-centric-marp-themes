@@ -44,6 +44,14 @@ def _parse_dimension(val: str | None) -> float | None:
         return None
 
 
+def _safe_float(value: object, default: float = 0.0) -> float:
+    """Parse a geometry attribute without raising on malformed input."""
+    try:
+        return float(str(value) if value is not None else "")
+    except (TypeError, ValueError):
+        return default
+
+
 def _svg_element_rect(elem: ET.Element) -> tuple[float, float, float, float] | None:
     """Return a conservative bounding box for common JSON SVG primitives."""
     tag = elem.tag.split("}")[-1]
@@ -63,7 +71,7 @@ def _svg_element_rect(elem: ET.Element) -> tuple[float, float, float, float] | N
             if len(points) >= 4:
                 xs, ys = points[::2], points[1::2]
                 return min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys)
-    except ValueError:
+    except (TypeError, ValueError):
         return None
     return None
 
@@ -73,11 +81,14 @@ def _svg_segments(elem: ET.Element) -> list[tuple[tuple[float, float], tuple[flo
     if tag == "line":
         try:
             return [((float(elem.get("x1", "0")), float(elem.get("y1", "0"))), (float(elem.get("x2", "0")), float(elem.get("y2", "0"))))]
-        except ValueError:
+        except (TypeError, ValueError):
             return []
     if tag != "path":
         return []
-    numbers = [float(value) for value in re.findall(r"-?\d+(?:\.\d+)?", elem.get("d", ""))]
+    try:
+        numbers = [float(value) for value in re.findall(r"-?\d+(?:\.\d+)?", elem.get("d", ""))]
+    except ValueError:
+        return []
     points = list(zip(numbers[::2], numbers[1::2]))
     return list(zip(points, points[1:]))
 
@@ -113,6 +124,8 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
         tree = ET.parse(path)
     except ET.ParseError as e:
         return [f"SVG XML parse error: {e}"], []
+    except OSError as e:
+        return [f"Failed to read SVG file {path.name}: {e}"], []
 
     root = tree.getroot()
     # Check if root is svg (handling namespace)
@@ -127,9 +140,15 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
 
     w, h = None, None
     if view_box:
-        parts = [float(p) for p in view_box.replace(",", " ").split() if p.strip()]
-        if len(parts) == 4:
+        try:
+            parts = [_safe_float(p, float("nan")) for p in view_box.replace(",", " ").split() if p.strip()]
+        except (TypeError, ValueError):
+            parts = []
+        if len(parts) == 4 and all(p == p and p > 0 for p in parts[2:]):
             w, h = parts[2], parts[3]
+        elif len(parts) == 4:
+            # Malformed viewBox (non-numeric or non-positive) — report, don't crash.
+            return [f"Invalid viewBox '{view_box}' in {path.name}: expected 'min-x min-y width height' with positive dimensions"], []
     if w is None or h is None:
         w, h = width_attr, height_attr
 
@@ -228,6 +247,8 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
         tree = ET.parse(path)
     except ET.ParseError as e:
         return [f"draw.io XML parse error: {e}"], []
+    except OSError as e:
+        return [f"Failed to read draw.io file {path.name}: {e}"], []
 
     root = tree.getroot()
     if root.tag != "mxfile":
@@ -255,10 +276,10 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
             geometry = cell.find("mxGeometry")
             if geometry is None:
                 return 0.0, 0.0, 0.0, 0.0
-            x = float(geometry.get("x", "0"))
-            y = float(geometry.get("y", "0"))
-            width = float(geometry.get("width", "0"))
-            height = float(geometry.get("height", "0"))
+            x = _safe_float(geometry.get("x", "0"))
+            y = _safe_float(geometry.get("y", "0"))
+            width = _safe_float(geometry.get("width", "0"))
+            height = _safe_float(geometry.get("height", "0"))
             parent_id = cell.get("parent")
             while parent_id and parent_id not in ("0", "1"):
                 parent = cell_map.get(parent_id)
@@ -266,8 +287,8 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
                     break
                 parent_geometry = parent.find("mxGeometry")
                 if parent_geometry is not None:
-                    x += float(parent_geometry.get("x", "0"))
-                    y += float(parent_geometry.get("y", "0"))
+                    x += _safe_float(parent_geometry.get("x", "0"))
+                    y += _safe_float(parent_geometry.get("y", "0"))
                 parent_id = parent.get("parent")
             return x, y, width, height
 
@@ -280,8 +301,8 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
                     break
                 geometry = parent.find("mxGeometry")
                 if geometry is not None:
-                    x += float(geometry.get("x", "0"))
-                    y += float(geometry.get("y", "0"))
+                    x += _safe_float(geometry.get("x", "0"))
+                    y += _safe_float(geometry.get("y", "0"))
                 parent_id = parent.get("parent")
             return x, y
 

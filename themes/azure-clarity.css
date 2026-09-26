@@ -20,6 +20,8 @@
   --ac-success: #27AE60;
   --ac-warning: #F39C12;
   --ac-danger: #E74C3C;
+  --ac-info: #2980B9;
+  --ac-info-pale: #EBF5FB;
   --ac-shadow: rgba(44, 123, 229, 0.08);
   --ac-radius: 0px;
   --ac-radius-lg: 0px;
@@ -1105,7 +1107,7 @@ section.timeline ol li::before {
   position: absolute;
   left: 0;
   top: 0;
-  transform: translateY(calc(0.5lh - 50%));
+  transform: translateY(calc(0.5em - 50%));
   width: 15px;
   height: 15px;
   background: var(--ac-primary);
@@ -1179,8 +1181,14 @@ section .callout p:last-child {
 }
 
 section .callout.blue {
-  border-left-color: var(--ac-primary);
-  background: var(--ac-primary-pale);
+  border-left-color: var(--ac-info);
+  background: var(--ac-info-pale);
+}
+
+/* crimson-clarity carries the equivalent rule; azure-clarity was missing it, so
+   a blue callout heading rendered in the body colour there. */
+section .callout.blue h4 {
+  color: var(--ac-info);
 }
 
 section .callout.green {
@@ -1228,22 +1236,22 @@ section .badge {
 }
 
 section .badge.blue {
-  background-color: var(--ac-primary);
+  background-color: var(--ac-primary-dark);
   color: var(--ac-white);
 }
 
 section .badge.green {
-  background-color: var(--ac-success);
+  background-color: #1E8449;
   color: var(--ac-white);
 }
 
 section .badge.orange {
   background-color: var(--ac-warning);
-  color: var(--ac-white);
+  color: var(--ac-text);
 }
 
 section .badge.red {
-  background-color: var(--ac-danger);
+  background-color: #CB4335;
   color: var(--ac-white);
 }
 

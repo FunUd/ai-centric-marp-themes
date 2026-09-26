@@ -1,46 +1,181 @@
 name: diagram-checks
 
+# NOTE: the workflow name and job id are kept stable so any configured
+# branch-protection "required status check" keeps resolving.
+
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref so a force-push does not leave two
+# full (Playwright + Chromium + mermaid) runs racing each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     paths:
-      - "scripts/diagrams/**"
-      - "skills/marp-diagram-creator/**"
-      - "skills/marp-slide-creator/**"
-      - "themes/*.css"
+      - "themes/**"
+      - "scripts/**"
+      - "skills/**"
+      - "slides/**"
+      - "assets/**"
+      - ".github/workflows/**"
       - "README.md"
   pull_request:
     paths:
-      - "scripts/diagrams/**"
-      - "skills/marp-diagram-creator/**"
-      - "skills/marp-slide-creator/**"
-      - "themes/*.css"
+      - "themes/**"
+      - "scripts/**"
+      - "skills/**"
+      - "slides/**"
+      - "assets/**"
+      - ".github/workflows/**"
       - "README.md"
   workflow_dispatch:
 
 jobs:
   diagram-checks:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
 
-      - name: Run diagram test suite
-        run: python -m pytest scripts/diagrams/tests/ -q
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          # No `cache: npm`: the repo pins exact versions in package.json but
+          # ships no lockfile, and setup-node's npm cache requires one.
+
+      # Pinned so npx resolves the exact versions in package.json rather than
+      # downloading whatever is newest. Keep in sync with
+      # scripts/diagrams/tool_versions.py::PINNED_VERSIONS.
+      - name: Install pinned Node tools
+        run: npm install --no-audit --no-fund
+
+      # Playwright is required by the browser-backed contract tests
+      # (test_theme_keymessage.py computes real styles in Chromium). Without
+      # this, those tests silently skip and the theme guard is a no-op.
+      - name: Install Python test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Run test suite
+        run: python -m pytest scripts/diagrams/tests/ -q --junitxml=pytest-results.xml
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results-ubuntu
+          path: pytest-results.xml
+          retention-days: 7
+
+      - name: Check pinned Node tool versions agree with package.json
+        run: python -m pytest scripts/diagrams/tests/test_tool_versions.py -q
 
       - name: Check theme token sync (CSS is source of truth)
         run: python scripts/diagrams/sync-tokens-from-css.py --check
 
+      - name: Check theme class manifest sync
+        run: python scripts/diagrams/sync-theme-classes.py --check
+
+      - name: Check vendored diagram engine is in sync
+        # marp-diagram-creator ships a copy of the engine under vendor/ so the
+        # skill works outside this repository. Keep it byte-identical.
+        run: python scripts/sync-skill-vendor.py --check
+
       - name: Check template catalog sync
         run: python scripts/diagrams/check-catalog-sync.py
 
-      - name: Validate all diagram templates against every layout
+      - name: Check README documents the class system
+        run: python scripts/diagrams/check-class-docs.py
+
+      - name: Validate every diagram template at its supported layouts
+        # Real render + layout validation for all three engines. Mermaid needs
+        # npx; use --skip-mermaid for a fast offline run.
+        run: python scripts/diagrams/check-templates.py
+
+      - name: Check screenshot registry matches the sample decks
+        # Guards the hard-coded (filename, slide index) map: if a sample deck
+        # gains or loses a slide, every later index silently shifts and the
+        # regenerated PNGs are mislabelled. No browser needed.
+        run: python scripts/take-screenshots.py --list-themes
+
+      - name: Lint the sample decks
+        # The samples are the reference decks. The test suite already lints
+        # them structurally; this surfaces the readability view in the log.
         run: |
-          for f in scripts/diagrams/templates/drawio/*.drawio; do
-            python scripts/diagrams/validate-slide-diagram.py "$f" --layout full || exit 1
+          for deck in slides/sample-slide/*.md; do
+            echo "--- $deck"
+            python skills/marp-slide-creator/scripts/marp-lint.py "$deck" --structural-only
           done
-          for f in scripts/diagrams/templates/mermaid/*.mmd; do
-            echo "--- $f exists"
-          done
+
+  # Windows covers what ubuntu cannot: cp932 console handling and the npx.cmd
+  # invocation shape in tool_versions.py. Browser + mermaid runs stay on
+  # ubuntu (faster, cached); here stdlib-only checks plus the offline
+  # template gate.
+  windows-checks:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Python test dependencies (no browser)
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      # NOTE: no setup-node / npm install here: this job runs the offline
+      # gates only (--skip-mermaid), so Node is never invoked. The Windows
+      # value is the cp932 console itself — PYTHONIOENCODING is deliberately
+      # *not* set so the scripts' own UTF-8 forcing is what gets exercised.
+      - name: Run test suite (stdlib only, no browser)
+        run: python -m pytest scripts/diagrams/tests/ -q --ignore=scripts/diagrams/tests/test_theme_keymessage.py --junitxml=pytest-results.xml
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results-windows
+          path: pytest-results.xml
+          retention-days: 7
+
+      - name: Check theme token sync (CSS is source of truth)
+        run: python scripts/diagrams/sync-tokens-from-css.py --check
+
+      - name: Check theme class manifest sync
+        run: python scripts/diagrams/sync-theme-classes.py --check
+
+      - name: Check vendored diagram engine is in sync
+        run: python scripts/sync-skill-vendor.py --check
+
+      - name: Check template catalog sync
+        run: python scripts/diagrams/check-catalog-sync.py
+
+      - name: Check README documents the class system
+        run: python scripts/diagrams/check-class-docs.py
+
+      - name: Validate templates offline (draw.io + JSON, no npx)
+        run: python scripts/diagrams/check-templates.py --skip-mermaid
+
+      - name: Check screenshot registry matches the sample decks
+        run: python scripts/take-screenshots.py --list-themes
+
+      - name: Lint the sample decks
+        run: |
+          foreach ($deck in Get-ChildItem slides/sample-slide/*.md) {
+            echo "--- $($deck.FullName)"
+            python skills/marp-slide-creator/scripts/marp-lint.py "$($deck.FullName)" --structural-only
+          }

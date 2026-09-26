@@ -72,10 +72,12 @@
   --sm-border: #CBD5E1;
   --sm-border-light: #F1F5F9;
 
-  /* Semantic colors mapped to grayscale for minimalist aesthetic */
-  --sm-success: #64748B;
-  --sm-warning: #94A3B8;
-  --sm-danger: #475569;
+  /* Semantic colors mapped to grayscale for minimalist aesthetic.
+     Ordered by lightness so success/warning/danger stay distinguishable
+     while each keeps >= 4.5:1 contrast on white. */
+  --sm-success: #475569;
+  --sm-warning: #64748B;
+  --sm-danger: #1E293B;
 
   --sm-shadow: rgba(0, 0, 0, 0.05);
   --sm-radius: 4px;
@@ -544,7 +546,7 @@ section.toc-focus ol {
   gap: 0;
   width: 100%;
   max-width: 900px;
-  margin: 12x 0 0 0;
+  margin: 12px 0 0 0;
 }
 
 section.toc-focus ol li {
@@ -1010,7 +1012,7 @@ section.checklist ul li::before {
 /* ============================================================
    Callouts (Monochrome mapping)
    ============================================================ */
-.callout {
+section .callout {
   padding: 20px 24px;
   margin: 24px 0;
   font-size: calc(20px * var(--font-scale));
@@ -1018,26 +1020,26 @@ section.checklist ul li::before {
   background: var(--sm-primary-pale);
 }
 
-.callout.blue {
+section .callout.blue {
   border-color: var(--sm-primary);
 }
 
-.callout.green {
+section .callout.green {
   border-color: var(--sm-success);
 }
 
-.callout.orange {
+section .callout.orange {
   border-color: var(--sm-warning);
 }
 
-.callout.red {
+section .callout.red {
   border-color: var(--sm-danger);
 }
 
 /* ============================================================
    Badges
    ============================================================ */
-.badge {
+section .badge {
   display: inline-block;
   padding: 2px 8px;
   font-size: 13px;
@@ -1050,31 +1052,31 @@ section.checklist ul li::before {
   letter-spacing: 0.05em;
 }
 
-.badge.blue {
+section .badge.blue {
   color: var(--sm-primary);
   border-color: var(--sm-primary);
   background: transparent;
 }
 
-.badge.ink {
+section .badge.ink {
   color: var(--sm-white);
   border-color: var(--sm-accent);
   background: var(--sm-accent);
 }
 
-.badge.green {
+section .badge.green {
   color: var(--sm-success);
   border-color: var(--sm-success);
   background: transparent;
 }
 
-.badge.orange {
+section .badge.orange {
   color: var(--sm-warning);
   border-color: var(--sm-warning);
   background: transparent;
 }
 
-.badge.red {
+section .badge.red {
   color: var(--sm-danger);
   border-color: var(--sm-danger);
   background: transparent;
@@ -1083,19 +1085,45 @@ section.checklist ul li::before {
 /* ============================================================
    Utilities
    ============================================================ */
-.text-left {
+section.text-left,
+section .text-left {
   text-align: left !important;
 }
 
-.text-center {
+section.text-center,
+section .text-center {
   text-align: center !important;
 }
 
-.text-right {
+section.text-right,
+section .text-right {
+  text-align: right !important;
+}
+
+/* `align-*` is the whole-slide form of the same idea; kept so the utility works
+   identically in every theme. */
+section.align-left,
+section .align-left {
+  text-align: left !important;
+}
+
+section.align-center,
+section .align-center {
+  text-align: center !important;
+}
+
+section.align-right,
+section .align-right {
   text-align: right !important;
 }
 
 section.v-center {
+  justify-content: center;
+}
+
+/* `v-middle` is the documented alias of `v-center`; kept so the utility works
+   identically in every theme. */
+section.v-middle {
   justify-content: center;
 }
 
@@ -1107,44 +1135,44 @@ section.v-bottom {
   justify-content: flex-end;
 }
 
-.text-blue {
+section .text-blue {
   color: var(--sm-primary) !important;
 }
 
-.text-accent {
+section .text-accent {
   color: var(--sm-accent) !important;
 }
 
-.text-green {
+section .text-green {
   color: var(--sm-success) !important;
 }
 
-.text-orange {
+section .text-orange {
   color: var(--sm-warning) !important;
 }
 
-.text-red {
+section .text-red {
   color: var(--sm-danger) !important;
 }
 
-.text-sub {
+section .text-sub {
   color: var(--sm-text-sub) !important;
 }
 
-.text-large {
+section .text-large {
   font-size: 1.3em !important;
 }
 
-.text-small {
+section .text-small {
   font-size: 0.85em !important;
 }
 
-.bg-pale {
+section .bg-pale {
   background-color: var(--sm-primary-pale) !important;
   padding: 24px;
 }
 
-.bg-light {
+section .bg-light {
   background-color: var(--sm-bg) !important;
   padding: 24px;
 }

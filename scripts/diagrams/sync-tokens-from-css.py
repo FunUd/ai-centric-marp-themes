@@ -9,10 +9,16 @@ except drawio fill/stroke colors and the rounded flag which follow the CSS.
 
 Usage:
     python scripts/diagrams/sync-tokens-from-css.py [--check] [--theme azure-clarity]
+
+``--check`` is the CI gate. It reports drift for *every* field the sync would
+write — colors, shapes, effects, signature and the derived draw.io styles — by
+running the write path against a deep copy, so the gate can never disagree
+with what a real sync produces.
 """
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import re
 import sys
@@ -31,7 +37,7 @@ THEME_FILES = {
     "slate-minimal": "slate-minimal.css",
 }
 
-# Per-theme CSS variable prefixes (warm-sunnyday reuses --ac- inside its own file).
+# Per-theme CSS variable prefixes.
 # NOTE: PREFIXES is kept for documentation; build_updates uses DIAGRAM_VAR_MAP.
 
 
@@ -67,7 +73,7 @@ def resolve_value(value: str | None, vars_: dict[str, str]) -> str | None:
 DIAGRAM_VAR_MAP = {
     "azure-clarity": {"prefix": "--ac-", "accent": "accent"},
     "crimson-clarity": {"prefix": "--cc-", "accent": "accent"},
-    "warm-sunnyday": {"prefix": "--ac-", "accent": "accent"},
+    "warm-sunnyday": {"prefix": "--ws-", "accent": "accent"},
     "prism-edge": {"prefix": "--pe-", "accent": "cyan"},
     "slate-minimal": {"prefix": "--sm-", "accent": "accent"},
     "nebula-glass": {"prefix": "--ng-", "accent": "secondary"},
@@ -182,9 +188,28 @@ def build_updates(theme: str, vars_: dict[str, str], css_text: str, existing: di
     }
 
 
-def apply_updates(theme: str, updates: dict) -> tuple[bool, list[str]]:
-    path = STYLES_DIR / f"{theme}.json"
-    data = json.loads(path.read_text(encoding="utf-8"))
+def drawio_updates(colors: dict, node_radius: float) -> dict[str, str]:
+    """Derive the draw.io style strings from the (possibly just-updated) palette.
+
+    Takes the *post-sync* colors and radius so the generated styles always
+    match the palette written in the same pass.
+    """
+    rounded = 1 if node_radius else 0
+    return {
+        "primaryNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={colors['primaryPale']};strokeColor={colors['primary']};fontColor={colors['text']};strokeWidth=1.5;",
+        "accentNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={colors['primary']};strokeColor={colors['primaryDark']};fontColor=#FFFFFF;fontStyle=1;",
+        "edgeStyle": f"edgeStyle=orthogonalEdgeStyle;html=1;strokeColor={colors['line'] if 'line' in colors else colors['primary']};strokeWidth=1.5;endArrow=block;endFill=1;",
+    }
+
+
+def apply_to(data: dict, updates: dict) -> list[str]:
+    """Mutate ``data`` in place and return one change line per field updated.
+
+    This is the single source of truth for *what counts as drift*: ``--check``
+    runs it against a deep copy, the write path runs it against the real
+    document, so the CI gate can never disagree with what a sync would write.
+    Covers colors, shapes, effects, signature and the derived draw.io styles.
+    """
     changes: list[str] = []
 
     for key, value in updates["colors"].items():
@@ -205,18 +230,18 @@ def apply_updates(theme: str, updates: dict) -> tuple[bool, list[str]]:
         changes.append("signature refreshed")
         data["signature"] = updates["signature"]
 
-    # Keep drawio geometry in sync with the CSS radius + palette.
-    rounded = 1 if data["shapes"]["nodeRadius"] else 0
-    c = data["colors"]
-    drawio_updates = {
-        "primaryNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={c['primaryPale']};strokeColor={c['primary']};fontColor={c['text']};strokeWidth=1.5;",
-        "accentNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={c['primary']};strokeColor={c['primaryDark']};fontColor=#FFFFFF;fontStyle=1;",
-        "edgeStyle": f"edgeStyle=orthogonalEdgeStyle;html=1;strokeColor={c['line'] if 'line' in c else c['primary']};strokeWidth=1.5;endArrow=block;endFill=1;",
-    }
-    for key, value in drawio_updates.items():
+    for key, value in drawio_updates(data["colors"], data["shapes"]["nodeRadius"]).items():
         if data["drawio"].get(key) != value:
             changes.append(f"drawio.{key} synced")
             data["drawio"][key] = value
+
+    return changes
+
+
+def apply_updates(theme: str, updates: dict) -> tuple[bool, list[str]]:
+    path = STYLES_DIR / f"{theme}.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    changes = apply_to(data, updates)
 
     if changes:
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -239,9 +264,17 @@ def main() -> int:
         existing = json.loads(path.read_text(encoding="utf-8"))
         updates = build_updates(theme, vars_, css_text, existing)
         if args.check:
-            if existing.get("signature") != updates["signature"]:
+            # Probe a copy with the very same code the write path uses, so the
+            # gate reports drift for *every* synced field (colors, shapes,
+            # effects, signature, draw.io styles) — not just `signature`.
+            probe = copy.deepcopy(existing)
+            pending = apply_to(probe, updates)
+            if pending:
                 drift.append(theme)
-                print(f"[DRIFT] {theme}: signature out of sync with {THEME_FILES[theme]}")
+                print(f"[DRIFT] {theme}: {len(pending)} field(s) out of sync with {THEME_FILES[theme]}")
+                for line in pending:
+                    print(f"    - {line}")
+                print(f"    fix: python scripts/diagrams/sync-tokens-from-css.py --theme {theme}")
             continue
         changed, changes = apply_updates(theme, updates)
         if changed:
@@ -251,7 +284,11 @@ def main() -> int:
         else:
             print(f"[OK] {theme}: already in sync")
     if drift:
-        print(f"FAILED: {len(drift)} theme(s) drifted: {', '.join(drift)}", file=sys.stderr)
+        print(
+            f"FAILED: {len(drift)} theme(s) drifted: {', '.join(drift)}\n"
+            f"       run: python scripts/diagrams/sync-tokens-from-css.py",
+            file=sys.stderr,
+        )
         return 1
     return 0
 

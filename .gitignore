@@ -1,6 +1,7 @@
 .kiro
 .github/*
 !.github/workflows/
+!.github/workflows/**
 .agent
 .agents
 .windsurf
@@ -11,3 +12,11 @@
 venv
 
 **/__pycache__/
+.pytest_cache/
+
+node_modules/
+.dist/
+
+# Take-screenshots scratch output (scripts/take-screenshots.py)
+_*_temp.html
+_list_temp.html

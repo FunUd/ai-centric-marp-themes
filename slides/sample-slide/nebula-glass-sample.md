@@ -406,7 +406,7 @@ ChromaAI™ **標準搭載**
 <div class="profile-layout">
 <div class="profile-image">
 
-![avatar](https://placehold.co/180x180/7C3AED/FFFFFF?text=NG)
+![width:200px](./assets/sample_image.jpg)
 
 </div>
 <div class="profile-content">

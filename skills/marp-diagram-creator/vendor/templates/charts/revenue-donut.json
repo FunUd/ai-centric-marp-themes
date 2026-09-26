@@ -1,0 +1,12 @@
+{
+  "type": "donut",
+  "title": "継続収益の構成",
+  "center_label": "100%",
+  "inner_ratio": 0.58,
+  "show_values": true,
+  "items": [
+    {"label": "サブスクリプション", "value": 58},
+    {"label": "従量課金", "value": 27},
+    {"label": "その他", "value": 15}
+  ]
+}

@@ -20,6 +20,8 @@
   --cc-success: #27AE60;
   --cc-warning: #F39C12;
   --cc-danger: #E74C3C;
+  --cc-info: #2980B9;
+  --cc-info-pale: #EBF5FB;
   --cc-shadow: rgba(211, 47, 47, 0.08);
   --cc-radius: 0px;
   --cc-radius-lg: 0px;
@@ -1105,7 +1107,7 @@ section.timeline ol li::before {
   position: absolute;
   left: 0;
   top: 0;
-  transform: translateY(calc(0.5lh - 50%));
+  transform: translateY(calc(0.5em - 50%));
   width: 15px;
   height: 15px;
   background: var(--cc-primary);
@@ -1179,13 +1181,16 @@ section .callout p:last-child {
 }
 
 section .callout.blue {
-  border-left-color: #3498db;
-  background: #ebf5fb;
+  border-left-color: var(--cc-info);
+  background: var(--cc-info-pale);
 }
 
 section .callout.blue h4 {
-  color: #2980b9;
+  color: var(--cc-info);
 }
+
+/* The other callout tints: kept as literal palettes on every theme because each
+   one is a fixed, theme-independent alert colour rather than a brand token. */
 
 section .callout.green {
   border-left-color: var(--cc-success);
@@ -1237,17 +1242,17 @@ section .badge.blue {
 }
 
 section .badge.green {
-  background-color: var(--cc-success);
+  background-color: #1E8449;
   color: var(--cc-white);
 }
 
 section .badge.orange {
   background-color: var(--cc-warning);
-  color: var(--cc-white);
+  color: var(--cc-text);
 }
 
 section .badge.red {
-  background-color: var(--cc-danger);
+  background-color: #CB4335;
   color: var(--cc-white);
 }
 
@@ -1311,7 +1316,7 @@ section .v-bottom {
    Highlight colors utility
    ============================================================ */
 section .text-blue {
-  color: #3498db;
+  color: var(--cc-info);
 }
 
 section .text-accent {

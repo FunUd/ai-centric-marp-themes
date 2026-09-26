@@ -1,0 +1,14 @@
+{
+  "type": "bar",
+  "title": "月次売上",
+  "unit": "百万円",
+  "show_values": true,
+  "items": [
+    {"label": "4月", "value": 120},
+    {"label": "5月", "value": 150},
+    {"label": "6月", "value": 135},
+    {"label": "7月", "value": 170},
+    {"label": "8月", "value": 190},
+    {"label": "9月", "value": 210}
+  ]
+}

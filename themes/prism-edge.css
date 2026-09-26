@@ -1609,7 +1609,7 @@ section.timeline ol li::before {
   position: absolute;
   left: 0;
   top: 0;
-  transform: translateY(calc(0.5lh - 50%));
+  transform: translateY(calc(0.5em - 50%));
   width: 15px;
   height: 15px;
   background: var(--pe-primary);

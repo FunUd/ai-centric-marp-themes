@@ -35,6 +35,22 @@ from pathlib import Path
 
 from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, snap_edge_points
 
+# `scripts/diagrams/tool_versions.py` pins the Node tools. It lives beside this script in
+# the repository, but NOT in the vendored copy under a skill, so the import is
+# optional: standalone installs fall back to unpinned npx.
+MERMAID_CLI = "@mermaid-js/mermaid-cli"
+try:
+    from tool_versions import npx_command as _npx_command
+except ImportError:  # pragma: no cover - exercised by the vendored copy
+    _npx_command = None
+
+
+def npx_command(package: str, *args: str) -> list[str]:
+    """Pinned npx invocation when possible, plain npx otherwise."""
+    if _npx_command is not None:
+        return _npx_command(package, *args)
+    return ["npx", "--yes", package, *args]
+
 from design_tokens import best_text_on, drawio_rect_radius, load_design_tokens
 from diagram_models import parse_diagram_data
 from svg_aspect import extract_mermaid_aspect, pad_viewbox, parse_aspect
@@ -45,6 +61,26 @@ from svg_theme_postprocessor import postprocess_svg
 SCRIPT_DIR = Path(__file__).resolve().parent
 THEME_STYLES_DIR = SCRIPT_DIR / "theme-styles"
 VALIDATOR_PATH = SCRIPT_DIR / "validate-slide-diagram.py"
+
+# Subprocess timeout (seconds) for Node tool invocations. Without this a hung
+# npx process blocks CI forever.
+SUBPROCESS_TIMEOUT = 300
+
+
+def _safe_float(value: object, default: float = 0.0) -> float:
+    """Parse a draw.io/SVG numeric attribute without raising on garbage."""
+    try:
+        return float(str(value) if value is not None else "")
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_int(value: object, default: int) -> int:
+    """Parse pageWidth/pageHeight style attributes without raising."""
+    try:
+        return int(float(str(value) if value is not None else ""))
+    except (TypeError, ValueError):
+        return default
 
 
 def load_theme_style(theme_name: str) -> dict:
@@ -80,10 +116,8 @@ def render_mermaid(
         with open(mmd_file, "w", encoding="utf-8") as f:
             f.write(input_content)
 
-        cmd = [
-            "npx",
-            "-y",
-            "@mermaid-js/mermaid-cli",
+        cmd = npx_command(
+            MERMAID_CLI,
             "-i",
             str(mmd_file),
             "-o",
@@ -92,10 +126,27 @@ def render_mermaid(
             str(cfg_file),
             "-b",
             "transparent",
-        ]
+        )
 
         print(f"Rendering Mermaid diagram with theme '{theme_data.get('theme')}'...")
-        res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+        try:
+            res = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=SUBPROCESS_TIMEOUT,
+            )
+        except FileNotFoundError as error:
+            print(f"[ERROR] Mermaid CLI not found (npx missing?): {error}", file=sys.stderr)
+            return False
+        except subprocess.TimeoutExpired:
+            print(f"[ERROR] Mermaid CLI timed out after {SUBPROCESS_TIMEOUT}s", file=sys.stderr)
+            return False
+        except OSError as error:
+            print(f"[ERROR] Failed to launch Mermaid CLI: {error}", file=sys.stderr)
+            return False
         if res.returncode != 0:
             print(f"[ERROR] Mermaid CLI failed:\n{res.stderr}", file=sys.stderr)
             return False
@@ -178,8 +229,8 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
     if root_elem is None:
         return ""
 
-    page_w = int(graph_model.get("pageWidth", "1080"))
-    page_h = int(graph_model.get("pageHeight", "420"))
+    page_w = _safe_int(graph_model.get("pageWidth", "1080"), 1080)
+    page_h = _safe_int(graph_model.get("pageHeight", "420"), 420)
 
     # Map cells by id
     cells = root_elem.findall("mxCell")
@@ -207,10 +258,10 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
         geom = c.find("mxGeometry")
         if geom is None:
             return 0, 0, 0, 0
-        x = float(geom.get("x", "0"))
-        y = float(geom.get("y", "0"))
-        w = float(geom.get("width", "0"))
-        h = float(geom.get("height", "0"))
+        x = _safe_float(geom.get("x", "0"))
+        y = _safe_float(geom.get("y", "0"))
+        w = _safe_float(geom.get("width", "0"))
+        h = _safe_float(geom.get("height", "0"))
 
         parent_id = c.get("parent")
         while parent_id and parent_id not in ("0", "1"):
@@ -219,8 +270,8 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
                 break
             p_geom = p_cell.find("mxGeometry")
             if p_geom is not None:
-                x += float(p_geom.get("x", "0"))
-                y += float(p_geom.get("y", "0"))
+                x += _safe_float(p_geom.get("x", "0"))
+                y += _safe_float(p_geom.get("y", "0"))
             parent_id = p_cell.get("parent")
         return x, y, w, h
 
@@ -233,8 +284,8 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
                 break
             geometry = parent.find("mxGeometry")
             if geometry is not None:
-                x += float(geometry.get("x", "0"))
-                y += float(geometry.get("y", "0"))
+                x += _safe_float(geometry.get("x", "0"))
+                y += _safe_float(geometry.get("y", "0"))
             parent_id = parent.get("parent")
         return x, y
 
@@ -247,7 +298,7 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             x, y, w, h = get_absolute_geom(cell)
             fill = st.get("fillColor", "#FAFCFF")
             stroke = st.get("strokeColor", "#B8D4E8")
-            start_size = float(st.get("startSize", "26"))
+            start_size = _safe_float(st.get("startSize", "26"), 26)
             title = html.escape(cell.get("value", "") or "")
             rx_val = drawio_rect_radius(theme_data, st)
             arc = f"rx='{rx_val}' ry='{rx_val}'" if rx_val else ""
@@ -310,8 +361,9 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
         # Text inside shape
         if val:
             lines = val.split("\n")
-            line_h = float(f_size) * 1.35
-            start_ty = y + (h - (len(lines) * line_h)) / 2 + float(f_size) * 0.85
+            font_size = _safe_float(f_size, 11)
+            line_h = font_size * 1.35
+            start_ty = y + (h - (len(lines) * line_h)) / 2 + font_size * 0.85
             for i, line in enumerate(lines):
                 cur_y = start_ty + i * line_h
                 cx = x + w / 2
@@ -416,6 +468,9 @@ def render_drawio(
         tree = ET.parse(input_path)
     except ET.ParseError as e:
         print(f"[ERROR] Failed to parse draw.io XML: {e}", file=sys.stderr)
+        return False
+    except OSError as e:
+        print(f"[ERROR] Failed to read draw.io file {input_path}: {e}", file=sys.stderr)
         return False
 
     root = tree.getroot()
@@ -574,12 +629,20 @@ def main():
     # Automated Validation
     if not args.no_validate and VALIDATOR_PATH.exists():
         print("Running automated layout validation...")
-        val_res = subprocess.run(
-            [sys.executable, str(VALIDATOR_PATH), str(args.output), "--layout", args.layout],
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-        )
+        try:
+            val_res = subprocess.run(
+                [sys.executable, str(VALIDATOR_PATH), str(args.output), "--layout", args.layout],
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=SUBPROCESS_TIMEOUT,
+            )
+        except subprocess.TimeoutExpired:
+            print(f"[ERROR] Validator timed out after {SUBPROCESS_TIMEOUT}s", file=sys.stderr)
+            sys.exit(1)
+        except OSError as error:
+            print(f"[ERROR] Failed to launch validator: {error}", file=sys.stderr)
+            sys.exit(1)
         if val_res.returncode != 0:
             print(
                 "[ERROR] Rendered SVG failed layout validation "

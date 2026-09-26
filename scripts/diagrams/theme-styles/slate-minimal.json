@@ -16,9 +16,9 @@
     "border": "#CBD5E1",
     "borderLight": "#F1F5F9",
     "line": "#475569",
-    "success": "#64748B",
-    "warning": "#94A3B8",
-    "danger": "#475569"
+    "success": "#475569",
+    "warning": "#64748B",
+    "danger": "#1E293B"
   },
   "mermaid": {
     "theme": "base",
