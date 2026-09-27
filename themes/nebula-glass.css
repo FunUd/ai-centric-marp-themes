@@ -1355,3 +1355,10 @@ section mark {
   box-shadow: 0 0 8px rgba(139, 92, 246, 0.18);
   font-weight: inherit;
 }
+
+/* <base:focus-visible> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
+section:focus-visible {
+  outline: 3px solid var(--ng-primary);
+  outline-offset: -4px;
+}
+/* </base:focus-visible> */

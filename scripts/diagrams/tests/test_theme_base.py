@@ -41,7 +41,7 @@ sync = load_sync()
 
 def test_base_file_parses_into_sections() -> None:
     sections = sync.parse_base()
-    assert len(sections) == 19
+    assert len(sections) == 21
     assert set(sections) == {
         "pagination", "display-control",
         "cols-2", "cols-3", "col-card", "col-h3", "split-2", "split-3",
@@ -49,6 +49,7 @@ def test_base_file_parses_into_sections() -> None:
         "grid-axes", "grid-sharp",
         "callout-base", "callout-blue", "callout-alerts", "badge-base",
         "align-h", "align-v",
+        "reduced-motion", "focus-visible",
     }
 
 
@@ -67,11 +68,12 @@ def test_sync_check_passes() -> None:
 
 def test_divergent_themes_stay_local() -> None:
     """nebula-glass / slate-minimal diverge structurally (glassmorphism,
-    `!important` utilities) and must not carry base markers at all."""
+    `!important` utilities) and carry no layout sections — only the
+    accessibility `focus-visible` ring, whose body is prefix-mechanical."""
     for theme in ("nebula-glass", "slate-minimal"):
         text = (THEMES_DIR / f"{theme}.css").read_text(encoding="utf-8")
-        assert "<base:" not in text, theme
-        assert "_base.css" not in text, theme
+        markers = set(re.findall(r"<base:([\w-]+)>", text))
+        assert markers == {"focus-visible"}, f"{theme}: {sorted(markers)}"
 
 
 def test_marker_regions_preserve_rule_order() -> None:
@@ -96,4 +98,4 @@ def test_marker_regions_preserve_rule_order() -> None:
 def test_base_covers_the_documented_section_count() -> None:
     sections = sync.parse_base()
     total_regions = sum(len(themes) for themes, _body in sections.values())
-    assert total_regions == 71
+    assert total_regions == 80

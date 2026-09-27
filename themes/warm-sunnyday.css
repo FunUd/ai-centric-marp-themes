@@ -1505,3 +1505,21 @@ section .bg-light {
   padding: 16px;
   border-radius: var(--ws-radius);
 }
+
+/* <base:reduced-motion> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
+@media (prefers-reduced-motion: reduce) {
+  section *,
+  section *::before,
+  section *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* </base:reduced-motion> */
+
+/* Warm primary orange is 2.3:1 on the slide background (WCAG 2.4.11
+   needs 3:1 for focus indicators); the ring uses the darker grade. */
+section:focus-visible {
+  outline: 3px solid var(--ws-primary-dark);
+  outline-offset: -4px;
+}

@@ -29,35 +29,35 @@
   <line x1='20.0' y1='311.0' x2='1060.0' y2='311.0' stroke='#D1D9E6' stroke-width='1' />
   <text x='32.0' y='303.0' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='12' font-weight='bold' fill='#111827'>データ永続化層 (Database &amp; Cache)</text>
   <rect x='100.0' y='55.0' width='180.0' height='42.0' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='190.0' y='70.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>Webブラウザ</text>
-  <text x='190.0' y='85.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(React / Next.js)</text>
+  <text x='190.0' y='70.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>Webブラウザ</text>
+  <text x='190.0' y='85.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(React / Next.js)</text>
   <rect x='450.0' y='55.0' width='180.0' height='42.0' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='540.0' y='70.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>モバイルアプリ</text>
-  <text x='540.0' y='85.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(iOS / Android)</text>
+  <text x='540.0' y='70.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>モバイルアプリ</text>
+  <text x='540.0' y='85.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(iOS / Android)</text>
   <rect x='800.0' y='55.0' width='180.0' height='42.0' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='890.0' y='70.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>外部システム</text>
-  <text x='890.0' y='85.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(パートナーAPI)</text>
+  <text x='890.0' y='70.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>外部システム</text>
+  <text x='890.0' y='85.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(パートナーAPI)</text>
   <rect x='100.0' y='185.0' width='200.0' height='50.0' fill='#4F46E5' stroke='#312E81' stroke-width='1.5'  filter='url(#theme-shadow)' />
   <text x='200.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='bold' fill='#FFFFFF'>API Gateway / ALB</text>
   <text x='200.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='bold' fill='#FFFFFF'>(レート制限・ルーティング)</text>
   <rect x='400.0' y='185.0' width='180.0' height='50.0' fill='#EEF2FF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='490.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>認証・ユーザー管理</text>
-  <text x='490.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(Auth Service)</text>
+  <text x='490.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>認証・ユーザー管理</text>
+  <text x='490.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(Auth Service)</text>
   <rect x='630.0' y='185.0' width='180.0' height='50.0' fill='#EEF2FF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='720.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>コア業務ロジック</text>
-  <text x='720.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(Core Service)</text>
+  <text x='720.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>コア業務ロジック</text>
+  <text x='720.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(Core Service)</text>
   <rect x='860.0' y='185.0' width='150.0' height='50.0' fill='#EEF2FF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='935.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>非同期ワーカー</text>
-  <text x='935.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(Event Worker)</text>
+  <text x='935.0' y='204.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>非同期ワーカー</text>
+  <text x='935.0' y='219.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(Event Worker)</text>
   <path d='M 220.0 327.0 A 90.0 10 0 0 1 400.0 327.0 L 400.0 359.0 A 90.0 10 0 0 1 220.0 359.0 Z' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5' />
   <ellipse cx='310.0' cy='327.0' rx='90.0' ry='10' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5' />
-  <text x='310.0' y='337.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>メインDB</text>
-  <text x='310.0' y='352.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(PostgreSQL Cluster)</text>
+  <text x='310.0' y='337.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>メインDB</text>
+  <text x='310.0' y='352.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(PostgreSQL Cluster)</text>
   <path d='M 500.0 327.0 A 90.0 10 0 0 1 680.0 327.0 L 680.0 359.0 A 90.0 10 0 0 1 500.0 359.0 Z' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5' />
   <ellipse cx='590.0' cy='327.0' rx='90.0' ry='10' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5' />
-  <text x='590.0' y='337.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>インメモリCache</text>
-  <text x='590.0' y='352.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(Redis Cluster)</text>
+  <text x='590.0' y='337.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>インメモリCache</text>
+  <text x='590.0' y='352.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(Redis Cluster)</text>
   <rect x='780.0' y='317.0' width='180.0' height='52.0' fill='#FFFFFF' stroke='#4F46E5' stroke-width='1.5'  filter='url(#theme-shadow)' />
-  <text x='870.0' y='337.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>メッセージキュー</text>
-  <text x='870.0' y='352.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#1A1A2E'>(SQS / Kafka)</text>
+  <text x='870.0' y='337.5' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>メッセージキュー</text>
+  <text x='870.0' y='352.35' text-anchor='middle' font-family="'Space Grotesk', 'Noto Sans JP', sans-serif" font-size='11' font-weight='normal' fill='#111827'>(SQS / Kafka)</text>
 </svg>

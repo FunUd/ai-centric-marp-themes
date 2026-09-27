@@ -63,16 +63,8 @@ def test_light_theme_white_nodes_unchanged() -> None:
         assert match and match.group(1) == "#1A1A2E", style
 
 
-def _luminance(hex_color: str) -> float:
-    value = hex_color.lstrip("#")
-    channels = [int(value[i : i + 2], 16) / 255.0 for i in (0, 2, 4)]
-    linear = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
-    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
-
-
 def _contrast_ratio(first: str, second: str) -> float:
-    lighter, darker = sorted((_luminance(first), _luminance(second)), reverse=True)
-    return (lighter + 0.05) / (darker + 0.05)
+    return tokens.contrast_ratio(first, second)
 
 
 def test_nebula_text_contrast_on_shapes() -> None:

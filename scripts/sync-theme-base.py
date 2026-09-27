@@ -38,6 +38,8 @@ PREFIX = {
     "crimson-clarity": "cc",
     "warm-sunnyday": "ws",
     "prism-edge": "pe",
+    "nebula-glass": "ng",
+    "slate-minimal": "sm",
 }
 
 SECTION_RE = re.compile(r"/\*\s*==\s*([\w-]+)\s*==\s*\*/")

@@ -74,14 +74,34 @@ def _luminance(hex_color: str) -> float | None:
     return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
 
 
+def contrast_ratio(first: str, second: str) -> float:
+    """WCAG contrast ratio (1-21) of two `#rgb`/`#rrggbb` colors.
+
+    Returns 1.0 when either side is unparsable, so callers degrade to
+    "no information" instead of crashing on `transparent` or `var()` input.
+    """
+    first_lum = _luminance(first.strip()) if isinstance(first, str) else None
+    second_lum = _luminance(second.strip()) if isinstance(second, str) else None
+    if first_lum is None or second_lum is None:
+        return 1.0
+    lighter, darker = sorted((first_lum, second_lum), reverse=True)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
 def best_text_on(background: str | None, light: str, dark: str = FALLBACK_INK, threshold: float = 0.4) -> str:
-    """Pick the readable text color for a fill: dark ink on light fills."""
+    """Pick the more readable of `light`/`dark` text on a fill.
+
+    Selection is by maximum WCAG contrast ratio — a fixed luminance threshold
+    picked white-on-green (2.9:1) for saturated mid-luminance fills. `threshold`
+    is kept for signature compatibility and no longer consulted.
+    """
     if not background or not background.strip().startswith("#"):
         return light
-    luminance = _luminance(background.strip())
-    if luminance is None:
+    if _luminance(background.strip()) is None:
         return light
-    return dark if luminance > threshold else light
+    if contrast_ratio(light, background) >= contrast_ratio(dark, background):
+        return light
+    return dark
 
 
 def _merge_section(defaults: dict[str, Any], overrides: dict[str, Any] | None) -> dict[str, Any]:

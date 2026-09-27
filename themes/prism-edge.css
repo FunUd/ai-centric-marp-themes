@@ -2027,3 +2027,21 @@ section .quote-large {
   font-style: italic;
   letter-spacing: -0.01em;
 }
+
+/* <base:reduced-motion> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
+@media (prefers-reduced-motion: reduce) {
+  section *,
+  section *::before,
+  section *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* </base:reduced-motion> */
+
+/* <base:focus-visible> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
+section:focus-visible {
+  outline: 3px solid var(--pe-primary);
+  outline-offset: -4px;
+}
+/* </base:focus-visible> */

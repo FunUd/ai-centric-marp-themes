@@ -87,7 +87,7 @@ def _render(theme: str, kind: str, src: Path, dest: Path) -> bool:
     if res.returncode != 0:
         print(f"[{status}] {theme}/{kind}\n{res.stderr[-2000:]}")
         return False
-    print(f"[{status}] {dest.relative_to(ROOT)} ({dest.stat().st_size}B)")
+    print(f"[{status}] {theme}/{kind} ({dest.stat().st_size}B)")
     return True
 
 

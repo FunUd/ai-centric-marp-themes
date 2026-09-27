@@ -1258,3 +1258,10 @@ section .bg-light {
   background-color: var(--sm-primary-light) !important;
   padding: 24px;
 }
+
+/* <base:focus-visible> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
+section:focus-visible {
+  outline: 3px solid var(--sm-primary);
+  outline-offset: -4px;
+}
+/* </base:focus-visible> */

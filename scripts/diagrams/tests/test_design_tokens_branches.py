@@ -54,9 +54,22 @@ def test_best_text_on_guards() -> None:
     assert tokens.best_text_on("#zzzzzz", "light") == "light"
 
 
-def test_best_text_on_picks_by_luminance() -> None:
-    assert tokens.best_text_on("#FFFFFF", "light", "dark") == "dark"
+def test_best_text_on_picks_by_max_ratio() -> None:
+    # Real color choices: dark ink wins on white, white wins on black.
+    assert tokens.best_text_on("#FFFFFF", "#FFFFFF", "#1A1A2E") == "#1A1A2E"
+    assert tokens.best_text_on("#000000", "#FFFFFF", "#1A1A2E") == "#FFFFFF"
+    # Saturated mid-luminance fills: the old fixed threshold picked white
+    # (2.9:1 on azure green); max-ratio picks dark ink (5.9:1).
+    assert tokens.best_text_on("#27AE60", "#FFFFFF") == "#1A1A2E"
+    assert tokens.best_text_on("#10B981", "#FFFFFF") == "#1A1A2E"
+    assert tokens.best_text_on("#06B6D4", "#FFFFFF") == "#1A1A2E"
+
+
+def test_best_text_on_tie_prefers_light() -> None:
+    # Non-color choices carry no ratio information (both 1.0): keep light,
+    # which preserves the dark-fill behaviour the threshold gave.
     assert tokens.best_text_on("#000000", "light", "dark") == "light"
+    assert tokens.contrast_ratio("light", "#000000") == 1.0
 
 
 # --- load_design_tokens fallback ---------------------------------------------

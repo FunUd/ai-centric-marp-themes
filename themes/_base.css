@@ -401,3 +401,21 @@ section.v-bottom,
 section .v-bottom {
   justify-content: flex-end;
 }
+
+/* == reduced-motion == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+@media (prefers-reduced-motion: reduce) {
+  section *,
+  section *::before,
+  section *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* == focus-visible == */
+/* themes: azure-clarity, crimson-clarity, prism-edge, nebula-glass, slate-minimal */
+section:focus-visible {
+  outline: 3px solid var(--ac-primary);
+  outline-offset: -4px;
+}
