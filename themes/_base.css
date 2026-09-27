@@ -1,0 +1,403 @@
+/* _base.css — Shared structural theme CSS (single source of truth).
+
+Layout containers, grids, callouts, badges, alignment utilities and display
+controls whose structure is identical across themes modulo the `--xx-` token
+prefix. Edit here, then run `python scripts/sync-theme-base.py` to propagate
+into each listed theme (`--check` is the CI gate).
+
+Conventions:
+- Written in the azure-clarity dialect (`--ac-`); the sync substitutes the
+  prefix per theme, so bodies must use ONLY `--ac-` variables (no `--cc-`,
+  no hard-coded theme colors) and contain no `/* */` comments.
+- `themes:` under each section lists the themes carrying it. nebula-glass and
+  slate-minimal diverge structurally (glassmorphism, `!important` utilities)
+  and stay fully local by design — see the fork-drift notes in CHANGELOG.
+- Rule order inside a theme is preserved by the sync (markers stay in place),
+  so the cascade — and therefore rendering — is unchanged by construction.
+*/
+
+/* == pagination == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday */
+section::after {
+  position: absolute;
+  bottom: 18px;
+  right: 30px;
+  font-size: 13px;
+  color: var(--ac-text-sub);
+  font-weight: 500;
+  background: var(--ac-primary-pale);
+  padding: 3px 12px;
+  border-radius: 12px;
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+}
+
+/* == display-control == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.no-header header {
+  display: none;
+}
+
+section.no-footer footer {
+  display: none;
+}
+
+section.no-pagination::after {
+  display: none;
+}
+
+section.pagination-left::after {
+  right: auto;
+  left: 30px;
+}
+
+section:has(header),
+section.with-header {
+  padding-top: 85px;
+}
+
+/* == cols-2 == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.cols-2>div.columns,
+section.cols-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* == cols-3 == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.cols-3>div.columns,
+section.cols-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* == col-card == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.cols-2 .col,
+section.cols-3 .col {
+  background: var(--ac-primary-pale);
+  border-radius: var(--ac-radius-lg);
+  padding: 24px;
+  border: 1px solid var(--ac-border-light);
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* == col-h3 == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.cols-2 .col h3,
+section.cols-3 .col h3 {
+  color: var(--ac-primary);
+  font-size: calc(22px * var(--font-scale));
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ac-primary-light);
+}
+
+/* == split-2 == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.split-2>div.columns,
+section.split-2>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* == split-3 == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.split-3>div.columns,
+section.split-3>.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  height: calc(100% - 80px);
+}
+
+/* == grid-quadrant == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.grid-quadrant>div.grid,
+section.grid-quadrant>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100% - 80px);
+}
+
+/* == grid-cells-core == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.grid-quadrant .cell {
+  background: var(--ac-primary-pale);
+  border-radius: var(--ac-radius-lg);
+  padding: 20px 24px;
+  border: 1px solid var(--ac-border-light);
+  overflow: hidden;
+}
+
+section.grid-quadrant .cell h3 {
+  color: var(--ac-primary);
+  font-size: calc(20px * var(--font-scale));
+  margin-bottom: 8px;
+}
+
+section.grid-quadrant .cell p,
+section.grid-quadrant .cell li {
+  font-size: calc(17px * var(--font-scale));
+  line-height: 1.5;
+}
+
+
+/* == grid-cells-side == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.grid-quadrant .cell.side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+section.grid-quadrant .cell.side>div:first-child {
+  flex: 1;
+}
+
+section.grid-quadrant .cell.side img {
+  max-width: 140px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* == grid-axes == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.grid-quadrant.axes>div.grid,
+section.grid-quadrant.axes>.grid {
+  grid-template-columns: 36px 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
+  grid-template-areas:
+    "y c1 c2"
+    "y c3 c4"
+    ". x x";
+}
+
+section.grid-quadrant.axes .axis-y {
+  grid-area: y;
+  writing-mode: vertical-rl;
+  align-self: stretch;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(17px * var(--font-scale));
+  font-weight: 700;
+  color: var(--ac-primary-dark);
+  border-right: 2px solid var(--ac-primary-light);
+  padding-right: 8px;
+  letter-spacing: 0.2em;
+}
+
+section.grid-quadrant.axes .axis-x {
+  grid-area: x;
+  align-self: center;
+  justify-self: stretch;
+  text-align: center;
+  font-size: calc(17px * var(--font-scale));
+  font-weight: 700;
+  color: var(--ac-primary-dark);
+  border-top: 2px solid var(--ac-primary-light);
+  padding-top: 8px;
+  letter-spacing: 0.2em;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(1) {
+  grid-area: c1;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(2) {
+  grid-area: c2;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(3) {
+  grid-area: c3;
+}
+
+section.grid-quadrant.axes .cell:nth-of-type(4) {
+  grid-area: c4;
+}
+
+/* == grid-sharp == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.grid-sharp>div.grid,
+section.grid-sharp>.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  height: calc(100% - 80px);
+}
+
+section.grid-sharp .cell {
+  background: transparent;
+  border-radius: 0;
+  padding: 24px 28px;
+  border-right: 1px solid var(--ac-border-light);
+  border-bottom: 1px solid var(--ac-border-light);
+  overflow: hidden;
+}
+
+section.grid-sharp .cell:nth-child(2n) {
+  border-right: none;
+}
+
+section.grid-sharp .cell:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+section.grid-sharp .cell h3 {
+  color: var(--ac-primary);
+  font-size: calc(20px * var(--font-scale));
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* == callout-base == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday */
+section .callout {
+  padding: 16px 20px;
+  margin: 16px 0;
+  border-left: 6px solid var(--ac-primary);
+  background: var(--ac-primary-pale);
+  border-radius: 0 var(--ac-radius) var(--ac-radius) 0;
+  font-size: 0.95em;
+}
+
+section .callout h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: inherit;
+}
+
+section .callout p:last-child {
+  margin-bottom: 0;
+}
+
+/* == callout-blue == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday */
+section .callout.blue {
+  border-left-color: var(--ac-info);
+  background: var(--ac-info-pale);
+}
+
+section .callout.blue h4 {
+  color: var(--ac-info);
+}
+
+/* == callout-alerts == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday */
+section .callout.green {
+  border-left-color: var(--ac-success);
+  background: #f0f9f4;
+}
+
+section .callout.green h4 {
+  color: #1e8449;
+}
+
+section .callout.orange {
+  border-left-color: var(--ac-warning);
+  background: #fff8f0;
+}
+
+section .callout.orange h4 {
+  color: #d68910;
+}
+
+section .callout.red {
+  border-left-color: var(--ac-danger);
+  background: #fdf2f1;
+}
+
+section .callout.red h4 {
+  color: #cb4335;
+}
+
+/* == badge-base == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday */
+section .badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.65em;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: var(--ac-radius);
+  background-color: var(--ac-primary-light);
+  color: var(--ac-primary-dark);
+}
+
+/* == align-h == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.text-left,
+section .text-left,
+section.align-left,
+section .align-left {
+  text-align: left;
+}
+
+section.text-center,
+section .text-center,
+section.align-center,
+section .align-center {
+  text-align: center;
+}
+
+section.text-right,
+section .text-right,
+section.align-right,
+section .align-right {
+  text-align: right;
+}
+
+/* == align-v == */
+/* themes: azure-clarity, crimson-clarity, warm-sunnyday, prism-edge */
+section.v-top,
+section .v-top,
+section.v-center,
+section .v-center,
+section.v-middle,
+section .v-middle,
+section.v-bottom,
+section .v-bottom {
+  display: flex !important;
+  flex-direction: column;
+}
+
+section.v-top,
+section .v-top {
+  justify-content: flex-start;
+}
+
+section.v-center,
+section .v-center,
+section.v-middle,
+section .v-middle {
+  justify-content: center;
+}
+
+section.v-bottom,
+section .v-bottom {
+  justify-content: flex-end;
+}

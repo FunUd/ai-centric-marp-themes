@@ -28,7 +28,8 @@ def test_samples_exist() -> None:
 
 
 def test_every_theme_has_a_sample_deck() -> None:
-    themes = {p.stem for p in (ROOT / "themes").glob("*.css")}
+    # `_*.css` files are SSoT sources (e.g. `_base.css`), not selectable themes.
+    themes = {p.stem for p in (ROOT / "themes").glob("*.css") if not p.stem.startswith("_")}
     covered = {d.stem.removesuffix("-sample") for d in DECKS if d.stem.endswith("-sample")}
     assert themes <= covered, f"themes without a sample deck: {sorted(themes - covered)}"
 

@@ -366,6 +366,7 @@ section footer {
 /* ============================================================
    Pagination (section::after)
    ============================================================ */
+/* <base:pagination> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section::after {
   position: absolute;
   bottom: 18px;
@@ -378,10 +379,12 @@ section::after {
   border-radius: 12px;
   content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
 }
+/* </base:pagination> */
 
 /* ============================================================
    Utility: Header / Footer / Pagination control
    ============================================================ */
+/* <base:display-control> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.no-header header {
   display: none;
 }
@@ -403,6 +406,7 @@ section:has(header),
 section.with-header {
   padding-top: 85px;
 }
+/* </base:display-control> */
 
 /* ============================================================
    Cover Slide — 表紙
@@ -583,6 +587,7 @@ section.toc-focus ol li:hover {
 /* ============================================================
    2-Column Layout
    ============================================================ */
+/* <base:cols-2> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.cols-2>div.columns,
 section.cols-2>.columns {
   display: grid;
@@ -593,10 +598,12 @@ section.cols-2>.columns {
   min-height: 0;
   overflow: hidden;
 }
+/* </base:cols-2> */
 
 /* ============================================================
    3-Column Layout
    ============================================================ */
+/* <base:cols-3> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.cols-3>div.columns,
 section.cols-3>.columns {
   display: grid;
@@ -607,8 +614,10 @@ section.cols-3>.columns {
   min-height: 0;
   overflow: hidden;
 }
+/* </base:cols-3> */
 
 /* カラムカードスタイル */
+/* <base:col-card> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.cols-2 .col,
 section.cols-3 .col {
   background: var(--cc-primary-pale);
@@ -619,7 +628,9 @@ section.cols-3 .col {
   box-sizing: border-box;
   overflow: hidden;
 }
+/* </base:col-card> */
 
+/* <base:col-h3> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.cols-2 .col h3,
 section.cols-3 .col h3 {
   color: var(--cc-primary);
@@ -628,10 +639,12 @@ section.cols-3 .col h3 {
   padding-bottom: 8px;
   border-bottom: 2px solid var(--cc-primary-light);
 }
+/* </base:col-h3> */
 
 /* ============================================================
    Split Layout (背景・枠線なしのシンプルな分割レイアウト)
    ============================================================ */
+/* <base:split-2> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.split-2>div.columns,
 section.split-2>.columns {
   display: grid;
@@ -640,7 +653,9 @@ section.split-2>.columns {
   align-items: stretch;
   height: calc(100% - 80px);
 }
+/* </base:split-2> */
 
+/* <base:split-3> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.split-3>div.columns,
 section.split-3>.columns {
   display: grid;
@@ -649,10 +664,12 @@ section.split-3>.columns {
   align-items: stretch;
   height: calc(100% - 80px);
 }
+/* </base:split-3> */
 
 /* ============================================================
    4-Quadrant Grid (2x2)
    ============================================================ */
+/* <base:grid-quadrant> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.grid-quadrant>div.grid,
 section.grid-quadrant>.grid {
   display: grid;
@@ -661,7 +678,9 @@ section.grid-quadrant>.grid {
   gap: 16px;
   height: calc(100% - 80px);
 }
+/* </base:grid-quadrant> */
 
+/* <base:grid-cells-core> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.grid-quadrant .cell {
   background: var(--cc-primary-pale);
   border-radius: var(--cc-radius-lg);
@@ -682,7 +701,9 @@ section.grid-quadrant .cell li {
   line-height: 1.5;
 }
 
+/* </base:grid-cells-core> */
 /* 象限内での左右分割レイアウト */
+/* <base:grid-cells-side> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.grid-quadrant .cell.side {
   display: flex;
   align-items: center;
@@ -698,6 +719,7 @@ section.grid-quadrant .cell.side img {
   height: auto;
   flex-shrink: 0;
 }
+/* </base:grid-cells-side> */
 
 /* ============================================================
    Grid Quadrant + axes modifier — X/Y axis labels for matrices.
@@ -705,6 +727,7 @@ section.grid-quadrant .cell.side img {
    <div class="grid"> must contain EXACTLY one .axis-y, four .cell,
    and one .axis-x in this order.
    ============================================================ */
+/* <base:grid-axes> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.grid-quadrant.axes>div.grid,
 section.grid-quadrant.axes>.grid {
   grid-template-columns: 36px 1fr 1fr;
@@ -759,10 +782,12 @@ section.grid-quadrant.axes .cell:nth-of-type(3) {
 section.grid-quadrant.axes .cell:nth-of-type(4) {
   grid-area: c4;
 }
+/* </base:grid-axes> */
 
 /* ============================================================
    Sharp Grid — border-only grid (no backgrounds)
    ============================================================ */
+/* <base:grid-sharp> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.grid-sharp>div.grid,
 section.grid-sharp>.grid {
   display: grid;
@@ -795,6 +820,7 @@ section.grid-sharp .cell h3 {
   margin-bottom: 8px;
   font-weight: 600;
 }
+/* </base:grid-sharp> */
 
 /* ============================================================
    Timetable
@@ -1168,6 +1194,7 @@ section .checklist li::before {
 /* ============================================================
    Callouts (Alerts)
    ============================================================ */
+/* <base:callout-base> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section .callout {
   padding: 16px 20px;
   margin: 16px 0;
@@ -1186,7 +1213,9 @@ section .callout h4 {
 section .callout p:last-child {
   margin-bottom: 0;
 }
+/* </base:callout-base> */
 
+/* <base:callout-blue> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section .callout.blue {
   border-left-color: var(--cc-info);
   background: var(--cc-info-pale);
@@ -1195,10 +1224,12 @@ section .callout.blue {
 section .callout.blue h4 {
   color: var(--cc-info);
 }
+/* </base:callout-blue> */
 
 /* The other callout tints: kept as literal palettes on every theme because each
    one is a fixed, theme-independent alert colour rather than a brand token. */
 
+/* <base:callout-alerts> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section .callout.green {
   border-left-color: var(--cc-success);
   background: #f0f9f4;
@@ -1225,10 +1256,12 @@ section .callout.red {
 section .callout.red h4 {
   color: #cb4335;
 }
+/* </base:callout-alerts> */
 
 /* ============================================================
    Badges / Tags
    ============================================================ */
+/* <base:badge-base> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section .badge {
   display: inline-block;
   padding: 4px 12px;
@@ -1242,6 +1275,7 @@ section .badge {
   background-color: var(--cc-primary-light);
   color: var(--cc-primary-dark);
 }
+/* </base:badge-base> */
 
 section .badge.blue {
   background-color: var(--cc-primary);
@@ -1268,6 +1302,7 @@ section .badge.red {
    ============================================================ */
 
 /* Horizontal Alignment */
+/* <base:align-h> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.text-left,
 section .text-left,
 section.align-left,
@@ -1288,8 +1323,10 @@ section.align-right,
 section .align-right {
   text-align: right;
 }
+/* </base:align-h> */
 
 /* Vertical Alignment */
+/* <base:align-v> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.v-top,
 section .v-top,
 section.v-center,
@@ -1318,6 +1355,7 @@ section.v-bottom,
 section .v-bottom {
   justify-content: flex-end;
 }
+/* </base:align-v> */
 
 /* ============================================================
    Highlight colors utility

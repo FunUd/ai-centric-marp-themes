@@ -88,6 +88,11 @@ jobs:
       - name: Check theme class manifest sync
         run: python scripts/diagrams/sync-theme-classes.py --check
 
+      - name: Check shared theme base sync
+        # themes/_base.css is the source of truth for structurally identical
+        # CSS; each listed theme carries its prefix-substituted copy.
+        run: python scripts/sync-theme-base.py --check
+
       - name: Check vendored diagram engine is in sync
         # marp-diagram-creator ships a copy of the engine under vendor/ so the
         # skill works outside this repository. Keep it byte-identical.
@@ -163,6 +168,9 @@ jobs:
 
       - name: Check theme class manifest sync
         run: python scripts/diagrams/sync-theme-classes.py --check
+
+      - name: Check shared theme base sync
+        run: python scripts/sync-theme-base.py --check
 
       - name: Check vendored diagram engine is in sync
         run: python scripts/sync-skill-vendor.py --check

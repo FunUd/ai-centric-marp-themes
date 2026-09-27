@@ -160,6 +160,7 @@ When forking from an existing theme (recommended for consistency):
 4. Update the color palette in `:root`
 5. Adjust typography, cover styles, and any unique features
 6. Add theme-specific classes if needed
+7. If the new theme shares the standard structure (columns, grids, callouts, badges, alignment), wrap the matching regions in `<base:name>` markers and register the theme in `scripts/sync-theme-base.py::PREFIX` plus the section `themes:` lists in `themes/_base.css` — then run `python scripts/sync-theme-base.py` so future base edits propagate to it (`--check` is the CI gate)
 
 > **Tip**: Azure Clarity and Crimson Clarity are the simplest bases (system fonts, straightforward layouts). Prism Edge and Nebula Glass are more advanced (custom fonts, complex cover variants, unique classes).
 
