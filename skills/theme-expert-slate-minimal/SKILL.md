@@ -44,6 +44,28 @@ Slate Minimal follows the **4 Principles of Minimalism** (Reduction, Alignment, 
 **Where borders are NOT used** (whitespace/typography handles it):
 - `h1` headings, column separators, TOC/TOC-focus items, steps separators, grid-quadrant cells, inline code, `bg-pale`/`bg-light` utilities
 
+## Emphasis Without Color (色に頼らない強調パターン)
+
+Grayscale cannot signal urgency by hue: `callout red` and `badge red` differ from other variants only in lightness. Use fill and typography instead.
+
+- **Severity:** reserve `<span class="badge ink">` (solid `--sm-accent` fill, the darkest) for the highest severity only. Rank lower items with a callout's left border plus a bold label, not color names.
+- **Closing:** use a `key-message` `##` (56px Serif), not `> 引用` (26px gray italic), for impact.
+- **Shades:** `--sm-danger: #1E293B` is visibly darker than `--sm-warning: #64748B`; when both appear, assign danger to the stronger item.
+
+```markdown
+<span class="badge ink">CRITICAL</span>
+
+<div class="callout red">
+
+**原因:** 本文をここに書く
+
+</div>
+
+<!-- _class: key-message -->
+
+## 締めの一文をここに書く
+```
+
 ## Design Tips
 
 - Keep text short and impactful. A minimalist theme falls apart if slides are cluttered with bullet points.

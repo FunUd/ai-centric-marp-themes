@@ -128,7 +128,10 @@ python skills/marp-slide-creator/scripts/marp-diagnostics.py --theme themes/pris
 > `--theme` takes a path to a theme CSS file. The themes ship in
 > `ai-centric-marp-themes/themes/`; copy the one you use into your deck repo
 > (e.g. `<deck>/themes/`) and point `--theme` at that copy, so the command works
-> from any working directory.
+> from any working directory. If you copy it, also mirror `assets/fonts/` so the
+> theme's relative `../assets/fonts/…` paths keep resolving — otherwise Marp CLI
+> prints `Some of the local files are missing` (font fallback; usually benign,
+> see Stage 4) and `marp-diagnostics.py` prints a NOTE naming the culprit.
 
 This helper exports `slides/my-deck/preview.html` and writes DOM analysis to `slides/my-deck/assets/dom-metrics.json`.
 
@@ -152,10 +155,14 @@ python skills/marp-slide-creator/scripts/marp-dom-extractor.py slides/my-deck/pr
 
 Auto-detected risk flags:
 - `CONTENT_OVERFLOW`: Content past slide bottom
+- `FOOTER_COLLISION_RISK`: Content reaches the footer/pagination zone (newer than `CONTENT_OVERFLOW`, which Marp themes suppress by clipping)
 - `DENSE_TEXT`: >600 characters
-- `MANY_LINES`: >20 lines
+- `MANY_LINES`: >20 lines on single-column slides, scaled by column count (`cols-2` → 40, `cols-3` → 60), so short cards no longer false-positive
 - `IMAGE_NO_SRC`: Missing image source
 - `IMAGE_BROKEN`: Failed to load
+
+> Read `dom-metrics.json` with your file viewer. Avoid `python -c print(...)` on
+> Windows consoles — non-UTF-8 code pages (cp932) crash on `©`/CJK output.
 
 Manual checks from `elements` array:
 - Element overlap
@@ -205,7 +212,19 @@ any image.**
 >   via shell first. Only regenerate after a confirmed mismatch — do not
 >   re-read the same file hoping it will change.
 > - If `marp-cli -o` emits extension-less `slide.001` files, rename them to
->   `slide-001.png` with a single `ForEach-Object` loop before reading.
+>   `slide-001.png` with a single `ForEach-Object` loop before reading:
+>   ```powershell
+>   Get-ChildItem "slides/my-deck/assets/screenshots/slide.*" | ForEach-Object {
+>     $n = $_.Name -replace 'slide\.','slide-'
+>     if (-not $n.EndsWith('.png')) { $n += '.png' }
+>     Rename-Item $_.FullName $n
+>   }
+>   ```
+> - If Marp CLI warns `Some of the local files are missing`: check whether the
+>   missing paths are only theme fonts (`../assets/fonts/…`) — benign
+>   (system-font fallback), silenced by mirroring `assets/fonts/` next to the
+>   theme copy. If a deck image/diagram is listed, fix the path instead. When in
+>   doubt, the rendered images are the source of truth.
 
 **Step 2: Slide Identification Protocol (MANDATORY — run for EVERY image)**
 To avoid misidentifying slide numbers during visual inspection:

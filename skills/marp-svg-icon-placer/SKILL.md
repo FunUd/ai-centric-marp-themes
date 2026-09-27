@@ -46,6 +46,11 @@ The script copies from `skills/marp-svg-icon-placer/references/icons/` to `slide
 
 ## 3. Customize the Icon (Optional)
 
+> **⚠️ Dark themes (e.g. nebula-glass):** icons copied with `fill="currentColor"` render nearly black and invisible on dark headings. Always recolor to a light tone immediately after copying.
+> ```powershell
+> python skills/marp-svg-icon-placer/scripts/recolor-icons.py my-presentation "#67E8F9" all
+> ```
+
 > **⚠️ IMPORTANT: Never edit SVG colors with shell commands**. Use the Python script for cross-platform compatibility.
 
 ### Recolor Script (Recommended)
@@ -72,6 +77,15 @@ Edit the copied SVG in `slides/[project-name]/assets/`:
 - Keep original in `references/icons/` unchanged
 
 ## 4. Placement Patterns
+
+> **⚠️ Raw inline HTML:** Markdown image syntax `![...]` is NOT parsed inside a single-line HTML block (e.g. `<h4>`, callout headings) — the alt text renders literally. Use `<img>` instead.
+> ```markdown
+> <!-- NG: renders as literal text -->
+> <h4>Title ![icon](./assets/lightbulb.svg)</h4>
+>
+> <!-- OK -->
+> <h4>Title <img src="./assets/lightbulb.svg" width="16" alt=""></h4>
+> ```
 
 ### Pattern A: Inline with Heading (most common)
 

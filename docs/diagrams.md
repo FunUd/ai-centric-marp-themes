@@ -89,7 +89,7 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `flowchart-linear.mmd` | ✅ | | | |
 | `flowchart-col2.mmd` | ✅ | ✅ | ✅ | |
 | `sequence-api.mmd` | ✅ | | | |
-| `sequence-api-col2.mmd` | ✅ | | ✅ | |
+| `sequence-api-asym.mmd` | ✅ | | ✅ | |
 | `architecture-3tier.mmd` | ✅ | | | |
 | `architecture-3tier-col2.mmd` | ✅ | ✅ | ✅ | ✅ |
 | `state-machine.mmd` | ✅ | | | |
@@ -125,7 +125,7 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 |---|---|---|
 | `flowchart-linear.mmd` | Mermaid | Left-to-right linear process flow |
 | `sequence-api.mmd` | Mermaid | REST API auth + order sequence |
-| `sequence-api-col2.mmd` | Mermaid | Compact 3-party sequence for asym/full |
+| `sequence-api-asym.mmd` | Mermaid | Compact 3-party sequence for asym/full |
 | `architecture-3tier.mmd` | Mermaid | Classic 3-tier web architecture |
 | `architecture-3tier-col2.mmd` | Mermaid | Compact vertical 3-tier for all layouts |
 | `flowchart-col2.mmd` | Mermaid | 2-column-safe compact flowchart |
@@ -146,4 +146,10 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `organization/team-org-chart.json` | JSON SVG | Hierarchical organization chart |
 
 > Template registry is verified by `python scripts/diagrams/check-catalog-sync.py` (templates on disk vs. this table vs. `template-catalog.md`), and the supported-layout column by `python scripts/diagrams/check-templates.py`. The templates themselves ship inside the `marp-diagram-creator` skill at `vendor/templates/` (development source: `scripts/diagrams/templates/`).
+
+> **Label length tip (bar/line charts):** axis tick labels wrap hard at 8 characters
+> *inside* words (`Pinecone` → `Pineco/ne`), and validation still passes — the
+> break is only visible in the rendered image. Keep tick labels to ~7 half-width
+> characters (e.g. `A案`/`B案`/`C案`) and move the full names to the caption or
+> legend.
 
