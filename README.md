@@ -745,6 +745,14 @@ playwright install chromium
 
 This enables the diagnostics and screenshot capture pipeline described in `skills/marp-slide-creator/SKILL.md` and `skills/marp-slide-creator/scripts/marp-diagnostics.py`.
 
+### Offline Execution Policy
+
+- Apart from installation, slide data is never sent to an external server.
+- Network access happens only at tool-install time: `npm install` / `pip install` / `playwright install chromium`.
+- All execution after that is local: Mermaid / Marp CLI run locally via `npx`, and screenshots / DOM extraction use `file://` + local Chromium.
+- A remote fetch occurs only when your own deck embeds a `https://` image URL.
+- Using an AI assistant sends deck content to the LLM provider separately. Keep confidential decks out of Skills scope.
+
 ---
 
 ## Third-party Assets
