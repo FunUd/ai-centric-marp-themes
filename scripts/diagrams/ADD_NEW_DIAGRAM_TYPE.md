@@ -7,7 +7,7 @@ registry test (`tests/test_diagram_registry.py`) and the catalog check
 
 ## 1. Model (`diagram_models.py`)
 
-- Add the type name to `DIAGRAM_TYPES` (imported from `layout_spec.py` — no geometry here).
+- Add the type name to `diagram_models.py::DIAGRAM_TYPES` (type registry SSoT — `layout_spec.py` holds geometry only, no type names).
 - Add a `_validate_<kind>()` branch in `_validate_type()` covering required fields, ranges, and limits (counts, depth, non-empty labels).
 - If the type needs a non-standard default height for a layout, add an entry to `layout_spec.py::TYPE_LAYOUT_HEIGHTS`.
 - Canvas `aspect` (`{"aspect": 2.4}` → `height = width / aspect`, mutually exclusive with `height`)

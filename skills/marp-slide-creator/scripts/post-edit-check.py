@@ -43,12 +43,22 @@ import re
 import sys
 from pathlib import Path
 
-# Windows consoles default to cp932; reported offenders may contain
-# non-ASCII characters, which would crash the report itself.
+# Console encoding SSoT lives in scripts/diagrams/compat.py; the skill ships
+# as a directory, so import the sibling — with the same lines as fallback for
+# single-file copies.
 try:
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-except (AttributeError, OSError):
-    pass
+    from compat import ensure_utf8_stdio
+except ImportError:  # pragma: no cover - single-file copy without compat.py
+    def ensure_utf8_stdio() -> None:
+        """Force UTF-8 on stdout/stderr; skip streams that cannot be reconfigured."""
+        for stream in (sys.stdout, sys.stderr):
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except (AttributeError, OSError, ValueError):
+                pass
+
+
+ensure_utf8_stdio()
 
 # Simplified-Chinese-only glyphs that never appear in normal Japanese text.
 # Curated to avoid false positives on valid Japanese kanji

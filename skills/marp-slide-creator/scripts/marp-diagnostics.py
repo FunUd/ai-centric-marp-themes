@@ -24,6 +24,20 @@ from typing import Any
 SCRIPT_DIR = Path(__file__).resolve().parent
 EXTRACTOR_SCRIPT = SCRIPT_DIR / "marp-dom-extractor.py"
 
+# Console encoding SSoT lives in scripts/diagrams/compat.py; the skill ships
+# as a directory, so import the sibling — with the same lines as fallback for
+# single-file copies.
+try:
+    from compat import ensure_utf8_stdio
+except ImportError:  # pragma: no cover - single-file copy without compat.py
+    def ensure_utf8_stdio() -> None:
+        """Force UTF-8 on stdout/stderr; skip streams that cannot be reconfigured."""
+        for stream in (sys.stdout, sys.stderr):
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except (AttributeError, OSError, ValueError):
+                pass
+
 
 def resolve_executable(name: str) -> str | None:
     """Resolve a runnable executable path for the current platform."""
@@ -165,12 +179,7 @@ def print_summary(metrics: list[dict[str, Any]], html_path: Path, json_path: Pat
 
 
 def main() -> int:
-    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
-    for _stream in (sys.stdout, sys.stderr):
-        try:
-            _stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass  # stream replaced by a test harness or not reconfigurable
+    ensure_utf8_stdio()
     parser = argparse.ArgumentParser(
         description="Export a Marp deck to HTML and run DOM-based diagnostics."
     )

@@ -25,6 +25,8 @@ from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, rout
 
 from layout_spec import VALIDATOR_LIMITS as _VALIDATOR_LIMITS  # noqa: E402
 
+from compat import ensure_utf8_stdio  # noqa: E402
+
 # Layout canvas constraints (pixels). Canonical values live in layout_spec.py;
 # the validator keeps ~20px slack above the documented CANVAS_MAX.
 LAYOUT_LIMITS = {key: dict(value) for key, value in _VALIDATOR_LIMITS.items()}
@@ -153,7 +155,11 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
         w, h = width_attr, height_attr
 
     if w is None or h is None or w <= 0 or h <= 0:
-        warnings.append(f"Could not determine positive width/height from SVG attributes or viewBox in {path.name}")
+        warnings.append(
+            f"Could not determine positive width/height from SVG attributes or viewBox in {path.name} "
+            f"(layout '{layout}'). Check the root <svg> width/height/viewBox; "
+            f"dimension, aspect, and geometry checks below were skipped."
+        )
     else:
         aspect = w / h
         # Boundary checks
@@ -198,7 +204,7 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
     node_rects: list[tuple[float, float, float, float]] = []
     connectors: list[tuple[tuple[float, float], tuple[float, float]]] = []
     if w is not None and h is not None and w > 0 and h > 0:
-        for elem in root.iter():
+        for elem_index, elem in enumerate(root.iter()):
             role = elem.get("data-diagram-role")
             if not role:
                 continue
@@ -206,7 +212,11 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
             if bounds is not None:
                 x, y, width, height = bounds
                 if x < 0 or y < 0 or x + width > w or y + height > h:
-                    errors.append(f"Element role='{role}' is outside the SVG viewBox")
+                    errors.append(
+                        f"Element #{elem_index} role='{role}' is outside the SVG viewBox "
+                        f"(x={x:.1f}, y={y:.1f}, w={width:.1f}, h={height:.1f} vs viewBox 0 0 {w:.1f} {h:.1f} "
+                        f"in {path.name}). Shrink content or re-render at the target layout."
+                    )
                 if role == "node":
                     node_rects.append(bounds)
             if role == "connector":
@@ -218,17 +228,28 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
                     warnings.append(f"Label font size ({font_size:.1f}px) is below the recommended minimum of 8px")
 
         for index, first in enumerate(node_rects):
-            for second in node_rects[index + 1:]:
+            for second_index, second in enumerate(node_rects[index + 1:], start=index + 1):
                 if _rects_overlap(first, second):
-                    errors.append("JSON diagram nodes overlap")
+                    errors.append(
+                        f"JSON diagram nodes overlap (node #{index} at "
+                        f"({first[0]:.1f}, {first[1]:.1f}, {first[2]:.1f}x{first[3]:.1f}) vs "
+                        f"node #{second_index} at ({second[0]:.1f}, {second[1]:.1f}, "
+                        f"{second[2]:.1f}x{second[3]:.1f}) in {path.name}). "
+                        f"Shorten labels or re-render for a wider layout."
+                    )
                     break
 
-        for start, end in connectors:
-            for node in node_rects:
+        for conn_index, (start, end) in enumerate(connectors):
+            for node_index, node in enumerate(node_rects):
                 if (_point_in_rect(start, node) or _point_in_rect(end, node)):
                     continue
                 if segment_intersects_rect(start, end, node):
-                    errors.append("JSON diagram connector crosses a node")
+                    errors.append(
+                        f"JSON diagram connector #{conn_index} crosses node #{node_index} "
+                        f"(segment ({start[0]:.1f}, {start[1]:.1f})->({end[0]:.1f}, {end[1]:.1f}) vs "
+                        f"node at ({node[0]:.1f}, {node[1]:.1f}, {node[2]:.1f}x{node[3]:.1f}) "
+                        f"in {path.name}). Reroute the edge or move the node."
+                    )
                     break
 
     # 3. Check for long unbroken text lines in foreignObject or text nodes
@@ -380,7 +401,11 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
                         continue
                     if segment_intersects_rect(start, end, obstacle):
                         errors.append(
-                            f"Edge id='{edge.get('id')}' crosses vertex id='{vertex_id}'"
+                            f"Edge id='{edge.get('id')}' crosses vertex id='{vertex_id}' "
+                            f"(segment ({start[0]:.0f}, {start[1]:.0f})->({end[0]:.0f}, {end[1]:.0f}) vs "
+                            f"node at ({obstacle[0]:.0f}, {obstacle[1]:.0f}, "
+                            f"{obstacle[2]:.0f}x{obstacle[3]:.0f}) in {path.name}). "
+                            f"Add <Array as=\"points\"> waypoints with exitX/exitY/entryX/entryY to route around it."
                         )
                         break
 
@@ -391,12 +416,7 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
 
 
 def main():
-    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
-    for _stream in (sys.stdout, sys.stderr):
-        try:
-            _stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass  # stream replaced by a test harness or not reconfigurable
+    ensure_utf8_stdio()
     parser = argparse.ArgumentParser(description="Validate diagram file against slide constraints.")
     parser.add_argument("path", type=Path, help="Path to .svg or .drawio file")
     parser.add_argument(

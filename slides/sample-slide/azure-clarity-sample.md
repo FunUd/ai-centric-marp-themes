@@ -5,6 +5,7 @@ paginate: true
 header: "Azure Clarity Demo"
 footer: "© 2026 Your Company"
 ---
+<!-- screenshot: cover -->
 
 <!-- _class: cover subtitle meta -->
 <!-- _paginate: false -->
@@ -18,6 +19,7 @@ footer: "© 2026 Your Company"
 プレゼンター名 | 部署名 | 2026年4月
 
 ---
+<!-- screenshot: toc -->
 
 <!-- _class: toc -->
 
@@ -37,6 +39,7 @@ footer: "© 2026 Your Company"
 12. コードブロック
 
 ---
+<!-- screenshot: toc-focus -->
 
 <!-- _class: toc-focus -->
 
@@ -48,6 +51,7 @@ footer: "© 2026 Your Company"
 4. 期待される効果
 
 ---
+<!-- screenshot: bullets -->
 
 <!-- _class: with-header -->
 
@@ -65,6 +69,7 @@ footer: "© 2026 Your Company"
   - パフォーマンス監視
 
 ---
+<!-- screenshot: table -->
 
 # テーブル表示
 
@@ -77,6 +82,7 @@ footer: "© 2026 Your Company"
 | カスタマイズ | ✕ | △ | ○ |
 
 ---
+<!-- screenshot: cols2 -->
 
 <!-- _class: cols-2 -->
 
@@ -106,6 +112,7 @@ footer: "© 2026 Your Company"
 </div>
 
 ---
+<!-- screenshot: cols3 -->
 
 <!-- _class: cols-3 -->
 
@@ -232,6 +239,7 @@ footer: "© 2026 Your Company"
 セクションの合間のスライドに適しています。
 
 ---
+<!-- screenshot: grid -->
 
 <!-- _class: grid-quadrant -->
 
@@ -339,6 +347,7 @@ footer: "© 2026 Your Company"
 | 14:30 - 15:00 | 振り返り・クロージング | 田中 |
 
 ---
+<!-- screenshot: steps -->
 
 <!-- _class: steps -->
 
@@ -354,6 +363,7 @@ footer: "© 2026 Your Company"
    段階的リリースと運用モニタリングを開始
 
 ---
+<!-- screenshot: timeline -->
 
 <!-- _class: timeline -->
 
@@ -371,6 +381,7 @@ footer: "© 2026 Your Company"
    機能拡張版リリース。海外展開を開始
 
 ---
+<!-- screenshot: checklist -->
 
 <!-- _class: checklist -->
 
@@ -387,6 +398,7 @@ footer: "© 2026 Your Company"
 ※ `checklist` クラスをスライドに付与するだけで、通常の箇条書きがチェックマーク付きのデザインになります。
 
 ---
+<!-- screenshot: callout -->
 
 <!-- _class: dense -->
 
@@ -415,6 +427,7 @@ footer: "© 2026 Your Company"
 </div>
 
 ---
+<!-- screenshot: keymsg -->
 
 <!-- _class: key-message no-pagination -->
 <!-- _header: "" -->
@@ -652,6 +665,7 @@ Marpの `bg` ディレクティブを使用することで、テキストと画�
 # ご清聴ありがとうございました
 
 ---
+<!-- screenshot: profile -->
 
 <!-- _class: profile -->
 

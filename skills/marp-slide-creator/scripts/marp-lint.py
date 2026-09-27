@@ -21,11 +21,22 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# Ensure UTF-8 output on Windows consoles
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-if hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+# Console encoding SSoT lives in scripts/diagrams/compat.py; this file is
+# copied standalone into agent directories, so import the sibling when shipped
+# as a directory and fall back to the same lines as a single-file copy.
+try:
+    from compat import ensure_utf8_stdio
+except ImportError:  # pragma: no cover - single-file copy without compat.py
+    def ensure_utf8_stdio() -> None:
+        """Force UTF-8 on stdout/stderr; skip streams that cannot be reconfigured."""
+        for stream in (sys.stdout, sys.stderr):
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except (AttributeError, OSError, ValueError):
+                pass
+
+
+ensure_utf8_stdio()
 
 
 # Layout div patterns and their required _class directives
@@ -277,12 +288,12 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
         if src_path.suffix.lower() not in {".svg"}:
             continue
 
-        if _is_diagram_src(src):
+        width_match = IMG_WIDTH_RE.search(alt)
+        width = int(width_match.group(1)) if width_match else None
+        if _is_diagram_src(src, width):
             continue
 
-        width_match = IMG_WIDTH_RE.search(alt)
         if width_match:
-            width = int(width_match.group(1))
             if width > ICON_MAX_WIDTH_PX:
                 issues.append(LintIssue(
                     slide=slide.number,
@@ -319,9 +330,26 @@ DIAGRAM_PATH_KEYWORDS = frozenset(
     ["diagram", "chart", "flow", "arch", "seq", "state", "drawio", "mmd", "render"]
 )
 
+# Catalog icons live under an `icons/` directory (e.g. `assets/icons/`).
+# A directory segment is a stronger signal than a filename substring, so it
+# wins over the keyword heuristic below (`workflow.svg` under `icons/` is an
+# icon even though it contains "flow").
+_ICON_DIR_RE = re.compile(r"(^|/)icons/", re.I)
 
-def _is_diagram_src(src: str) -> bool:
-    """Return True when the image source looks like a rendered diagram (not an icon)."""
+
+def _is_diagram_src(src: str, width: int | None = None) -> bool:
+    """Return True when the image source looks like a rendered diagram (not an icon).
+
+    Classification order (strongest signal first):
+    1. `icons/` directory -> never a diagram (catalog icon).
+    2. Explicit embed width above `ICON_MAX_WIDTH_PX` -> diagram-sized;
+       no icon is ever embedded that large, whatever the filename.
+    3. Filename keyword heuristic (fallback for width-less embeds).
+    """
+    if _ICON_DIR_RE.search(src):
+        return False
+    if width is not None and width > ICON_MAX_WIDTH_PX:
+        return True
     src_lower = src.lower()
     return any(kw in src_lower for kw in DIAGRAM_PATH_KEYWORDS)
 
@@ -562,12 +590,7 @@ def lint_slide(slide: SlideInfo, structural_only: bool = False) -> list[LintIssu
 
 
 def main() -> int:
-    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
-    for _stream in (sys.stdout, sys.stderr):
-        try:
-            _stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass  # stream replaced by a test harness or not reconfigurable
+    ensure_utf8_stdio()
     parser = argparse.ArgumentParser(
         description="Pre-render structural and readability linter for Marp Markdown files."
     )

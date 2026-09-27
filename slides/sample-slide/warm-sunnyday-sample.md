@@ -5,6 +5,7 @@ paginate: true
 header: "Warm Sunnyday Theme"
 footer: "© 2026 Your Name"
 ---
+<!-- screenshot: cover -->
 
 <!-- _class: cover subtitle meta -->
 <!-- _paginate: false -->
@@ -28,6 +29,7 @@ footer: "© 2026 Your Name"
 4. これからの目標と意気込み
 
 ---
+<!-- screenshot: profile -->
 
 <!-- _class: profile -->
 
@@ -53,6 +55,7 @@ footer: "© 2026 Your Name"
 </div>
 
 ---
+<!-- screenshot: cols -->
 
 <!-- _class: cols-2 -->
 
@@ -177,6 +180,7 @@ footer: "© 2026 Your Name"
 </div>
 
 ---
+<!-- screenshot: steps -->
 
 <!-- _class: steps -->
 
@@ -192,6 +196,7 @@ footer: "© 2026 Your Name"
    得られた知見やアイデアを積極的にチームに還元していきます。
 
 ---
+<!-- screenshot: callouts -->
 
 <!-- _class: dense -->
 

@@ -515,8 +515,15 @@ def _org_chart(data: dict, ctx: dict) -> list[str]:
 def _radial(data: dict, ctx: dict) -> list[str]:
     width, height = data["width"], data["height"]
     cx, cy = width / 2, height / 2 + 8
-    has_children = any(item.get("children") for item in data["items"])
-    outer = min(width, height) * (0.32 if width / height > 2 and has_children else 0.44 if width / height > 2 else 0.36)
+    # SSoT: geometry adapts to canvas width here (not in templates).
+    # Narrow layouts (col2/col3) keep full-layout geometry byte-identical;
+    # only sub-750px canvases use scaled boxes + shorter child radius so the
+    # max()/min() clamps below rarely collapse distinct nodes onto each other.
+    compact = width < 750
+    main_hw, main_hh = (48.0, 16.0) if compact else (60.0, 20.0)
+    child_hw, child_hh = (36.0, 12.0) if compact else (42.0, 14.0)
+    child_radius_factor = 0.42 if compact else 0.54
+    child_spread = 0.42 if compact else 0.50
     elements = _title(ctx, width, data.get("title"))
     center_r = min(54, width * 0.12)
     center_style = node_style(ctx, "accent")
@@ -535,44 +542,44 @@ def _radial(data: dict, ctx: dict) -> list[str]:
             angle = (-math.pi / 2, 0, math.pi)[index]
         else:
             angle = -math.pi / 2 + math.tau * index / len(data["items"])
-        half_width, half_height = 60, 20
+        half_width, half_height = main_hw, main_hh
         rectangle_extent = abs(math.cos(angle)) * half_width + abs(math.sin(angle)) * half_height
         gap = 32
         radial_distance = center_r + gap + rectangle_extent
         x, y = cx + radial_distance * math.cos(angle), cy + radial_distance * math.sin(angle)
         start_x, start_y = cx + center_r * math.cos(angle), cy + center_r * math.sin(angle)
-        end_x, end_y = edge_point(x, y, cx, cy, 60, 20)
+        end_x, end_y = edge_point(x, y, cx, cy, main_hw, main_hh)
         elements.append(svg_line(start_x, start_y, end_x, end_y, stroke=ctx["line"], **{"stroke-width": ctx["shapes"]["strokeWidth"]}))
         children = item.get("children", [])
         for child_index, child in enumerate(children):
-            child_angle = angle + (child_index - (len(children) - 1) / 2) * 0.50
-            child_radius = min(width, height) * 0.54
+            child_angle = angle + (child_index - (len(children) - 1) / 2) * child_spread
+            child_radius = min(width, height) * child_radius_factor
             child_x = max(48, min(width - 48, cx + child_radius * math.cos(child_angle)))
             child_y = max(24, min(height - 24, cy + child_radius * math.sin(child_angle)))
             # Edge-to-edge on both ends, collected before any box is painted
             # so no line ever crosses a box interior.
-            child_start = edge_point(x, y, child_x, child_y, 60, 20)
-            child_end = edge_point(child_x, child_y, x, y, 42, 14)
+            child_start = edge_point(x, y, child_x, child_y, main_hw, main_hh)
+            child_end = edge_point(child_x, child_y, x, y, child_hw, child_hh)
             elements.append(svg_line(child_start[0], child_start[1], child_end[0], child_end[1], role="connector", stroke=ctx["line"], **{"stroke-width": ctx["shapes"]["strokeWidth"]}))
     for index, item in enumerate(data["items"]):
         if width / height > 2 and len(data["items"]) == 3:
             angle = (-math.pi / 2, 0, math.pi)[index]
         else:
             angle = -math.pi / 2 + math.tau * index / len(data["items"])
-        half_width, half_height = 60, 20
+        half_width, half_height = main_hw, main_hh
         rectangle_extent = abs(math.cos(angle)) * half_width + abs(math.sin(angle)) * half_height
         gap = 32
         radial_distance = center_r + gap + rectangle_extent
         x, y = cx + radial_distance * math.cos(angle), cy + radial_distance * math.sin(angle)
-        elements.append(_node_rect(x - 60, y - 20, 120, 40, ctx))
+        elements.append(_node_rect(x - main_hw, y - main_hh, main_hw * 2, main_hh * 2, ctx))
         elements.append(_text(x, y + 5, item["label"], ctx, "captionSize", max_chars=10, **{"text-anchor": "middle", "font-weight": "bold"}))
         children = item.get("children", [])
         for child_index, child in enumerate(children):
-            child_angle = angle + (child_index - (len(children) - 1) / 2) * 0.50
-            child_radius = min(width, height) * 0.54
+            child_angle = angle + (child_index - (len(children) - 1) / 2) * child_spread
+            child_radius = min(width, height) * child_radius_factor
             child_x = max(48, min(width - 48, cx + child_radius * math.cos(child_angle)))
             child_y = max(24, min(height - 24, cy + child_radius * math.sin(child_angle)))
-            elements.append(_node_rect(child_x - 42, child_y - 14, 84, 28, ctx, variant="surface"))
+            elements.append(_node_rect(child_x - child_hw, child_y - child_hh, child_hw * 2, child_hh * 2, ctx, variant="surface"))
             elements.append(_text(child_x, child_y + 4, str(child), ctx, "captionSize", **{"text-anchor": "middle"}))
     return elements
 

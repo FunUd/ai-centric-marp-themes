@@ -5,6 +5,7 @@ paginate: true
 header: "DESIGN PHILOSOPHY 2026"
 footer: "© 2026 Slate Minimal"
 ---
+<!-- screenshot: cover -->
 
 <!-- _class: cover subtitle meta -->
 <!-- _paginate: false -->
@@ -15,6 +16,7 @@ footer: "© 2026 Slate Minimal"
 Slate Minimal Theme | Design Division | 2026.05.16
 
 ---
+<!-- screenshot: agenda -->
 
 <!-- _class: toc-focus -->
 
@@ -26,6 +28,7 @@ Slate Minimal Theme | Design Division | 2026.05.16
 4. 最終的なデザインアウトプット
 
 ---
+<!-- screenshot: profile -->
 
 <!-- _class: profile -->
 
@@ -92,6 +95,7 @@ p  { font-size: 21px; color: var(--text-muted); }
 </div>
 
 ---
+<!-- screenshot: grid -->
 
 <!-- _class: grid-sharp -->
 
@@ -125,6 +129,7 @@ p  { font-size: 21px; color: var(--text-muted); }
 </div>
 
 ---
+<!-- screenshot: cols -->
 
 <!-- _class: split-2 -->
 
@@ -169,6 +174,7 @@ p  { font-size: 21px; color: var(--text-muted); }
     残った要素を磨き上げ、完成させる。
 
 ---
+<!-- screenshot: callout -->
 
 <!-- _class: cols-3 -->
 
@@ -202,6 +208,7 @@ p  { font-size: 21px; color: var(--text-muted); }
 </div>
 
 ---
+<!-- screenshot: timeline -->
 
 <!-- _class: timeline -->
 
@@ -217,6 +224,7 @@ p  { font-size: 21px; color: var(--text-muted); }
    新デザインシステム「Slate Minimal」を全面適用
 
 ---
+<!-- screenshot: key-message -->
 
 <!-- _class: key-message -->
 

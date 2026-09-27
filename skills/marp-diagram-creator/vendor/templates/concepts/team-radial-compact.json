@@ -1,0 +1,10 @@
+{
+  "type": "radial",
+  "title": "効果的なチーム",
+  "center": "成果",
+  "items": [
+    {"label": "目的"},
+    {"label": "役割"},
+    {"label": "対話"}
+  ]
+}

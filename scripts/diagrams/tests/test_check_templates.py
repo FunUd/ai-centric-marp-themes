@@ -42,9 +42,13 @@ def test_manifest_has_no_entries_for_missing_files() -> None:
 
 
 def test_manifest_matches_the_documented_template_count() -> None:
-    # 5 mermaid + 2 drawio + 5 charts + 4 concepts + 1 organization
-    assert len(checker.templates_on_disk()) == 17
-    assert len(checker.ALLOWED_LAYOUTS) == 17
+    # SSoT: the manifest must cover exactly what is on disk — no magic
+    # number here, so adding a template cannot silently skip validation.
+    # (Was 17 = 5 mermaid + 2 drawio + 5 charts + 4 concepts + 1 organization;
+    # now includes the col2/compact variants.)
+    on_disk = checker.templates_on_disk()
+    assert len(checker.ALLOWED_LAYOUTS) == len(on_disk)
+    assert set(checker.ALLOWED_LAYOUTS) == on_disk
 
 
 @pytest.mark.parametrize("rel,layouts", sorted(checker.ALLOWED_LAYOUTS.items()))

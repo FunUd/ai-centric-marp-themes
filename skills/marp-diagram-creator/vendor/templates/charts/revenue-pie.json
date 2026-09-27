@@ -1,10 +1,6 @@
 {
   "type": "pie",
   "title": "売上構成",
-  "theme": "azure-clarity",
-  "layout": "full",
-  "width": 1080,
-  "height": 420,
   "show_values": true,
   "items": [
     {"label": "製品A", "value": 45},

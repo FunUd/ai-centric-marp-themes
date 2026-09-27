@@ -38,6 +38,9 @@ ROOT_DIR = SCRIPT_DIR.parent
 ENGINE_DIR = SCRIPT_DIR / "diagrams"
 VENDOR_DIR = ROOT_DIR / "skills/marp-diagram-creator/vendor"
 
+sys.path.insert(0, str(ENGINE_DIR))
+from compat import ensure_utf8_stdio  # noqa: E402
+
 # Entry points a user invokes. Their transitive local imports are the runtime set.
 ENTRY_POINTS = ("render-slide-diagram", "validate-slide-diagram")
 
@@ -120,14 +123,6 @@ def _is_stale_vendored_file(relative: str) -> bool:
     if not source.exists():
         return True
     return not filecmp.cmp(vendored, source, shallow=False)
-
-
-def _reconfigure_streams() -> None:
-    for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass
 
 
 def _clear_vendor() -> None:
@@ -228,7 +223,7 @@ def check_vendor() -> int:
 
 
 def main() -> int:
-    _reconfigure_streams()
+    ensure_utf8_stdio()
     parser = argparse.ArgumentParser(description="Vendor the diagram runtime into marp-diagram-creator.")
     parser.add_argument("--check", action="store_true", help="Fail if the vendored copy is stale.")
     args = parser.parse_args()

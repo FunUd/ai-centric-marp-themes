@@ -543,7 +543,9 @@ def test_process_theme_runs_pipeline_and_cleans_temp(monkeypatch, tmp_path: Path
     assert build_calls[0][0] == config["slide"]
     assert len(captured) == 1
     _, _, screenshots, target_dir = captured[0]
-    assert screenshots == config["screenshots"]
+    assert screenshots == shots.resolve_screenshots(
+        Path(config["slide"]), config["screenshots"]
+    )
     assert target_dir == tmp_path / "out"
     assert not (shots.WORKSPACE / "_azure-clarity_temp.html").exists()
 
@@ -578,21 +580,63 @@ def test_cli_help_lists_every_configured_theme() -> None:
 
 # --- screenshot registry integrity ------------------------------------------
 #
-# The registry maps (filename, 0-based slide index) pairs into sample decks.
-# Nothing stops a sample deck from gaining or losing a slide, which would
-# silently shift every index after it and produce mislabelled PNGs. These
-# tests read the real sample decks, so they fail the moment the registry drifts.
+# The registry maps (filename, screenshot id) pairs into sample decks, and the
+# ids resolve through `<!-- screenshot: <id> -->` markers that travel with
+# their slide. Nothing stops a sample deck from gaining or losing a slide;
+# with markers the capture follows the slide instead of silently shifting onto
+# its neighbour. These tests read the real sample decks, so they fail the
+# moment the registry drifts.
 
 
-def test_every_screenshot_index_is_within_its_deck() -> None:
+def test_every_screenshot_id_resolves_within_its_deck() -> None:
     for theme, config in shots.THEME_CONFIG.items():
-        slide_count = shots.count_markdown_slides(Path(config["slide"]))
-        for filename, index in config["screenshots"]:
+        slide_md = Path(config["slide"])
+        slide_count = shots.count_markdown_slides(slide_md)
+        for filename, index in shots.resolve_screenshots(slide_md, config["screenshots"]):
             assert 0 <= index < slide_count, (
-                f"{theme}/{filename}: index {index} out of range "
-                f"(deck has {slide_count} slides) — the sample deck changed; "
-                f"update THEME_CONFIG"
+                f"{theme}/{filename}: resolved index {index} out of range "
+                f"(deck has {slide_count} slides)"
             )
+
+
+def test_every_marker_id_is_unique_per_deck() -> None:
+    for theme, config in shots.THEME_CONFIG.items():
+        markers = shots.slide_marker_indices(Path(config["slide"]))
+        referenced = {marker_id for _, marker_id in config["screenshots"]}
+        assert referenced <= set(markers), f"{theme}: unresolvable ids"
+
+
+def test_inserting_a_slide_moves_the_capture_with_its_marker(tmp_path: Path) -> None:
+    """The core guarantee: a slide inserted before a marked slide shifts the
+    resolved index instead of mislabelling the screenshot."""
+    deck = tmp_path / "deck.md"
+    deck.write_text(
+        "---\nmarp: true\n---\n\n# First\n\n---\n<!-- screenshot: target -->\n\n# Second\n",
+        encoding="utf-8",
+    )
+    assert shots.resolve_screenshots(deck, [("out.png", "target")]) == [("out.png", 1)]
+    deck.write_text(
+        "---\nmarp: true\n---\n\n# New\n\n---\n# First\n\n---\n<!-- screenshot: target -->\n\n# Second\n",
+        encoding="utf-8",
+    )
+    assert shots.resolve_screenshots(deck, [("out.png", "target")]) == [("out.png", 2)]
+
+
+def test_resolve_screenshots_fails_loudly_on_a_missing_id(tmp_path: Path) -> None:
+    deck = tmp_path / "deck.md"
+    deck.write_text("---\nmarp: true\n---\n\n# Only\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="'gone'"):
+        shots.resolve_screenshots(deck, [("out.png", "gone")])
+
+
+def test_slide_marker_indices_rejects_duplicates(tmp_path: Path) -> None:
+    deck = tmp_path / "deck.md"
+    deck.write_text(
+        "---\nmarp: true\n---\n\n<!-- screenshot: dup -->\n\n# A\n\n---\n<!-- screenshot: dup -->\n\n# B\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(RuntimeError, match="Duplicate screenshot id 'dup'"):
+        shots.slide_marker_indices(deck)
 
 
 def test_every_configured_theme_has_a_sample_deck_on_disk() -> None:
@@ -605,14 +649,14 @@ def test_report_theme_registry_finds_no_problems(capsys) -> None:
 
     out = capsys.readouterr().out
     assert problems == [], out
-    assert "All screenshot indices are in range" in out
+    assert "All screenshot ids resolve to slides in range" in out
 
 
-def test_report_theme_registry_flags_an_out_of_range_index(monkeypatch, capsys) -> None:
+def test_report_theme_registry_flags_a_missing_id(monkeypatch, capsys) -> None:
     config = {
         "broken": {
             "slide": shots.THEME_CONFIG["azure-clarity"]["slide"],
-            "screenshots": [("broken.png", 9999)],
+            "screenshots": [("broken.png", "no-such-marker")],
         }
     }
     monkeypatch.setattr(shots, "THEME_CONFIG", config)
@@ -620,9 +664,24 @@ def test_report_theme_registry_flags_an_out_of_range_index(monkeypatch, capsys) 
     problems = shots.report_theme_registry()
 
     out = capsys.readouterr().out
-    assert len(problems) == 1
-    assert "broken.png" in problems[0]
+    assert any("broken.png" in problem for problem in problems)
     assert "Problems:" in out
+
+
+def test_report_theme_registry_flags_an_unreferenced_marker(monkeypatch, tmp_path: Path, capsys) -> None:
+    deck = tmp_path / "deck.md"
+    deck.write_text(
+        "---\nmarp: true\n---\n\n<!-- screenshot: orphan -->\n\n# A\n",
+        encoding="utf-8",
+    )
+    config = {"lonely": {"slide": deck, "screenshots": []}}
+    monkeypatch.setattr(shots, "THEME_CONFIG", config)
+
+    problems = shots.report_theme_registry()
+
+    assert len(problems) == 1
+    assert "orphan" in problems[0]
+    assert "Problems:" in capsys.readouterr().out
 
 
 def test_report_theme_registry_flags_a_missing_deck(monkeypatch, capsys) -> None:
@@ -642,7 +701,7 @@ def test_main_list_themes_mode_exits_zero(monkeypatch, capsys) -> None:
 
     out = capsys.readouterr().out
     assert "screenshots across" in out
-    assert "All screenshot indices are in range" in out
+    assert "All screenshot ids resolve to slides in range" in out
 
 
 def test_list_themes_reports_drift_as_a_failure(monkeypatch, capsys) -> None:
@@ -655,7 +714,7 @@ def test_list_themes_reports_drift_as_a_failure(monkeypatch, capsys) -> None:
     config = {
         "broken": {
             "slide": shots.THEME_CONFIG["azure-clarity"]["slide"],
-            "screenshots": [("broken.png", 9999)],
+            "screenshots": [("broken.png", "no-such-marker")],
         }
     }
     monkeypatch.setattr(shots, "THEME_CONFIG", config)

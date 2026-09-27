@@ -93,6 +93,9 @@
   --pe-cyan: #06B6D4;
   --pe-magenta: #D946EF;
   --pe-dark: #030712;
+  /* Diagram accent SSoT: slide heading ink (--pe-accent) is near-black and
+     unusable on canvas, so the diagram engine reads this token instead. */
+  --pe-diagram-accent: var(--pe-cyan);
 
   /* Override Marp's default syntax highlighting colors */
   --color-prettylights-syntax-comment: #94a3b8;

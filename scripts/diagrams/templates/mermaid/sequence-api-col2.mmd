@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor Client as クライアント
+    participant API as API
+    participant DB as DB
+
+    Client->>API: POST /orders
+    activate API
+    API->>DB: レコード作成
+    activate DB
+    DB-->>API: ID返却
+    deactivate DB
+    API-->>Client: 201 Created
+    deactivate API

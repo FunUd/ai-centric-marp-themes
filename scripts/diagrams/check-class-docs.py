@@ -33,6 +33,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import theme_classes  # noqa: E402
+from compat import ensure_utf8_stdio  # noqa: E402
 
 ROOT_DIR = theme_classes.ROOT_DIR
 README = ROOT_DIR / "README.md"
@@ -163,11 +164,7 @@ def theme_specific_markers(readme_text: str) -> set[str]:
 
 
 def main() -> int:
-    for _stream in (sys.stdout, sys.stderr):
-        try:
-            _stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass
+    ensure_utf8_stdio()
 
     parser = argparse.ArgumentParser(description="Check README against the theme class system.")
     parser.add_argument(

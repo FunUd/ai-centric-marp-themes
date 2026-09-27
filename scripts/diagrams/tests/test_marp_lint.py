@@ -273,6 +273,27 @@ def test_raster_images_are_never_flagged_as_oversized_icons() -> None:
         assert "OVERSIZED_ICON" not in issue_codes(deck(f"![width:900px]({src})\n")), src
 
 
+def test_wide_svg_without_keyword_is_a_diagram_not_an_icon() -> None:
+    """Width is a stronger signal than filename: a 500px SVG is never an icon,
+    even when its name carries no diagram keyword (`system.svg`)."""
+    assert "OVERSIZED_ICON" not in issue_codes(deck("![width:500px](assets/system.svg)\n"))
+
+
+def test_icons_dir_wins_over_filename_keywords() -> None:
+    """A directory segment beats a filename substring: `workflow.svg` under
+    `assets/icons/` is a catalog icon despite containing "flow"."""
+    assert "OVERSIZED_ICON" in issue_codes(deck("![width:300px](assets/icons/workflow.svg)\n"))
+    assert not m._is_diagram_src("assets/icons/workflow.svg", 300)
+
+
+def test_icon_without_width_gets_no_diagram_warning() -> None:
+    """A width-less icon reports OVERSIZED_ICON only — the diagram embedding
+    check must not also warn DIAGRAM_MISSING_WIDTH for `icons/` paths."""
+    codes = issue_codes(deck("![center](assets/icons/workflow.svg)\n"))
+    assert "OVERSIZED_ICON" in codes
+    assert "DIAGRAM_MISSING_WIDTH" not in codes
+
+
 # ================================================ lint_diagram_embedding
 
 

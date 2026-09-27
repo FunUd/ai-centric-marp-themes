@@ -23,14 +23,11 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import theme_classes  # noqa: E402
+from compat import ensure_utf8_stdio  # noqa: E402
 
 
 def main() -> int:
-    for _stream in (sys.stdout, sys.stderr):
-        try:
-            _stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass
+    ensure_utf8_stdio()
 
     parser = argparse.ArgumentParser(description="Sync the theme class manifest used by marp-lint.py.")
     parser.add_argument("--check", action="store_true", help="Fail if the manifest is stale.")

@@ -5,6 +5,7 @@ paginate: true
 header: "Aether Modern: Nebula Glass"
 footer: "© 2026"
 ---
+<!-- screenshot: cover -->
 
 <!-- _class: cover-nebula -->
 
@@ -69,6 +70,7 @@ Nebula Glassは、**「空間」** と **「光」** の調和に焦点を当て
 </div>
 
 ---
+<!-- screenshot: step -->
 
 <!-- _class: steps -->
 
@@ -105,6 +107,7 @@ console.log("プレゼンテーションの未来へようこそ。");
 > Insert key message here.
 
 ---
+<!-- screenshot: toc -->
 
 <!-- _class: toc -->
 
@@ -134,6 +137,7 @@ console.log("プレゼンテーションの未来へようこそ。");
 5. ステップ表示
 
 ---
+<!-- screenshot: timeline -->
 
 <!-- _class: timeline -->
 
@@ -168,6 +172,7 @@ console.log("プレゼンテーションの未来へようこそ。");
 - PDFエクスポートで崩れがないことを確認した
 
 ---
+<!-- screenshot: cols -->
 
 <!-- _class: cols-2 -->
 
@@ -234,6 +239,7 @@ console.log("プレゼンテーションの未来へようこそ。");
 </div>
 
 ---
+<!-- screenshot: grid -->
 
 <!-- _class: grid-quadrant -->
 
@@ -355,6 +361,7 @@ ChromaAI™ **標準搭載**
 <span class="badge violet">violet</span> <span class="badge cyan">cyan</span> <span class="badge rose">rose</span> <span class="badge green">green</span>
 
 ---
+<!-- screenshot: callout -->
 
 # カラーユーティリティ — `callout`
 

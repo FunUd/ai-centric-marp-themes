@@ -29,8 +29,11 @@ This catalog lists the preset templates available for immediate use when creatin
 | `flowchart-linear.mmd` | Flowchart | Full | Standard left-to-right business/process flow. Pinned to `%% aspect: 2.4` (embeds at 1050x437). |
 | `flowchart-col2.mmd` | Flowchart | Full, Col2, Asym | Top-to-bottom flow with a decision branch. Compact enough for half-width columns. |
 | `sequence-api.mmd` | Sequence diagram | Full | Request/response round-trips between client, API Gateway, auth, and DB. With autonumber. |
+| `sequence-api-col2.mmd` | Sequence diagram | Full, Asym | Compact 3-party sequence (client/API/DB). Fits asym; too wide for col2 — use asym or full. |
 | `architecture-3tier.mmd` | Architecture diagram | Full | Classic 3-tier web architecture (presentation / application / data) with service interactions. |
+| `architecture-3tier-col2.mmd` | Architecture diagram | Full, Col2, Asym, Col3 | Compact vertical 3-tier (Web/API-GW/logic/DB). Narrow enough for all layouts. |
 | `state-machine.mmd` | State machine | Full | State transitions such as draft, in review, approved, returned, and published. Laid out left-to-right and padded to `%% aspect: 2.4`. Ends at publish; the archive state was omitted for slide fit. |
+| `state-machine-col2.mmd` | State machine | Full, Col2, Asym, Col3 | Compact vertical state flow (review/approved/returned). Fits all layouts. |
 
 ---
 
@@ -47,14 +50,15 @@ This catalog lists the preset templates available for immediate use when creatin
 
 | Filename | Type | Verified Layouts | Purpose |
 |---|---|---|---|
-| `charts/revenue-pie.json` | Pie chart | Full | Comparing composition ratios. |
+| `charts/revenue-pie.json` | Pie chart | Full, Col2, Asym, Col3 | Comparing composition ratios. Layout-agnostic (no hardcoded size). |
 | `charts/revenue-donut.json` | Donut chart | Full, Col2, Asym, Col3 | Composition ratios with a center metric. |
 | `charts/sales-bar.json` | Bar chart | Full, Col2, Asym, Col3 | Comparing quantities across time periods or categories. |
 | `charts/quarterly-line.json` | Line chart | Full, Col2, Asym, Col3 | Multi-series trend comparison (with legend). |
 | `charts/channel-stacked-bar.json` | Stacked bar chart | Full, Col2, Asym, Col3 | Comparing breakdown composition over time. |
 | `concepts/team-pyramid.json` | Pyramid | Full, Col2, Asym, Col3 | Stacked layers such as maturity or priority. |
 | `concepts/improvement-cycle.json` | Cycle | Full, Col2, Asym, Col3 | Continuous improvement and iterative processes. |
-| `concepts/team-radial.json` | Radial concept map | Full | Relationships between a central concept and categories. |
+| `concepts/team-radial.json` | Radial concept map | Full | Relationships between a central concept and categories (3 mains + 6 children; too dense for narrow). |
+| `concepts/team-radial-compact.json` | Radial concept map | Full, Col2, Asym, Col3 | Compact radial (center + 3 nodes, no children) for narrow columns. |
 | `concepts/sales-funnel.json` | Funnel | Full, Col2, Asym, Col3 | Sales funnels and conversion narrowing. |
 | `organization/team-org-chart.json` | Org chart | Full, Col2, Asym, Col3 | Hierarchies and reporting lines. |
 

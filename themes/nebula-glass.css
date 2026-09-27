@@ -96,6 +96,9 @@
   --ng-primary: #8B5CF6;   /* Violet */
   --ng-secondary: #22D3EE; /* Cyan */
   --ng-accent: #FB7185;    /* Rose */
+  /* Diagram accent SSoT: --ng-accent is rose (danger in diagrams), so the
+     diagram engine reads this token instead. */
+  --ng-diagram-accent: var(--ng-secondary);
   --ng-glass: rgba(16, 21, 37, 0.68);
   --ng-glass-strong: rgba(21, 28, 47, 0.82);
   --ng-glass-border: rgba(255, 255, 255, 0.09);

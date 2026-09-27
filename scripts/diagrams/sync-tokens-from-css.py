@@ -73,16 +73,18 @@ def resolve_value(value: str | None, vars_: dict[str, str]) -> str | None:
     return None
 
 
-# Diagram-aware variable mapping per theme. CSS heading inks (e.g. prism
-# --pe-accent:#111827) are intentionally NOT used as diagram accents; the
-# diagram accent stays the theme's graphic secondary (cyan) for visibility.
+# Diagram-aware variable mapping per theme. The diagram accent lives in CSS
+# (`--pe-diagram-accent` / `--ng-diagram-accent`); the second suffix in each
+# tuple is the legacy fallback so an older checkout without the token still
+# resolves. Slide heading inks (e.g. prism --pe-accent:#111827) are
+# intentionally NOT used as diagram accents.
 DIAGRAM_VAR_MAP = {
-    "azure-clarity": {"prefix": "--ac-", "accent": "accent"},
-    "crimson-clarity": {"prefix": "--cc-", "accent": "accent"},
-    "warm-sunnyday": {"prefix": "--ws-", "accent": "accent"},
-    "prism-edge": {"prefix": "--pe-", "accent": "cyan"},
-    "slate-minimal": {"prefix": "--sm-", "accent": "accent"},
-    "nebula-glass": {"prefix": "--ng-", "accent": "secondary"},
+    "azure-clarity": {"prefix": "--ac-", "accent": ("accent",)},
+    "crimson-clarity": {"prefix": "--cc-", "accent": ("accent",)},
+    "warm-sunnyday": {"prefix": "--ws-", "accent": ("accent",)},
+    "prism-edge": {"prefix": "--pe-", "accent": ("diagram-accent", "cyan")},
+    "slate-minimal": {"prefix": "--sm-", "accent": ("accent",)},
+    "nebula-glass": {"prefix": "--ng-", "accent": ("diagram-accent", "secondary")},
 }
 
 # Nebula :root lacks derived palette entries; keep the curated JSON values.
@@ -121,7 +123,7 @@ def build_updates(theme: str, vars_: dict[str, str], css_text: str, existing: di
 
     if theme == "nebula-glass":
         primary = get("primary") or existing_colors.get("primary", "#8B5CF6")
-        accent = get("secondary") or existing_colors.get("accent", "#22D3EE")
+        accent = get(*mapping["accent"]) or existing_colors.get("accent", "#22D3EE")
         text = get("text") or existing_colors.get("text", "#F5F7FB")
         text_muted = get("text-muted") or existing_colors.get("textMuted", text)
         bg = get("bg") or existing_colors.get("background", "#040712")
@@ -156,7 +158,7 @@ def build_updates(theme: str, vars_: dict[str, str], css_text: str, existing: di
             "primaryDark": keep("primaryDark", get("primary-dark")),
             "primaryLight": keep("primaryLight", get("primary-light")),
             "primaryPale": keep("primaryPale", get("primary-pale")),
-            "accent": keep("accent", get(mapping["accent"])),
+            "accent": keep("accent", get(*mapping["accent"])),
             "text": keep("text", get("text", "ink-soft")),
             "textMuted": keep("textMuted", get("text-sub", "text-muted")),
             "background": keep("background", get("bg", "background")),
@@ -165,7 +167,7 @@ def build_updates(theme: str, vars_: dict[str, str], css_text: str, existing: di
             "borderLight": keep("borderLight", get("border-light")),
             "success": keep("success", get("success", "highlight")),
             "warning": keep("warning", get("warning")),
-            "danger": keep("danger", get("danger", mapping["accent"])),
+            "danger": keep("danger", get("danger", *mapping["accent"])),
         }
         radius = px_to_float(get("radius", "radius-sm"))
         if radius is None:

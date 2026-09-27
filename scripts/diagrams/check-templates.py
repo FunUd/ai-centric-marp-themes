@@ -35,22 +35,31 @@ ROOT_DIR = SCRIPT_DIR.parent.parent
 TEMPLATES_DIR = SCRIPT_DIR / "templates"
 RENDERER = SCRIPT_DIR / "render-slide-diagram.py"
 
+from compat import ensure_utf8_stdio
+
 # Canonical layout keys (scripts/diagrams/layout_spec.py::LAYOUTS).
 FULL, COL2, ASYM, COL3 = "full", "col2", "asym", "col3"
 
 # template path (relative to templates/) -> layouts it must render + validate at
+# SSoT: this map is the authority for supported layouts. README's
+# Supported Template Layouts table and template-catalog.md Verified Layouts
+# are mirrors — update them together (checked by check-templates.py +
+# check-catalog-sync.py, but layout lists are only enforced here).
 ALLOWED_LAYOUTS: dict[str, tuple[str, ...]] = {
     # Mermaid (rendered through @mermaid-js/mermaid-cli; needs npx)
     "mermaid/flowchart-linear.mmd": (FULL,),
     "mermaid/flowchart-col2.mmd": (FULL, COL2, ASYM),
     "mermaid/sequence-api.mmd": (FULL,),
+    "mermaid/sequence-api-col2.mmd": (FULL, ASYM),
     "mermaid/architecture-3tier.mmd": (FULL,),
+    "mermaid/architecture-3tier-col2.mmd": (FULL, COL2, ASYM, COL3),
     "mermaid/state-machine.mmd": (FULL,),
+    "mermaid/state-machine-col2.mmd": (FULL, COL2, ASYM, COL3),
     # draw.io (pure stdlib mxGraph -> SVG)
     "drawio/system-architecture.drawio": (FULL,),
     "drawio/cloud-infrastructure.drawio": (FULL,),
     # JSON SVG (pure stdlib)
-    "charts/revenue-pie.json": (FULL,),
+    "charts/revenue-pie.json": (FULL, COL2, ASYM, COL3),
     "charts/revenue-donut.json": (FULL, COL2, ASYM, COL3),
     "charts/sales-bar.json": (FULL, COL2, ASYM, COL3),
     "charts/quarterly-line.json": (FULL, COL2, ASYM, COL3),
@@ -58,6 +67,7 @@ ALLOWED_LAYOUTS: dict[str, tuple[str, ...]] = {
     "concepts/team-pyramid.json": (FULL, COL2, ASYM, COL3),
     "concepts/improvement-cycle.json": (FULL, COL2, ASYM, COL3),
     "concepts/team-radial.json": (FULL,),
+    "concepts/team-radial-compact.json": (FULL, COL2, ASYM, COL3),
     "concepts/sales-funnel.json": (FULL, COL2, ASYM, COL3),
     "organization/team-org-chart.json": (FULL, COL2, ASYM, COL3),
 }
@@ -83,16 +93,6 @@ def undeclared(on_disk: set[str]) -> list[str]:
 
 def stale_entries(on_disk: set[str]) -> list[str]:
     return sorted(set(ALLOWED_LAYOUTS) - on_disk)
-
-
-def _reconfigure_streams() -> None:
-    # Windows consoles default to cp932; template names are ASCII but Mermaid
-    # and validator output can contain Japanese text.
-    for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass
 
 
 def render_and_validate(source: Path, layout: str, out_dir: Path) -> tuple[bool, str]:
@@ -139,7 +139,7 @@ def _relevant_lines(output: str) -> list[str]:
 
 
 def main() -> int:
-    _reconfigure_streams()
+    ensure_utf8_stdio()
     parser = argparse.ArgumentParser(description="Validate all diagram templates at their supported layouts.")
     parser.add_argument(
         "--skip-mermaid",

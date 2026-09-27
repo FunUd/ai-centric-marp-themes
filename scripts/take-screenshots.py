@@ -29,6 +29,7 @@ Usage:
 """
 
 import argparse
+import re
 import subprocess
 import sys
 import os
@@ -52,16 +53,11 @@ def _require_playwright():
 # The pinned Node tool versions live with the diagram engine.
 sys.path.insert(0, str(Path(__file__).resolve().parent / "diagrams"))
 from tool_versions import npx_command  # noqa: E402
+from compat import ensure_utf8_stdio  # noqa: E402
 
 MARP_CLI = "@marp-team/marp-cli"
 
-# Windows consoles default to cp932, which cannot encode the status emoji this
-# script prints. Force UTF-8 so the run does not die on its own progress output.
-for _stream in (sys.stdout, sys.stderr):
-    try:
-        _stream.reconfigure(encoding="utf-8", errors="replace")
-    except (AttributeError, OSError, ValueError):
-        pass
+ensure_utf8_stdio()
 
 WORKSPACE = Path(__file__).parent.parent
 THEME_DIR = WORKSPACE / "themes"
@@ -86,99 +82,161 @@ HIDE_CONTROLS_CSS = """
 """
 
 # Per-theme screenshot configuration
-# Each entry: (output filename, slide index, 0-based)
+# Each entry: (output filename, screenshot id).
+# The id resolves through a `<!-- screenshot: <id> -->` marker placed as the
+# first line of its slide in the sample deck — the deck is the SSoT for *which*
+# slide is captured, this table only decides the output filename. Inserting a
+# slide shifts no indices because there are no indices here.
 THEME_CONFIG = {
     "nebula-glass": {
         "slide": WORKSPACE / "slides/sample-slide/nebula-glass-sample.md",
         "screenshots": [
-            ("nebula-glass-cover.png",    0),   # cover-nebula
-            ("nebula-glass-toc.png",      7),   # toc
-            ("nebula-glass-cols.png",     11),  # cols-2
-            ("nebula-glass-grid.png",     13),  # grid-quadrant
-            ("nebula-glass-timeline.png", 9),   # timeline
-            ("nebula-glass-callout.png",  17),  # callout
-            ("nebula-glass-step.png",     4),   # steps
+            ("nebula-glass-cover.png",    "cover"),   # cover-nebula
+            ("nebula-glass-toc.png",      "toc"),     # toc
+            ("nebula-glass-cols.png",     "cols"),    # cols-2
+            ("nebula-glass-grid.png",     "grid"),    # grid-quadrant
+            ("nebula-glass-timeline.png", "timeline"),# timeline
+            ("nebula-glass-callout.png",  "callout"), # callout
+            ("nebula-glass-step.png",     "step"),    # steps
         ],
     },
     "prism-edge": {
         "slide": WORKSPACE / "slides/sample-slide/prism-edge-sample.md",
         "screenshots": [
-            ("prism-edge-cover-wave.png",     0),   # cover-wave
-            ("prism-edge-cover-diagonal.png", 1),   # cover-diagonal
-            ("prism-edge-cover-noir.png",     2),   # cover-noir
-            ("prism-edge-cover-aurora.png",   3),   # cover-aurora
-            ("prism-edge-title-elegant.png",  8),   # title-elegant
-            ("prism-edge-accent.png",         9),   # accent-left
-            ("prism-edge-cols.png",           15),  # cols-2
-            ("prism-edge-grid.png",           17),  # grid-sharp
-            ("prism-edge-callout.png",        21),  # callout (with-header dense)
-            ("prism-edge-gradnum.png",        22),  # hero / gradient-text
-            ("prism-edge-statnum.png",        11),  # split-2 / stat-number
-            ("prism-edge-cover-aurora-end.png", 27),  # cover-aurora closing
+            ("prism-edge-cover-wave.png",     "cover-wave"),      # cover-wave
+            ("prism-edge-cover-diagonal.png", "cover-diagonal"),  # cover-diagonal
+            ("prism-edge-cover-noir.png",     "cover-noir"),      # cover-noir
+            ("prism-edge-cover-aurora.png",   "cover-aurora"),    # cover-aurora
+            ("prism-edge-title-elegant.png",  "title-elegant"),   # title-elegant
+            ("prism-edge-accent.png",         "accent"),          # accent-left
+            ("prism-edge-cols.png",           "cols"),            # cols-2
+            ("prism-edge-grid.png",           "grid"),            # grid-sharp
+            ("prism-edge-callout.png",        "callout"),         # callout (with-header dense)
+            ("prism-edge-gradnum.png",        "gradnum"),         # hero / gradient-text
+            ("prism-edge-statnum.png",        "statnum"),         # split-2 / stat-number
+            ("prism-edge-cover-aurora-end.png", "cover-aurora-end"),  # cover-aurora closing
         ],
     },
     "azure-clarity": {
         "slide": WORKSPACE / "slides/sample-slide/azure-clarity-sample.md",
         "screenshots": [
-            ("azure-clarity-cover.png",    0),   # cover
-            ("azure-clarity-toc.png",      1),   # toc
-            ("azure-clarity-toc-focus.png",2),   # toc-focus
-            ("azure-clarity-bullets.png",  3),   # with-header bullet list
-            ("azure-clarity-table.png",    4),   # table
-            ("azure-clarity-cols2.png",    5),   # cols-2
-            ("azure-clarity-cols3.png",    6),   # cols-3
-            ("azure-clarity-steps.png",    14),  # steps
-            ("azure-clarity-timeline.png", 15),  # timeline
-            ("azure-clarity-checklist.png",16),  # checklist
-            ("azure-clarity-callout.png",  17),  # callout (dense)
-            ("azure-clarity-keymsg.png",   18),  # key-message
-            ("azure-clarity-grid.png",     11),  # grid-quadrant
-            ("azure-clarity-profile.png",  29),  # profile
+            ("azure-clarity-cover.png",    "cover"),     # cover
+            ("azure-clarity-toc.png",      "toc"),       # toc
+            ("azure-clarity-toc-focus.png","toc-focus"), # toc-focus
+            ("azure-clarity-bullets.png",  "bullets"),   # with-header bullet list
+            ("azure-clarity-table.png",    "table"),     # table
+            ("azure-clarity-cols2.png",    "cols2"),     # cols-2
+            ("azure-clarity-cols3.png",    "cols3"),     # cols-3
+            ("azure-clarity-steps.png",    "steps"),     # steps
+            ("azure-clarity-timeline.png", "timeline"),  # timeline
+            ("azure-clarity-checklist.png","checklist"), # checklist
+            ("azure-clarity-callout.png",  "callout"),   # callout (dense)
+            ("azure-clarity-keymsg.png",   "keymsg"),    # key-message
+            ("azure-clarity-grid.png",     "grid"),      # grid-quadrant
+            ("azure-clarity-profile.png",  "profile"),   # profile
         ],
     },
     "crimson-clarity": {
         "slide": WORKSPACE / "slides/sample-slide/crimson-clarity-sample.md",
         "screenshots": [
-            ("crimson-clarity-cover.png",    0),   # cover
-            ("crimson-clarity-toc.png",      1),   # toc
-            ("crimson-clarity-toc-focus.png",2),   # toc-focus
-            ("crimson-clarity-bullets.png",  3),   # with-header bullet list
-            ("crimson-clarity-table.png",    4),   # table
-            ("crimson-clarity-cols2.png",    5),   # cols-2
-            ("crimson-clarity-cols3.png",    6),   # cols-3
-            ("crimson-clarity-steps.png",    14),  # steps
-            ("crimson-clarity-timeline.png", 15),  # timeline
-            ("crimson-clarity-checklist.png",16),  # checklist
-            ("crimson-clarity-callout.png",  17),  # callout (dense)
-            ("crimson-clarity-keymsg.png",   18),  # key-message
-            ("crimson-clarity-grid.png",     11),  # grid-quadrant
-            ("crimson-clarity-profile.png",  29),  # profile
+            ("crimson-clarity-cover.png",    "cover"),     # cover
+            ("crimson-clarity-toc.png",      "toc"),       # toc
+            ("crimson-clarity-toc-focus.png","toc-focus"), # toc-focus
+            ("crimson-clarity-bullets.png",  "bullets"),   # with-header bullet list
+            ("crimson-clarity-table.png",    "table"),     # table
+            ("crimson-clarity-cols2.png",    "cols2"),     # cols-2
+            ("crimson-clarity-cols3.png",    "cols3"),     # cols-3
+            ("crimson-clarity-steps.png",    "steps"),     # steps
+            ("crimson-clarity-timeline.png", "timeline"),  # timeline
+            ("crimson-clarity-checklist.png","checklist"), # checklist
+            ("crimson-clarity-callout.png",  "callout"),   # callout (dense)
+            ("crimson-clarity-keymsg.png",   "keymsg"),    # key-message
+            ("crimson-clarity-grid.png",     "grid"),      # grid-quadrant
+            ("crimson-clarity-profile.png",  "profile"),   # profile
         ],
     },
     "slate-minimal": {
         "slide": WORKSPACE / "slides/sample-slide/slate-minimal-sample.md",
         "screenshots": [
-            ("slate-minimal-cover.png",       0),  # cover
-            ("slate-minimal-agenda.png",      1),  # toc-focus
-            ("slate-minimal-profile.png",     2),  # profile
-            ("slate-minimal-grid.png",        5),  # grid-sharp
-            ("slate-minimal-cols.png",        6),  # split-2
-            ("slate-minimal-callout.png",     9),  # cols-3 + callouts
-            ("slate-minimal-timeline.png",   10),  # timeline
-            ("slate-minimal-key-message.png",11),  # key-message
+            ("slate-minimal-cover.png",       "cover"),       # cover
+            ("slate-minimal-agenda.png",      "agenda"),      # toc-focus
+            ("slate-minimal-profile.png",     "profile"),     # profile
+            ("slate-minimal-grid.png",        "grid"),        # grid-sharp
+            ("slate-minimal-cols.png",        "cols"),        # split-2
+            ("slate-minimal-callout.png",     "callout"),     # cols-3 + callouts
+            ("slate-minimal-timeline.png",    "timeline"),    # timeline
+            ("slate-minimal-key-message.png", "key-message"), # key-message
         ],
     },
     "warm-sunnyday": {
         "slide": WORKSPACE / "slides/sample-slide/warm-sunnyday-sample.md",
         "screenshots": [
-            ("warm-sunnyday-cover.png",    0),  # cover
-            ("warm-sunnyday-profile.png", 2),  # profile
-            ("warm-sunnyday-cols.png",     3),  # cols-2
-            ("warm-sunnyday-steps.png",    7),  # steps
-            ("warm-sunnyday-callouts.png", 8),  # callout (dense)
+            ("warm-sunnyday-cover.png",    "cover"),    # cover
+            ("warm-sunnyday-profile.png",  "profile"),  # profile
+            ("warm-sunnyday-cols.png",     "cols"),     # cols-2
+            ("warm-sunnyday-steps.png",    "steps"),    # steps
+            ("warm-sunnyday-callouts.png", "callouts"), # callout (dense)
         ],
     },
 }
+
+
+SCREENSHOT_MARKER_RE = re.compile(r"<!--\s*screenshot:\s*([\w-]+)\s*-->")
+
+
+def slide_marker_indices(slide_md: Path) -> dict[str, int]:
+    """Map screenshot id -> 0-based slide index for a deck.
+
+    Slide N is the content after the Nth post-frontmatter ``---`` separator
+    (slide 0 sits between the frontmatter close and the first separator), so
+    markers travel with their slide when slides are inserted or removed.
+    Fenced code blocks are ignored. Duplicate ids raise RuntimeError.
+    """
+    lines = slide_md.read_text(encoding="utf-8").splitlines()
+    idx = [i for i, line in enumerate(lines) if line.strip() == "---"]
+    first = idx[1] + 1 if len(idx) > 1 and idx[0] == 0 else 0
+    markers: dict[str, int] = {}
+    current = 0
+    in_fence = False
+    for line in lines[first:]:
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        if stripped == "---":
+            current += 1
+            continue
+        match = SCREENSHOT_MARKER_RE.search(line)
+        if match:
+            marker_id = match.group(1)
+            if marker_id in markers:
+                raise RuntimeError(
+                    f"Duplicate screenshot id '{marker_id}' in {slide_md.name}"
+                )
+            markers[marker_id] = current
+    return markers
+
+
+def resolve_screenshots(
+    slide_md: Path, entries: list[tuple[str, str]]
+) -> list[tuple[str, int]]:
+    """Resolve (filename, screenshot id) entries to (filename, 0-based index).
+
+    Raises RuntimeError naming the missing id — a renamed or deleted marker
+    fails loudly instead of capturing the wrong slide.
+    """
+    markers = slide_marker_indices(slide_md)
+    resolved: list[tuple[str, int]] = []
+    for filename, marker_id in entries:
+        if marker_id not in markers:
+            raise RuntimeError(
+                f"Screenshot id '{marker_id}' for {filename} not found in "
+                f"{slide_md.name}: the marker was renamed or deleted"
+            )
+        resolved.append((filename, markers[marker_id]))
+    return resolved
 
 
 def build_html(slide_md: Path, output_html: Path):
@@ -315,11 +373,12 @@ def count_markdown_slides(slide_md: Path) -> int:
 
 
 def report_theme_registry() -> list[str]:
-    """Print the screenshot registry and validate every slide index.
+    """Print the screenshot registry and validate every screenshot id.
 
-    Catches the classic failure mode of this script: a sample deck gains or
-    loses a slide, the hard-coded indices silently shift, and the regenerated
-    PNGs are mislabelled without any error. Returns a list of problems.
+    Beyond the old range check this now catches the failure modes markers
+    exist to prevent: a renamed/deleted marker, a duplicate id, and a marker
+    with no registry entry (which would silently stop being captured).
+    Returns a list of problems.
     """
     problems: list[str] = []
     total = 0
@@ -332,19 +391,37 @@ def report_theme_registry() -> list[str]:
             print(f"❌ {theme}: sample deck not found: {slide_md}")
             continue
 
+        try:
+            markers = slide_marker_indices(slide_md)
+        except (OSError, RuntimeError) as error:
+            problems.append(f"{theme}: cannot read markers: {error}")
+            print(f"❌ {theme}: cannot read markers: {error}")
+            continue
+
         slide_count = count_markdown_slides(slide_md)
-        entries = sorted(config["screenshots"], key=lambda item: item[1])
-        print(f"\n{theme}  ({slide_md.name}: {slide_count} slides, {len(entries)} screenshots)")
-        for filename, index in entries:
+        referenced = {marker_id for _, marker_id in config["screenshots"]}
+        for marker_id in sorted(set(markers) - referenced):
+            problems.append(
+                f"{theme}: marker '{marker_id}' in {slide_md.name} "
+                f"(slide {markers[marker_id] + 1}) has no registry entry"
+            )
+        print(f"\n{theme}  ({slide_md.name}: {slide_count} slides, {len(config['screenshots'])} screenshots)")
+        try:
+            resolved = resolve_screenshots(slide_md, config["screenshots"])
+        except RuntimeError as error:
+            problems.append(f"{theme}: {error}")
+            print(f"  ❌ {error}")
+            continue
+        for (filename, marker_id), (_, index) in zip(config["screenshots"], resolved):
             total += 1
             in_range = 0 <= index < slide_count
             if not in_range:
                 problems.append(
-                    f"{theme}: {filename} points at slide index {index} "
+                    f"{theme}: {filename} (id '{marker_id}') resolves to slide index {index} "
                     f"but the deck has {slide_count} slides"
                 )
             marker = "  " if in_range else "❌"
-            print(f"  {marker} {filename:38} slide {index + 1} of {slide_count}")
+            print(f"  {marker} {filename:38} id '{marker_id}' -> slide {index + 1} of {slide_count}")
 
     print(f"\n{total} screenshots across {len(THEME_CONFIG)} themes")
     if problems:
@@ -352,7 +429,7 @@ def report_theme_registry() -> list[str]:
         for problem in problems:
             print(f"  - {problem}")
     else:
-        print("✅ All screenshot indices are in range")
+        print("✅ All screenshot ids resolve to slides in range")
     return problems
 
 
@@ -464,6 +541,10 @@ def process_theme(theme_name: str, output_dir: Path = None):
         )
 
     config = THEME_CONFIG[theme_name]
+    try:
+        screenshots = resolve_screenshots(Path(config["slide"]), config["screenshots"])
+    except (OSError, RuntimeError) as error:
+        raise RuntimeError(str(error)) from error
     with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp:
         temp_html = Path(tmp.name)
 
@@ -473,7 +554,7 @@ def process_theme(theme_name: str, output_dir: Path = None):
 
     try:
         build_html(config["slide"], temp_html)
-        take_screenshots(theme_name, temp_html, config["screenshots"], output_dir)
+        take_screenshots(theme_name, temp_html, screenshots, output_dir)
     finally:
         if temp_html.exists():
             temp_html.unlink()
@@ -532,7 +613,7 @@ Examples:
         "--list-themes",
         action="store_true",
         help="Print the screenshot registry (theme, slide count, entries) and "
-             "verify every index is in range. Exits 1 if any entry is invalid.",
+             "verify every screenshot id resolves. Exits 1 if any entry is invalid.",
     )
 
     args = parser.parse_args()

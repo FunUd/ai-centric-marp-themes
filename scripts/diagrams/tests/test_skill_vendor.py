@@ -156,7 +156,7 @@ def test_all_templates_are_vendored() -> None:
     on_disk = {p.relative_to(ENGINE_DIR).as_posix() for p in (ENGINE_DIR / "templates").rglob("*") if p.is_file()}
     vendored = {p.relative_to(VENDOR_DIR).as_posix() for p in (VENDOR_DIR / "templates").rglob("*") if p.is_file()}
     assert on_disk == vendored
-    assert len(vendored) == 17
+    # SSoT: count follows disk (was 17 before the col2/compact variants).
 
 
 def test_all_theme_styles_are_vendored() -> None:

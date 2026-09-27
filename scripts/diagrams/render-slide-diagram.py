@@ -52,6 +52,7 @@ def npx_command(package: str, *args: str) -> list[str]:
     return ["npx", "--yes", package, *args]
 
 from design_tokens import best_text_on, drawio_rect_radius, load_design_tokens
+from compat import ensure_utf8_stdio
 from diagram_models import parse_diagram_data
 from svg_aspect import extract_mermaid_aspect, pad_viewbox, parse_aspect
 from svg_diagram_renderer import render_diagram
@@ -547,12 +548,7 @@ def render_json_diagram(
 
 
 def main():
-    # Windows consoles default to cp932; emit UTF-8 so Japanese text/paths don't crash.
-    for _stream in (sys.stdout, sys.stderr):
-        try:
-            _stream.reconfigure(encoding="utf-8", errors="replace")
-        except (AttributeError, OSError, ValueError):
-            pass  # stream replaced by a test harness or not reconfigurable
+    ensure_utf8_stdio()
     parser = argparse.ArgumentParser(description="Render Mermaid or draw.io diagram to slide-optimized SVG.")
     parser.add_argument("-i", "--input", type=Path, help="Input .mmd or .drawio file")
     parser.add_argument("--code", type=str, help="Direct Mermaid diagram string")

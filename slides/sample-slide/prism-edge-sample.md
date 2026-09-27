@@ -5,6 +5,7 @@ paginate: true
 header: "Prism Edge Demo"
 footer: "© 2026 Your Company"
 ---
+<!-- screenshot: cover-wave -->
 
 <!-- _class: cover-wave subtitle meta -->
 <!-- _paginate: false -->
@@ -18,6 +19,7 @@ footer: "© 2026 Your Company"
 プレゼンター名 | 部署名 | 2026年4月
 
 ---
+<!-- screenshot: cover-diagonal -->
 
 <!-- _class: cover-diagonal -->
 <!-- _paginate: false -->
@@ -31,6 +33,7 @@ footer: "© 2026 Your Company"
 視線を誘導しながら、余白で上質さを出します
 
 ---
+<!-- screenshot: cover-noir -->
 
 <!-- _class: cover-noir -->
 <!-- _paginate: false -->
@@ -44,6 +47,7 @@ footer: "© 2026 Your Company"
 ダークトーンでも情報の輪郭はくっきり保てます
 
 ---
+<!-- screenshot: cover-aurora -->
 
 <!-- _class: cover-aurora subtitle meta -->
 <!-- _paginate: false -->
@@ -110,6 +114,7 @@ footer: "© 2026 Your Company"
 # Strategy & Vision
 
 ---
+<!-- screenshot: title-elegant -->
 
 <!-- _class: title-elegant no-pagination -->
 <!-- _header: "" -->
@@ -119,6 +124,7 @@ footer: "© 2026 Your Company"
 ## Shaping The Future
 
 ---
+<!-- screenshot: accent -->
 
 <!-- _class: accent-left -->
 
@@ -143,6 +149,7 @@ footer: "© 2026 Your Company"
 `.section-number` は背景に薄く章番号を置いて、ページのリズムをつくります
 
 ---
+<!-- screenshot: statnum -->
 
 <!-- _class: split-2 with-header -->
 
@@ -206,6 +213,7 @@ footer: "© 2026 Your Company"
 奥行きを出しつつ、コンテンツの邪魔をしない微細な装飾です。
 
 ---
+<!-- screenshot: cols -->
 
 <!-- _class: cols-2 -->
 
@@ -264,6 +272,7 @@ footer: "© 2026 Your Company"
 </div>
 
 ---
+<!-- screenshot: grid -->
 
 <!-- _class: grid-sharp -->
 
@@ -349,6 +358,7 @@ footer: "© 2026 Your Company"
 - 本番デプロイの準備
 
 ---
+<!-- screenshot: callout -->
 
 <!-- _class: with-header dense -->
 
@@ -377,6 +387,7 @@ footer: "© 2026 Your Company"
 ステータス: <span class="badge blue">進行中</span> <span class="badge green">完了</span> <span class="badge orange">要確認</span> <span class="badge red">重要</span>
 
 ---
+<!-- screenshot: gradnum -->
 
 <!-- _class: hero no-pagination -->
 <!-- _header: "" -->
@@ -469,6 +480,7 @@ print(f"Revenue Growth: {revenue_growth:.1f}%")
 — プレゼンター名
 
 ---
+<!-- screenshot: cover-aurora-end -->
 
 <!-- _class: cover-aurora no-pagination -->
 <!-- _header: "" -->
