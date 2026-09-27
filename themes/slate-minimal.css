@@ -99,7 +99,7 @@
   /* Semantic colors mapped to grayscale for minimalist aesthetic.
      Ordered by lightness so success/warning/danger stay distinguishable
      while each keeps >= 4.5:1 contrast on white. */
-  --sm-success: #475569;
+  --sm-success: #334155;
   --sm-warning: #64748B;
   --sm-danger: #1E293B;
 

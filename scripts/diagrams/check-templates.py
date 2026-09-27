@@ -41,7 +41,7 @@ from compat import ensure_utf8_stdio
 FULL, COL2, ASYM, COL3 = "full", "col2", "asym", "col3"
 
 # template path (relative to templates/) -> layouts it must render + validate at
-# SSoT: this map is the authority for supported layouts. README's
+# SSoT: this map is the authority for supported layouts. docs/diagrams.md's
 # Supported Template Layouts table and template-catalog.md Verified Layouts
 # are mirrors — update them together (checked by check-templates.py +
 # check-catalog-sync.py, but layout lists are only enforced here).

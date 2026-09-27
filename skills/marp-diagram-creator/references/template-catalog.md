@@ -9,7 +9,7 @@ This catalog lists the preset templates available for immediate use when creatin
 > kept byte-identical by `python scripts/sync-skill-vendor.py --check`.
 >
 > **Maintenance** (repository only — these scripts are not vendored):
-> this catalog, the Available Templates table in `README.md`, and the on-disk
+> this catalog, the Available Templates table in `docs/diagrams.md`, and the on-disk
 > templates are sync-checked via `python scripts/diagrams/check-catalog-sync.py`.
 > When adding a new template, follow `scripts/diagrams/ADD_NEW_DIAGRAM_TYPE.md` inside
 > a checkout of `ai-centric-marp-themes`,

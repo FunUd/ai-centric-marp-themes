@@ -1,11 +1,11 @@
 """Tests for check-catalog-sync.py — template registry sync checker.
 
 The script compares three sources (templates on disk, template-catalog.md,
-README table) and fails on any mismatch. Covered here:
+docs/diagrams.md table) and fails on any mismatch. Covered here:
 
 - templates_on_disk / mentions_in unit behavior
 - main() against the real repository (the CI gate)
-- every mismatch branch (CATALOG / README / STALE) against fixtures
+- every mismatch branch (CATALOG / DOCS / STALE) against fixtures
 """
 from __future__ import annotations
 
@@ -70,18 +70,18 @@ def test_mentions_in_extracts_template_filenames(tmp_path: Path) -> None:
     doc = tmp_path / "doc.md"
     doc.write_text(
         "See charts/revenue-pie.json and alpha.mmd plus beta.drawio.\n"
-        "Ignored: README.md, image.png, script.js\n",
+        "Ignored: diagrams.md, image.png, script.js\n",
         encoding="utf-8",
     )
 
     assert catalog.mentions_in(doc) == {"revenue-pie.json", "alpha.mmd", "beta.drawio"}
 
 
-def test_mentions_in_scopes_readme_to_the_templates_table(tmp_path: Path) -> None:
-    """Regression: the README documents other JSON files (`theme-classes.json`,
+def test_mentions_in_scopes_docs_to_the_templates_table(tmp_path: Path) -> None:
+    """Regression: docs/diagrams.md documents other JSON files (`theme-classes.json`,
     `theme-styles/*.json`). Scanning the whole document reported them as stale
     templates and failed the gate."""
-    readme = tmp_path / "README.md"
+    readme = tmp_path / "diagrams.md"
     readme.write_text(
         "## Project Structure\n"
         "`scripts/theme-classes.json` and `assets/theme-styles/azure.json` are not templates.\n"
@@ -100,8 +100,8 @@ def test_mentions_in_scopes_readme_to_the_templates_table(tmp_path: Path) -> Non
     assert catalog.mentions_in(readme) == {"flowchart-linear.mmd"}
 
 
-def test_mentions_in_returns_empty_when_readme_has_no_templates_table(tmp_path: Path) -> None:
-    readme = tmp_path / "README.md"
+def test_mentions_in_returns_empty_when_docs_has_no_templates_table(tmp_path: Path) -> None:
+    readme = tmp_path / "diagrams.md"
     readme.write_text("No table here, just a stray `thing.mmd` mention.\n", encoding="utf-8")
 
     assert catalog.mentions_in(readme) == set()
@@ -109,7 +109,7 @@ def test_mentions_in_returns_empty_when_readme_has_no_templates_table(tmp_path: 
 
 def test_mentions_in_reads_table_up_to_the_next_heading(tmp_path: Path) -> None:
     """The table must not bleed into whatever follows it."""
-    readme = tmp_path / "README.md"
+    readme = tmp_path / "diagrams.md"
     readme.write_text(
         "### Available Templates\n\n| a.mmd |\n\n### Lint Integration\n\n`b.mmd` is prose.\n",
         encoding="utf-8",
@@ -125,71 +125,71 @@ def test_main_passes_against_real_repository(capsys) -> None:
     assert "[OK]" in out and "in sync" in out
 
 
-def _fake_sources(tmp_path: Path, catalog_text: str, readme_text: str) -> Path:
+def _fake_sources(tmp_path: Path, catalog_text: str, docs_text: str) -> Path:
     """Build a fake scripts/diagrams tree holding one on-disk template."""
     script_dir = tmp_path / "scripts" / "diagrams"
     (script_dir / "templates" / "mermaid").mkdir(parents=True)
     (script_dir / "templates" / "mermaid" / "on-disk.mmd").write_text("graph LR", encoding="utf-8")
     catalog_path = tmp_path / "template-catalog.md"
     catalog_path.write_text(catalog_text, encoding="utf-8")
-    readme_path = tmp_path / "README.md"
-    # Wrap README content in the Available Templates table the script scans,
+    docs_path = tmp_path / "diagrams.md"
+    # Wrap docs content in the Available Templates table the script scans,
     # so fixtures describe templates rather than prose.
-    readme_path.write_text(
-        f"{catalog.README_TABLE_HEADING}\n\n{readme_text}\n",
+    docs_path.write_text(
+        f"{catalog.DOCS_TABLE_HEADING}\n\n{docs_text}\n",
         encoding="utf-8",
     )
-    return script_dir, catalog_path, readme_path
+    return script_dir, catalog_path, docs_path
 
 
 def test_main_reports_mismatches(monkeypatch, tmp_path: Path, capsys) -> None:
-    script_dir, catalog_path, readme_path = _fake_sources(
+    script_dir, catalog_path, docs_path = _fake_sources(
         tmp_path,
         catalog_text="stale-entry.mmd is documented\n",
-        readme_text="stale-entry.mmd is documented\n",
+        docs_text="stale-entry.mmd is documented\n",
     )
     monkeypatch.setattr(catalog, "SCRIPT_DIR", script_dir)
     monkeypatch.setattr(catalog, "CATALOG_PATH", catalog_path)
-    monkeypatch.setattr(catalog, "README_PATH", readme_path)
+    monkeypatch.setattr(catalog, "DIAGRAMS_DOC_PATH", docs_path)
 
     rc = catalog.main()
 
     captured = capsys.readouterr()
     assert rc == 1
     assert "[CATALOG] template on disk but missing in template-catalog.md: on-disk.mmd" in captured.out
-    assert "[README] template on disk but missing in README Available Templates: on-disk.mmd" in captured.out
+    assert "[DOCS] template on disk but missing in docs/diagrams.md Available Templates: on-disk.mmd" in captured.out
     assert "[STALE] documented but file does not exist: stale-entry.mmd" in captured.out
     assert "FAILED: 3 mismatch(es)" in captured.err
 
 
-def test_main_reports_only_readme_gap(monkeypatch, tmp_path: Path, capsys) -> None:
-    script_dir, catalog_path, readme_path = _fake_sources(
+def test_main_reports_only_docs_gap(monkeypatch, tmp_path: Path, capsys) -> None:
+    script_dir, catalog_path, docs_path = _fake_sources(
         tmp_path,
         catalog_text="on-disk.mmd\n",
-        readme_text="no templates listed here\n",
+        docs_text="no templates listed here\n",
     )
     monkeypatch.setattr(catalog, "SCRIPT_DIR", script_dir)
     monkeypatch.setattr(catalog, "CATALOG_PATH", catalog_path)
-    monkeypatch.setattr(catalog, "README_PATH", readme_path)
+    monkeypatch.setattr(catalog, "DIAGRAMS_DOC_PATH", docs_path)
 
     rc = catalog.main()
 
     captured = capsys.readouterr()
     assert rc == 1
-    assert "[README]" in captured.out
+    assert "[DOCS]" in captured.out
     assert "[CATALOG]" not in captured.out
     assert "[STALE]" not in captured.out
 
 
 def test_main_passes_when_all_sources_agree(monkeypatch, tmp_path: Path, capsys) -> None:
-    script_dir, catalog_path, readme_path = _fake_sources(
+    script_dir, catalog_path, docs_path = _fake_sources(
         tmp_path,
         catalog_text="on-disk.mmd\n",
-        readme_text="| `on-disk.mmd` | Mermaid |\n",
+        docs_text="| `on-disk.mmd` | Mermaid |\n",
     )
     monkeypatch.setattr(catalog, "SCRIPT_DIR", script_dir)
     monkeypatch.setattr(catalog, "CATALOG_PATH", catalog_path)
-    monkeypatch.setattr(catalog, "README_PATH", readme_path)
+    monkeypatch.setattr(catalog, "DIAGRAMS_DOC_PATH", docs_path)
 
     rc = catalog.main()
 

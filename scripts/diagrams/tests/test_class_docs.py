@@ -23,7 +23,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 ROOT = SCRIPT_DIR.parent.parent
-README = ROOT / "README.md"
+README = ROOT / "docs" / "classes.md"
 
 
 def load_module(name: str, filename: str):

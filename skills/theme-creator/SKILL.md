@@ -288,9 +288,9 @@ python scripts/sync-skills.py
 
 ## Phase 6: Documentation
 
-Update `README.md` to include the new theme:
+Update `docs/themes.md` to include the new theme:
 
-1. Add a theme description in the Themes section
+1. Add a theme description in the Themes section (keep the summary table in `README.md` in sync)
 2. Add screenshot previews (register slides in `scripts/take-screenshots.py::THEME_CONFIG` and run it)
 3. Update any theme count references
 4. Add a `CHANGELOG.md` Unreleased entry

@@ -142,7 +142,7 @@ python <ENGINE>/validate-slide-diagram.py slides/<deck-name>/assets/my-diagram.s
 ```
 
 The `check-*.py` and `sync-*.py` scripts are **not** vendored: they operate on the
-repository (reading `README.md`, `themes/*.css`, the test suite) and are
+repository (reading `docs/`, `themes/*.css`, the test suite) and are
 meaningless outside it. From a checkout of `ai-centric-marp-themes` you can
 validate every template at the layouts it supports:
 

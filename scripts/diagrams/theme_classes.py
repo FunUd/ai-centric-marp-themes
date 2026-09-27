@@ -14,7 +14,7 @@ module adds the semantics the linter needs but CSS cannot express on its own:
 
 Why this exists: ``marp-lint.py`` previously hard-coded three overlapping class
 sets. They disagreed with each other *and* with the CSS, so ``cover-nebula``
-(a cover layout, documented in the README and used by the skill's own quick
+(a cover layout, documented in docs/classes.md and used by the skill's own quick
 start) produced a false ``WEAK_TITLE`` warning, and ``split-glass`` was treated
 as a single column for bullet limits while being a 2-column layout for diagram
 widths.

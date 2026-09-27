@@ -47,7 +47,7 @@ ENTRY_POINTS = ("render-slide-diagram", "validate-slide-diagram")
 # Data directories the runtime reads relative to the engine root.
 DATA_DIRS = ("templates", "theme-styles")
 
-# Never vendored: these read the repository (README.md, themes/*.css, the test
+# Never vendored: these read the repository (docs/, themes/*.css, the test
 # suite) and are meaningless in a standalone skill installation.
 DEV_ONLY = {
     "check-catalog-sync",

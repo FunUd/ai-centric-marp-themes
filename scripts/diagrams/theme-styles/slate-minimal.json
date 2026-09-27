@@ -16,7 +16,7 @@
     "border": "#CBD5E1",
     "borderLight": "#F1F5F9",
     "line": "#475569",
-    "success": "#475569",
+    "success": "#334155",
     "warning": "#64748B",
     "danger": "#1E293B"
   },

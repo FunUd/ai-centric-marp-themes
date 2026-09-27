@@ -133,7 +133,7 @@ def test_every_runtime_module_is_vendored() -> None:
 
 @pytest.mark.parametrize("name", sorted(sync.DEV_ONLY))
 def test_repository_only_scripts_are_not_vendored(name: str) -> None:
-    """These read README.md, themes/*.css or the test suite. Shipping them in a
+    """These read docs/, themes/*.css or the test suite. Shipping them in a
     standalone skill would advertise tools that cannot work there."""
     assert (ENGINE_DIR / f"{name}.py").is_file(), f"{name}.py moved out of scripts/diagrams"
     assert not (VENDOR_DIR / f"{name}.py").exists(), f"{name}.py must not be vendored"

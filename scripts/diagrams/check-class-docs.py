@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""check-class-docs.py — Verify the README documents the theme class system.
+"""check-class-docs.py — Verify docs/classes.md documents the theme class system.
 
-The README promises "All themes share a unified class system", but the promise
+The class reference promises "All themes share a unified class system", but the promise
 was never checked. It had drifted in both directions:
 
 - **Undocumented**: 35 user-facing classes (``text-accent``, ``badge``,
   ``quote-large``, ``align-*``, ``bg-*``, ``section-number``, ...) were
-  implemented in the CSS but absent from the README, so users could not
+  implemented in the CSS but absent from the reference, so users could not
   discover them.
-- **Overstated**: the README listed classes as available everywhere when
+- **Overstated**: the reference listed classes as available everywhere when
   specific themes lacked them (``v-middle`` missing from nebula-glass and
   slate-minimal, ``pagination-left`` missing from nebula-glass,
   ``text-left/center/right`` missing from slate-minimal).
 
 This checker treats ``themes/*.css`` as the authority for what exists, and the
-README as the documentation of it. It never rewrites prose; it reports the
+docs/classes.md as the documentation of it. It never rewrites prose; it reports the
 specific classes involved so a human decides where each one belongs.
 
 Usage:
@@ -36,7 +36,7 @@ import theme_classes  # noqa: E402
 from compat import ensure_utf8_stdio  # noqa: E402
 
 ROOT_DIR = theme_classes.ROOT_DIR
-README = ROOT_DIR / "README.md"
+CLASSES_DOC = ROOT_DIR / "docs" / "classes.md"
 
 # Classes that exist in the CSS but are structural rather than user-facing.
 # Either Marp/Pygments internals, or per-theme child selectors that only make
@@ -65,7 +65,7 @@ _FENCE_RE = re.compile(r"^[ \t]*```.*?^[ \t]*```", re.S | re.M)
 
 
 def readme_backticked_classes(text: str) -> set[str]:
-    """Class-like names the README mentions in inline code spans.
+    """Class-like names the reference mentions in inline code spans.
 
     Two forms count as documented:
     - a bare identifier: `` `cols-2` ``
@@ -88,7 +88,7 @@ def readme_backticked_classes(text: str) -> set[str]:
 
 
 def readme_documented_table_classes(text: str) -> set[str]:
-    """Classes listed in the Layout / Utility tables of the README.
+    """Classes listed in the Layout / Utility tables of the reference.
 
     Scoped to the two tables so a class mentioned only in prose does not count
     as documented in the class reference.
@@ -112,7 +112,7 @@ def user_facing_classes() -> set[str]:
 
 
 def undocumented(readme_text: str) -> dict[str, list[str]]:
-    """Implemented classes the README never mentions, with the themes providing them."""
+    """Implemented classes the reference never mentions, with the themes providing them."""
     mentioned = readme_backticked_classes(readme_text)
     result: dict[str, list[str]] = {}
     for cls in sorted(user_facing_classes() - mentioned):
@@ -124,7 +124,7 @@ def undocumented(readme_text: str) -> dict[str, list[str]]:
 def missing_per_theme(documented: set[str]) -> dict[str, list[str]]:
     """Documented classes a given theme does not implement.
 
-    Not automatically a defect: the README marks theme-specific classes
+    Not automatically a defect: the reference marks theme-specific classes
     (*(Prism Edge)*). This surfaces the ones nobody claimed, which is the
     actual drift signal.
     """
@@ -138,7 +138,7 @@ def missing_per_theme(documented: set[str]) -> dict[str, list[str]]:
 
 
 def theme_specific_markers(readme_text: str) -> set[str]:
-    """Classes the README explicitly scopes with a *(Theme)* qualifier.
+    """Classes the reference explicitly scopes with a *(Theme)* qualifier.
 
     A row such as::
 
@@ -166,7 +166,7 @@ def theme_specific_markers(readme_text: str) -> set[str]:
 def main() -> int:
     ensure_utf8_stdio()
 
-    parser = argparse.ArgumentParser(description="Check README against the theme class system.")
+    parser = argparse.ArgumentParser(description="Check docs/classes.md against the theme class system.")
     parser.add_argument(
         "--list-undocumented",
         action="store_true",
@@ -180,18 +180,18 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    readme_text = README.read_text(encoding="utf-8")
+    readme_text = CLASSES_DOC.read_text(encoding="utf-8")
     doc_classes = readme_documented_table_classes(readme_text)
     missing_docs = undocumented(readme_text)
     gaps = missing_per_theme(doc_classes)
     scoped = theme_specific_markers(readme_text)
 
-    print(f"README class reference: {len(doc_classes)} classes in the layout/utility tables")
+    print(f"docs/classes.md class reference: {len(doc_classes)} classes in the layout/utility tables")
     print(f"CSS inventory:         {len(user_facing_classes())} user-facing classes across {len(theme_classes.THEMES)} themes")
 
     # --- undocumented classes ------------------------------------------------
     if missing_docs:
-        print(f"\n[UNDOCUMENTED] {len(missing_docs)} implemented class(es) absent from the README:")
+        print(f"\n[UNDOCUMENTED] {len(missing_docs)} implemented class(es) absent from the reference:")
         for cls, providers in missing_docs.items():
             where = ", ".join(providers)
             print(f"  - {cls:20} ({where})")
@@ -200,7 +200,7 @@ def main() -> int:
             "  or add it to INTERNAL_CLASSES in check-class-docs.py if it is structural."
         )
     else:
-        print("\n[OK] every user-facing class is mentioned in the README.")
+        print("\n[OK] every user-facing class is mentioned in the reference.")
 
     # --- per-theme gaps ------------------------------------------------------
     unclaimed = {
@@ -213,11 +213,11 @@ def main() -> int:
         for theme, items in unclaimed.items():
             print(f"  - {theme:16} {', '.join(items)}")
         print(
-            "\n  Either implement the class in the theme, or mark it in the README with a\n"
+            "\n  Either implement the class in the theme, or mark it in docs/classes.md with a\n"
             "  *(Theme)* qualifier so users do not rely on it there."
         )
     else:
-        print("[OK] every theme gap in the README is explicitly scoped.")
+        print("[OK] every theme gap in the reference is explicitly scoped.")
 
     hard_fail = bool(missing_docs) or bool(unclaimed)
     if hard_fail and args.allow_unlisted:
@@ -231,7 +231,7 @@ def main() -> int:
         )
         return 1
 
-    print("\n[OK] README and theme class system are in sync.")
+    print("\n[OK] docs/classes.md and theme class system are in sync.")
     return 0
 
 

@@ -76,9 +76,9 @@ def test_every_type_has_template() -> None:
 
 def test_every_type_documented() -> None:
     catalog = (ROOT_DIR / "skills" / "marp-diagram-creator" / "references" / "template-catalog.md").read_text(encoding="utf-8")
-    readme = (ROOT_DIR / "README.md").read_text(encoding="utf-8")
+    readme = (ROOT_DIR / "docs" / "diagrams.md").read_text(encoding="utf-8")
     by_type = _templates_by_type()
     for kind in models.DIAGRAM_TYPES:
         for template in by_type.get(kind, []):
             assert template in catalog, f"{template} missing in template-catalog.md"
-            assert template in readme, f"{template} missing in README Available Templates"
+            assert template in readme, f"{template} missing in docs/diagrams.md Available Templates"

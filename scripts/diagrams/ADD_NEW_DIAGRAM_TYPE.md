@@ -32,7 +32,7 @@ registry test (`tests/test_diagram_registry.py`) and the catalog check
 ## 4. Docs (both files — the catalog check enforces this)
 
 - `skills/marp-diagram-creator/references/template-catalog.md`: add a row to the JSON SVG table.
-- `README.md` → Available Templates: add the matching row.
+- `docs/diagrams.md` → Available Templates: add the matching row.
 - If the type introduces a new selection rule, update the decision table in `references/diagram-patterns.md` §3 and the summary in `SKILL.md` §2 (they must stay identical).
 
 ## 5. Tests (`tests/`)
