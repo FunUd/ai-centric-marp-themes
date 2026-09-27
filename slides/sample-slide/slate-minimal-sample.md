@@ -9,6 +9,8 @@ footer: "© 2026 Slate Minimal"
 
 <!-- _class: cover subtitle meta -->
 <!-- _paginate: false -->
+<!-- _header: "" -->
+<!-- _footer: "" -->
 
 # Less, but better.
 ## ミニマリズムがもたらすデザインの真価と、次世代のUI設計。

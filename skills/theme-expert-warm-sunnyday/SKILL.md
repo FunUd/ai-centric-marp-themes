@@ -15,6 +15,7 @@ Use this skill after the content structure is decided. For outline planning or s
 - `profile` works especially well for photo + bio layouts
 - `grid-quadrant` is good for icebreaker prompts and conversation starters
 - `steps`, `timeline`, `key-message`, and `timetable` work well when the tone should stay light and easy to follow
+- Other themes' signature classes do **not** exist here (e.g. Prism Edge `cover-wave/diagonal/noir/aurora`, `hero`, `split-asym`; Nebula `cover-nebula`, `split-glass`, `glass-card-layout`). When in doubt, check `slides/sample-slide/warm-sunnyday-sample.md` or `theme-expert-common` — never copy a class from another theme's sample deck verbatim
 
 ## Shared Mechanics
 

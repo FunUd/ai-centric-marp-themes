@@ -65,6 +65,11 @@ works wherever it is installed. Resolve it once per session:
 ENGINE=$(python <skill-dir>/scripts/print-engine-path.py)
 ```
 
+```powershell
+# Windows PowerShell equivalent (bash `$(...)`, `head`, and `ls` do not work in pwsh)
+$ENGINE = python <skill-dir>/scripts/print-engine-path.py
+```
+
 `<skill-dir>` is the folder containing this `SKILL.md`:
 
 | Situation | `<skill-dir>` |

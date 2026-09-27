@@ -2,7 +2,7 @@
 """
 render-slide-diagram.py — Universal Slide Diagram Engine.
 
-Renders Mermaid and draw.io diagrams into slide-optimized SVGs that perfectly
+Renders Mermaid, draw.io, and JSON diagrams into slide-optimized SVGs that perfectly
 harmonize with all 6 Marp presentation themes, enforcing strict canvas constraints
 to prevent visual breakage and overflow.
 
@@ -549,8 +549,8 @@ def render_json_diagram(
 
 def main():
     ensure_utf8_stdio()
-    parser = argparse.ArgumentParser(description="Render Mermaid or draw.io diagram to slide-optimized SVG.")
-    parser.add_argument("-i", "--input", type=Path, help="Input .mmd or .drawio file")
+    parser = argparse.ArgumentParser(description="Render Mermaid, draw.io, or JSON diagrams to slide-optimized SVG.")
+    parser.add_argument("-i", "--input", type=Path, help="Input .mmd, .drawio, or .json file")
     parser.add_argument("--code", type=str, help="Direct Mermaid diagram string")
     parser.add_argument("-o", "--output", type=Path, required=True, help="Target output .svg path")
     parser.add_argument(

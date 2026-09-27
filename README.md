@@ -219,7 +219,7 @@ paginate: true
 
 1. **Install [Marp for VS Code](https://marketplace.visualstudio.com/items?itemName=marp-team.marp-vscode)** or use the [Marp CLI](https://github.com/marp-team/marp-cli).
 
-2. **Copy the theme CSS** you want from the `themes/` folder into your Marp workspace (or configure `themeSet` in `marp.config.js`). If you use `prism-edge`, `nebula-glass`, `warm-sunnyday`, or `slate-minimal`, also copy `assets/fonts/` so the `@font-face` paths (`../assets/fonts/*.ttf`) keep resolving. Nebula Glass needs `Poppins-Bold/Regular`, `NotoSansJP-Variable`, and `JetBrainsMono-Regular`.
+2. **Copy the theme CSS** you want from the `themes/` folder into your Marp workspace (or configure `themeSet` in `marp.config.js`). If you use `prism-edge`, `nebula-glass`, `warm-sunnyday`, or `slate-minimal`, also copy `assets/fonts/` so the `@font-face` paths (`../assets/fonts/*.ttf`) keep resolving. Nebula Glass needs `Poppins-Bold/Regular`, `NotoSansJP-Variable`, and `JetBrainsMono-Regular`. When exporting HTML/PDF to another folder, reproduce the same relative layout next to the output (e.g. `<out>/../assets/fonts/…` for an HTML file that references `../assets/fonts/…`) — Marp inlines the CSS but keeps `url()` paths as-is, so fonts 404 otherwise. A `[WARN] Cannot register theme CSS: themes\_base.css` line during `--theme-set themes` builds is benign: `_base.css` is the shared development source, not a selectable theme.
 
 3. **Reference the theme** in your slide deck's YAML frontmatter:
 

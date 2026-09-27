@@ -526,6 +526,10 @@ def lint_unlabeled_list(slide: SlideInfo) -> list[LintIssue]:
     issues: list[LintIssue] = []
     if not slide.list_items:
         return issues
+    # TOCs, checklists, steps and timelines are structural by design: their
+    # items are entries, not claims needing a takeaway label.
+    if slide.classes.intersection(LIST_EXEMPT_CLASSES):
+        return issues
 
     unlabeled_long_items = 0
     for item in slide.list_items:
@@ -570,6 +574,51 @@ def lint_dense_content(slide: SlideInfo) -> list[LintIssue]:
     return issues
 
 
+def lint_split_glass_structure(slide: SlideInfo) -> list[LintIssue]:
+    """Check the nebula-glass split-glass 50/50 pattern.
+
+    `section.split-glass` is a bare `1fr 1fr` grid, so every direct child
+    becomes a grid item. The only supported form is exactly two divs —
+    `.content` (headings live INSIDE it) followed by `.glass-panel`. A heading
+    above the divs silently becomes column 1 and pushes the diagram to row 2,
+    with no overflow or warning from any other gate.
+    """
+    issues: list[LintIssue] = []
+    if "split-glass" not in slide.classes or not slide.div_classes:
+        return issues
+    canonical = (
+        '<div class="content">\n\n# Heading inside content\n\n</div>\n\n'
+        '<div class="glass-panel">\n\n### Points\n\n</div>'
+    )
+    if slide.div_classes != ["content", "glass-panel"]:
+        issues.append(LintIssue(
+            slide=slide.number,
+            severity="ERROR",
+            code="SPLIT_GLASS_STRUCTURE",
+            message=(
+                f'split-glass needs exactly <div class="content"> + '
+                f'<div class="glass-panel"> (got: {", ".join(slide.div_classes)}). '
+                f"Extra grid children collapse the 50/50 split. Canonical form:\n{canonical}"
+            ),
+        ))
+        return issues
+    body = CODE_FENCE_RE.sub("", slide.raw_content)
+    div_at = body.find("<div")
+    head_match = HEADING_RE.search(body)
+    if head_match is not None and head_match.start() < div_at:
+        issues.append(LintIssue(
+            slide=slide.number,
+            severity="ERROR",
+            code="SPLIT_GLASS_STRUCTURE",
+            message=(
+                "split-glass heading sits above the divs, so it becomes grid "
+                "column 1 and pushes the glass panel to row 2. Move the heading "
+                "INSIDE <div class=\"content\">:\n" + canonical
+            ),
+        ))
+    return issues
+
+
 def lint_slide(slide: SlideInfo, structural_only: bool = False) -> list[LintIssue]:
     """Run all lint checks on a single slide."""
     issues: list[LintIssue] = []
@@ -578,6 +627,7 @@ def lint_slide(slide: SlideInfo, structural_only: bool = False) -> list[LintIssu
     issues.extend(lint_centered_lists(slide))
     issues.extend(lint_oversized_icons(slide))
     issues.extend(lint_diagram_embedding(slide))
+    issues.extend(lint_split_glass_structure(slide))
 
     # Readability checks (Warnings)
     if not structural_only:

@@ -475,6 +475,59 @@ def test_unlabeled_list_needs_at_least_two_long_bullets() -> None:
     assert "UNLABELED_LIST" not in issue_codes(deck(one))
 
 
+@pytest.mark.parametrize("cls", ["toc", "toc-focus", "checklist", "steps", "timeline", "timetable"])
+def test_unlabeled_list_skips_structural_layouts(cls: str) -> None:
+    """TOC/checklist/steps/timeline entries are structural, not claims needing
+    a takeaway label — same exemption lint_bullet_hell already honours."""
+    body = (
+        f"<!-- _class: {cls} -->\n\n# T\n\n"
+        + "".join(f"- a very long structural entry without a label here {i}\n" for i in range(3))
+    )
+    assert "UNLABELED_LIST" not in issue_codes(deck(body))
+
+
+# ============================================ lint_split_glass_structure
+
+
+def test_split_glass_accepts_the_canonical_two_divs() -> None:
+    body = (
+        "<!-- _class: split-glass -->\n\n"
+        '<div class="content">\n\n# Inside\n\n</div>\n\n'
+        '<div class="glass-panel">\n\n### Points\n\n</div>\n'
+    )
+    assert "SPLIT_GLASS_STRUCTURE" not in issue_codes(deck(body))
+
+
+def test_split_glass_flags_a_heading_above_the_divs() -> None:
+    """A heading outside the divs becomes grid column 1 and pushes the glass
+    panel to row 2 — silent collapse no other gate catches."""
+    body = (
+        "<!-- _class: split-glass -->\n\n## Outside\n\n"
+        '<div class="content">\n\ntext\n\n</div>\n\n'
+        '<div class="glass-panel">\n\n### Points\n\n</div>\n'
+    )
+    assert "SPLIT_GLASS_STRUCTURE" in issue_codes(deck(body))
+
+
+def test_split_glass_flags_wrong_divs() -> None:
+    body = (
+        "<!-- _class: split-glass -->\n\n"
+        '<div class="columns">\n\ntext\n\n</div>\n\n'
+        '<div class="glass-panel">\n\n### Points\n\n</div>\n'
+    )
+    assert "SPLIT_GLASS_STRUCTURE" in issue_codes(deck(body))
+
+
+def test_split_glass_ignores_divless_slides_and_other_layouts() -> None:
+    assert "SPLIT_GLASS_STRUCTURE" not in issue_codes(deck("<!-- _class: split-glass -->\n\n# Plain\n\ntext\n"))
+    other = (
+        "<!-- _class: cols-2 -->\n\n## Outside\n\n"
+        '<div class="content">\n\ntext\n\n</div>\n\n'
+        '<div class="glass-panel">\n\n### Points\n\n</div>\n'
+    )
+    assert "SPLIT_GLASS_STRUCTURE" not in issue_codes(deck(other))
+
+
 # ====================================================== lint_dense_content
 
 

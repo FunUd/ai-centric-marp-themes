@@ -82,6 +82,12 @@ npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/t
 npx -y @marp-team/marp-cli@4.2.3 --no-stdin --allow-local-files --theme themes/theme.css slides.md --images png
 ```
 
+> Notes: put the input `.md` **before** `--theme-set <dir>` — that flag takes
+> multiple values, so a trailing `.md` is swallowed as a second theme and Marp
+> prints usage with exit 0 and no output. A `[WARN] Cannot register theme CSS:
+> themes\_base.css` line is benign (`_base.css` is the shared source, not a
+> theme); use `--theme <single-file>` to avoid it.
+
 ### PDF Options
 ```powershell
 # With presenter notes
