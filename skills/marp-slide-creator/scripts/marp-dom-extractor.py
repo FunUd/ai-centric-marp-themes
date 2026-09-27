@@ -100,6 +100,36 @@ def local_image_exists(html_path: Path, src: str) -> bool:
     return (html_path.parent / src).exists()
 
 
+# Layouts that place content in parallel columns: rendered text lines are
+# distributed side-by-side, so a raw newline count overstates vertical depth
+# (e.g. three short cards in cols-3 yield 20+ "lines" with only ~200 chars).
+# Scale the line-based thresholds by the column count instead.
+THREE_COL_LAYOUTS = frozenset({"cols-3", "split-3"})
+TWO_COL_LAYOUTS = frozenset({
+    "cols-2", "split-2", "split-glass",
+    "split-asym", "split-asym-reverse",
+    "grid-quadrant", "grid-sharp",
+})
+
+BASE_MANY_LINES = 20
+BASE_OVERFLOW_LINES = 24
+# Content reaching this close to the slide bottom collides with the
+# absolutely-positioned footer / pagination chrome (footer text starts at
+# ~bottom:16px). Kept tight so agenda/table slides that merely approach the
+# footer do not flag — only real overlaps do.
+FOOTER_CLEARANCE_PX = 25
+
+
+def column_factor(class_attr: str) -> int:
+    """Parallel-column multiplier for line-based overflow thresholds."""
+    classes = set(class_attr.split())
+    if classes & THREE_COL_LAYOUTS:
+        return 3
+    if classes & TWO_COL_LAYOUTS:
+        return 2
+    return 1
+
+
 def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None = None) -> list[dict[str, Any]]:
     """Load a Marp HTML file and extract per-slide metrics using Playwright."""
     absolute_path = html_path.resolve().as_posix()
@@ -149,6 +179,9 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
             box = slide.bounding_box()
             slide_w = box["width"] if box else 1280
             slide_h = box["height"] if box else 720
+            slide_top = box["y"] if box else 0
+            slide_classes = slide.get_attribute("class") or ""
+            col_factor = column_factor(slide_classes)
 
             # Extract text statistics
             text_content = slide.inner_text()
@@ -199,11 +232,30 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
                         f"CONTENT_OVERFLOW: content bottom at {max_bottom}px exceeds slide height {slide_h}px"
                     )
 
-            # Dense text risk
+            # Dense text risk (line threshold scales with parallel columns)
             if char_count > 600:
                 flags.append(f"DENSE_TEXT: {char_count} chars may overflow")
-            if line_count > 20:
+            if line_count > BASE_MANY_LINES * col_factor:
                 flags.append(f"MANY_LINES: {line_count} lines may overflow")
+
+            # Footer collision: Marp themes clip slide overflow, so the check
+            # above is skipped by design — but content reaching the footer
+            # zone is still visually overlapped. Measure slide-relative so
+            # scrolling does not skew it; header/footer chrome is excluded.
+            if elements:
+                content_tops = [
+                    el["top"] + el["height"]
+                    for el in elements
+                    if el["tag"] not in ("header", "footer")
+                ]
+                if content_tops:
+                    content_bottom = max(content_tops) - slide_top
+                    footer_limit = slide_h - FOOTER_CLEARANCE_PX
+                    if content_bottom > footer_limit:
+                        flags.append(
+                            f"FOOTER_COLLISION_RISK: content reaches {content_bottom}px, "
+                            f"footer zone starts at {footer_limit}px"
+                        )
 
             # Image missing / broken
             imgs = slide.locator("img").all()
@@ -250,6 +302,7 @@ def extract_slide_metrics_heuristic(html_path: Path) -> list[dict[str, Any]]:
         text_content = text_from_html(inner_html)
         char_count = len(text_content)
         line_count = text_content.count("\n") + 1 if text_content.strip() else 0
+        col_factor = column_factor(attrs.get("class", ""))
 
         flags: list[str] = []
         elements: list[dict[str, Any]] = []
@@ -266,9 +319,9 @@ def extract_slide_metrics_heuristic(html_path: Path) -> list[dict[str, Any]]:
 
         if char_count > 600:
             flags.append(f"DENSE_TEXT: {char_count} chars may overflow")
-        if line_count > 20:
+        if line_count > BASE_MANY_LINES * col_factor:
             flags.append(f"MANY_LINES: {line_count} lines may overflow")
-        if char_count > 900 or line_count > 24:
+        if char_count > 900 or line_count > BASE_OVERFLOW_LINES * col_factor:
             flags.append("CONTENT_OVERFLOW: heuristic density suggests overflow risk")
 
         results.append(

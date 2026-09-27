@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -147,6 +148,57 @@ def extract_metrics(html_path: Path, json_path: Path, screenshot_dir: Path | Non
     run_command(extractor)
 
 
+THEME_URL_RE = re.compile(r"url\(\s*['\"]?([^'\"\)]+?)['\"]?\s*\)", re.I)
+
+
+def missing_theme_refs(theme: str | None) -> list[str]:
+    """Relative `url()` targets in the theme CSS that do not resolve.
+
+    Marp CLI reports these at render time as "Some of the local files are
+    missing". Font refs (`../assets/fonts/…`) break whenever the theme file
+    is copied without its sibling `assets/` directory — usually benign
+    (system-font fallback), but worth telling apart from a genuinely
+    missing deck image.
+    """
+    if not theme:
+        return []
+    theme_path = Path(theme)
+    if not theme_path.is_file():
+        return []
+    try:
+        css = theme_path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return []
+    missing: list[str] = []
+    for match in THEME_URL_RE.finditer(css):
+        ref = match.group(1).strip()
+        if not ref or ref.startswith(("data:", "http://", "https://", "#")):
+            continue
+        ref = ref.split("?", 1)[0].split("#", 1)[0]
+        if ref and not (theme_path.parent / ref).exists():
+            missing.append(ref)
+    return missing
+
+
+def print_theme_ref_note(theme: str | None) -> None:
+    missing = missing_theme_refs(theme)
+    if not missing:
+        return
+    fonts = [ref for ref in missing if ref.lower().endswith((".ttf", ".otf", ".woff", ".woff2"))]
+    others = [ref for ref in missing if ref not in fonts]
+    if fonts:
+        print(
+            "NOTE: theme font file(s) do not resolve from --theme "
+            f"({', '.join(fonts[:3])}{'...' if len(fonts) > 3 else ''}). "
+            "Benign in most cases (system-font fallback), and the likely cause "
+            "of Marp CLI's 'Some of the local files are missing' warning. "
+            "To silence it, mirror the repo's relative layout next to the "
+            "theme copy (e.g. <deck>/../assets/fonts/…)."
+        )
+    for ref in others:
+        print(f"NOTE: theme references a missing file: {ref}")
+
+
 def load_metrics(json_path: Path) -> list[dict[str, Any]]:
     return json.loads(json_path.read_text(encoding="utf-8"))
 
@@ -244,6 +296,7 @@ def main() -> int:
             theme=args.theme,
         )
         print(f"Marp command: {' '.join(command_used)}")
+        print_theme_ref_note(args.theme)
         
         screenshot_dir = Path(args.screenshot_dir) if args.screenshot_dir else None
         extract_metrics(html_path.resolve(), json_path.resolve(), screenshot_dir)

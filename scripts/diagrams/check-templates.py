@@ -50,7 +50,7 @@ ALLOWED_LAYOUTS: dict[str, tuple[str, ...]] = {
     "mermaid/flowchart-linear.mmd": (FULL,),
     "mermaid/flowchart-col2.mmd": (FULL, COL2, ASYM),
     "mermaid/sequence-api.mmd": (FULL,),
-    "mermaid/sequence-api-col2.mmd": (FULL, ASYM),
+    "mermaid/sequence-api-asym.mmd": (FULL, ASYM),
     "mermaid/architecture-3tier.mmd": (FULL,),
     "mermaid/architecture-3tier-col2.mmd": (FULL, COL2, ASYM, COL3),
     "mermaid/state-machine.mmd": (FULL,),
