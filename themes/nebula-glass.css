@@ -1286,6 +1286,22 @@ section.align-left,   section .align-left   { text-align: left !important; }
 section.align-center, section .align-center { text-align: center !important; }
 section.align-right,  section .align-right  { text-align: right !important; }
 
+/* Centered slides: shrink-wrap lists as a centered block with left-aligned
+   items, so markers stay attached to their text instead of stranding at the
+   slide edge while the text centers. */
+section.cover ul, section.cover ol,
+section.cover-nebula ul, section.cover-nebula ol,
+section.key-message ul, section.key-message ol,
+section.align-center ul, section.align-center ol,
+section.text-center ul, section.text-center ol,
+section .align-center ul, section .align-center ol,
+section .text-center ul, section .text-center ol {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
 section.v-top    { justify-content: flex-start; }
 section.v-center { justify-content: center; }
 section.v-bottom { justify-content: flex-end; }

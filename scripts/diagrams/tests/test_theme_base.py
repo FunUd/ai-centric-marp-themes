@@ -41,14 +41,14 @@ sync = load_sync()
 
 def test_base_file_parses_into_sections() -> None:
     sections = sync.parse_base()
-    assert len(sections) == 21
+    assert len(sections) == 22
     assert set(sections) == {
         "pagination", "display-control",
         "cols-2", "cols-3", "col-card", "col-h3", "split-2", "split-3",
         "grid-quadrant", "grid-cells-core", "grid-cells-side",
         "grid-axes", "grid-sharp",
         "callout-base", "callout-blue", "callout-alerts", "badge-base",
-        "align-h", "align-v",
+        "align-h", "align-v", "centered-lists",
         "reduced-motion", "focus-visible",
     }
 
@@ -98,4 +98,4 @@ def test_marker_regions_preserve_rule_order() -> None:
 def test_base_covers_the_documented_section_count() -> None:
     sections = sync.parse_base()
     total_regions = sum(len(themes) for themes, _body in sections.values())
-    assert total_regions == 80
+    assert total_regions == 84

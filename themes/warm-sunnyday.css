@@ -1424,6 +1424,20 @@ section .align-right {
 }
 /* </base:align-h> */
 
+/* <base:centered-lists> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
+section.cover ul, section.cover ol,
+section.key-message ul, section.key-message ol,
+section.align-center ul, section.align-center ol,
+section.text-center ul, section.text-center ol,
+section .align-center ul, section .align-center ol,
+section .text-center ul, section .text-center ol {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+/* </base:centered-lists> */
+
 /* Vertical Alignment */
 /* <base:align-v> — generated from themes/_base.css; do not edit (run scripts/sync-theme-base.py) */
 section.v-top,
