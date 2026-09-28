@@ -228,8 +228,16 @@ def test_hbar_defaults_single_primary_allows_optional_color() -> None:
     import copy
 
     default_svg = render.render_diagram(copy.deepcopy(base), data, "full")
-    # Ordered ranking stays single-primary (length encodes order; no rainbow).
-    assert default_svg.count(f'fill="{ctx["primary"]}"') >= 2
+    # Ordered ranking stays single-hue (length encodes order; no rainbow):
+    # both bars share one fill, nudged only as far as the 4.5:1 floor needs.
+    import re as _re
+
+    fills = [
+        _re.search(r"fill=\"(#[0-9A-Fa-f]{6})\"", tag).group(1)
+        for tag in _re.findall(r"<rect [^>]*role=\"node\"[^>]*>", default_svg)
+        if _re.search(r"fill=\"(#[0-9A-Fa-f]{6})\"", tag)
+    ]
+    assert len(fills) >= 2 and len(set(fills)) == 1, fills
     colored = copy.deepcopy(base)
     colored["items"][0]["color"] = "#B71C1C"
     colored_svg = render.render_diagram(colored, data, "full")

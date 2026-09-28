@@ -5,7 +5,7 @@ import math
 import re
 from typing import Iterable
 
-from design_tokens import best_text_on, node_style, theme_context
+from design_tokens import best_text_on, ensure_inside_label, node_style, theme_context
 from diagram_models import parse_diagram_data
 from svg_filters import build_filter_defs
 
@@ -878,6 +878,10 @@ def _stacked_bar(data: dict, ctx: dict) -> list[str]:
     categories = [str(category) for category in data["categories"]]
     series = data["series"]
     colors = _series_colors(ctx, len(series))
+    # Inside value labels need 4.5:1 vs their segment; nudge the shared
+    # palette entry when even the best ink falls short (azure/nebula primary
+    # at 4.1-4.2:1) so segments and legend swatches stay identical.
+    colors = [ensure_inside_label(color)[1] or color for color in colors]
     totals = [sum(float(entry["values"][index]) for entry in series) for index in range(len(categories))]
     ceiling = float(data.get("y_max", _y_scale(0.0, max(totals))["max"]))
     legend = [(str(entry["label"]), color) for entry, color in zip(series, colors)]
@@ -960,13 +964,16 @@ def _hbar(data: dict, ctx: dict) -> list[str]:
         bar_len = max(0.0, x_end - plot_left)
         y_top = y_center - bar_h / 2
         fill = item.get("color", ctx["primary"]) if isinstance(item, dict) else ctx["primary"]
+        # Inside values need 4.5:1; nudge the bar fill when even the best ink
+        # falls short (azure/nebula primary at 4.1-4.2:1). Hue is preserved.
+        bar_ink, bar_fill = ensure_inside_label(fill)
         elements.append(svg_rect(plot_left, y_top, bar_len, bar_h,
-                                 role="node", fill=fill, stroke="none"))
+                                 role="node", fill=bar_fill, stroke="none"))
         if show_values:
             tag = _fmt_tick(value)
             if bar_len >= 64:
                 elements.append(_text(x_end - 8, y_center + 5, tag, ctx, "labelSize",
-                                      fill=best_text_on(fill, "#FFFFFF"),
+                                      fill=bar_ink,
                                       max_chars=10, **{"text-anchor": "end", "font-weight": "bold"}))
             else:
                 elements.append(_text(x_end + 8, y_center + 5, tag, ctx, "labelSize",
@@ -979,6 +986,9 @@ def _stacked_bar_100(data: dict, ctx: dict) -> list[str]:
     categories = [str(category) for category in data["categories"]]
     series = data["series"]
     colors = _series_colors(ctx, len(series))
+    # Same inside-label guarantee as _stacked_bar: nudge shared fills so
+    # segments and legend swatches stay identical.
+    colors = [ensure_inside_label(color)[1] or color for color in colors]
     totals = [sum(float(entry["values"][index]) for entry in series) for index in range(len(categories))]
     pct: list[list[float]] = []
     for entry in series:
@@ -1010,6 +1020,20 @@ def _stacked_bar_100(data: dict, ctx: dict) -> list[str]:
                                       max_chars=8, **{"text-anchor": "middle", "font-weight": "bold", "font-size": 16}))
             base = top
     return elements
+
+
+def _matrix_cell(ctx: dict, level: int) -> tuple[str, str]:
+    """Return `(fill, ink)` for a 0-5 matrix cell with inside text >= 4.5:1.
+
+    The surface→primary mix can land mid-tone (crimson L4 `#DA4F4F` at
+    4.2:1); the shared nudge keeps cells and legend swatches identical.
+    """
+    if level == 0:
+        fill = ctx["surface"]
+    else:
+        fill = _mix_hex(ctx["surface"], ctx["primary"], 0.22 + 0.78 * (level / 5.0))
+    ink, adj = ensure_inside_label(fill)
+    return adj or fill, ink
 
 
 def _matrix(data: dict, ctx: dict) -> list[str]:
@@ -1045,10 +1069,7 @@ def _matrix(data: dict, ctx: dict) -> list[str]:
         elements.append(_text(grid_x - 8, cy, str(row.get("label", "")), ctx, "labelSize",
                               max_chars=12, **{"text-anchor": "end", "font-weight": "bold"}))
         for j, level in enumerate(scores):
-            if level == 0:
-                fill = ctx["surface"]
-            else:
-                fill = _mix_hex(ctx["surface"], ctx["primary"], 0.22 + 0.78 * (level / 5.0))
+            fill, ink = _matrix_cell(ctx, level)
             x = grid_x + col_w * j
             style: dict[str, object] = {"fill": fill, "stroke": ctx["line"], "stroke-width": 1, "role": "node"}
             if level == winner and winner > 0:
@@ -1058,7 +1079,7 @@ def _matrix(data: dict, ctx: dict) -> list[str]:
                 style["ry"] = marker
             elements.append(svg_rect(x + 1, y + 1, col_w - 2, row_h - 2, **style))
             elements.append(_text(x + col_w / 2, cy, str(level), ctx, "labelSize",
-                                  fill=best_text_on(fill, "#FFFFFF"),
+                                  fill=ink,
                                   **{"text-anchor": "middle", "font-weight": "bold", "font-size": 26}))
     # Scale legend (0-5 swatches + low/high ends) so the hue steps read at a glance.
     swatch_w, swatch_h, gap = 26.0, 16.0, 6.0
@@ -1070,10 +1091,7 @@ def _matrix(data: dict, ctx: dict) -> list[str]:
     elements.append(_text(legend_x - 10, legend_y + 12, "Low", ctx, "captionSize",
                           fill=muted, **{"text-anchor": "end"}))
     for level in range(legend_cells):
-        if level == 0:
-            legend_fill = ctx["surface"]
-        else:
-            legend_fill = _mix_hex(ctx["surface"], ctx["primary"], 0.22 + 0.78 * (level / 5.0))
+        legend_fill, legend_ink = _matrix_cell(ctx, level)
         sx = legend_x + level * (swatch_w + gap)
         sw_style: dict[str, object] = {"fill": legend_fill, "stroke": ctx["line"], "stroke-width": 1, "role": "node"}
         if marker:
@@ -1081,7 +1099,7 @@ def _matrix(data: dict, ctx: dict) -> list[str]:
             sw_style["ry"] = marker
         elements.append(svg_rect(sx, legend_y, swatch_w, swatch_h, **sw_style))
         elements.append(_text(sx + swatch_w / 2, legend_y + 12, str(level), ctx, "captionSize",
-                              fill=best_text_on(legend_fill, "#FFFFFF"),
+                              fill=legend_ink,
                               **{"text-anchor": "middle", "font-weight": "bold"}))
     elements.append(_text(legend_x + legend_w + 10, legend_y + 12, "High", ctx, "captionSize",
                           fill=muted, **{"text-anchor": "start"}))

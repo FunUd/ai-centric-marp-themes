@@ -273,6 +273,44 @@ def best_text_on(background: str | None, light: str, dark: str = FALLBACK_INK, t
     return dark
 
 
+def ensure_inside_label(
+    fill: str | None,
+    light: str = "#FFFFFF",
+    dark: str = FALLBACK_INK,
+    minimum: float = 4.5,
+    step: float = 0.03,
+    max_steps: int = 12,
+) -> tuple[str, str | None]:
+    """Return `(ink, fill)` with inside text guaranteed `minimum` vs fill.
+
+    Picks the stronger of `light`/`dark` via `best_text_on`; when even the
+    best falls short (azure/nebula `primary` with white 4.1-4.2:1, crimson
+    mid-mixes at 4.2:1), nudges the fill away from the ink — darker for
+    light ink, lighter for dark ink — preserving hue until the floor clears
+    (at most `max_steps` × `step` lightness). Callers paint shapes with the
+    returned fill so legends and segments never disagree.
+    """
+    norm = normalize_color(fill) if isinstance(fill, str) else None
+    if norm is None:
+        return light, fill
+    ink = best_text_on(norm, light, dark)
+    if contrast_ratio(ink, norm) >= minimum:
+        return ink, norm
+    ink_is_light = normalize_color(light) is not None and ink.upper() == normalize_color(light).upper()  # type: ignore[union-attr]
+    direction = -step if ink_is_light else step
+    candidate: str | None = norm
+    for _ in range(max_steps):
+        nxt = adjust_lightness(candidate or norm, direction)
+        if nxt is None or nxt == candidate:
+            break
+        candidate = nxt
+        ink = best_text_on(candidate, light, dark)
+        if contrast_ratio(ink, candidate) >= minimum:
+            return ink, candidate
+    final = candidate or norm
+    return best_text_on(final, light, dark), final
+
+
 def _merge_section(defaults: dict[str, Any], overrides: dict[str, Any] | None) -> dict[str, Any]:
     merged = dict(defaults)
     if overrides:

@@ -51,7 +51,7 @@ def npx_command(package: str, *args: str) -> list[str]:
         return _npx_command(package, *args)
     return ["npx", "--yes", package, *args]
 
-from design_tokens import best_text_on, drawio_rect_radius, load_design_tokens
+from design_tokens import best_text_on, drawio_rect_radius, ensure_inside_label, load_design_tokens
 from compat import ensure_utf8_stdio
 from diagram_models import parse_diagram_data
 from svg_aspect import extract_mermaid_aspect, pad_viewbox, parse_aspect
@@ -197,10 +197,18 @@ def _recolor_drawio_xml(root: ET.Element, theme_data: dict) -> None:
             style = re.sub(r"strokeColor=[^;]+", f"strokeColor={border_main}", style)
             style = re.sub(r"fontColor=[^;]+", f"fontColor={best_text_on(bg_main, txt_main)}", style)
         # Recolor accent shapes (inverted background) — keep status fills.
+        # Inside text is guaranteed >= 4.5:1 via ensure_inside_label: warm
+        # primary with white is 2.3:1 and azure/nebula primaries sit at
+        # 4.1-4.2:1, so the fill is nudged within its hue when even the best
+        # ink falls short.
         elif "fontColor=#FFFFFF" in style or "fontColor=#ffffff" in style:
             if _fill_of(style) not in status_fills:
                 style = re.sub(r"fillColor=[^;]+", f"fillColor={p_main}", style)
+            accent_ink, accent_fill = ensure_inside_label(_fill_of(style) or p_main)
+            if accent_fill and accent_fill.upper() != (_fill_of(style) or "").upper():
+                style = re.sub(r"fillColor=[^;]+", f"fillColor={accent_fill}", style)
             style = re.sub(r"strokeColor=[^;]+", f"strokeColor={p_dark}", style)
+            style = re.sub(r"fontColor=[^;]+", f"fontColor={accent_ink}", style)
         # Recolor standard shapes (keep semantic status fills)
         elif cell.get("vertex") == "1":
             if "fillColor=#FFFFFF" not in style and _fill_of(style) not in status_fills:

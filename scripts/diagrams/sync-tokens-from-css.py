@@ -28,6 +28,9 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 THEMES_DIR = SCRIPT_DIR.parent.parent / "themes"
 STYLES_DIR = SCRIPT_DIR / "theme-styles"
 
+sys.path.insert(0, str(SCRIPT_DIR))
+from design_tokens import ensure_inside_label  # noqa: E402
+
 THEME_FILES = {
     "azure-clarity": "azure-clarity.css",
     "crimson-clarity": "crimson-clarity.css",
@@ -201,15 +204,20 @@ def drawio_updates(colors: dict, node_radius: float) -> dict[str, str]:
     """Derive the draw.io style strings from the (possibly just-updated) palette.
 
     Takes the *post-sync* colors and radius so the generated styles always
-    match the palette written in the same pass.
+    match the palette written in the same pass. The accent node guarantees
+    inside text >= 4.5:1 via `ensure_inside_label` (warm `primary` with
+    white is 2.3:1, azure/nebula primaries sit 4.1-4.2:1), nudging the fill
+    within its hue when even the best ink falls short.
     """
     rounded = 1 if node_radius else 0
     # `line` is an optional future token; today build_updates() never emits it,
     # so this falls back to `primary` by design.
     line = colors.get("line", colors["primary"])
+    accent_ink, accent_fill = ensure_inside_label(colors["primary"])
+    accent_fill = accent_fill or colors["primary"]
     return {
         "primaryNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={colors['primaryPale']};strokeColor={colors['primary']};fontColor={colors['text']};strokeWidth=1.5;",
-        "accentNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={colors['primary']};strokeColor={colors['primaryDark']};fontColor=#FFFFFF;fontStyle=1;",
+        "accentNodeStyle": f"rounded={rounded};whiteSpace=wrap;html=1;fillColor={accent_fill};strokeColor={colors['primaryDark']};fontColor={accent_ink};fontStyle=1;",
         "edgeStyle": f"edgeStyle=orthogonalEdgeStyle;html=1;strokeColor={line};strokeWidth=1.5;endArrow=block;endFill=1;",
     }
 

@@ -62,7 +62,7 @@
   },
   "drawio": {
     "primaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF0E5;strokeColor=#FF8C42;fontColor=#4A4A4A;strokeWidth=1.5;",
-    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8C42;strokeColor=#D45D00;fontColor=#FFFFFF;fontStyle=1;",
+    "accentNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8C42;strokeColor=#D45D00;fontColor=#1A1A2E;fontStyle=1;",
     "secondaryNodeStyle": "rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#FFDAB9;strokeColor=#FF8C42;fontColor=#4A4A4A;",
     "containerStyle": "swimlane;startSize=28;fillColor=#FFFDF9;strokeColor=#F5D3B8;fontColor=#4A4A4A;fontStyle=1;rounded=1;arcSize=10;",
     "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#FF8C42;strokeWidth=1.5;endArrow=block;endFill=1;"

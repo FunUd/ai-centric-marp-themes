@@ -211,7 +211,7 @@ Before completing your task:
 1. [ ] **Theme Cohesion**: Does the diagram use the slide deck's color palette? (Dark background and neon accents for Nebula Glass, crisp blues for Azure Clarity, etc.)
 2. [ ] **No Text Truncation**: Are all text labels readable without clipping or overlapping?
 3. [ ] **Canvas Fit**: Does the image fit comfortably within the slide without pushing the footer down or overlapping headers?
-4. [ ] **Contrast**: Do Gantt bars keep a visible boundary (>=3:1 vs canvas) with inside text >=4.5:1 vs its fill, and do mindmap labels/edges clear the same floors? The renderer enforces this (`themeVariables` task borders + `_fix_gantt_contrast`/`_fix_mindmap_contrast`); never bypass with `--no-postprocess`.
+4. [ ] **Contrast**: Do Gantt bars keep a visible boundary (>=3:1 vs canvas) with inside text >=4.5:1 vs its fill, do mindmap labels/edges clear the same floors, do JSON inside values (hbar/stacked/matrix) clear 4.5:1 vs their segment, and do draw.io accent nodes clear 4.5:1? The renderer enforces this (`ensure_inside_label` fills, Gantt `themeVariables`, `_fix_gantt_contrast`/`_fix_mindmap_contrast`); never bypass with `--no-postprocess`.
 5. [ ] **Visual Inspection**: If Playwright / Vision is active, check the rendered screenshot using `marp-diagnostics.py`.
 
 ### Art Direction (anti-cheap rules)
