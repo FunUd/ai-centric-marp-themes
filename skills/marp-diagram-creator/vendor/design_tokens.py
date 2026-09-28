@@ -58,6 +58,175 @@ NODE_VARIANTS = {
 # itself is light, e.g. Nebula Glass dark mode + white node).
 FALLBACK_INK = "#1A1A2E"
 
+# Named CSS colors Mermaid may emit in Gantt SVGs (fill:lightgrey etc.).
+NAMED_COLORS = {
+    "black": "#000000",
+    "white": "#FFFFFF",
+    "lightgrey": "#D3D3D3",
+    "lightgray": "#D3D3D3",
+    "grey": "#808080",
+    "gray": "#808080",
+    "red": "#FF0000",
+    "navy": "#000080",
+    "lightblue": "#ADD8E6",
+    "green": "#008000",
+    "yellow": "#FFFF00",
+}
+
+
+def normalize_color(value: str | None) -> str | None:
+    """Normalize a CSS color to `#RRGGBB` uppercase, or None if unparsable.
+
+    Handles `#rgb`/`#rrggbb`, `hsl(h, s%, l%)`, `rgb(r, g, b)`, and the
+    small named-color set Mermaid emits (`white`, `lightgrey`, `grey`,
+    `red`, `navy`). `transparent`/`var()`/empty return None.
+    """
+    import colorsys
+    import re as _re
+
+    if not value or not isinstance(value, str):
+        return None
+    text = value.strip().lower()
+    if text in ("transparent", "none", "currentcolor"):
+        return None
+    if text.startswith("var("):
+        return None
+    if text in NAMED_COLORS:
+        return NAMED_COLORS[text]
+    if text.startswith("#"):
+        body = text.lstrip("#")
+        if len(body) == 3:
+            body = "".join(ch * 2 for ch in body)
+        if len(body) != 6:
+            return None
+        try:
+            int(body, 16)
+        except ValueError:
+            return None
+        return "#" + body.upper()
+    hsl = _re.match(
+        r"hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%", text
+    )
+    if hsl:
+        try:
+            h, s, light = float(hsl.group(1)), float(hsl.group(2)), float(hsl.group(3))
+        except ValueError:
+            return None
+        r, g, b = colorsys.hls_to_rgb((h % 360) / 360.0, light / 100.0, s / 100.0)
+        return "#%02X%02X%02X" % (round(r * 255), round(g * 255), round(b * 255))
+    rgb = _re.match(r"rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)", text)
+    if rgb:
+        try:
+            r, g, b = (max(0, min(255, round(float(rgb.group(i))))) for i in (1, 2, 3))
+        except ValueError:
+            return None
+        return "#%02X%02X%02X" % (r, g, b)
+    return None
+
+
+def adjust_lightness(hex_color: str, delta: float) -> str | None:
+    """Shift an `#RRGGBB` color's lightness by `delta` (-1..1)."""
+    import colorsys
+
+    norm = normalize_color(hex_color)
+    if norm is None:
+        return None
+    body = norm.lstrip("#")
+    r, g, b = (int(body[i : i + 2], 16) / 255.0 for i in (0, 2, 4))
+    h, light, s = colorsys.rgb_to_hls(r, g, b)
+    light = max(0.0, min(1.0, light + delta))
+    r2, g2, b2 = colorsys.hls_to_rgb(h, light, s)
+    return "#%02X%02X%02X" % (round(r2 * 255), round(g2 * 255), round(b2 * 255))
+
+
+def soften_mindmap_fill(hex_color: str, background: str | None) -> str | None:
+    """Soften a saturated mindmap fill for light canvases (premium pastel).
+
+    Keeps hue, lifts lightness ~+0.12 (cap 0.88) and trims saturation to
+    75% (floor 0.35) so dark bold CJK stays 8+:1 while the rainbow harshness
+    drops. Dark canvases keep the original fill — white ink already passes
+    and lightening would only wash out the node vs the dark base.
+    """
+    import colorsys
+
+    norm = normalize_color(hex_color)
+    bg = normalize_color(background)
+    if norm is None or bg is None:
+        return norm
+    if (_luminance(bg) or 1.0) <= 0.4:
+        return norm
+    body = norm.lstrip("#")
+    r, g, b = (int(body[i : i + 2], 16) / 255.0 for i in (0, 2, 4))
+    h, light, s = colorsys.rgb_to_hls(r, g, b)
+    light = min(0.88, light + 0.12)
+    s = max(0.35, s * 0.75)
+    r2, g2, b2 = colorsys.hls_to_rgb(h, light, s)
+    return "#%02X%02X%02X" % (round(r2 * 255), round(g2 * 255), round(b2 * 255))
+
+
+def ensure_graphical_contrast(
+    foreground: str | None, background: str | None, minimum: float = 3.0
+) -> str | None:
+    """Nudge `foreground` lightness until it reaches `minimum` vs `background`.
+
+    Preserves hue/saturation; darkens on light backgrounds and lightens on
+    dark ones. Returns the original (normalized) color when it already passes
+    or when either side is unparsable.
+    """
+    fg = normalize_color(foreground)
+    bg = normalize_color(background)
+    if fg is None or bg is None:
+        return fg
+    if contrast_ratio(fg, bg) >= minimum:
+        return fg
+    bg_lum = _luminance(bg)
+    if bg_lum is None:
+        return fg
+    # Light canvas -> darken in 5% steps; dark canvas -> lighten.
+    step = -0.05 if bg_lum > 0.4 else 0.05
+    candidate: str | None = fg
+    for _ in range(20):
+        nxt = adjust_lightness(candidate or fg, step)
+        if nxt is None or nxt == candidate:
+            break
+        candidate = nxt
+        if contrast_ratio(candidate, bg) >= minimum:
+            return candidate
+    return candidate
+
+
+def graphical_ink(theme_data: dict[str, Any], minimum: float = 3.0) -> str:
+    """Stroke color guaranteed `minimum` vs the slide background.
+
+    Prefers the theme line color, then primary/primaryDark/text, so Gantt
+    bars and mindmap edges stay visible even when Mermaid's derived fills
+    (white active tasks, pastel mindmap edges) wash out on the canvas.
+    """
+    ctx = theme_context(theme_data)
+    background = ctx.get("background", "#FFFFFF")
+    candidates = [
+        ctx.get("line"),
+        ctx.get("primary"),
+        ctx.get("dark"),
+        ctx.get("accent"),
+        ctx.get("text"),
+    ]
+    best: str | None = None
+    best_ratio = 0.0
+    for cand in candidates:
+        norm = normalize_color(cand) if isinstance(cand, str) else None
+        if norm is None:
+            continue
+        ratio = contrast_ratio(norm, background)
+        if ratio > best_ratio:
+            best_ratio, best = ratio, norm
+        if ratio >= minimum:
+            return norm
+    if best is not None:
+        fixed = ensure_graphical_contrast(best, background, minimum)
+        return fixed or best
+    return FALLBACK_INK
+
 
 def _luminance(hex_color: str) -> float | None:
     """Relative luminance (0-1) of a #rgb/#rrggbb color, or None if unparsable."""

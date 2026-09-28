@@ -36,7 +36,14 @@
       "titleColor": "#111111",
       "edgeLabelBackground": "#FFFFFF",
       "fontFamily": "'Caladea', 'Poppins', 'Noto Sans JP', serif",
-      "fontSize": "15px"
+      "fontSize": "15px",
+      "taskBkgColor": "#F8FAFC",
+      "taskBorderColor": "#475569",
+      "activeTaskBkgColor": "#E2E8F0",
+      "activeTaskBorderColor": "#475569",
+      "taskTextColor": "#334155",
+      "taskTextOutsideColor": "#334155",
+      "taskTextDarkColor": "#334155"
     },
     "flowchart": {
       "curve": "basis",

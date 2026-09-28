@@ -115,7 +115,8 @@ Show a slightly larger diagram while supplementing key points in a sidebar.
 
 | Diagram Type | Recommended Engine | Rationale |
 |---|---|---|
-| **Numeric data visuals** (bar/line/stacked, composition, pyramid, cycle, org, radial, funnel) | **JSON SVG** | Deterministic slide-safe geometry with structural validation. |
+| **Numeric data visuals** (bar/hbar/line/stacked/stacked-100, composition, pyramid, cycle, org, radial, funnel) | **JSON SVG** | Deterministic slide-safe geometry with structural validation. `bar`/`hbar` single-series default to single-primary (length encodes rank; one-accent rule bans adjacent saturated hues). A per-item `color` is honored for nominal categories only — the showcase `task-hbar` intentionally stays single-color. |
+| **Scored comparison matrix** (0-5, rows 2-6 × cols 2-4) | **JSON SVG** (`matrix`) | Heatmap cells with readable ink; text-only ≤5 items stays CSS Native. |
 | **Text-only with ≤5 items** (steps, milestones, checklists) | **CSS Native** (`steps`+`arrows` / `timeline` / `checklist` / `timetable`) | 100% theme match, no images needed. |
 | **2-axis matrix / quadrant (text-only, ≤5 items)** | **CSS Native** (`grid-quadrant`+`axes`) | 100% theme match, no images needed. Use draw.io only when coordinate precision is required. |
 | **Flowchart (horizontal process)** | **Mermaid (`graph LR`)** | Simplest and fastest for linear process steps. |
@@ -124,3 +125,7 @@ Show a slightly larger diagram while supplementing key points in a sidebar.
 | **3-tier architecture** | **Mermaid / draw.io** | Mermaid for simple interactions, draw.io for detailed layouts. |
 | **Cloud infra / composite diagrams** | **draw.io** | The only choice for AWS/GCP/Azure icons and complex boundaries/network zones. |
 | **State machine** | **Mermaid (`stateDiagram-v2`)** | Extremely fast for 4–5 state transitions. |
+| **Gantt / schedule (≤6 tasks)** | **Mermaid (`gantt`)** | Compact 2-section template; full slide only, pinned `%% aspect: 2.4`. Task borders are theme-pinned and postprocess-enforced to >=3:1 vs canvas (active white-on-white is a defect); inside text >=4.5:1 vs its fill. |
+| **ER (≤3 entities)** | **Mermaid (`erDiagram`)** | Relationship-only; attributes go in slide text to avoid vertical overflow. |
+| **C4 context (user+system+externals)** | **Mermaid (`flowchart LR`)** | Compact C4-style; full/asym. draw.io for detailed L2+. |
+| **Mind map (root+3 branches)** | **Mermaid (`mindmap`)** | Depth-2 max; full/asym. Fills are softened to premium pastels (hue kept) with dark bold labels >=4.5:1, plus 1.5px node strokes and edges >=3:1 vs canvas (`_fix_mindmap_contrast` + `soften_mindmap_fill`); stray per-node brown underlines (`.section-N line`) are hidden as border duplicates. White-on-dark is reserved for dark canvases (Nebula), not light slides. |

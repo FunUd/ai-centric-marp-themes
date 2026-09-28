@@ -837,10 +837,15 @@ def _bar(data: dict, ctx: dict) -> list[str]:
     elements = frame["elements"]
     bar_w = min(frame["slot"] * 0.62, 120.0)
     show_values = bool(data.get("show_values", True))
-    for index, value in enumerate(values):
+    # Single-series default stays single-primary (length already encodes rank;
+    # multicolor would add rainbow noise against the one-accent rule). An
+    # explicit per-item `color` opts into nominal coloring when bars are
+    # categories rather than an ordered ranking.
+    for index, (item, value) in enumerate(zip(data["items"], values)):
         x, top, base = frame["x"](index), frame["y"](value), frame["y"](0.0)
+        fill = item.get("color", ctx["primary"]) if isinstance(item, dict) else ctx["primary"]
         elements.append(svg_rect(x - bar_w / 2, top, bar_w, max(0.0, base - top),
-                                 role="node", fill=ctx["primary"], stroke="none"))
+                                 role="node", fill=fill, stroke="none"))
         if show_values:
             elements.append(_text(x, top - 8, _fmt_tick(value), ctx, "captionSize",
                                   max_chars=10, **{"text-anchor": "middle", "font-weight": "bold"}))
@@ -902,6 +907,187 @@ def _stacked_bar(data: dict, ctx: dict) -> list[str]:
     return elements
 
 
+def _hbar(data: dict, ctx: dict) -> list[str]:
+    """Horizontal single-series bars. Long Japanese labels fit the left gutter."""
+    labels = [str(item["label"]) for item in data["items"]]
+    values = [float(item["value"]) for item in data["items"]]
+    width, height = data["width"], data["height"]
+    ceiling = float(data.get("y_max", _y_scale(0.0, max(values))["max"]))
+    scale = _y_scale(0.0, ceiling)
+    elements = _title(ctx, width, data.get("title"))
+    label_size = float(ctx["typography"]["labelSize"])
+    cursor_y = 54.0 if data.get("title") else 34.0
+    # Left gutter from the widest row label (measured at label size); right gutter reserves value text.
+    widest = max((_text_width(label, label_size) for label in labels), default=0.0)
+    label_w = min(width * 0.35, max(88.0, widest + 20.0))
+    plot_left = label_w + 12.0
+    plot_right = width - 64.0
+    plot_top = cursor_y + 12.0
+    plot_bottom = height - 30.0
+    plot_w = max(1.0, plot_right - plot_left)
+    plot_h = max(1.0, plot_bottom - plot_top)
+    count = len(labels)
+    slot = plot_h / max(1, count)
+    bar_h = min(slot * 0.55, 44.0)
+
+    def x_pos(value: float) -> float:
+        ratio = (value - scale["min"]) / (scale["max"] - scale["min"])
+        return plot_left + plot_w * ratio
+
+    muted = ctx["muted"]
+    for tick in scale["ticks"]:
+        x = x_pos(tick)
+        elements.append(svg_line(x, plot_top, x, plot_bottom, stroke=muted,
+                                 role="axis", **{"stroke-width": 1, "opacity": 0.45}))
+        unit = str(data.get("unit", "") or "")
+        tag = _fmt_tick(tick) + (" " + unit if unit and tick == scale["ticks"][-1] else "")
+        elements.append(_text(x, plot_bottom + 18, tag, ctx, "captionSize",
+                              fill=muted, max_chars=14, **{"text-anchor": "middle"}))
+    elements.append(svg_line(plot_left, plot_top, plot_left, plot_bottom, stroke=muted,
+                             role="axis", **{"stroke-width": 1.2}))
+    elements.append(svg_line(plot_left, plot_bottom, plot_right, plot_bottom, stroke=ctx["line"],
+                             role="axis", **{"stroke-width": 1.5}))
+    show_values = bool(data.get("show_values", True))
+    # Ordered single-series ranking: keep the single-primary default so length
+    # alone encodes order (one-accent rule; adjacent saturated hues are banned).
+    # A per-item `color` is honored for nominal categories, but the showcase
+    # template intentionally omits it.
+    for index, (item, label, value) in enumerate(zip(data["items"], labels, values)):
+        y_center = plot_top + slot * (index + 0.5)
+        elements.append(_text(plot_left - 8, y_center + 5, label, ctx, "labelSize",
+                              max_chars=12, **{"text-anchor": "end"}))
+        x_end = x_pos(value)
+        bar_len = max(0.0, x_end - plot_left)
+        y_top = y_center - bar_h / 2
+        fill = item.get("color", ctx["primary"]) if isinstance(item, dict) else ctx["primary"]
+        elements.append(svg_rect(plot_left, y_top, bar_len, bar_h,
+                                 role="node", fill=fill, stroke="none"))
+        if show_values:
+            tag = _fmt_tick(value)
+            if bar_len >= 64:
+                elements.append(_text(x_end - 8, y_center + 5, tag, ctx, "labelSize",
+                                      fill=best_text_on(fill, "#FFFFFF"),
+                                      max_chars=10, **{"text-anchor": "end", "font-weight": "bold"}))
+            else:
+                elements.append(_text(x_end + 8, y_center + 5, tag, ctx, "labelSize",
+                                      max_chars=10, **{"text-anchor": "start", "font-weight": "bold"}))
+    return elements
+
+
+def _stacked_bar_100(data: dict, ctx: dict) -> list[str]:
+    """100% stacked bars. Same input as stacked-bar; segments normalized per category."""
+    categories = [str(category) for category in data["categories"]]
+    series = data["series"]
+    colors = _series_colors(ctx, len(series))
+    totals = [sum(float(entry["values"][index]) for entry in series) for index in range(len(categories))]
+    pct: list[list[float]] = []
+    for entry in series:
+        row = []
+        for index, value in enumerate(entry["values"]):
+            total = totals[index]
+            row.append(0.0 if total <= 0 else float(value) / total * 100.0)
+        pct.append(row)
+    frame_data = dict(data)
+    frame_data["unit"] = str(data.get("unit", "") or "%")
+    legend = [(str(entry["label"]), color) for entry, color in zip(series, colors)]
+    frame = _cartesian_frame(frame_data, ctx, categories, 0.0, 100.0, legend)
+    elements = frame["elements"]
+    bar_w = min(frame["slot"] * 0.62, 120.0)
+    show_values = bool(data.get("show_values", True))
+    for index in range(len(categories)):
+        base = frame["y"](0.0)
+        running = 0.0
+        for row, color in zip(pct, colors):
+            running += row[index]
+            top = frame["y"](running)
+            seg_h = base - top
+            x = frame["x"](index)
+            elements.append(svg_rect(x - bar_w / 2, top, bar_w, max(0.0, seg_h),
+                                     role="node", fill=color, stroke=ctx["surface"], **{"stroke-width": 1.5}))
+            if show_values and seg_h >= 26:
+                elements.append(_text(x, top + seg_h / 2 + 5, f"{row[index]:.0f}%",
+                                      ctx, "captionSize", fill=best_text_on(color, "#FFFFFF"),
+                                      max_chars=8, **{"text-anchor": "middle", "font-weight": "bold", "font-size": 16}))
+            base = top
+    return elements
+
+
+def _matrix(data: dict, ctx: dict) -> list[str]:
+    """Scored comparison matrix (rows=criteria 2-6, columns=options 2-4, scores 0-5)."""
+    columns = [str(column) for column in data["columns"]]
+    rows = data["rows"]
+    width, height = data["width"], data["height"]
+    elements = _title(ctx, width, data.get("title"))
+    label_size = float(ctx["typography"]["labelSize"])
+    top = 54.0 if data.get("title") else 34.0
+    legend_reserve = 46.0
+    grid_bottom = height - legend_reserve
+    n_rows, n_cols = len(rows), len(columns)
+    widest = max((_text_width(str(row.get("label", "")), label_size) for row in rows), default=0.0)
+    label_w = min(width * 0.34, max(84.0, widest + 20.0))
+    grid_x = 10.0 + label_w
+    grid_w = max(1.0, width - 10.0 - grid_x)
+    col_w = grid_w / max(1, n_cols)
+    header_h = 30.0
+    row_h = min(max(1.0, (grid_bottom - top - header_h) / max(1, n_rows)), 64.0)
+    marker = _marker_rx(ctx)
+    # Column headers.
+    for j, column in enumerate(columns):
+        cx = grid_x + col_w * (j + 0.5)
+        elements.append(_text(cx, top + 20, column, ctx, "labelSize",
+                              max_chars=10, **{"text-anchor": "middle", "font-weight": "bold"}))
+    # Rows + cells. The row winner (max score) gets a dark ring as focal point.
+    for i, row in enumerate(rows):
+        scores = [max(0, min(5, int(float(score)))) for score in row.get("scores", [])]
+        winner = max(scores) if scores else 0
+        y = top + header_h + row_h * i
+        cy = y + row_h / 2 + 5
+        elements.append(_text(grid_x - 8, cy, str(row.get("label", "")), ctx, "labelSize",
+                              max_chars=12, **{"text-anchor": "end", "font-weight": "bold"}))
+        for j, level in enumerate(scores):
+            if level == 0:
+                fill = ctx["surface"]
+            else:
+                fill = _mix_hex(ctx["surface"], ctx["primary"], 0.22 + 0.78 * (level / 5.0))
+            x = grid_x + col_w * j
+            style: dict[str, object] = {"fill": fill, "stroke": ctx["line"], "stroke-width": 1, "role": "node"}
+            if level == winner and winner > 0:
+                style.update({"stroke": ctx["dark"], "stroke-width": 2.5})
+            if marker:
+                style["rx"] = marker
+                style["ry"] = marker
+            elements.append(svg_rect(x + 1, y + 1, col_w - 2, row_h - 2, **style))
+            elements.append(_text(x + col_w / 2, cy, str(level), ctx, "labelSize",
+                                  fill=best_text_on(fill, "#FFFFFF"),
+                                  **{"text-anchor": "middle", "font-weight": "bold", "font-size": 26}))
+    # Scale legend (0-5 swatches + low/high ends) so the hue steps read at a glance.
+    swatch_w, swatch_h, gap = 26.0, 16.0, 6.0
+    legend_cells = 6
+    legend_w = legend_cells * swatch_w + (legend_cells - 1) * gap
+    legend_x = (width - legend_w) / 2
+    legend_y = grid_bottom + 14.0
+    muted = ctx["muted"]
+    elements.append(_text(legend_x - 10, legend_y + 12, "Low", ctx, "captionSize",
+                          fill=muted, **{"text-anchor": "end"}))
+    for level in range(legend_cells):
+        if level == 0:
+            legend_fill = ctx["surface"]
+        else:
+            legend_fill = _mix_hex(ctx["surface"], ctx["primary"], 0.22 + 0.78 * (level / 5.0))
+        sx = legend_x + level * (swatch_w + gap)
+        sw_style: dict[str, object] = {"fill": legend_fill, "stroke": ctx["line"], "stroke-width": 1, "role": "node"}
+        if marker:
+            sw_style["rx"] = marker
+            sw_style["ry"] = marker
+        elements.append(svg_rect(sx, legend_y, swatch_w, swatch_h, **sw_style))
+        elements.append(_text(sx + swatch_w / 2, legend_y + 12, str(level), ctx, "captionSize",
+                              fill=best_text_on(legend_fill, "#FFFFFF"),
+                              **{"text-anchor": "middle", "font-weight": "bold"}))
+    elements.append(_text(legend_x + legend_w + 10, legend_y + 12, "High", ctx, "captionSize",
+                          fill=muted, **{"text-anchor": "start"}))
+    return elements
+
+
 def render_diagram(data: dict, theme_data: dict, layout: str) -> str:
     data = parse_diagram_data({**data, "layout": data.get("layout", layout)})
     ctx = theme_context(theme_data)
@@ -915,8 +1101,11 @@ def render_diagram(data: dict, theme_data: dict, layout: str) -> str:
         "radial": lambda: _radial(data, ctx),
         "funnel": lambda: _funnel(data, ctx),
         "bar": lambda: _bar(data, ctx),
+        "hbar": lambda: _hbar(data, ctx),
         "line": lambda: _line(data, ctx),
         "stacked-bar": lambda: _stacked_bar(data, ctx),
+        "stacked-bar-100": lambda: _stacked_bar_100(data, ctx),
+        "matrix": lambda: _matrix(data, ctx),
     }
     elements = renderers[kind]()
     defs_parts: list[str] = []

@@ -28,9 +28,9 @@ The full decision table lives in `references/diagram-patterns.md` §3 — the su
 
 | Engine | Best For | Pros |
 |---|---|---|
-| **Mermaid** | Standard flowcharts, API sequence diagrams, 3-tier architectures, simple state machines | Fast code generation, minimal token overhead, version-controllable text DSL |
+| **Mermaid** | Standard flowcharts, API sequence diagrams, 3-tier architectures, simple state machines, gantt/ER/C4-context/mindmap (compact templates) | Fast code generation, minimal token overhead, version-controllable text DSL |
 | **draw.io** | Cloud infrastructure (VPC/Subnet/ALB), complex multi-container systems, fixed-precision layouts | Absolute layout precision, zero unexpected auto-wrapping, editable via VS Code extension (`hediet.vscode-drawio`) |
-| **JSON SVG** | Numeric data visuals: bar/line/stacked-bar charts, pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels | Deterministic slide-safe geometry and structured validation |
+| **JSON SVG** | Numeric data visuals: bar/hbar/line/stacked-bar/stacked-bar-100 charts, pie/donut charts, pyramids, cycles, org charts, radial concepts, funnels, scored matrices | Deterministic slide-safe geometry and structured validation |
 | **CSS Native** | Text-only patterns with ≤5 items: timelines, steps, 2-axis matrices, checklists | 100% theme match, no images needed |
 
 Decision tree (apply top-down):
@@ -104,9 +104,9 @@ python <ENGINE>/render-slide-diagram.py -i <ENGINE>/templates/charts/revenue-pie
 > Both are the same file; `scripts/diagrams/` is the development source and is
 > kept byte-identical by `python scripts/sync-skill-vendor.py --check`.
 
-JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `line`, and `stacked-bar` (registry: `vendor/diagram_models.py::DIAGRAM_TYPES`; `scripts/diagrams/tests/test_diagram_registry.py` enforces it); `theme`, `layout`, `width`, `height`, and `aspect` are optional. `aspect` (canvas width/height ratio, e.g. `"aspect": 2.4`) derives `height` from `width` — never combine it with an explicit `height`. Every engine also accepts `--aspect 2.4` (or `--aspect 16:9`), and Mermaid sources may declare `%% aspect: 16:9`; for Mermaid/draw.io the finished canvas is padded to the target ratio (content centered, never scaled) as long as it fits the layout's feasible range.
+JSON diagrams require `type` and type-specific data. Supported types are `pie`, `donut`, `pyramid`, `cycle`, `org-chart`, `radial`, `funnel`, `bar`, `hbar`, `line`, `stacked-bar`, `stacked-bar-100`, and `matrix` (registry: `vendor/diagram_models.py::DIAGRAM_TYPES`; `scripts/diagrams/tests/test_diagram_registry.py` enforces it); `theme`, `layout`, `width`, `height`, and `aspect` are optional. `aspect` (canvas width/height ratio, e.g. `"aspect": 2.4`) derives `height` from `width` — never combine it with an explicit `height`. Every engine also accepts `--aspect 2.4` (or `--aspect 16:9`), and Mermaid sources may declare `%% aspect: 16:9`; for Mermaid/draw.io the finished canvas is padded to the target ratio (content centered, never scaled) as long as it fits the layout's feasible range.
 
-Timelines, step flows, and 2-axis matrices are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) / `grid-quadrant` (+ `axes`) slide classes instead.
+Timelines and step flows are not JSON diagram types. Use the theme's `timeline` / `steps` (+ `arrows`) slide classes instead. Scored option matrices (0-5) use the JSON `matrix` type; text-only ≤5-item 2-axis matrices stay CSS Native (`grid-quadrant` + `axes`).
 
 #### JSON SVG quality rules
 
@@ -174,6 +174,11 @@ Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed 
 | Asymmetric (`split-asym`, `split-asym-reverse`) | `width:680px` | 710px |
 | 3-column (`cols-3`, `split-3`) | `width:320px` | 340px |
 
+> Narrow-native Mermaid templates ignore the Full default: embed at their
+> catalog Embed width (`c4-context-compact` 900px, `mindmap-compact` 680px,
+> `state-machine-col2` 460px). A 1050px embed of those overflows vertically —
+> `check-templates.py::RECOMMENDED_EMBED_WIDTH` gates this in CI.
+
 #### Pattern 2: 2-Column (Diagram + Key Points)
 ```markdown
 <!-- _class: cols-2 -->
@@ -206,7 +211,8 @@ Before completing your task:
 1. [ ] **Theme Cohesion**: Does the diagram use the slide deck's color palette? (Dark background and neon accents for Nebula Glass, crisp blues for Azure Clarity, etc.)
 2. [ ] **No Text Truncation**: Are all text labels readable without clipping or overlapping?
 3. [ ] **Canvas Fit**: Does the image fit comfortably within the slide without pushing the footer down or overlapping headers?
-4. [ ] **Visual Inspection**: If Playwright / Vision is active, check the rendered screenshot using `marp-diagnostics.py`.
+4. [ ] **Contrast**: Do Gantt bars keep a visible boundary (>=3:1 vs canvas) with inside text >=4.5:1 vs its fill, and do mindmap labels/edges clear the same floors? The renderer enforces this (`themeVariables` task borders + `_fix_gantt_contrast`/`_fix_mindmap_contrast`); never bypass with `--no-postprocess`.
+5. [ ] **Visual Inspection**: If Playwright / Vision is active, check the rendered screenshot using `marp-diagnostics.py`.
 
 ### Art Direction (anti-cheap rules)
 - **60-30-10**: base (pale/surface) 60%, primary 30%, accent/status 10%. Never place two saturated hues side-by-side in pies.
