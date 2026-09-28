@@ -99,6 +99,7 @@ DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
 # Regex patterns
 CLASS_DIRECTIVE_RE = re.compile(r"<!--\s*_class:\s*(.+?)\s*-->")
 DIV_CLASS_RE = re.compile(r'<div\s+class="([^"]*)"', re.I)
+CELL_DIV_RE = re.compile(r'<div\s+class="cell\b[^"]*"[^>]*>', re.I)
 IMG_RE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
 IMG_WIDTH_RE = re.compile(r"width:(\d+)px")
 SLIDE_SEPARATOR = re.compile(r"^---\s*$", re.MULTILINE)
@@ -132,8 +133,19 @@ class LintIssue:
     message: str
 
     def __str__(self) -> str:
-        icon = "🚨" if self.severity == "ERROR" else "⚠️"
-        return f"Slide {self.slide} [{self.severity} - {self.code}]: {self.message}"
+        return format_issue(self)
+
+
+def format_issue(issue: LintIssue, heading: str = "") -> str:
+    """Render an issue with its slide number plus title when known.
+
+    Numbers alone are easy to miscount when an agent scans a long deck
+    (frontmatter fences, eyeballed `---` counts), which once caused edits
+    to land on the wrong slide. Quoting the slide's own `#` heading makes
+    the target unambiguous even if the number is misread.
+    """
+    label = f'Slide {issue.slide} "{heading}"' if heading else f"Slide {issue.slide}"
+    return f"{label} [{issue.severity} - {issue.code}]: {issue.message}"
 
 
 @dataclass
@@ -470,6 +482,23 @@ BULLET_MAX_PER_LAYOUT: dict[str, int] = {
     "col3": 9,
 }
 
+# Grid layouts whose `.cell` divs are independent reading regions: density is
+# judged per region (densest cell / outside-grid text), not summed across
+# cells, so a 4-cell matrix with 2 bullets per cell does not warn.
+GRID_CELL_LAYOUTS = {"grid-quadrant", "grid-sharp"}
+
+
+def _grid_region_bullet_counts(raw_no_code: str) -> list[int] | None:
+    """Bullet counts per grid region, or None when the slide has no cells.
+
+    Index 0 is text outside any `.cell` (headers, axis labels carry none);
+    the rest are the cells in document order.
+    """
+    parts = CELL_DIV_RE.split(raw_no_code)
+    if len(parts) < 2:
+        return None
+    return [len(LIST_ITEM_RE.findall(part)) for part in parts]
+
 
 def lint_bullet_hell(slide: SlideInfo) -> list[LintIssue]:
     """Check for bullet point overload (Magic Number 3 violation)."""
@@ -480,6 +509,14 @@ def lint_bullet_hell(slide: SlideInfo) -> list[LintIssue]:
 
     count = len(slide.list_items)
     max_allowed = BULLET_MAX_PER_LAYOUT[_slide_layout_key(slide)]
+    scope = ""
+
+    if slide.classes.intersection(GRID_CELL_LAYOUTS):
+        regions = _grid_region_bullet_counts(CODE_FENCE_RE.sub("", slide.raw_content))
+        if regions is not None:
+            count = max(regions)
+            max_allowed = BULLET_MAX_PER_LAYOUT["full"]
+            scope = " in the densest grid cell"
 
     if count > max_allowed:
         issues.append(LintIssue(
@@ -487,7 +524,7 @@ def lint_bullet_hell(slide: SlideInfo) -> list[LintIssue]:
             severity="WARNING",
             code="BULLET_HELL",
             message=(
-                f"Slide contains {count} bullet points (recommended max is {max_allowed} for this layout). "
+                f"Slide contains {count} bullet points{scope} (recommended max is {max_allowed} for this layout). "
                 f"High cognitive load: consider reducing items, converting to steps/timeline, "
                 f"or splitting across multiple slides."
             ),
@@ -669,6 +706,7 @@ def main() -> int:
 
     markdown = md_path.read_text(encoding="utf-8", errors="ignore")
     slides = parse_slides(markdown)
+    titles = {s.number: (s.headings[0] if s.headings else "") for s in slides}
 
     all_issues: list[LintIssue] = []
     for slide in slides:
@@ -682,6 +720,7 @@ def main() -> int:
         data = [
             {
                 "slide": i.slide,
+                "heading": titles.get(i.slide, ""),
                 "severity": i.severity,
                 "code": i.code,
                 "message": i.message,
@@ -693,7 +732,7 @@ def main() -> int:
         if all_issues:
             print(f"Found {len(all_issues)} issue(s) ({len(errors)} error(s), {len(warnings)} warning(s)):\n")
             for issue in all_issues:
-                print(f"  {issue}")
+                print(f"  {format_issue(issue, titles.get(issue.slide, ''))}")
             print()
         else:
             print("No structural or readability issues found. Excellent slide quality! ✨")

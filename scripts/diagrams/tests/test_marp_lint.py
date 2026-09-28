@@ -409,6 +409,24 @@ def test_bullet_hell_message_states_count_and_limit() -> None:
     assert "max is 4" in issues[0].message
 
 
+def _grid_deck(cells: list[int]) -> str:
+    body = '<!-- _class: grid-quadrant axes -->\n\n# T\n\n<div class="grid">\n'
+    for n in cells:
+        body += '<div class="cell">\n\n' + "".join(f"- item {i}\n" for i in range(n)) + "\n</div>\n"
+    return body + "</div>\n"
+
+
+def test_bullet_hell_judges_grids_per_cell() -> None:
+    """A 4-cell matrix with 2 bullets per cell (8 total) is not bullet hell:
+    cells are independent reading regions, so density is judged per cell."""
+    assert "BULLET_HELL" not in issue_codes(deck(_grid_deck([2, 2, 2, 2])))
+
+
+def test_bullet_hell_still_flags_an_overloaded_grid_cell() -> None:
+    issues = [i for i in m.lint_slide(first_slide(deck(_grid_deck([2, 6, 2, 1])))) if i.code == "BULLET_HELL"]
+    assert issues and "6 bullet points in the densest grid cell" in issues[0].message
+
+
 # ======================================================== lint_weak_title
 
 
@@ -638,6 +656,23 @@ def test_main_json_output_is_parseable(tmp_path: Path) -> None:
     payload = json.loads(result.stdout)
     assert isinstance(payload, list) and payload
     assert {"slide", "severity", "code", "message"} <= set(payload[0])
+
+
+def test_main_text_output_quotes_the_slide_heading(tmp_path: Path) -> None:
+    """A bare number is easy to miscount in a long deck; the title disambiguates."""
+    path = tmp_path / "deck.md"
+    path.write_text(deck("# Comparison\n\n" + _bullets(6)), encoding="utf-8")
+    result = _run(str(path))
+    assert 'Slide 1 "Comparison" [WARNING - BULLET_HELL]' in result.stdout
+
+
+def test_main_json_output_carries_the_slide_heading(tmp_path: Path) -> None:
+    import json
+
+    path = tmp_path / "deck.md"
+    path.write_text(deck("# 概要\n"), encoding="utf-8")
+    payload = json.loads(_run(str(path), "--json").stdout)
+    assert payload[0]["heading"] == "概要"
 
 
 def test_main_reports_a_missing_file() -> None:
