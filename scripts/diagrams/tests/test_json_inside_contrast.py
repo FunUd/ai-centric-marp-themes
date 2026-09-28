@@ -68,6 +68,37 @@ def test_ensure_inside_label_repairs_crimson_mid_mix() -> None:
     assert fill and _ratio(ink, fill) >= 4.5
 
 
+def test_hbar_defaults_single_primary_allows_optional_color() -> None:
+    render = load_module("renderer_hbar_colors", "svg_diagram_renderer.py")
+    data = tokens.load_design_tokens("azure-clarity")
+    base = {
+        "type": "hbar",
+        "title": "t",
+        "items": [{"label": "A", "value": 10}, {"label": "B", "value": 5}],
+        "width": 1080,
+        "height": 420,
+        "layout": "full",
+    }
+    import copy
+    import re as _re
+
+    default_svg = render.render_diagram(copy.deepcopy(base), data, "full")
+    # Ordered ranking stays single-hue (length encodes order; no rainbow):
+    # both bars share one fill, nudged only as far as the 4.5:1 floor needs.
+    fills = [
+        _re.search(r"fill=\"(#[0-9A-Fa-f]{6})\"", tag).group(1)
+        for tag in _re.findall(r"<rect [^>]*role=\"node\"[^>]*>", default_svg)
+        if _re.search(r"fill=\"(#[0-9A-Fa-f]{6})\"", tag)
+    ]
+    assert len(fills) >= 2 and len(set(fills)) == 1, fills
+    colored = copy.deepcopy(base)
+    colored["items"][0]["color"] = "#B71C1C"
+    colored_svg = render.render_diagram(colored, data, "full")
+    assert "#B71C1C" in colored_svg
+    # Inside value ink follows its own bar (white on dark red passes).
+    assert _ratio("#FFFFFF", "#B71C1C") >= 4.5
+
+
 def _inside_texts(svg: str) -> list[tuple[str, str, str]]:
     """(label, text ink, containing box fill) for texts inside shapes."""
     q = r'["\']'

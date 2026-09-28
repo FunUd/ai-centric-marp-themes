@@ -163,7 +163,7 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `concepts/tech-selection-matrix.json` | JSON SVG | Scored comparison matrix 0-5 with row winners + scale legend |
 | `organization/team-org-chart.json` | JSON SVG | Hierarchical organization chart |
 
-> Template registry is verified by `python scripts/diagrams/check-catalog-sync.py` (templates on disk vs. this table vs. `template-catalog.md`), and the supported-layout column by `python scripts/diagrams/check-templates.py`. The templates themselves ship inside the `marp-diagram-creator` skill at `vendor/templates/` (development source: `scripts/diagrams/templates/`).
+> Template registry is verified by `python scripts/diagrams/check-catalog-sync.py` (templates on disk vs. this table vs. `template-catalog.md`, including the supported-layout columns against the `ALLOWED_LAYOUTS` authority). The templates themselves ship inside the `marp-diagram-creator` skill at `vendor/templates/` (development source: `scripts/diagrams/templates/`).
 
 > **Label length tip (bar/line charts):** axis tick labels wrap hard at 8 characters
 > *inside* words (`Pinecone` → `Pineco/ne`), and validation still passes — the

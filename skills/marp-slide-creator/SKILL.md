@@ -465,35 +465,15 @@ slides/<deck-name>/assets/diagrams/<diagram-name>.svg
 
 ### Mermaid Diagrams
 
-**⚠️ IMPORTANT: Do NOT use inline Mermaid code blocks in Marp slides.**
+**⚠️ IMPORTANT: Do NOT use inline Mermaid code blocks in Marp slides — and do NOT run Mermaid CLI directly.**
 
-Mermaid diagrams often fail to render correctly in Marp preview and export. Instead, use Mermaid CLI to convert diagrams to SVG offline, then insert the SVG as an image.
-
-**Workflow:**
-
-1. Create a `.mmd` file in `slides/project-name/assets/diagrams/`:
-
-```mermaid
-sequenceDiagram
-    participant A as Client
-    participant B as Server
-
-    A->>B: HTTP request (GET /data)
-    B->>A: HTTP response (200 OK + JSON)
-```
-
-2. Convert to SVG using Mermaid CLI:
-
-```powershell
-# Pinned to package.json / tool_versions.py; override via MERMAID_CLI_SPEC.
-npx -y @mermaid-js/mermaid-cli@12.0.0 -i slides/project-name/assets/diagrams/sequence.mmd -o slides/project-name/assets/diagrams/sequence.svg
-```
-
-3. Insert the SVG in your slide:
+Raw `npx` Mermaid output skips theme synchronization, contrast guards, and canvas validation, reproducing invisible bars and washed-out labels. All Mermaid rendering is owned by the `marp-diagram-creator` skill: follow **Integration workflow with this skill** above (steps 1–5) to generate the SVG, then embed it, e.g.:
 
 ```markdown
 ![width:800px](assets/diagrams/sequence.svg)
 ```
+
+(pick `width:` from Safe diagram widths by layout; `marp-lint.py` catches mistakes.)
 
 **Good Mermaid use cases:**
 - Sequence diagrams

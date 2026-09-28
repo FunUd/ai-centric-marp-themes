@@ -17,7 +17,9 @@ This catalog lists the preset templates available for immediate use when creatin
 >
 > The **Verified Layouts** column below is enforced, not advisory: every template is
 > rendered and canvas-validated at each listed layout by
-> `python scripts/diagrams/check-templates.py`. A template that does not fit a layout
+> `python scripts/diagrams/check-templates.py`, and the column contents are
+> cross-checked against that authority by
+> `python scripts/diagrams/check-catalog-sync.py`. A template that does not fit a layout
 > is not listed there and will fail validation if you try.
 
 ---

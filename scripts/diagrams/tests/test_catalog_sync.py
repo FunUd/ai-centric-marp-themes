@@ -130,6 +130,10 @@ def _fake_sources(tmp_path: Path, catalog_text: str, docs_text: str) -> Path:
     script_dir = tmp_path / "scripts" / "diagrams"
     (script_dir / "templates" / "mermaid").mkdir(parents=True)
     (script_dir / "templates" / "mermaid" / "on-disk.mmd").write_text("graph LR", encoding="utf-8")
+    # The layout authority the catalog check loads; scoped to the fixture.
+    (script_dir / "check-templates.py").write_text(
+        'ALLOWED_LAYOUTS = {"mermaid/on-disk.mmd": ("full",)}\n', encoding="utf-8"
+    )
     catalog_path = tmp_path / "template-catalog.md"
     catalog_path.write_text(catalog_text, encoding="utf-8")
     docs_path = tmp_path / "diagrams.md"
@@ -159,7 +163,10 @@ def test_main_reports_mismatches(monkeypatch, tmp_path: Path, capsys) -> None:
     assert "[CATALOG] template on disk but missing in template-catalog.md: on-disk.mmd" in captured.out
     assert "[DOCS] template on disk but missing in docs/diagrams.md Available Templates: on-disk.mmd" in captured.out
     assert "[STALE] documented but file does not exist: stale-entry.mmd" in captured.out
-    assert "FAILED: 3 mismatch(es)" in captured.err
+    # The layout columns are verified too: the fixture docs table has no
+    # support-matrix header, which the defensive branch reports.
+    assert "[LAYOUT] cannot read layout sources" in captured.out
+    assert "FAILED: 4 mismatch(es)" in captured.err
 
 
 def test_main_reports_only_docs_gap(monkeypatch, tmp_path: Path, capsys) -> None:
@@ -184,8 +191,18 @@ def test_main_reports_only_docs_gap(monkeypatch, tmp_path: Path, capsys) -> None
 def test_main_passes_when_all_sources_agree(monkeypatch, tmp_path: Path, capsys) -> None:
     script_dir, catalog_path, docs_path = _fake_sources(
         tmp_path,
-        catalog_text="on-disk.mmd\n",
-        docs_text="| `on-disk.mmd` | Mermaid |\n",
+        catalog_text=(
+            "## 1. Mermaid Templates\n\n"
+            "| Filename | Type | Verified Layouts | Embed |\n"
+            "|---|---|---|---|\n"
+            "| `on-disk.mmd` | Mermaid | Full | 1050px |\n"
+        ),
+        docs_text=(
+            "| `on-disk.mmd` | Mermaid |\n"
+            "| Template | `full` | `col2` | `asym` | `col3` |\n"
+            "|---|:--:|:--:|:--:|:--:|\n"
+            "| `on-disk.mmd` | ✅ | | | |\n"
+        ),
     )
     monkeypatch.setattr(catalog, "SCRIPT_DIR", script_dir)
     monkeypatch.setattr(catalog, "CATALOG_PATH", catalog_path)

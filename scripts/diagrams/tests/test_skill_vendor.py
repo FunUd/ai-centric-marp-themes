@@ -19,6 +19,7 @@ import filecmp
 import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -376,6 +377,20 @@ def test_slide_expert_skills_point_at_the_skill_not_the_repo() -> None:
         if "scripts/diagrams/render-slide-diagram.py" in path.read_text(encoding="utf-8"):
             stale.append(path.parent.name)
     assert stale == [], f"still pointing at the repo path: {stale}"
+
+
+def test_no_skill_runs_raw_mermaid_cli() -> None:
+    """Raw `npx mermaid-cli` output skips theme sync, contrast guards, and
+    canvas validation — the exact defects the themed engine exists to
+    prevent. All Mermaid rendering must go through `render-slide-diagram.py`.
+    """
+    pattern = re.compile(r"npx\s+(?:-y|--yes)\s+@mermaid-js/mermaid-cli")
+    offenders = [
+        str(path.relative_to(ROOT))
+        for path in _skill_docs()
+        if pattern.search(path.read_text(encoding="utf-8"))
+    ]
+    assert offenders == [], f"raw Mermaid CLI invocation in skill docs: {offenders}"
 
 
 def test_no_skill_runs_a_vendored_check_or_sync_script() -> None:

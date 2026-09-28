@@ -655,3 +655,19 @@ def test_main_reports_a_clear_error_when_the_manifest_is_missing(tmp_path: Path)
     assert result.returncode != 0
     assert "theme class manifest" in result.stderr
     assert "sync-theme-classes.py" in result.stderr
+
+
+LAYOUT_SPEC = ROOT / "scripts/diagrams/layout_spec.py"
+
+
+def test_layout_widths_match_layout_spec() -> None:
+    """`DIAGRAM_LAYOUT_MAX_WIDTHS` is a hand copy of `layout_spec.CANVAS_MAX`.
+
+    The linter ships standalone into agent directories and cannot import the
+    spec at runtime, so the copy is by design — but only a test keeps the
+    comment honest.
+    """
+    spec = load_module("layout_spec_parity", LAYOUT_SPEC)
+    assert m.DIAGRAM_LAYOUT_MAX_WIDTHS == {
+        key: value["max_w"] for key, value in spec.CANVAS_MAX.items()
+    }
