@@ -1,0 +1,16 @@
+%% aspect: 2.4 — 7 tasks / 3 sections + 2 milestones max. Full-slide pinned (embeds at 1050x437)
+gantt
+    title プロジェクト計画
+    dateFormat YYYY-MM-DD
+    axisFormat %m/%d
+    section 企画
+        要件定義 :done, req, 2026-04-01, 5d
+        設計 :des, after req, 5d
+    section 開発
+        API実装 :api, after des, 7d
+        画面実装 :ui, after des, 7d
+        結合試験 :test, after api, 5d
+    section 検証
+        受入試験 :uat, after test, 4d
+        リリース判定 :milestone, m1, after uat, 0d
+        リリース :rel, after m1, 2d

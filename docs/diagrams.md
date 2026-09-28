@@ -94,6 +94,10 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `architecture-3tier-col2.mmd` | ✅ | ✅ | ✅ | ✅ |
 | `state-machine.mmd` | ✅ | | | |
 | `state-machine-col2.mmd` | ✅ | ✅ | ✅ | ✅ |
+| `gantt-milestone.mmd` | ✅ | | | |
+| `er-simple.mmd` | ✅ | | | |
+| `c4-context-compact.mmd` | ✅ | | ✅ | |
+| `mindmap-compact.mmd` | ✅ | | ✅ | |
 | `system-architecture.drawio` | ✅ | | | |
 | `cloud-infrastructure.drawio` | ✅ | | | |
 | `charts/revenue-pie.json` | ✅ | ✅ | ✅ | ✅ |
@@ -101,15 +105,22 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `charts/sales-bar.json` | ✅ | ✅ | ✅ | ✅ |
 | `charts/quarterly-line.json` | ✅ | ✅ | ✅ | ✅ |
 | `charts/channel-stacked-bar.json` | ✅ | ✅ | ✅ | ✅ |
+| `charts/task-hbar.json` | ✅ | ✅ | ✅ | ✅ |
+| `charts/channel-100-bar.json` | ✅ | ✅ | ✅ | ✅ |
 | `concepts/team-pyramid.json` | ✅ | ✅ | ✅ | ✅ |
 | `concepts/improvement-cycle.json` | ✅ | ✅ | ✅ | ✅ |
 | `concepts/team-radial.json` | ✅ | | | |
 | `concepts/team-radial-compact.json` | ✅ | ✅ | ✅ | ✅ |
 | `concepts/sales-funnel.json` | ✅ | ✅ | ✅ | ✅ |
+| `concepts/tech-selection-matrix.json` | ✅ | ✅ | ✅ | ✅ |
 | `organization/team-org-chart.json` | ✅ | ✅ | ✅ | ✅ |
 
 > SSoT: `scripts/diagrams/check-templates.py::ALLOWED_LAYOUTS` is the authority.
-> This table mirrors it. Every template works at `full`, so the default `width:1050px` embed is always safe.
+> Every template renders at `full`, but the safe embed width follows the
+> template's native canvas: JSON/draw.io templates and wide Mermaid diagrams
+> use `width:1050px`; narrow-native Mermaid SVGs must use their catalog Embed
+> width (e.g. `900px` for C4, `680px` for mindmap) — embedding them at 1050px
+> overflows vertically even though layout validation passes.
 
 ### Lint Integration
 
@@ -131,6 +142,10 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `flowchart-col2.mmd` | Mermaid | 2-column-safe compact flowchart |
 | `state-machine.mmd` | Mermaid | State transition diagram |
 | `state-machine-col2.mmd` | Mermaid | Compact vertical state flow for all layouts |
+| `gantt-milestone.mmd` | Mermaid | Project schedule (3 sections, 7 tasks + milestones; full only) |
+| `er-simple.mmd` | Mermaid | Entity relations with direction LR, 3 entities with attributes (full only) |
+| `c4-context-compact.mmd` | Mermaid | C4-style context: user + system + externals (full/asym) |
+| `mindmap-compact.mmd` | Mermaid | Mind map, root + 3 branches (full/asym) |
 | `system-architecture.drawio` | draw.io | 3-layer system architecture with swimlanes |
 | `cloud-infrastructure.drawio` | draw.io | Cloud VPC/subnet/ALB infrastructure |
 | `charts/revenue-pie.json` | JSON SVG | Pie chart with themed legend |
@@ -138,11 +153,14 @@ python scripts/diagrams/check-templates.py --skip-mermaid   # offline (no npx)
 | `charts/sales-bar.json` | JSON SVG | Vertical bar chart with values |
 | `charts/quarterly-line.json` | JSON SVG | Multi-series line chart with legend |
 | `charts/channel-stacked-bar.json` | JSON SVG | Stacked bar chart with legend |
+| `charts/task-hbar.json` | JSON SVG | Horizontal bar chart for long labels |
+| `charts/channel-100-bar.json` | JSON SVG | 100% stacked bar (composition %) |
 | `concepts/team-pyramid.json` | JSON SVG | Layered pyramid |
 | `concepts/improvement-cycle.json` | JSON SVG | Circular improvement process |
 | `concepts/team-radial.json` | JSON SVG | Radial concept map (full only; dense) |
 | `concepts/team-radial-compact.json` | JSON SVG | Compact radial for narrow columns |
 | `concepts/sales-funnel.json` | JSON SVG | Sales/conversion funnel |
+| `concepts/tech-selection-matrix.json` | JSON SVG | Scored comparison matrix 0-5 with row winners + scale legend |
 | `organization/team-org-chart.json` | JSON SVG | Hierarchical organization chart |
 
 > Template registry is verified by `python scripts/diagrams/check-catalog-sync.py` (templates on disk vs. this table vs. `template-catalog.md`), and the supported-layout column by `python scripts/diagrams/check-templates.py`. The templates themselves ship inside the `marp-diagram-creator` skill at `vendor/templates/` (development source: `scripts/diagrams/templates/`).

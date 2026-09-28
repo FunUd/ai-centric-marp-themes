@@ -25,6 +25,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import re
 import subprocess
 import sys
 import tempfile
@@ -55,6 +56,10 @@ ALLOWED_LAYOUTS: dict[str, tuple[str, ...]] = {
     "mermaid/architecture-3tier-col2.mmd": (FULL, COL2, ASYM, COL3),
     "mermaid/state-machine.mmd": (FULL,),
     "mermaid/state-machine-col2.mmd": (FULL, COL2, ASYM, COL3),
+    "mermaid/gantt-milestone.mmd": (FULL,),
+    "mermaid/er-simple.mmd": (FULL,),
+    "mermaid/c4-context-compact.mmd": (FULL, ASYM),
+    "mermaid/mindmap-compact.mmd": (FULL, ASYM),
     # draw.io (pure stdlib mxGraph -> SVG)
     "drawio/system-architecture.drawio": (FULL,),
     "drawio/cloud-infrastructure.drawio": (FULL,),
@@ -64,13 +69,42 @@ ALLOWED_LAYOUTS: dict[str, tuple[str, ...]] = {
     "charts/sales-bar.json": (FULL, COL2, ASYM, COL3),
     "charts/quarterly-line.json": (FULL, COL2, ASYM, COL3),
     "charts/channel-stacked-bar.json": (FULL, COL2, ASYM, COL3),
+    "charts/task-hbar.json": (FULL, COL2, ASYM, COL3),
+    "charts/channel-100-bar.json": (FULL, COL2, ASYM, COL3),
     "concepts/team-pyramid.json": (FULL, COL2, ASYM, COL3),
     "concepts/improvement-cycle.json": (FULL, COL2, ASYM, COL3),
     "concepts/team-radial.json": (FULL,),
     "concepts/team-radial-compact.json": (FULL, COL2, ASYM, COL3),
     "concepts/sales-funnel.json": (FULL, COL2, ASYM, COL3),
+    "concepts/tech-selection-matrix.json": (FULL, COL2, ASYM, COL3),
     "organization/team-org-chart.json": (FULL, COL2, ASYM, COL3),
 }
+
+# Recommended (max) full-slide embed width per Mermaid/draw.io template.
+# Mermaid/draw.io SVGs keep their native viewBox ratio, so embedding a
+# narrow-native SVG at the 1050px JSON default overflows vertically
+# (e.g. mindmap 618x388 -> 660px tall at 1050px). The width here keeps the
+# scaled height within the 460px slide canvas at `full`; narrower layouts
+# only scale further down. Verified by _check_embed_height() below.
+RECOMMENDED_EMBED_WIDTH: dict[str, int] = {
+    "mermaid/flowchart-linear.mmd": 1050,
+    "mermaid/flowchart-col2.mmd": 570,
+    "mermaid/sequence-api.mmd": 950,
+    "mermaid/sequence-api-asym.mmd": 770,
+    "mermaid/architecture-3tier.mmd": 1050,
+    "mermaid/architecture-3tier-col2.mmd": 210,
+    "mermaid/state-machine.mmd": 1050,
+    "mermaid/state-machine-col2.mmd": 460,
+    "mermaid/gantt-milestone.mmd": 1050,
+    "mermaid/er-simple.mmd": 1050,
+    "mermaid/c4-context-compact.mmd": 900,
+    "mermaid/mindmap-compact.mmd": 680,
+    "drawio/system-architecture.drawio": 1050,
+    "drawio/cloud-infrastructure.drawio": 1050,
+}
+
+# Slide canvas height budget for a diagram at `full` (layout_spec.CANVAS_MAX).
+EMBED_HEIGHT_BUDGET = 460.0
 
 GLOBS = ("mermaid/*.mmd", "drawio/*.drawio", "charts/*.json", "concepts/*.json", "organization/*.json")
 
@@ -138,6 +172,50 @@ def _relevant_lines(output: str) -> list[str]:
     ][:6]
 
 
+def _viewbox_size(svg_path: Path) -> tuple[float, float] | None:
+    """Native viewBox (w, h) of a rendered SVG, or None if unreadable."""
+    try:
+        text = svg_path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    match = re.search(r'viewBox="([^"]+)"', text)
+    if not match:
+        return None
+    parts = [p for p in re.split(r"[,\s]+", match.group(1).strip()) if p]
+    try:
+        numbers = [float(p) for p in parts]
+    except ValueError:
+        return None
+    if len(numbers) != 4 or numbers[2] <= 0 or numbers[3] <= 0:
+        return None
+    return numbers[2], numbers[3]
+
+
+def check_embed_height(rel: str, svg_path: Path) -> str | None:
+    """Fail message when `rel` exceeds the canvas at its recommended embed width.
+
+    Returns None when the template fits (or has no map entry / unreadable
+    viewBox — those are covered by the manifest tests, not this gate).
+    """
+    if _engine_of(rel) not in ("mermaid", "drawio"):
+        return None
+    width = RECOMMENDED_EMBED_WIDTH.get(rel)
+    if width is None:
+        return f"[EMBED-MAP] {rel} has no RECOMMENDED_EMBED_WIDTH entry"
+    size = _viewbox_size(svg_path)
+    if size is None:
+        return f"[EMBED-VIEWBOX] {rel}: cannot parse viewBox from rendered SVG"
+    vb_w, vb_h = size
+    scaled_h = vb_h / vb_w * width
+    if scaled_h > EMBED_HEIGHT_BUDGET:
+        return (
+            f"[EMBED-HEIGHT] {rel}: {scaled_h:.0f}px tall at width:{width}px "
+            f"(budget {EMBED_HEIGHT_BUDGET:.0f}px). Lower RECOMMENDED_EMBED_WIDTH "
+            f"or shrink the template."
+        )
+    return None
+
+
 def main() -> int:
     ensure_utf8_stdio()
     parser = argparse.ArgumentParser(description="Validate all diagram templates at their supported layouts.")
@@ -177,6 +255,17 @@ def main() -> int:
         problems.append(
             f"[STALE] ALLOWED_LAYOUTS lists templates/{name} but the file does not exist."
         )
+    for name in sorted(on_disk):
+        if _engine_of(name) in ("mermaid", "drawio") and name not in RECOMMENDED_EMBED_WIDTH:
+            problems.append(
+                f"[EMBED-MAP] templates/{name} has no RECOMMENDED_EMBED_WIDTH entry — "
+                f"its slide embed height would never be checked. Add a fitting width."
+            )
+    for name, width in RECOMMENDED_EMBED_WIDTH.items():
+        if name not in on_disk:
+            problems.append(f"[EMBED-MAP] RECOMMENDED_EMBED_WIDTH lists {name!r} but the file does not exist.")
+        elif not 0 < width <= 1120:
+            problems.append(f"[EMBED-MAP] RECOMMENDED_EMBED_WIDTH[{name!r}] = {width}: expected 0 < width <= 1120.")
     if problems:
         for line in problems:
             print(line, file=sys.stderr)
@@ -206,6 +295,12 @@ def main() -> int:
                 checked += 1
                 if ok:
                     print(f"[OK] {rel} @ {layout}")
+                    if layout == FULL and _engine_of(rel) in ("mermaid", "drawio"):
+                        out_path = out_dir / f"{source.stem}-{layout}.svg"
+                        problem = check_embed_height(rel, out_path)
+                        if problem:
+                            print(f"[FAIL] {problem}")
+                            failures.append(f"{rel} @ embed-width")
                 else:
                     print(f"[FAIL] {rel} @ {layout}")
                     for line in _relevant_lines(output):

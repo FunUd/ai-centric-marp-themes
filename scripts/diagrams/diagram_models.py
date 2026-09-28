@@ -16,10 +16,11 @@ from svg_aspect import parse_aspect
 
 
 LAYOUTS = set(_LAYOUT_ORDER)
-DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel", "bar", "line", "stacked-bar"}
+DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel", "bar", "hbar", "line", "stacked-bar", "stacked-bar-100", "matrix"}
 # Cartesian (axis-based) types share the categories/series vocabulary.
-CARTESIAN_TYPES = {"bar", "line", "stacked-bar"}
-SERIES_TYPES = {"line", "stacked-bar"}
+# hbar uses items (not categories/series); matrix uses columns/rows.
+CARTESIAN_TYPES = {"bar", "line", "stacked-bar", "stacked-bar-100"}
+SERIES_TYPES = {"line", "stacked-bar", "stacked-bar-100"}
 CARTESIAN_MAX_CATEGORIES = 10
 CARTESIAN_MAX_SERIES = 4
 # Canonical render sizes live in layout_spec.py; aliases kept for importers.
@@ -137,6 +138,38 @@ def _validate_type(data: dict[str, Any]) -> None:
     elif kind == "stacked-bar":
         _, series = _validate_series(data, kind, min_series=2)
         _validate_y_max(data, _series_max(series, stacked=True))
+    elif kind == "stacked-bar-100":
+        # _validate_series already enforces non-negative values per entry.
+        _validate_series(data, kind, min_series=2)
+    elif kind == "hbar":
+        items = _items(data)
+        if not 2 <= len(items) <= CARTESIAN_MAX_CATEGORIES:
+            raise ValueError(f"items must contain between 2 and {CARTESIAN_MAX_CATEGORIES} entries")
+        for index, item in enumerate(items):
+            if not isinstance(item.get("label"), str) or not item["label"].strip():
+                raise ValueError(f"items[{index}].label must not be empty")
+            _non_negative(item.get("value"), f"items[{index}].value")
+        _validate_y_max(data, max(float(item["value"]) for item in items))
+    elif kind == "matrix":
+        columns = data.get("columns")
+        if not isinstance(columns, list) or not 2 <= len(columns) <= 4:
+            raise ValueError("columns must contain between 2 and 4 entries")
+        for index, column in enumerate(columns):
+            if not isinstance(column, str) or not column.strip():
+                raise ValueError(f"columns[{index}] must not be empty")
+        rows = data.get("rows")
+        if not isinstance(rows, list) or not 2 <= len(rows) <= 6:
+            raise ValueError("rows must contain between 2 and 6 entries")
+        for r_index, row in enumerate(rows):
+            if not isinstance(row, dict) or not str(row.get("label", "")).strip():
+                raise ValueError(f"rows[{r_index}].label must not be empty")
+            scores = row.get("scores")
+            if not isinstance(scores, list) or len(scores) != len(columns):
+                raise ValueError(f"rows[{r_index}].scores must have one entry per column")
+            for s_index, score in enumerate(scores):
+                value = _finite_number(score, f"rows[{r_index}].scores[{s_index}]")
+                if value != int(value) or not 0 <= value <= 5:
+                    raise ValueError(f"rows[{r_index}].scores[{s_index}] must be an integer 0-5")
     elif kind == "pyramid":
         levels = data.get("levels")
         if not isinstance(levels, list) or not 3 <= len(levels) <= 6:

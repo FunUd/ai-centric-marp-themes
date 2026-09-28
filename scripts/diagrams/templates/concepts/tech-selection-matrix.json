@@ -1,0 +1,11 @@
+{
+  "type": "matrix",
+  "title": "技術選定比較",
+  "columns": ["案A", "案B", "案C"],
+  "rows": [
+    {"label": "性能", "scores": [5, 3, 4]},
+    {"label": "コスト", "scores": [3, 5, 4]},
+    {"label": "保守性", "scores": [4, 3, 5]},
+    {"label": "導入容易性", "scores": [3, 5, 4]}
+  ]
+}

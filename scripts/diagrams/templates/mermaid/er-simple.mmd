@@ -1,0 +1,17 @@
+%% aspect: 4.5 — direction LR keeps 3 entities in one row (embeds at 1050x233)
+erDiagram
+    direction LR
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ ITEM : contains
+    CUSTOMER {
+        string id PK
+        string name
+    }
+    ORDER {
+        string id PK
+        date created
+    }
+    ITEM {
+        string id PK
+        int qty
+    }
