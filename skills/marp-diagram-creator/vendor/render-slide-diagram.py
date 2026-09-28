@@ -49,6 +49,12 @@ def npx_command(package: str, *args: str) -> list[str]:
     """Pinned npx invocation when possible, plain npx otherwise."""
     if _npx_command is not None:
         return _npx_command(package, *args)
+    print(
+        f"[WARN] tool_versions not available; falling back to unpinned npx for {package}. "
+        "Render output may differ from pinned CI. "
+        "Set MARP_CLI_SPEC / MERMAID_CLI_SPEC or install the repo engine.",
+        file=sys.stderr,
+    )
     return ["npx", "--yes", package, *args]
 
 from design_tokens import best_text_on, drawio_rect_radius, ensure_inside_label, load_design_tokens
@@ -93,7 +99,12 @@ def _write_svg(output_path: Path, svg_content: str, theme_data: dict, postproces
     if postprocess:
         svg_content = postprocess_svg(svg_content, theme_data)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(svg_content, encoding="utf-8")
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False
+    ) as tmp:
+        tmp.write(svg_content)
+        tmp_path = Path(tmp.name)
+    tmp_path.replace(output_path)
 
 
 def render_mermaid(
@@ -153,7 +164,16 @@ def render_mermaid(
             return False
 
     if postprocess and output_path.exists():
-        _write_svg(output_path, output_path.read_text(encoding="utf-8"), theme_data, True)
+        try:
+            raw = output_path.read_text(encoding="utf-8", errors="replace")
+        except OSError as error:
+            print(f"[ERROR] Cannot re-read rendered SVG {output_path}: {error}", file=sys.stderr)
+            return False
+        try:
+            _write_svg(output_path, raw, theme_data, True)
+        except OSError as error:
+            print(f"[ERROR] Cannot post-process SVG {output_path}: {error}", file=sys.stderr)
+            return False
 
     return True
 
@@ -474,6 +494,13 @@ def render_drawio(
 ) -> bool:
     """Recolor draw.io XML and export to standalone SVG."""
     try:
+        if input_path.stat().st_size > 20 * 1024 * 1024:
+            print(f"[ERROR] draw.io file too large (>20MB): {input_path}", file=sys.stderr)
+            return False
+    except OSError as e:
+        print(f"[ERROR] Failed to stat draw.io file {input_path}: {e}", file=sys.stderr)
+        return False
+    try:
         tree = ET.parse(input_path)
     except ET.ParseError as e:
         print(f"[ERROR] Failed to parse draw.io XML: {e}", file=sys.stderr)
@@ -520,8 +547,17 @@ def render_json_diagram_from_data(
     except (TypeError, ValueError, KeyError) as error:
         print(f"[ERROR] JSON diagram validation failed: {error}", file=sys.stderr)
         return False
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(svg_content, encoding="utf-8")
+    try:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False
+        ) as tmp:
+            tmp.write(svg_content)
+            tmp_path = Path(tmp.name)
+        tmp_path.replace(output_path)
+    except OSError as error:
+        print(f"[ERROR] Cannot write SVG {output_path}: {error}", file=sys.stderr)
+        return False
     print(f"Rendered JSON diagram to '{output_path}' with theme '{theme_data.get('theme')}'")
     note = _advisory_note(data, layout)
     if note:
@@ -607,8 +643,12 @@ def main():
             sys.exit(1)
         suffix = args.input.suffix.lower()
         if suffix in (".mmd", ".mermaid"):
-            with open(args.input, "r", encoding="utf-8") as f:
-                content = f.read()
+            try:
+                with open(args.input, "r", encoding="utf-8", errors="replace") as f:
+                    content = f.read()
+            except OSError as error:
+                print(f"[ERROR] Cannot read input {args.input}: {error}", file=sys.stderr)
+                sys.exit(1)
             pad_aspect = _resolve_aspect(cli_aspect, content)
             success = render_mermaid(content, args.output, theme_data, args.layout, postprocess)
         elif suffix in (".drawio", ".xml"):
@@ -628,7 +668,8 @@ def main():
         sys.exit(1)
 
     if pad_aspect is not None and args.output.exists():
-        _pad_output_aspect(args.output, pad_aspect, args.layout)
+        if not _pad_output_aspect(args.output, pad_aspect, args.layout):
+            sys.exit(1)
 
     # Automated Validation
     if not args.no_validate and VALIDATOR_PATH.exists():
@@ -669,17 +710,31 @@ def _resolve_aspect(cli_aspect: float | None, source_text: str) -> float | None:
         sys.exit(1)
 
 
-def _pad_output_aspect(output_path: Path, aspect: float, layout: str) -> None:
-    """Pad the finished SVG canvas to ``aspect``; fail loudly if unreachable."""
+def _pad_output_aspect(output_path: Path, aspect: float, layout: str) -> bool:
+    """Pad the finished SVG canvas to ``aspect``; return False on failure.
+
+    Returns True on success (including no-op). Separated from sys.exit so the
+    render core stays importable/testable; CLI callers exit on False.
+    """
     try:
-        original = output_path.read_text(encoding="utf-8")
+        original = output_path.read_text(encoding="utf-8", errors="replace")
         padded = pad_viewbox(original, aspect, layout)
     except (OSError, ValueError) as error:
         print(f"[ERROR] Cannot pad canvas to aspect {aspect:g}: {error}", file=sys.stderr)
-        sys.exit(1)
+        return False
     if padded != original:
-        output_path.write_text(padded, encoding="utf-8")
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False
+            ) as tmp:
+                tmp.write(padded)
+                tmp_path = Path(tmp.name)
+            tmp_path.replace(output_path)
+        except OSError as error:
+            print(f"[ERROR] Cannot write padded SVG {output_path}: {error}", file=sys.stderr)
+            return False
         print(f"Padded canvas to aspect {aspect:g} (layout '{layout}')")
+    return True
 
 
 if __name__ == "__main__":

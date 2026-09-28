@@ -7,13 +7,13 @@ description: Activate this skill ONLY when the deck needs planning, outlining, o
 
 This skill provides a structured workflow for creating high-impact, persuasive, and crystal-clear presentation slides, focusing on **content depth, narrative structure, and readability**.
 
-Use this skill whenever a user wants to create or edit a presentation, outline a talk, review slide structure, or needs help figuring out what to say in their slides.
+Use this skill ONLY when a user wants to plan, outline, or restructure a presentation (new outline, narrative review, major restructure). DO NOT use for Marp implementation, layout repair, or export.
 
 If the outline is already approved and the work is mainly Marp implementation, layout repair, overflow cleanup, or export, skip this skill and go straight to `marp-slide-creator`.
 
 > **Quality Bible:** Always consult `references/quality-guidelines.md` for in-depth principles on message-driven titles, narrative frameworks (SCQA, PREP, BAB, Pyramid), anti-bullet-point formatting, and the 3-second readability rule.
 > 
-> **Domain-Specific Outlines:** If the user wants to create a specific type of presentation (e.g., API Architecture, Progress Report, Tech Sharing), prioritize activating the corresponding `slide-expert-*` skill instead of this generic one. Do not load both simultaneously.
+> **Domain-Specific Outlines:** If the user wants a specific presentation type (e.g., API Architecture, Progress Report, Tech Sharing), load the corresponding `slide-expert-*` skill for its structure template, and apply this skill's `references/quality-guidelines.md` principles (message-driven titles, Magic Number 3). The slide-expert skill owns structure; quality-guidelines owns writing quality — they complement, do not duplicate.
 
 ---
 

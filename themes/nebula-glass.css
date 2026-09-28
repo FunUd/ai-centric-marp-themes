@@ -723,19 +723,23 @@ section.grid-quadrant.axes .axis-x {
   letter-spacing: 0.2em;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(1) {
+section.grid-quadrant.axes .cell:nth-of-type(1),
+section.grid-quadrant.axes .cell:nth-child(2) {
   grid-area: c1;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(2) {
+section.grid-quadrant.axes .cell:nth-of-type(2),
+section.grid-quadrant.axes .cell:nth-child(3) {
   grid-area: c2;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(3) {
+section.grid-quadrant.axes .cell:nth-of-type(3),
+section.grid-quadrant.axes .cell:nth-child(4) {
   grid-area: c3;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(4) {
+section.grid-quadrant.axes .cell:nth-of-type(4),
+section.grid-quadrant.axes .cell:nth-child(5) {
   grid-area: c4;
 }
 
@@ -797,6 +801,10 @@ section::after {
   border-radius: 999px;
   border: 1px solid var(--ng-glass-border);
   font-weight: 600;
+}
+
+section:not([data-marpit-pagination])::after {
+  display: none;
 }
 
 /* ============================================================

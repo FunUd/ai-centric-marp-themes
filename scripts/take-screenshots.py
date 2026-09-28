@@ -52,12 +52,19 @@ def _require_playwright():
 
 # The pinned Node tool versions live with the diagram engine.
 sys.path.insert(0, str(Path(__file__).resolve().parent / "diagrams"))
-from tool_versions import npx_command  # noqa: E402
-from compat import ensure_utf8_stdio  # noqa: E402
+try:
+    from tool_versions import npx_command  # noqa: E402
+except ImportError:  # offline --list-themes must work without the engine
+    def npx_command(package: str, *args: str) -> list[str]:
+        return ["npx", "--yes", package, *args]
+
+try:
+    from compat import ensure_utf8_stdio  # noqa: E402
+except ImportError:
+    def ensure_utf8_stdio() -> None:
+        return None
 
 MARP_CLI = "@marp-team/marp-cli"
-
-ensure_utf8_stdio()
 
 WORKSPACE = Path(__file__).parent.parent
 THEME_DIR = WORKSPACE / "themes"
@@ -184,6 +191,50 @@ THEME_CONFIG = {
 SCREENSHOT_MARKER_RE = re.compile(r"<!--\s*screenshot:\s*([\w-]+)\s*-->")
 
 
+def _deck_lines(slide_md: Path) -> list[str]:
+    """Deck source lines with any BOM stripped (utf-8-sig)."""
+    return slide_md.read_text(encoding="utf-8-sig").splitlines()
+
+
+def _unfenced_stripped(lines: list[str]) -> list[str]:
+    """Stripped lines with fenced code blocks removed.
+
+    Tracks both ```` ``` ```` and `~~~` fences (either can wrap a slide
+    containing a literal ``---``). Shared by the marker and slide-count
+    passes so the two can never disagree on what a separator is.
+    """
+    out: list[str] = []
+    fence: str | None = None
+    for line in lines:
+        stripped = line.strip()
+        marker = stripped[:3] if stripped[:3] in ("```", "~~~") else None
+        if marker is not None:
+            if fence is None:
+                fence = marker
+            elif fence == marker:
+                fence = None
+            continue
+        if fence is not None:
+            continue
+        out.append(stripped)
+    return out
+
+
+def _frontmatter_end(lines: list[str]) -> int:
+    """Index of the first content line (past YAML/TOML frontmatter, if any).
+
+    Frontmatter opens with ``---`` as the first non-empty line and closes
+    with ``---`` or ``...``. Anything else means no frontmatter.
+    """
+    first = next((i for i, s in enumerate(lines) if s != ""), None)
+    if first is None or lines[first] != "---":
+        return 0
+    for i in range(first + 1, len(lines)):
+        if lines[i] in ("---", "..."):
+            return i + 1
+    return 0
+
+
 def slide_marker_indices(slide_md: Path) -> dict[str, int]:
     """Map screenshot id -> 0-based slide index for a deck.
 
@@ -192,23 +243,14 @@ def slide_marker_indices(slide_md: Path) -> dict[str, int]:
     markers travel with their slide when slides are inserted or removed.
     Fenced code blocks are ignored. Duplicate ids raise RuntimeError.
     """
-    lines = slide_md.read_text(encoding="utf-8").splitlines()
-    idx = [i for i, line in enumerate(lines) if line.strip() == "---"]
-    first = idx[1] + 1 if len(idx) > 1 and idx[0] == 0 else 0
+    lines = _unfenced_stripped(_deck_lines(slide_md))
     markers: dict[str, int] = {}
     current = 0
-    in_fence = False
-    for line in lines[first:]:
-        stripped = line.strip()
-        if stripped.startswith("```"):
-            in_fence = not in_fence
-            continue
-        if in_fence:
-            continue
+    for stripped in lines[_frontmatter_end(lines):]:
         if stripped == "---":
             current += 1
             continue
-        match = SCREENSHOT_MARKER_RE.search(line)
+        match = SCREENSHOT_MARKER_RE.search(stripped)
         if match:
             marker_id = match.group(1)
             if marker_id in markers:
@@ -349,27 +391,15 @@ def take_screenshots(theme_name: str, html_path: Path, screenshots: list, output
 def count_markdown_slides(slide_md: Path) -> int:
     """Count slides from the Markdown source (no browser required).
 
-    Marp splits on a line containing only ``---``. With frontmatter the first
-    two separators are the frontmatter fences, so slide count == separators - 1.
-    Fenced code blocks and ``...`` frontmatter closes are ignored.
+    Marp splits on a line containing only ``---`` outside fenced code
+    blocks (```` ``` ```` and `~~~`). A leading frontmatter block — opened
+    by ``---`` and closed by ``---`` or ``...`` — consumes one separator.
     """
-    text = slide_md.read_text(encoding="utf-8")
-    separators = 0
-    in_fence = False
-    for line in text.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("```"):
-            in_fence = not in_fence
-            continue
-        if in_fence:
-            continue
-        if stripped == "---":
-            separators += 1
-    if separators == 0:
+    lines = _unfenced_stripped(_deck_lines(slide_md))
+    if not any(s == "---" for s in lines):
         return 1
-    # A leading frontmatter block consumes the first separator pair.
-    has_frontmatter = text.lstrip().startswith("---")
-    return max(separators - (1 if has_frontmatter else 0), 1)
+    start = _frontmatter_end(lines)
+    return max(sum(1 for s in lines[start:] if s == "---") + 1, 1)
 
 
 def report_theme_registry() -> list[str]:
@@ -630,6 +660,7 @@ Examples:
 
 
 if __name__ == "__main__":
+    ensure_utf8_stdio()
     parser, args = parse_args()
 
     # Resolve output directory (relative paths are relative to workspace root)

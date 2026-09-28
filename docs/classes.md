@@ -37,7 +37,7 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `bg-grid` | *(Prism Edge)* Subtle grid pattern background |
 | `bg-noise` | *(Prism Edge)* Soft noise texture background |
 | `profile` | Self-introduction / team member profile |
-| `grid-quadrant` + `axes` | Adds axis labels to a quadrant matrix: `<div class="grid axes">` with `<div class="axis-y">` / `<div class="axis-x">` |
+| `grid-quadrant` + `axes` | Adds axis labels to a quadrant matrix: `<div class="grid">` with `<span class="axis-y">` / `<span class="axis-x">` + 4x `<div class="cell">` in order (`<span>` axes required so `div:nth-of-type` stays aligned; `<div>` axes also work via `:nth-child` fallback) |
 | `steps` + `arrows` | Adds connector arrows between step cards |
 | `dense` | High-density slide (18px base font) |
 | `extra-dense` | Maximum density (15px base font) |

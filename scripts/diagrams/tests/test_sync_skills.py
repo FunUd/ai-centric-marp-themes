@@ -67,8 +67,8 @@ def test_script_entry_point_runs_full_sync_without_writing(monkeypatch, capsys) 
 
     copied: list[tuple[Path, Path]] = []
     removed: list[Path] = []
-    monkeypatch.setattr(shutil_mod, "copytree", lambda src, dst: copied.append((src, dst)))
-    monkeypatch.setattr(shutil_mod, "rmtree", lambda path: removed.append(path))
+    monkeypatch.setattr(shutil_mod, "copytree", lambda src, dst, **kwargs: copied.append((src, dst)))
+    monkeypatch.setattr(shutil_mod, "rmtree", lambda path, **kwargs: removed.append(path))
     monkeypatch.setattr(sys_mod, "argv", ["sync-skills.py"])
 
     with pytest.raises(SystemExit) as exc:
@@ -78,8 +78,11 @@ def test_script_entry_point_runs_full_sync_without_writing(monkeypatch, capsys) 
     roots = [t for t in sync_skills_mod.TARGET_ROOTS if t.exists()]
     skills = [d for d in sync_skills_mod.SOURCE_DIR.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
     assert roots and skills
-    assert len(copied) == len(roots) * len(skills)
-    assert "Done." in capsys.readouterr().out
+    out = capsys.readouterr().out
+    # Idempotent sync may SKIP byte-identical skills instead of copying.
+    processed = len(copied) + out.count("[SKIP]")
+    assert processed >= len(roots) * len(skills)
+    assert "Done." in out
 
 
 def test_sync_reports_missing_source(monkeypatch, tmp_path: Path, capsys) -> None:
@@ -87,7 +90,8 @@ def test_sync_reports_missing_source(monkeypatch, tmp_path: Path, capsys) -> Non
 
     assert sync_skills_mod.sync_skills() == 1
 
-    assert "[ERROR] Source directory" in capsys.readouterr().out
+    captured = capsys.readouterr()
+    assert "[ERROR] Source directory" in (captured.out + captured.err)
 
 
 def test_sync_reports_when_no_skill_directories(monkeypatch, tmp_path: Path, capsys) -> None:
@@ -99,7 +103,8 @@ def test_sync_reports_when_no_skill_directories(monkeypatch, tmp_path: Path, cap
 
     sync_skills_mod.sync_skills()
 
-    assert "[INFO] No skill directories found" in capsys.readouterr().out
+    captured = capsys.readouterr()
+    assert "[INFO] No skill directories found" in (captured.out + captured.err)
 
 
 def test_sync_copies_skills_and_cleans_stale_dirs(monkeypatch, tmp_path: Path, capsys) -> None:

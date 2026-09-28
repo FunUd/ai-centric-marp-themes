@@ -428,8 +428,10 @@ When a task requires creating or embedding a diagram, **activate the `marp-diagr
 
 ```
 1. Activate marp-diagram-creator skill. It owns the diagram engine, which ships
-   inside that skill under `vendor/`. Resolve it once:
-     ENGINE=$(python <marp-diagram-creator-skill-dir>/scripts/print-engine-path.py)
+   inside that skill under `vendor/`. Resolve it once (`<skill-dir>` = the
+   marp-diagram-creator skill folder, see its § Locating the Engine):
+     ENGINE=$(python <skill-dir>/scripts/print-engine-path.py)          # bash
+     $ENGINE = python <skill-dir>/scripts/print-engine-path.py          # PowerShell
 2. Identify: target theme + slide layout (full / col2 / asym / col3)
 3. Generate diagram SVG:
      python "$ENGINE/render-slide-diagram.py" \
@@ -491,7 +493,7 @@ Raw `npx` Mermaid output skips theme synchronization, contrast guards, and canva
 
 Use `.drawio.svg` format for complex diagrams (architecture, workflows).
 
-## 8. Contrast-Aware Design
+## 9. Contrast-Aware Design
 
 **Core Rule:** Emphasized elements and their containers must have different background colors.
 
@@ -509,6 +511,6 @@ Use `.drawio.svg` format for complex diagrams (architecture, workflows).
 - **DO NOT** place pale callouts on matching-tone background images
 - **DO NOT** assume documented classes are visually compatible
 
-## 9. Export & Delivery
+## 10. Export & Delivery
 
 For export commands and Quick Reference patterns (Cover Slide, Columns, Split layout), **read `references/marp-syntax-guide.md`**.

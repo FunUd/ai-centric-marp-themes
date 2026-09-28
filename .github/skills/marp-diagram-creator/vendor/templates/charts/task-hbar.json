@@ -1,0 +1,13 @@
+{
+  "type": "hbar",
+  "title": "施策別効果",
+  "unit": "件",
+  "show_values": true,
+  "items": [
+    {"label": "自動化", "value": 210},
+    {"label": "手順改善", "value": 150},
+    {"label": "教育", "value": 120},
+    {"label": "外注活用", "value": 90},
+    {"label": "その他", "value": 60}
+  ]
+}

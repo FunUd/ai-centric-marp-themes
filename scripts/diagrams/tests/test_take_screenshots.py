@@ -639,6 +639,27 @@ def test_slide_marker_indices_rejects_duplicates(tmp_path: Path) -> None:
         shots.slide_marker_indices(deck)
 
 
+def test_slide_marker_indices_ignores_tilde_fences(tmp_path: Path) -> None:
+    deck = tmp_path / "deck.md"
+    deck.write_text(
+        "---\nmarp: true\n---\n\n~~~\n---\n~~~\n\n---\n<!-- screenshot: target -->\n\n# Second\n",
+        encoding="utf-8",
+    )
+    assert shots.resolve_screenshots(deck, [("out.png", "target")]) == [("out.png", 1)]
+    assert shots.count_markdown_slides(deck) == 2
+
+
+def test_slide_marker_indices_tolerates_bom_and_dot_close(tmp_path: Path) -> None:
+    deck = tmp_path / "deck.md"
+    deck.write_bytes(
+        "---\nmarp: true\n...\n\n# First\n\n---\n<!-- screenshot: target -->\n\n# Second\n".encode(
+            "utf-8-sig"
+        )
+    )
+    assert shots.resolve_screenshots(deck, [("out.png", "target")]) == [("out.png", 1)]
+    assert shots.count_markdown_slides(deck) == 2
+
+
 def test_every_configured_theme_has_a_sample_deck_on_disk() -> None:
     for theme, config in shots.THEME_CONFIG.items():
         assert Path(config["slide"]).is_file(), f"{theme}: missing sample deck"

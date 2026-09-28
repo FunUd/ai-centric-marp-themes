@@ -48,6 +48,8 @@ def _dirs_differ(src: Path, dst: Path) -> str | None:
             rel = p.relative_to(root)
             if "__pycache__" in rel.parts or p.suffix == ".pyc":
                 continue
+            if p.name == ".DS_Store":
+                continue
             out.add(rel)
         return out
 
@@ -66,12 +68,12 @@ def _dirs_differ(src: Path, dst: Path) -> str | None:
 
 def sync_skills(check: bool = False) -> int:
     if not SOURCE_DIR.exists():
-        print(f"[ERROR] Source directory '{SOURCE_DIR}' not found.")
+        print(f"[ERROR] Source directory '{SOURCE_DIR}' not found.", file=sys.stderr)
         return 1
 
     skill_dirs = [d for d in SOURCE_DIR.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
     if not skill_dirs:
-        print("[INFO] No skill directories found in 'skills/'.")
+        print("[INFO] No skill directories found in 'skills/'.", file=sys.stderr)
         return 1
 
     print(f"Found {len(skill_dirs)} skill(s): {[d.name for d in skill_dirs]}\n")
@@ -100,7 +102,7 @@ def sync_skills(check: bool = False) -> int:
                         try:
                             shutil.rmtree(target_item)
                         except OSError as error:
-                            print(f"  [ERROR] cannot remove {target_item}: {error}")
+                            print(f"  [ERROR] cannot remove {target_item}: {error}", file=sys.stderr)
                             failures.append(f"rmtree failed: {target_item}")
                             continue
                         print(f"  [DEL STALE] {target_item}")
@@ -119,12 +121,21 @@ def sync_skills(check: bool = False) -> int:
 
             try:
                 if dest.exists():
+                    # Idempotent: skip byte-identical skills to avoid mtime churn
+                    # and to keep parallel readers from seeing a half-copied dest.
+                    if _dirs_differ(skill_dir, dest) is None:
+                        print(f"  [SKIP] {dest} already in sync")
+                        continue
                     shutil.rmtree(dest)
                     print(f"  [DEL]  {dest}")
 
-                shutil.copytree(skill_dir, dest)
+                shutil.copytree(
+                    skill_dir,
+                    dest,
+                    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store"),
+                )
             except OSError as error:
-                print(f"  [ERROR] cannot sync {skill_dir} -> {dest}: {error}")
+                print(f"  [ERROR] cannot sync {skill_dir} -> {dest}: {error}", file=sys.stderr)
                 failures.append(f"copy failed: {dest}")
                 continue
             print(f"  [COPY] {skill_dir} -> {dest}")
@@ -132,15 +143,20 @@ def sync_skills(check: bool = False) -> int:
         print()
 
     if failures:
-        print(f"FAILED: {len(failures)} problem(s).")
+        print(f"FAILED: {len(failures)} problem(s).", file=sys.stderr)
         for line in failures:
-            print(f"  - {line}")
+            print(f"  - {line}", file=sys.stderr)
         return 1
     print("Done.")
     return 0
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Sync skills/ to agent directories.")
-    parser.add_argument("--check", action="store_true", help="Fail if any target is missing or stale, without writing.")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Fail if any existing target differs or is stale, without writing. "
+        "Missing target roots are skipped (they are gitignored local installs).",
+    )
     args = parser.parse_args()
     raise SystemExit(sync_skills(check=args.check))

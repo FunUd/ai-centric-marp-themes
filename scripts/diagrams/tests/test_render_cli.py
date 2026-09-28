@@ -581,8 +581,8 @@ def test_pad_output_aspect_leaves_matching_canvas_untouched(tmp_path: Path, caps
 
 
 def test_pad_output_aspect_fails_loudly_when_unreadable(tmp_path: Path, capsys) -> None:
-    with pytest.raises(SystemExit) as exc:
-        render._pad_output_aspect(tmp_path / "missing.svg", 2.4, "full")
+    # _pad_output_aspect returns False (no sys.exit) so the render core stays
+    # importable/testable; CLI callers in main() exit 1 on False.
+    assert render._pad_output_aspect(tmp_path / "missing.svg", 2.4, "full") is False
 
-    assert exc.value.code == 1
     assert "Cannot pad canvas" in capsys.readouterr().err

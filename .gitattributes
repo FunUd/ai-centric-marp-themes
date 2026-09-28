@@ -1,8 +1,18 @@
 # Binary assets: keep line-ending conversion and diff off.
 *.png binary
 *.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
 *.ttf binary
-*.html binary -diff
+*.otf binary
+*.woff binary
+*.woff2 binary
+# Generated slide HTML under slides/ stays diffable (no binary flag).
+slides/**/*.html diff linguist-generated
+
+# SVG diagrams are text (LF) so golden comparisons stay stable on Windows.
+*.svg text eol=lf diff
 
 # Screenshots are regenerable via `python scripts/take-screenshots.py all`.
 # Uncomment to use Git LFS if clone size becomes a problem:

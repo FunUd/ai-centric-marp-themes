@@ -1,6 +1,6 @@
 ---
 name: theme-expert-common
-description: Shared Marp layout reference for theme-expert-* skills. Read this only when a theme skill points here or when you need generic cover, TOC, column, grid, density, timeline, checklist, callout, alignment, or image guidance.
+description: Shared Marp layout reference for theme-expert-* skills. Do NOT activate standalone — read only when an active theme-expert-* skill explicitly points here for cover, TOC, column, grid, density, timeline, checklist, callout, alignment, or image guidance.
 ---
 
 # Theme Expert Common

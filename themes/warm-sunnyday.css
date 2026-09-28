@@ -476,6 +476,10 @@ section::after {
   border-radius: 12px;
   content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
 }
+
+section:not([data-marpit-pagination])::after {
+  display: none;
+}
 /* </base:pagination> */
 
 /* ============================================================
@@ -864,19 +868,23 @@ section.grid-quadrant.axes .axis-x {
   letter-spacing: 0.2em;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(1) {
+section.grid-quadrant.axes .cell:nth-of-type(1),
+section.grid-quadrant.axes .cell:nth-child(2) {
   grid-area: c1;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(2) {
+section.grid-quadrant.axes .cell:nth-of-type(2),
+section.grid-quadrant.axes .cell:nth-child(3) {
   grid-area: c2;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(3) {
+section.grid-quadrant.axes .cell:nth-of-type(3),
+section.grid-quadrant.axes .cell:nth-child(4) {
   grid-area: c3;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(4) {
+section.grid-quadrant.axes .cell:nth-of-type(4),
+section.grid-quadrant.axes .cell:nth-child(5) {
   grid-area: c4;
 }
 /* </base:grid-axes> */
@@ -1278,7 +1286,7 @@ section .checklist li::before {
   left: 0;
   top: 4px;
   color: var(--ws-white);
-  background: var(--ws-success);
+  background: #047857;
   width: 22px;
   height: 22px;
   display: flex;
@@ -1474,7 +1482,8 @@ section .v-bottom {
    Highlight colors utility
    ============================================================ */
 section .text-blue {
-  color: var(--ws-primary);
+  /* --ws-primary (#FF8C42) fails AA as body text; use the darkened terracotta. */
+  color: #C2571A;
 }
 
 section .text-accent {

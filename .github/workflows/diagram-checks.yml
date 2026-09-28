@@ -20,8 +20,10 @@ on:
       - "skills/**"
       - "slides/**"
       - "assets/**"
+      - "docs/**"
       - ".github/workflows/**"
       - "README.md"
+      - "CHANGELOG.md"
       - "package.json"
   pull_request:
     paths:
@@ -30,8 +32,10 @@ on:
       - "skills/**"
       - "slides/**"
       - "assets/**"
+      - "docs/**"
       - ".github/workflows/**"
       - "README.md"
+      - "CHANGELOG.md"
       - "package.json"
   workflow_dispatch:
 
@@ -98,7 +102,10 @@ jobs:
         # skill works outside this repository. Keep it byte-identical.
         run: python scripts/sync-skill-vendor.py --check
 
-      - name: Check skill sync state
+      - name: Check skill sync state (.github/skills only in CI)
+        # Agent dirs (.kiro/.agent/.agents/.windsurf/.codex/.claude) are
+        # gitignored local installs, so --check skips missing roots by design.
+        # .github/skills IS tracked (see .gitignore) so this guards Copilot drift.
         run: python scripts/sync-skills.py --check
 
       - name: Check template catalog sync
@@ -175,7 +182,8 @@ jobs:
       - name: Check vendored diagram engine is in sync
         run: python scripts/sync-skill-vendor.py --check
 
-      - name: Check skill sync state
+      - name: Check skill sync state (.github/skills only in CI)
+        # See ubuntu job: gitignored agent dirs are skipped by design.
         run: python scripts/sync-skills.py --check
 
       - name: Check template catalog sync

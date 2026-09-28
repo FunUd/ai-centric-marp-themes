@@ -429,6 +429,10 @@ section::after {
   content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
 }
 
+section:not([data-marpit-pagination])::after {
+  display: none;
+}
+
 /* Utility: Header / Footer / Pagination control */
 section.no-header header {
   display: none;
@@ -722,19 +726,23 @@ section.grid-quadrant.axes .axis-x {
   letter-spacing: 0.2em;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(1) {
+section.grid-quadrant.axes .cell:nth-of-type(1),
+section.grid-quadrant.axes .cell:nth-child(2) {
   grid-area: c1;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(2) {
+section.grid-quadrant.axes .cell:nth-of-type(2),
+section.grid-quadrant.axes .cell:nth-child(3) {
   grid-area: c2;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(3) {
+section.grid-quadrant.axes .cell:nth-of-type(3),
+section.grid-quadrant.axes .cell:nth-child(4) {
   grid-area: c3;
 }
 
-section.grid-quadrant.axes .cell:nth-of-type(4) {
+section.grid-quadrant.axes .cell:nth-of-type(4),
+section.grid-quadrant.axes .cell:nth-child(5) {
   grid-area: c4;
 }
 

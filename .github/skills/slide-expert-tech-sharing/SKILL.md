@@ -1,0 +1,197 @@
+---
+name: slide-expert-tech-sharing
+description: Activate this skill ONLY when PLANNING or OUTLINING Tech Sharing presentation slides. DO NOT activate during Marp implementation, layout fixing, or exporting.
+---
+
+# Technical Sharing Slide Expert
+
+A guide for creating effective technical sharing and study group presentation slides for engineers.
+
+
+## MANDATORY: Confirm Before Drafting
+
+**DO NOT generate any slide content for a new or substantially revised deck until you have explicitly confirmed the outline with the user.**
+
+> **Quality Standards:** Follow the `slide-content-designer` skill quality guidelines (message-driven titles, bold key labels, Magic Number 3). Enforce message-driven titles (conclusions over nouns), bold key labels in lists, and Magic Number 3 (max 3-4 points per slide).
+
+Before writing any new slide content, you MUST:
+1. Present a proposed outline (section titles with conclusions + slide count + estimated time) based on the guidelines below.
+2. Ask: "Does this structure work for you? Let me know if you'd like any changes."
+3. Wait for explicit approval before proceeding.
+
+## Understanding Your Audience
+
+### Audience Analysis Framework
+
+Before creating slides, analyze your audience:
+
+| Dimension | Questions to Ask | Impact on Content |
+|-----------|-----------------|-------------------|
+| **Technical Level** | Beginner/Intermediate/Expert? | Determines depth of explanation needed |
+| **Domain Knowledge** | Familiar with the topic area? | Affects prerequisite explanations |
+| **Role Diversity** | Developers/PMs/Managers? | Balances technical vs business value |
+| **Learning Goals** | What should they take away? | Shapes the core message and structure |
+| **Time Context** | Lunch session/Full workshop? | Determines content volume (1 slide ≈ 2 min) |
+
+### Content Calibration Guidelines
+
+- **Mixed Audience**: Start with fundamentals, provide advanced details in appendices
+- **Same-Team Sharing**: Skip basics, dive into implementation details and lessons learned
+- **Cross-Team Sharing**: Emphasize applicability and integration points
+- **Management Present**: Include business impact and resource trade-offs
+
+## Content Structure & Storytelling
+
+### Recommended Slide Structure
+
+For the detailed section-by-section slide structure, **please read `references/structure-template.md`**.
+
+## Slide Design Principles
+
+### Timing Guidelines
+
+- **Standard pace**: 1 slide = 2 minutes
+- **Code-heavy slides**: 1 slide = 3-4 minutes
+- **Interactive/demo slides**: 1 slide = 5+ minutes
+
+| Duration | Total Slides | Notes |
+|----------|--------------|-------|
+| 15 min | 7-8 slides | Lunch session, focused topic |
+| 30 min | 14-16 slides | Standard tech talk |
+| 60 min | 25-30 slides | Workshop with demos |
+
+### Content Density Rules
+
+- **Target bullet points**: 3 per slide (Magic Number 3; hard max 5 for dense reference slides)
+- **Maximum list items**: 5 per slide (7 only for dense timetable/checklist layouts)
+- **Code lines per slide**: 10-15 maximum
+- **Text density**: < 60% of slide area
+
+### Visual Hierarchy
+
+1. **Title**: Clear, specific (not generic like "Overview")
+2. **Key Visual**: Diagram, code snippet, or chart
+3. **Supporting Text**: Minimal, bullet points
+4. **Callout Boxes**: Highlight important insights or warnings
+
+## Technical Content Patterns
+
+### Code Presentation Best Practices
+
+**Good Code Slide Structure:**
+- Focus on the essential logic
+- Remove boilerplate and error handling
+- Use comments to explain WHY, not WHAT
+- Show incremental improvement (v1 → v2 → v3)
+- Include performance annotations (time/space complexity)
+
+### Architecture Diagram Guidelines
+
+- **Layered View**: Show components and their relationships
+- **Data Flow**: Use arrows to indicate direction of data movement
+- **Color Coding**: Consistent colors for service types (e.g., blue=data, green=compute)
+- **Annotations**: Add brief explanations for key decisions
+
+### Metrics and Performance Data
+
+**Presentation Tips:**
+- Use relative improvements ("2x faster") over absolute numbers
+- Include baseline for context
+- Visualize with simple charts (bar > line > table)
+- Show confidence intervals or sample sizes when relevant
+
+### Technology Comparison Slides
+
+**Effective Comparison Structure:**
+
+| Aspect | Option A | Option B |
+|--------|----------|----------|
+| **Pros** | Specific advantages | Specific advantages |
+| **Cons** | Clear limitations | Clear limitations |
+| **Best For** | Use case description | Use case description |
+
+## Case Study Presentation
+
+### Case Study Slide Structure
+
+A compelling case study follows this narrative:
+
+1. **Situation**: What was the context and challenge?
+2. **Approach**: What solution did you implement?
+3. **Results**: What were the measurable outcomes?
+4. **Lessons**: What would you do differently?
+
+### Before/After Comparison Template
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Response time | 2.5s | 0.8s | **-68%** |
+| Error rate | 5% | 0.5% | **-90%** |
+| Infrastructure cost | $X/month | $0.7X/month | **-30%** |
+| Maintenance | 20 hrs/week | 5 hrs/week | **-75%** |
+
+### Lessons Learned Format
+
+Structure insights using this pattern:
+- **What we tried**: Brief description of the approach
+- **What happened**: Outcome (success or failure)
+- **Key insight**: Actionable takeaway for the audience
+
+## Q&A and Discussion
+
+### Preparation for Discussion
+
+**Prepare backup slides for likely questions:**
+- Alternative approaches you considered
+- Detailed implementation notes
+- Performance benchmarks with more context
+- Security/privacy considerations
+
+### Discussion Facilitation
+
+**Questions to seed discussion:**
+- "Has anyone faced a similar challenge in their team?"
+- "What alternative approaches have you considered?"
+- "How would you adapt this for [different context]?"
+
+### Follow-up Resources Slide
+
+Include a slide with:
+- Links to documentation/tools mentioned
+- Repository/code samples (if shareable)
+- Related reading or further learning resources
+- Contact information for follow-up questions
+
+## Preparation Checklist
+
+### Before Creating Slides
+
+- [ ] Defined the single core message I want to convey
+- [ ] Analyzed audience technical level and interests
+- [ ] Determined appropriate slide count based on time
+- [ ] Gathered supporting data, code examples, and visuals
+
+### Content Review
+
+- [ ] Each slide has exactly one clear message
+- [ ] Technical jargon is defined or replaced with accessible language
+- [ ] Code examples are minimal and commented for "why" not "what"
+- [ ] Numbers/metrics include context (baseline, sample size)
+- [ ] Case studies include both successes AND failures/lessons
+
+### Design Review
+
+- [ ] Slides follow 1 slide ≈ 2 minutes guideline
+- [ ] No slide has more than 5 bullet points
+- [ ] Visual hierarchy is clear (title → key visual → supporting text)
+- [ ] Color scheme is consistent and accessible
+- [ ] Code is syntax highlighted and properly sized (16-18px)
+
+
+## Workflow Handoff
+
+Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
+Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.
+
+> **Diagram Warning for Implementation Phase:** When suggesting diagrams (like Sequence or Flowcharts), remind the user that inline Mermaid (` ```mermaid `) fails in Marp PDF exports. Diagrams must be placed as placeholder images (`![Diagram](./assets/diagram.svg)`) and generated offline with the `marp-diagram-creator` skill's vendored engine (resolve once per `marp-diagram-creator` § Locating the Engine — `ENGINE=$(python <skill-dir>/scripts/print-engine-path.py)` on bash, `$ENGINE = python <skill-dir>/scripts/print-engine-path.py` on PowerShell — then `python "$ENGINE/render-slide-diagram.py"`, theme-aware and canvas-validated) during the implementation phase.
+

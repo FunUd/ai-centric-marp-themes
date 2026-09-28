@@ -1,7 +1,8 @@
+# Agent skill installs are local-only and gitignored, EXCEPT .github/skills
+# which is tracked so GitHub Copilot uses the same skills in cloud/CI.
+# (Do not use `.github/*` wildcard here — it would silently ignore
+#  `.github/skills` and any future .github config.)
 .kiro
-.github/*
-!.github/workflows/
-!.github/workflows/**
 .agent
 .agents
 .windsurf
@@ -12,10 +13,15 @@
 venv
 
 **/__pycache__/
+*.pyc
+*.pyo
 .pytest_cache/
+.coverage
 
 node_modules/
 .dist/
+
+pytest-results.xml
 
 # Take-screenshots scratch output (scripts/take-screenshots.py)
 _*_temp.html

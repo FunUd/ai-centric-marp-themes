@@ -62,8 +62,8 @@ For the detailed section-by-section slide structure, **please read `references/s
 
 ### Content Density Rules
 
-- **Maximum bullet points**: 5 per slide
-- **Maximum list items**: 7 (magic number rule)
+- **Target bullet points**: 3 per slide (Magic Number 3; hard max 5 for dense reference slides)
+- **Maximum list items**: 5 per slide (7 only for dense timetable/checklist layouts)
 - **Code lines per slide**: 10-15 maximum
 - **Text density**: < 60% of slide area
 
@@ -193,5 +193,5 @@ Include a slide with:
 Once the content structure and text are finalized based on these guidelines, **DO NOT generate the final Marp Markdown directly from this skill**.
 Instead, hand off the implementation to the `marp-slide-creator` skill to ensure proper Marp syntax, layout, and overflow prevention.
 
-> **Diagram Warning for Implementation Phase:** When suggesting diagrams (like Sequence or Flowcharts), remind the user that inline Mermaid (` ```mermaid `) fails in Marp PDF exports. Diagrams must be placed as placeholder images (`![Diagram](./assets/diagram.svg)`) and generated offline with the `marp-diagram-creator` skill's vendored engine (resolve once via `ENGINE=$(python <marp-diagram-creator-skill-dir>/scripts/print-engine-path.py)`, then `python "$ENGINE/render-slide-diagram.py"`, theme-aware and canvas-validated) during the implementation phase.
+> **Diagram Warning for Implementation Phase:** When suggesting diagrams (like Sequence or Flowcharts), remind the user that inline Mermaid (` ```mermaid `) fails in Marp PDF exports. Diagrams must be placed as placeholder images (`![Diagram](./assets/diagram.svg)`) and generated offline with the `marp-diagram-creator` skill's vendored engine (resolve once per `marp-diagram-creator` § Locating the Engine — `ENGINE=$(python <skill-dir>/scripts/print-engine-path.py)` on bash, `$ENGINE = python <skill-dir>/scripts/print-engine-path.py` on PowerShell — then `python "$ENGINE/render-slide-diagram.py"`, theme-aware and canvas-validated) during the implementation phase.
 

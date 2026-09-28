@@ -1,0 +1,11 @@
+{
+  "type": "org-chart",
+  "title": "チーム構成",
+  "root": {
+    "label": "プロダクト責任者",
+    "children": [
+      {"label": "開発", "children": [{"label": "エンジニア"}]},
+      {"label": "デザイン", "children": [{"label": "デザイナー"}]}
+    ]
+  }
+}

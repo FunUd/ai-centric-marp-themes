@@ -72,12 +72,22 @@ def local_imports(path: Path, known: set[str]) -> set[str]:
         raise RuntimeError(f"cannot parse {path}: {error}") from error
     found: set[str] = set()
     for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom) and node.module and node.module in known:
-            found.add(node.module)
+        if isinstance(node, ast.ImportFrom):
+            # Absolute: from X import ... / Relative: from . import X / from .X import ...
+            if node.level and node.level > 0:
+                for alias in node.names:
+                    # from . import foo  -> alias.name == foo
+                    # from .foo import bar -> node.module == foo
+                    candidate = node.module or alias.name.split(".")[0]
+                    if candidate in known:
+                        found.add(candidate)
+            elif node.module and node.module.split(".")[0] in known:
+                found.add(node.module.split(".")[0])
         elif isinstance(node, ast.Import):
             for alias in node.names:
-                if alias.name in known:
-                    found.add(alias.name)
+                top = alias.name.split(".")[0]
+                if top in known:
+                    found.add(top)
     return found
 
 
@@ -85,10 +95,10 @@ def runtime_modules() -> set[str]:
     """Transitive local-import closure of the entry points."""
     known = _module_names()
     for name in ENTRY_POINTS:
-        if (ENGINE_DIR / f"{name}.py").exists() is False:
+        if not (ENGINE_DIR / f"{name}.py").exists():
             raise RuntimeError(f"entry point missing: {ENGINE_DIR / f'{name}.py'}")
     resolved: set[str] = set()
-    stack = [name for name in ENTRY_POINTS]
+    stack = list(ENTRY_POINTS)
     while stack:
         name = stack.pop()
         if name in resolved:
@@ -110,7 +120,10 @@ def expected_files() -> set[str]:
     """Vendored paths, relative to VENDOR_DIR, as posix strings."""
     files = {f"{name}.py" for name in sorted(runtime_modules())}
     for data_dir in DATA_DIRS:
-        for path in (ENGINE_DIR / data_dir).rglob("*"):
+        data_path = ENGINE_DIR / data_dir
+        if not data_path.is_dir():
+            raise RuntimeError(f"data dir missing: {data_path}")
+        for path in data_path.rglob("*"):
             if path.is_file() and "__pycache__" not in path.parts:
                 files.add(path.relative_to(ENGINE_DIR).as_posix())
     return files
@@ -125,31 +138,15 @@ def _is_stale_vendored_file(relative: str) -> bool:
     return not filecmp.cmp(vendored, source, shallow=False)
 
 
-def _clear_vendor() -> None:
-    # Atomic replace: build in a temp dir, then swap. A crash mid-write
-    # must never leave a half-vendored directory behind.
-    import tempfile
-
-    if VENDOR_DIR.exists():
-        backup = VENDOR_DIR.with_name(VENDOR_DIR.name + ".bak")
-        if backup.exists():
-            shutil.rmtree(backup)
-        VENDOR_DIR.rename(backup)
-        try:
-            VENDOR_DIR.mkdir(parents=True, exist_ok=True)
-        except Exception:
-            backup.rename(VENDOR_DIR)
-            raise
-        shutil.rmtree(backup, ignore_errors=True)
-    else:
-        VENDOR_DIR.mkdir(parents=True, exist_ok=True)
-
-
 def write_vendor() -> int:
     import tempfile
 
     files = expected_files()
-    staging = Path(tempfile.mkdtemp(prefix="vendor-"))
+    # Stage in the same directory as VENDOR_DIR so rename() never crosses
+    # volumes/drives (tempfile.gettempdir() may live on another drive).
+    staging_parent = VENDOR_DIR.parent
+    staging_parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".vendor-tmp-", dir=str(staging_parent)))
     try:
         for relative in sorted(files):
             destination = staging / relative

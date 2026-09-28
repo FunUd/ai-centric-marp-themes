@@ -1,0 +1,5 @@
+flowchart LR
+    U(["利用者"]) --> SYS["予約システム"]
+    SYS --> EXT1["決済API"]
+    SYS --> EXT2[("予約DB")]
+    SYS --> EXT3["通知サービス"]

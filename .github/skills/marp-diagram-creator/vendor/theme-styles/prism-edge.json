@@ -1,0 +1,106 @@
+{
+  "theme": "prism-edge",
+  "name": "Prism Edge",
+  "mode": "light",
+  "fontFamily": "'Space Grotesk', 'Noto Sans JP', sans-serif",
+  "colors": {
+    "primary": "#4F46E5",
+    "primaryDark": "#312E81",
+    "primaryLight": "#C7D2FE",
+    "primaryPale": "#EEF2FF",
+    "accent": "#06B6D4",
+    "text": "#111827",
+    "textMuted": "#64748B",
+    "background": "#FAFBFC",
+    "surface": "#FFFFFF",
+    "border": "#D1D9E6",
+    "borderLight": "#E8EDF4",
+    "line": "#4F46E5",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "danger": "#EF4444"
+  },
+  "mermaid": {
+    "theme": "base",
+    "themeVariables": {
+      "primaryColor": "#EEF2FF",
+      "primaryTextColor": "#111827",
+      "primaryBorderColor": "#4F46E5",
+      "lineColor": "#4F46E5",
+      "secondaryColor": "#C7D2FE",
+      "tertiaryColor": "#FAFBFC",
+      "mainBkg": "#EEF2FF",
+      "nodeBorder": "#4F46E5",
+      "clusterBkg": "#FAFBFC",
+      "clusterBorder": "#D1D9E6",
+      "titleColor": "#111827",
+      "edgeLabelBackground": "#FFFFFF",
+      "fontFamily": "'Space Grotesk', 'Noto Sans JP', sans-serif",
+      "fontSize": "15px",
+      "taskBkgColor": "#EEF2FF",
+      "taskBorderColor": "#4F46E5",
+      "activeTaskBkgColor": "#C7D2FE",
+      "activeTaskBorderColor": "#4F46E5",
+      "taskTextColor": "#111827",
+      "taskTextOutsideColor": "#111827",
+      "taskTextDarkColor": "#111827"
+    },
+    "flowchart": {
+      "curve": "basis",
+      "padding": 10,
+      "nodeSpacing": 40,
+      "rankSpacing": 50
+    },
+    "sequence": {
+      "actorFontSize": 14,
+      "messageFontSize": 14,
+      "noteFontSize": 13,
+      "actorLineColor": "#4F46E5",
+      "messageColor": "#4F46E5"
+    },
+    "fontSize": 15
+  },
+  "drawio": {
+    "primaryNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#4F46E5;fontColor=#111827;strokeWidth=1.5;",
+    "accentNodeStyle": "rounded=0;whiteSpace=wrap;html=1;fillColor=#4F46E5;strokeColor=#312E81;fontColor=#FFFFFF;fontStyle=1;",
+    "secondaryNodeStyle": "rounded=1;whiteSpace=wrap;html=1;fillColor=#C7D2FE;strokeColor=#4F46E5;fontColor=#111827;",
+    "containerStyle": "swimlane;startSize=28;fillColor=#FAFBFC;strokeColor=#D1D9E6;fontColor=#111827;fontStyle=1;",
+    "edgeStyle": "edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#4F46E5;strokeWidth=1.5;endArrow=block;endFill=1;"
+  },
+  "shapes": {
+    "nodeRadius": 0,
+    "nodeRadiusLg": 0,
+    "markerRadius": 0,
+    "strokeWidth": 1.5,
+    "strokeWidthBold": 2.5,
+    "nodePaddingX": 12,
+    "nodePaddingY": 8
+  },
+  "effects": {
+    "nodeShadowEnabled": true,
+    "nodeShadowColor": "rgba(30, 41, 59, 0.06)",
+    "nodeShadowBlur": 12,
+    "nodeShadowOffsetY": 4,
+    "glowEnabled": false,
+    "glowColor": null,
+    "glowBlur": 0,
+    "glassEnabled": false,
+    "glassFill": null,
+    "glassStroke": null
+  },
+  "typography": {
+    "titleSize": 22,
+    "labelSize": 15,
+    "captionSize": 12,
+    "titleWeight": "bold",
+    "labelWeight": "normal"
+  },
+  "signature": {
+    "source": "themes/prism-edge.css",
+    "gradientFrom": "#4F46E5",
+    "gradientTo": "#06B6D4",
+    "topBorderWidth": 4,
+    "hasGlass": true,
+    "hasGlow": false
+  }
+}

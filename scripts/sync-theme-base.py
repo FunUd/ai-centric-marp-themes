@@ -46,7 +46,7 @@ SECTION_RE = re.compile(r"/\*\s*==\s*([\w-]+)\s*==\s*\*/")
 THEMES_RE = re.compile(r"/\*\s*themes:\s*([^*]+?)\s*\*/")
 OPEN_RE = re.compile(r"/\*\s*<base:([\w-]+)>\s*.*?\*/")
 CLOSE_RE = re.compile(r"/\*\s*</base:([\w-]+)>\s*\*/")
-OTHER_PREFIX_RE = re.compile(r"--(cc|pe|ng|ws|sm)-")
+OTHER_PREFIX_RE = re.compile(r"--(" + "|".join(sorted(set(PREFIX.values()) - {"ac"})) + r")-")
 
 
 def parse_base() -> dict[str, tuple[list[str], str]]:
@@ -87,7 +87,6 @@ def check_base_hygiene(sections: dict[str, tuple[list[str], str]]) -> list[str]:
 def theme_markers(text: str) -> dict[str, tuple[int, int]]:
     """name -> (content start, content end) offsets of the marker region."""
     regions: dict[str, tuple[int, int]] = {}
-    pos = 0
     for open_match in OPEN_RE.finditer(text):
         name = open_match.group(1)
         close_match = CLOSE_RE.search(text, open_match.end())
@@ -96,8 +95,6 @@ def theme_markers(text: str) -> dict[str, tuple[int, int]]:
         if name in regions:
             raise RuntimeError(f"duplicated <base:{name}> marker region")
         regions[name] = (open_match.end(), close_match.start())
-        pos = close_match.end()
-    _ = pos
     return regions
 
 
@@ -119,8 +116,7 @@ def sync_theme(theme: str, sections: dict[str, tuple[list[str], str]], check: bo
     drift: list[str] = []
     # Replace from the end so offsets stay valid.
     for name in sorted(regions, key=lambda n: regions[n][0], reverse=True):
-        themes, body = sections[name]
-        _ = themes
+        _, body = sections[name]
         want = body.replace("--ac-", f"--{PREFIX[theme]}-")
         start, end = regions[name]
         current = text[start:end].strip("\n")
@@ -128,7 +124,17 @@ def sync_theme(theme: str, sections: dict[str, tuple[list[str], str]], check: bo
             drift.append(f"[DRIFT] {theme}.css <base:{name}> differs from _base.css")
             rebuilt = rebuilt[:start] + "\n" + want + "\n" + rebuilt[end:]
     if drift and not check:
-        path.write_text(rebuilt, encoding="utf-8")
+        import tempfile
+
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=str(path.parent), delete=False
+            ) as tmp:
+                tmp.write(rebuilt)
+                tmp_path = Path(tmp.name)
+            tmp_path.replace(path)
+        except OSError as error:
+            raise RuntimeError(f"cannot write {path}: {error}") from error
     return drift
 
 

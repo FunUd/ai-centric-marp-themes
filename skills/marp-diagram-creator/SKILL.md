@@ -1,6 +1,6 @@
 ---
 name: marp-diagram-creator
-description: Activate this skill when creating, embedding, or updating diagrams (flowcharts, architecture, sequence diagrams, state machines, comparison matrices) for Marp presentation slides using Mermaid or draw.io. Enforces strict slide canvas boundaries to prevent layout breakage and overflow.
+description: Activate this skill when creating, embedding, or updating diagrams (flowcharts, architecture, sequence diagrams, state machines, comparison matrices, JSON charts/concepts) for Marp presentation slides using Mermaid, draw.io, JSON SVG, or CSS-native layouts. Enforces strict slide canvas boundaries to prevent layout breakage and overflow.
 ---
 
 # Marp Diagram Creator
