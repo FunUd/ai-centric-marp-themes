@@ -22,6 +22,19 @@ placement area is standardized as follows.
 > - Creating diagrams taller than `460px` (the leading cause of bottom overflow).
 > - Placing tall/portrait diagrams (height far exceeding width) on a Full Slide (they get shrunk to 460px height and text becomes unreadably small).
 > - Stuffing long text (25+ chars) into a single node (breaks out of borders or collapses via extreme auto-wrapping).
+> - **Undersized diagrams (2026-09-28 regression)**: a `col2` 520x360 chart inside a
+>   ~505px column centers and leaves ~150px of vertical whitespace, plus a short
+>   3-bullet text column leaves ~350px blank at the slide bottom. Do NOT use
+>   `split-2`/`split-asym` for JSON charts with ≤4 items (hbar/bar/line/pyramid/
+>   funnel). Regenerate at `--layout full` (1080x420) and use a full-width slide
+>   with `width:1050px` + a one-line badge footer instead. `marp-lint.py`
+>   enforces this via `DIAGRAM_SHORT_CANVAS` (canvas <400px in col2/asym) and
+>   `DIAGRAM_UNDERSIZED_WIDTH` (embed <90% of budget).
+> - **Slack canvas (2026-09-29 regression)**: pyramid/funnel asym templates center
+>   content in a 710px canvas, leaving ~115-140px of empty right padding that
+>   stacks with the column gap. Trim the viewBox right edge (e.g. 710 → 630,
+>   height unchanged) instead of shipping the padding. `marp-lint.py` enforces
+>   this via `DIAGRAM_SLACK_CANVAS` (content ends >80px before the viewBox edge).
 
 > ※ **Canvas ratio control**: pin the SVG canvas ratio with `--aspect 2.4` (or `16:9`) on
 > `render-slide-diagram.py`, a JSON source field `"aspect": 2.4` (derives `height` from `width`;

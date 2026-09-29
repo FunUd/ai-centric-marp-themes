@@ -145,7 +145,7 @@ section {
   padding: 45px 70px 50px 70px;
   background: var(--ws-bg);
   color: var(--ws-text);
-  font-family: 'Warm Poppins', 'Warm JP', sans-serif;
+  font-family: 'Warm Poppins', 'Poppins', 'Warm JP', 'Zen Maru Gothic', system-ui, -apple-system, sans-serif;
   --font-scale: 1;
   font-size: calc(24px * var(--font-scale));
   font-weight: 400;
@@ -1127,6 +1127,7 @@ section.dense {
 }
 
 section.dense h1 {
+  font-size: 38px;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom-width: 2px;
@@ -1162,6 +1163,7 @@ section.extra-dense {
 }
 
 section.extra-dense h1 {
+  font-size: 38px;
   margin-bottom: 8px;
   padding-bottom: 6px;
   border-bottom-width: 2px;

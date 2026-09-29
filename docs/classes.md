@@ -39,8 +39,8 @@ All themes share a unified class system. Apply any class via the Marp directive:
 | `profile` | Self-introduction / team member profile |
 | `grid-quadrant` + `axes` | Adds axis labels to a quadrant matrix: `<div class="grid">` with `<span class="axis-y">` / `<span class="axis-x">` + 4x `<div class="cell">` in order (`<span>` axes required so `div:nth-of-type` stays aligned; `<div>` axes also work via `:nth-child` fallback) |
 | `steps` + `arrows` | Adds connector arrows between step cards |
-| `dense` | High-density slide (18px base font) |
-| `extra-dense` | Maximum density (15px base font) |
+| `dense` | High-density slide (body 18px; H1 title stays full size) |
+| `extra-dense` | Maximum density (body 15px; H1 title stays full size) |
 | `section-number` | *(Prism Edge)* Large decorative section numeral in the corner |
 
 ### Alignment & Utilities

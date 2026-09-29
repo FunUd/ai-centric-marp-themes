@@ -125,7 +125,7 @@ section {
   padding: 45px 70px 50px 70px;
   background: var(--pe-bg);
   color: var(--pe-text);
-  font-family: 'Prism Grotesk', 'Prism JP', sans-serif;
+  font-family: 'Prism Grotesk', 'Space Grotesk', 'Prism JP', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
   --font-scale: 1;
   font-size: calc(24px * var(--font-scale));
   font-weight: 400;
@@ -282,7 +282,7 @@ section code {
   padding: 2px 8px;
   border-radius: 2px;
   font-size: 0.88em;
-  font-family: 'Prism Mono', ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+  font-family: 'Prism Mono', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
 }
 
 section pre {
@@ -1538,6 +1538,7 @@ section.dense {
 }
 
 section.dense h1 {
+  font-size: 36px;
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom-width: 2px;
@@ -1572,6 +1573,7 @@ section.extra-dense {
 }
 
 section.extra-dense h1 {
+  font-size: 36px;
   margin-bottom: 8px;
   padding-bottom: 6px;
   border-bottom-width: 2px;

@@ -144,7 +144,7 @@ section {
     linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 18%),
     radial-gradient(circle at 50% 50%, rgba(7, 10, 18, 1) 0%, rgba(5, 7, 13, 0.98) 58%, rgba(2, 4, 9, 1) 100%);
   color: var(--ng-text);
-  font-family: 'Nebula Body', 'Nebula JP', sans-serif;
+  font-family: 'Nebula Body', 'Poppins', 'Nebula JP', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
   --font-scale: 1;
   font-size: calc(26px * var(--font-scale));
   line-height: 1.58;
@@ -160,7 +160,7 @@ section {
    Typography
    ============================================================ */
 section h1 {
-  font-family: 'Nebula Header', 'Nebula JP', sans-serif;
+  font-family: 'Nebula Header', 'Poppins', 'Nebula JP', 'Noto Sans JP', system-ui, -apple-system, sans-serif;
   font-size: calc(50px * var(--font-scale));
   font-weight: 700;
   margin: 0 0 28px 0;
@@ -970,7 +970,7 @@ section.dense {
   line-height: 1.48;
 }
 
-section.dense h1 { font-size: calc(50px * var(--font-scale)); margin-bottom: 20px; }
+section.dense h1 { font-size: 50px; margin-bottom: 20px; }
 section.dense h2 { font-size: calc(35px * var(--font-scale)); margin-bottom: 14px; }
 section.dense h3 { font-size: calc(27px * var(--font-scale)); margin-bottom: 10px; }
 section.dense p, section.dense ul, section.dense ol { margin-bottom: 12px; }
@@ -983,7 +983,7 @@ section.extra-dense {
   padding: 50px 70px;
 }
 
-section.extra-dense h1 { font-size: calc(50px * var(--font-scale)); margin-bottom: 14px; }
+section.extra-dense h1 { font-size: 50px; margin-bottom: 14px; }
 section.extra-dense h2 { font-size: calc(35px * var(--font-scale)); margin-bottom: 10px; }
 section.extra-dense h3 { font-size: calc(27px * var(--font-scale)); margin-bottom: 8px; }
 section.extra-dense p, section.extra-dense ul, section.extra-dense ol { margin-bottom: 8px; }
