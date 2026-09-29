@@ -1,0 +1,16 @@
+#!/bin/sh
+# Git pre-commit hook to verify all repository synchronization pipelines.
+# Enable this hook via: git config core.hooksPath .githooks
+
+echo "Running pre-commit repository synchronization check..."
+python scripts/run-all-sync.py --check
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+  echo ""
+  echo "[ERROR] Pre-commit hook aborted: synchronization check failed."
+  echo "Run 'python scripts/run-all-sync.py' to propagate SSoT changes, then re-commit."
+  exit 1
+fi
+
+exit 0

@@ -71,6 +71,13 @@ is self-contained: it carries its own copy of the diagram engine under
 The `slide-expert-*`, `theme-expert-*`, `slide-content-designer` and
 `theme-creator` skills are prose-only and need nothing beyond their own files.
 
+To catch sync drift before pushing, enable the pre-commit hook once per clone
+(`python scripts/run-all-sync.py --check` runs every SSoT gate at once):
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ---
 
 ## Layout Classes Overview
@@ -107,6 +114,7 @@ ai-centric-marp-themes/
 │   │   ├── quality-showcase.md
 │   │   └── assets/
 ├── scripts/
+│   ├── run-all-sync.py                # Runs every sync/check below at once (`--check` in pre-commit + CI)
 │   ├── sync-skills.py                 # Setup tool for AI agent skills
 │   ├── sync-skill-vendor.py           # Vendors the diagram runtime into marp-diagram-creator (`--check` in CI)
 │   ├── take-screenshots.py            # Regenerates assets/screenshots/*.png from the sample decks
