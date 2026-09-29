@@ -129,7 +129,9 @@ def test_both_entry_points_are_vendored() -> None:
 
 def test_every_runtime_module_is_vendored() -> None:
     for name in sync.runtime_modules():
-        assert (VENDOR_DIR / f"{name}.py").is_file(), f"{name}.py missing from vendor"
+        for member in sync._member_paths(name):
+            relative = member.relative_to(sync.ENGINE_DIR).as_posix()
+            assert (VENDOR_DIR / relative).is_file(), f"{relative} missing from vendor"
 
 
 @pytest.mark.parametrize("name", sorted(sync.DEV_ONLY))
@@ -173,9 +175,11 @@ def test_vendor_needs_no_theme_css() -> None:
     """If the vendored engine ever started reading `themes/*.css`, the skill
     would break outside a checkout. Assert it does not."""
     for module in sorted(sync.runtime_modules()):
-        source = (VENDOR_DIR / f"{module}.py").read_text(encoding="utf-8")
-        assert "../themes" not in source, f"{module}.py reads themes/ outside the skill"
-        assert "assets/fonts" not in source, f"{module}.py reads assets/fonts"
+        for member in sync._member_paths(module):
+            relative = member.relative_to(sync.ENGINE_DIR).as_posix()
+            source = (VENDOR_DIR / relative).read_text(encoding="utf-8")
+            assert "../themes" not in source, f"{relative} reads themes/ outside the skill"
+            assert "assets/fonts" not in source, f"{relative} reads assets/fonts"
 
 
 # --- the vendored engine runs standalone ------------------------------------

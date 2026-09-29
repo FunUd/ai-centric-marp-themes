@@ -61,7 +61,15 @@ DEV_ONLY = {
 
 
 def _module_names() -> set[str]:
-    return {p.stem for p in ENGINE_DIR.glob("*.py")}
+    names = {p.stem for p in ENGINE_DIR.glob("*.py")}
+    # Sub-packages (e.g. renderers/) are first-class runtime modules: their
+    # __init__.py marks them importable, and the whole directory is vendored.
+    names.update(
+        p.name
+        for p in ENGINE_DIR.iterdir()
+        if p.is_dir() and (p / "__init__.py").is_file() and "__pycache__" not in p.parts
+    )
+    return names
 
 
 def local_imports(path: Path, known: set[str]) -> set[str]:
@@ -91,6 +99,17 @@ def local_imports(path: Path, known: set[str]) -> set[str]:
     return found
 
 
+def _member_paths(name: str) -> list[Path]:
+    """Source files implementing a runtime module (single file or package)."""
+    single = ENGINE_DIR / f"{name}.py"
+    if single.is_file():
+        return [single]
+    pkg = ENGINE_DIR / name
+    if pkg.is_dir() and (pkg / "__init__.py").is_file():
+        return sorted(p for p in pkg.rglob("*.py") if "__pycache__" not in p.parts)
+    raise RuntimeError(f"runtime module has no source: {name}")
+
+
 def runtime_modules() -> set[str]:
     """Transitive local-import closure of the entry points."""
     known = _module_names()
@@ -104,7 +123,8 @@ def runtime_modules() -> set[str]:
         if name in resolved:
             continue
         resolved.add(name)
-        stack.extend(local_imports(ENGINE_DIR / f"{name}.py", known))
+        for member in _member_paths(name):
+            stack.extend(local_imports(member, known))
     missing = sorted(resolved - known)
     if missing:
         raise RuntimeError(f"entry points import missing modules: {missing}")
@@ -118,7 +138,10 @@ def _source_for(relative: str) -> Path:
 
 def expected_files() -> set[str]:
     """Vendored paths, relative to VENDOR_DIR, as posix strings."""
-    files = {f"{name}.py" for name in sorted(runtime_modules())}
+    files: set[str] = set()
+    for name in sorted(runtime_modules()):
+        for member in _member_paths(name):
+            files.add(member.relative_to(ENGINE_DIR).as_posix())
     for data_dir in DATA_DIRS:
         data_path = ENGINE_DIR / data_dir
         if not data_path.is_dir():

@@ -15,9 +15,15 @@ registry test (`tests/test_diagram_registry.py`) and the catalog check
   read `data["width"]` / `data["height"]` as usual. Mermaid/draw.io aspect padding lives in
   `svg_aspect.py` and is likewise engine-agnostic.
 
-## 2. Renderer (`svg_diagram_renderer.py`)
+## 2. Renderer (`scripts/diagrams/renderers/` + `svg_diagram_renderer.py` facade)
 
-- Implement `_render_<kind>(data, ctx)` returning a list of SVG element strings.
+- Implement `_render_<kind>(data, ctx)` returning a list of SVG element strings in the module matching its family:
+  `renderers/charts.py` (bar/line/pie/donut/hbar/stacked), `renderers/concepts.py`
+  (pyramid/funnel/radial/matrix/cycle), or `renderers/organization.py` (org-chart).
+  Shared SVG builders and context helpers live in `renderers/primitives.py`.
+- Re-export the new renderer from the `svg_diagram_renderer.py` facade (add to its
+  `from renderers.<module> import ...` list and `__all__`) — tests, `render-slide-diagram.py`,
+  and the vendored skill copy all import through the facade.
 - Use only `theme_context()` tokens (`primary`, `surface`, `text`, `muted`, `line`, …) — never hardcode theme colors.
 - Respect `data["width"]` / `data["height"]`; keep labels ≥12px and wrap via `wrap_text()`.
 - Register the renderer in `render_diagram()`'s `renderers` map.
