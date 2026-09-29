@@ -17,6 +17,7 @@ override without editing code::
 
     MARP_CLI_SPEC=@marp-team/marp-cli@4.2.3 python render-slide-diagram.py …
 """
+
 from __future__ import annotations
 
 import os
@@ -53,9 +54,7 @@ def spec_for(package: str) -> str:
     try:
         version = PINNED_VERSIONS[package]
     except KeyError as error:
-        raise ValueError(
-            f"unknown package {package!r}; pinned: {sorted(PINNED_VERSIONS)}"
-        ) from error
+        raise ValueError(f"unknown package {package!r}; pinned: {sorted(PINNED_VERSIONS)}") from error
     return f"{package}@{version}"
 
 
@@ -113,7 +112,11 @@ def installed_version(package: str) -> str | None:
     found: str | None = None
     for token in result.stdout.strip().split():
         cleaned = token.strip().lstrip("v").rstrip(",;")
-        if cleaned and cleaned[0].isdigit() and all(c.isdigit() or c == "." for c in cleaned.split("-")[0].replace(".", "")):
+        if (
+            cleaned
+            and cleaned[0].isdigit()
+            and all(c.isdigit() or c == "." for c in cleaned.split("-")[0].replace(".", ""))
+        ):
             # Accept dotted numeric versions like 4.2.3; ignore progress noise.
             parts = cleaned.split(".")
             if all(p.isdigit() for p in parts[:2]):

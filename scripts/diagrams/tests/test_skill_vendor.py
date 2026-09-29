@@ -13,12 +13,12 @@ Covered here:
 - vendored render output matches the source engine byte for byte;
 - no skill points at a path that only exists in a checkout.
 """
+
 from __future__ import annotations
 
 import filecmp
 import importlib.util
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -83,23 +83,25 @@ def test_tool_versions_is_vendored_so_installs_stay_pinned() -> None:
     unpinned `npx -y`, which is the drift this file exists to prevent."""
     assert "tool_versions" in sync.runtime_modules()
     assert (VENDOR_DIR / "tool_versions.py").is_file()
-    assert (VENDOR_DIR / "tool_versions.py").read_bytes() == (
-        ROOT / "scripts/diagrams/tool_versions.py"
-    ).read_bytes()
+    assert (VENDOR_DIR / "tool_versions.py").read_bytes() == (ROOT / "scripts/diagrams/tool_versions.py").read_bytes()
 
 
 def test_isolated_skill_resolves_a_pinned_mermaid_version(isolated_skill: Path) -> None:
     """The whole point of vendoring the pin: a copied skill must not float."""
     result = subprocess.run(
         [
-            sys.executable, "-c",
+            sys.executable,
+            "-c",
             "import sys, importlib.util as u;"
             f"sys.path.insert(0, {str(isolated_skill / 'vendor')!r});"
             f"s = u.spec_from_file_location('r', {str(isolated_skill / 'vendor/render-slide-diagram.py')!r});"
             "m = u.module_from_spec(s); s.loader.exec_module(m);"
             "print(m.npx_command('@mermaid-js/mermaid-cli')[2])",
         ],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     assert result.returncode == 0, result.stderr
     spec = result.stdout.strip()
@@ -217,22 +219,31 @@ def _run_isolated(isolated_skill: Path, *args: str, cwd: Path) -> subprocess.Com
     )
 
 
-@pytest.mark.parametrize("template,theme", [
-    ("templates/charts/revenue-pie.json", "azure-clarity"),
-    ("templates/concepts/team-pyramid.json", "prism-edge"),
-    ("templates/organization/team-org-chart.json", "nebula-glass"),
-    ("templates/drawio/system-architecture.drawio", "crimson-clarity"),
-])
-def test_isolated_engine_renders_json_and_drawio(isolated_skill: Path, tmp_path: Path, template: str, theme: str) -> None:
+@pytest.mark.parametrize(
+    "template,theme",
+    [
+        ("templates/charts/revenue-pie.json", "azure-clarity"),
+        ("templates/concepts/team-pyramid.json", "prism-edge"),
+        ("templates/organization/team-org-chart.json", "nebula-glass"),
+        ("templates/drawio/system-architecture.drawio", "crimson-clarity"),
+    ],
+)
+def test_isolated_engine_renders_json_and_drawio(
+    isolated_skill: Path, tmp_path: Path, template: str, theme: str
+) -> None:
     """Pure-stdlib engines: no Node, no network, no repository."""
     out = tmp_path / "diagram.svg"
     result = _run_isolated(
         isolated_skill,
         "render-slide-diagram.py",
-        "-i", str(isolated_skill / "vendor" / template),
-        "-o", str(out),
-        "--theme", theme,
-        "--layout", "full",
+        "-i",
+        str(isolated_skill / "vendor" / template),
+        "-o",
+        str(out),
+        "--theme",
+        theme,
+        "--layout",
+        "full",
         cwd=tmp_path,
     )
     assert result.returncode == 0, result.stdout + result.stderr
@@ -242,21 +253,29 @@ def test_isolated_engine_renders_json_and_drawio(isolated_skill: Path, tmp_path:
 
 def test_isolated_engine_validates_a_rendered_svg(isolated_skill: Path, tmp_path: Path) -> None:
     svg = tmp_path / "pie.svg"
-    assert _run_isolated(
-        isolated_skill,
-        "render-slide-diagram.py",
-        "-i", str(isolated_skill / "vendor/templates/charts/revenue-pie.json"),
-        "-o", str(svg),
-        "--theme", "azure-clarity",
-        "--layout", "full",
-        cwd=tmp_path,
-    ).returncode == 0
+    assert (
+        _run_isolated(
+            isolated_skill,
+            "render-slide-diagram.py",
+            "-i",
+            str(isolated_skill / "vendor/templates/charts/revenue-pie.json"),
+            "-o",
+            str(svg),
+            "--theme",
+            "azure-clarity",
+            "--layout",
+            "full",
+            cwd=tmp_path,
+        ).returncode
+        == 0
+    )
 
     result = _run_isolated(
         isolated_skill,
         "validate-slide-diagram.py",
         str(svg),
-        "--layout", "full",
+        "--layout",
+        "full",
         cwd=tmp_path,
     )
     assert result.returncode == 0, result.stdout + result.stderr
@@ -275,7 +294,8 @@ def test_isolated_engine_reports_validation_failure(isolated_skill: Path, tmp_pa
         isolated_skill,
         "validate-slide-diagram.py",
         str(svg),
-        "--layout", "full",
+        "--layout",
+        "full",
         cwd=tmp_path,
     )
     assert result.returncode != 0
@@ -314,12 +334,15 @@ def test_print_engine_path_fails_clearly_when_vendor_is_missing(isolated_skill: 
 # --- output parity ----------------------------------------------------------
 
 
-@pytest.mark.parametrize("template,theme", [
-    ("charts/revenue-pie.json", "azure-clarity"),
-    ("charts/revenue-donut.json", "nebula-glass"),
-    ("concepts/team-radial.json", "slate-minimal"),
-    ("drawio/cloud-infrastructure.drawio", "warm-sunnyday"),
-])
+@pytest.mark.parametrize(
+    "template,theme",
+    [
+        ("charts/revenue-pie.json", "azure-clarity"),
+        ("charts/revenue-donut.json", "nebula-glass"),
+        ("concepts/team-radial.json", "slate-minimal"),
+        ("drawio/cloud-infrastructure.drawio", "warm-sunnyday"),
+    ],
+)
 def test_vendored_output_matches_source_engine(tmp_path: Path, template: str, theme: str) -> None:
     """Vendoring must be a pure copy: no behavioural fork."""
     outputs = {}
@@ -329,10 +352,14 @@ def test_vendored_output_matches_source_engine(tmp_path: Path, template: str, th
             [
                 sys.executable,
                 str(engine / "render-slide-diagram.py"),
-                "-i", str(engine / "templates" / template),
-                "-o", str(out),
-                "--theme", theme,
-                "--layout", "full",
+                "-i",
+                str(engine / "templates" / template),
+                "-o",
+                str(out),
+                "--theme",
+                theme,
+                "--layout",
+                "full",
             ],
             capture_output=True,
             text=True,
@@ -357,9 +384,16 @@ def test_vendored_theme_styles_match_the_source() -> None:
 # installed elsewhere must not depend on them.
 REPO_ONLY_ALLOWED = {
     # explicitly labelled as repository-only maintenance tooling
-    "check-catalog-sync", "check-templates", "sync-skill-vendor",
-    "ADD_NEW_DIAGRAM_TYPE", "test_", "sync-theme-classes", "sync-tokens-from-css",
-    "theme_classes", "check-class-docs", "regenerate-golden",
+    "check-catalog-sync",
+    "check-templates",
+    "sync-skill-vendor",
+    "ADD_NEW_DIAGRAM_TYPE",
+    "test_",
+    "sync-theme-classes",
+    "sync-tokens-from-css",
+    "theme_classes",
+    "check-class-docs",
+    "regenerate-golden",
 }
 
 
@@ -390,9 +424,7 @@ def test_no_skill_runs_raw_mermaid_cli() -> None:
     """
     pattern = re.compile(r"npx\s+(?:-y|--yes)\s+@mermaid-js/mermaid-cli")
     offenders = [
-        str(path.relative_to(ROOT))
-        for path in _skill_docs()
-        if pattern.search(path.read_text(encoding="utf-8"))
+        str(path.relative_to(ROOT)) for path in _skill_docs() if pattern.search(path.read_text(encoding="utf-8"))
     ]
     assert offenders == [], f"raw Mermaid CLI invocation in skill docs: {offenders}"
 

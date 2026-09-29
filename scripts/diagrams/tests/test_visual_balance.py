@@ -26,9 +26,20 @@ renderer_spec.loader.exec_module(renderer)
 
 
 def test_radial_connector_gaps_are_equal_for_cardinal_nodes() -> None:
-    data = models.parse_diagram_data({"type": "radial", "layout": "asym", "width": 710, "height": 300, "center": "成果", "items": [{"label": "目的"}, {"label": "役割"}, {"label": "対話"}]})
+    data = models.parse_diagram_data(
+        {
+            "type": "radial",
+            "layout": "asym",
+            "width": 710,
+            "height": 300,
+            "center": "成果",
+            "items": [{"label": "目的"}, {"label": "役割"}, {"label": "対話"}],
+        }
+    )
     svg = renderer.render_diagram(data, {"colors": {}}, "asym")
-    lines = re.findall(r'<line data-diagram-role="connector" x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"', svg)
+    lines = re.findall(
+        r'<line data-diagram-role="connector" x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"', svg
+    )
     lengths = [math.hypot(float(x2) - float(x1), float(y2) - float(y1)) for x1, y1, x2, y2 in lines]
 
     assert len(lengths) == 3
@@ -36,7 +47,14 @@ def test_radial_connector_gaps_are_equal_for_cardinal_nodes() -> None:
 
 
 def test_compact_chart_title_has_clearance_from_chart() -> None:
-    data = models.parse_diagram_data({"type": "donut", "layout": "col3", "title": "構成", "items": [{"label": "A", "value": 1}, {"label": "B", "value": 1}]})
+    data = models.parse_diagram_data(
+        {
+            "type": "donut",
+            "layout": "col3",
+            "title": "構成",
+            "items": [{"label": "A", "value": 1}, {"label": "B", "value": 1}],
+        }
+    )
     ctx = design_tokens.theme_context({"colors": {}})
     elements = renderer._chart(data, ctx, donut=True)
     chart_path = next(element for element in elements if element.startswith("<path"))

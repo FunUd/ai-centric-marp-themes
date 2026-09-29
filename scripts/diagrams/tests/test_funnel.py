@@ -61,7 +61,7 @@ VALID_UP_DIRECTION = {
 
 def test_funnel_renders_with_values() -> None:
     svg = renderer.render_diagram(VALID_WITH_VALUES, tokens.load_design_tokens("azure-clarity"), "full")
-    assert svg.count("data-diagram-role=\"node\"") >= 4
+    assert svg.count('data-diagram-role="node"') >= 4
     assert "認知" in svg
     assert "関心" in svg
     assert "検討" in svg
@@ -72,7 +72,7 @@ def test_funnel_renders_with_values() -> None:
 
 def test_funnel_renders_without_values() -> None:
     svg = renderer.render_diagram(VALID_WITHOUT_VALUES, tokens.load_design_tokens("azure-clarity"), "full")
-    assert svg.count("data-diagram-role=\"node\"") >= 3
+    assert svg.count('data-diagram-role="node"') >= 3
     assert "Level 1" in svg
     assert "Level 2" in svg
     assert "Level 3" in svg
@@ -80,7 +80,7 @@ def test_funnel_renders_without_values() -> None:
 
 def test_funnel_renders_up_direction() -> None:
     svg = renderer.render_diagram(VALID_UP_DIRECTION, tokens.load_design_tokens("azure-clarity"), "full")
-    assert svg.count("data-diagram-role=\"node\"") >= 3
+    assert svg.count('data-diagram-role="node"') >= 3
     assert "Step 1" in svg
     assert "Step 2" in svg
     assert "Step 3" in svg
@@ -90,18 +90,21 @@ def test_funnel_requires_three_to_six_levels() -> None:
     invalid = {**VALID_WITH_VALUES, "levels": VALID_WITH_VALUES["levels"][:2]}
     with pytest.raises(ValueError, match="levels"):
         models.parse_diagram_data(invalid)
-    
+
     invalid = {**VALID_WITH_VALUES, "levels": VALID_WITH_VALUES["levels"] * 2}
     with pytest.raises(ValueError, match="levels"):
         models.parse_diagram_data(invalid)
 
 
 def test_funnel_values_must_be_non_negative() -> None:
-    invalid = {**VALID_WITH_VALUES, "levels": [
-        {"label": "A", "value": -10},
-        {"label": "B", "value": 20},
-        {"label": "C", "value": 30},
-    ]}
+    invalid = {
+        **VALID_WITH_VALUES,
+        "levels": [
+            {"label": "A", "value": -10},
+            {"label": "B", "value": 20},
+            {"label": "C", "value": 30},
+        ],
+    }
     with pytest.raises(ValueError, match="value"):
         models.parse_diagram_data(invalid)
 

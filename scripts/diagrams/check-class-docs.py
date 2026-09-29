@@ -21,6 +21,7 @@ Usage:
     python scripts/diagrams/check-class-docs.py
     python scripts/diagrams/check-class-docs.py --list-undocumented
 """
+
 from __future__ import annotations
 
 import argparse
@@ -41,24 +42,65 @@ CLASSES_DOC = ROOT_DIR / "docs" / "classes.md"
 # Classes that exist in the CSS but are structural rather than user-facing.
 # Either Marp/Pygments internals, or per-theme child selectors that only make
 # sense inside a specific layout (e.g. `section.timeline ol li::marker`).
-INTERNAL_CLASSES = frozenset({
-    # Marp / Pygments code highlighting
-    *(f"hljs-{name}" for name in (
-        "addition", "attr", "attribute", "built_in", "bullet", "class", "comment",
-        "deletion", "keyword", "literal", "name", "number", "quote", "regexp",
-        "selector-tag", "string", "symbol", "tag", "title", "type",
-    )),
-    # structural child elements the layouts require
-    "columns", "col", "cell", "grid", "card", "content",
-    "profile-layout", "profile-image", "profile-content",
-    # callout/badge colour modifiers, documented as prose ("types: blue, green,
-    # orange, red") rather than as standalone class names
-    "blue", "green", "orange", "red",
-    # Prism-only gradient text tints, documented in the Components table
-    "cyan", "violet", "rose", "magenta",
-    # token values, not selectors
-    "ink", "org", "w3", "ttf", "side", "meta", "subtitle",
-})
+INTERNAL_CLASSES = frozenset(
+    {
+        # Marp / Pygments code highlighting
+        *(
+            f"hljs-{name}"
+            for name in (
+                "addition",
+                "attr",
+                "attribute",
+                "built_in",
+                "bullet",
+                "class",
+                "comment",
+                "deletion",
+                "keyword",
+                "literal",
+                "name",
+                "number",
+                "quote",
+                "regexp",
+                "selector-tag",
+                "string",
+                "symbol",
+                "tag",
+                "title",
+                "type",
+            )
+        ),
+        # structural child elements the layouts require
+        "columns",
+        "col",
+        "cell",
+        "grid",
+        "card",
+        "content",
+        "profile-layout",
+        "profile-image",
+        "profile-content",
+        # callout/badge colour modifiers, documented as prose ("types: blue, green,
+        # orange, red") rather than as standalone class names
+        "blue",
+        "green",
+        "orange",
+        "red",
+        # Prism-only gradient text tints, documented in the Components table
+        "cyan",
+        "violet",
+        "rose",
+        "magenta",
+        # token values, not selectors
+        "ink",
+        "org",
+        "w3",
+        "ttf",
+        "side",
+        "meta",
+        "subtitle",
+    }
+)
 
 
 _FENCE_RE = re.compile(r"^[ \t]*```.*?^[ \t]*```", re.S | re.M)
@@ -176,7 +218,7 @@ def main() -> int:
         "--allow-unlisted",
         action="store_true",
         help="Report undocumented classes as warnings and exit 0. Use while "
-             "incrementally documenting; CI runs without it.",
+        "incrementally documenting; CI runs without it.",
     )
     args = parser.parse_args()
 
@@ -187,7 +229,9 @@ def main() -> int:
     scoped = theme_specific_markers(readme_text)
 
     print(f"docs/classes.md class reference: {len(doc_classes)} classes in the layout/utility tables")
-    print(f"CSS inventory:         {len(user_facing_classes())} user-facing classes across {len(theme_classes.THEMES)} themes")
+    print(
+        f"CSS inventory:         {len(user_facing_classes())} user-facing classes across {len(theme_classes.THEMES)} themes"
+    )
 
     # --- undocumented classes ------------------------------------------------
     if missing_docs:
@@ -203,13 +247,10 @@ def main() -> int:
         print("\n[OK] every user-facing class is mentioned in the reference.")
 
     # --- per-theme gaps ------------------------------------------------------
-    unclaimed = {
-        theme: [c for c in missing if c not in scoped]
-        for theme, missing in gaps.items()
-    }
+    unclaimed = {theme: [c for c in missing if c not in scoped] for theme, missing in gaps.items()}
     unclaimed = {theme: items for theme, items in unclaimed.items() if items}
     if unclaimed:
-        print(f"\n[UNSCOPED] documented as universal, but these themes do not implement them:")
+        print("\n[UNSCOPED] documented as universal, but these themes do not implement them:")
         for theme, items in unclaimed.items():
             print(f"  - {theme:16} {', '.join(items)}")
         print(

@@ -9,6 +9,7 @@ Covers:
 
 subprocess.run is always mocked: no npx / Mermaid CLI in tests.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -371,12 +372,12 @@ def test_convert_requires_graph_model() -> None:
 
 
 def test_convert_requires_root_element() -> None:
-    assert _convert('<mxfile><diagram><mxGraphModel/></diagram></mxfile>') == ""
+    assert _convert("<mxfile><diagram><mxGraphModel/></diagram></mxfile>") == ""
 
 
 def test_convert_tolerates_missing_geometry_and_dangling_parent() -> None:
     svg = _convert(
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="0"/><mxCell id="1" parent="0"/>'
         # no <mxGeometry> -> (0, 0, 0, 0)
         '<mxCell id="g" vertex="1" parent="1" style="rounded=0;fillColor=#FFFFFF;"/>'
@@ -410,9 +411,9 @@ def test_convert_renders_edge_with_waypoints() -> None:
         "</root></mxGraphModel></diagram></mxfile>"
     )
 
-    assert "fill='none'" in svg          # edge path rendered
-    assert "<polygon points=" in svg     # arrowhead rendered
-    assert "Lane" in svg                 # swimlane chrome/title rendered
+    assert "fill='none'" in svg  # edge path rendered
+    assert "<polygon points=" in svg  # arrowhead rendered
+    assert "Lane" in svg  # swimlane chrome/title rendered
 
 
 def test_convert_waypoint_edge_with_unknown_parent_breaks_origin_walk() -> None:
@@ -437,7 +438,7 @@ def test_convert_waypoint_edge_with_unknown_parent_breaks_origin_walk() -> None:
 
 def test_convert_skips_edge_without_endpoints() -> None:
     svg = _convert(
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="0"/><mxCell id="1" parent="0"/>'
         '<mxCell id="e" edge="1" parent="1" style="strokeColor=#000000;">'
         '<mxGeometry relative="1"/></mxCell>'
@@ -462,9 +463,7 @@ def test_advisory_note_for_funnel_value_pills_on_col3() -> None:
 
 
 def test_json_from_data_reports_validation_failure(capsys) -> None:
-    ok = render.render_json_diagram_from_data(
-        {"type": "pie", "items": []}, Path("/nonexistent/out.svg"), AZURE, "full"
-    )
+    ok = render.render_json_diagram_from_data({"type": "pie", "items": []}, Path("/nonexistent/out.svg"), AZURE, "full")
 
     assert ok is False
     assert "JSON diagram validation failed" in capsys.readouterr().err

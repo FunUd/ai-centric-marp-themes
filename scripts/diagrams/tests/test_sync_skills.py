@@ -4,6 +4,7 @@ sync_skills() mutates the real target roots when run as a script; here
 SOURCE_DIR / TARGET_ROOTS are redirected into tmp_path so the copy, stale
 cleanup, skip, and guard branches are exercised safely.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -114,13 +115,13 @@ def test_sync_copies_skills_and_cleans_stale_dirs(monkeypatch, tmp_path: Path, c
 
     target = tmp_path / "targets" / "agent"
     target.mkdir(parents=True)
-    _make_skill(target, "alpha", "# alpha v1")                # refreshed copy
-    (target / "theme-expert-old").mkdir()                     # prefixed stale -> deleted
-    (target / "marp-legacy").mkdir()                          # prefixed stale -> deleted
-    (target / "theme-creator-old").mkdir()                    # renamed theme-creator -> deleted
-    (target / "slide-content-designer-old").mkdir()           # renamed designer -> deleted
-    (target / "unrelated").mkdir()                            # not prefixed -> kept
-    missing_target = tmp_path / "targets" / "missing"         # -> skip branch
+    _make_skill(target, "alpha", "# alpha v1")  # refreshed copy
+    (target / "theme-expert-old").mkdir()  # prefixed stale -> deleted
+    (target / "marp-legacy").mkdir()  # prefixed stale -> deleted
+    (target / "theme-creator-old").mkdir()  # renamed theme-creator -> deleted
+    (target / "slide-content-designer-old").mkdir()  # renamed designer -> deleted
+    (target / "unrelated").mkdir()  # not prefixed -> kept
+    missing_target = tmp_path / "targets" / "missing"  # -> skip branch
 
     monkeypatch.setattr(sync_skills_mod, "SOURCE_DIR", source)
     monkeypatch.setattr(sync_skills_mod, "TARGET_ROOTS", [target, missing_target])
@@ -167,4 +168,6 @@ def test_sync_replaces_existing_skill_directory(monkeypatch, tmp_path: Path, cap
 def test_github_skills_synced_with_source() -> None:
     """The tracked .github/skills root must never drift from skills/ source of truth."""
     code = sync_skills_mod.sync_skills(check=True)
-    assert code == 0, "Tracked skill directories have drifted from skills/. Run `python scripts/sync-skills.py` to sync."
+    assert code == 0, (
+        "Tracked skill directories have drifted from skills/. Run `python scripts/sync-skills.py` to sync."
+    )

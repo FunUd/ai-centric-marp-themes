@@ -5,6 +5,7 @@ parse_args, build_html's exit contract, hide_controls, slide advancement in
 take_screenshots, ad-hoc slide selection (all / out-of-range / no valid),
 list_slide_count cleanup, and process_theme's unknown-theme guard.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -479,9 +480,7 @@ def test_ad_hoc_all_selects_every_slide(monkeypatch, tmp_path: Path) -> None:
     assert len(captured) == 1
     _, _, screenshots, target_dir = captured[0]
     assert [idx for _, idx in screenshots] == [0, 1, 2]
-    assert [name for name, _ in screenshots] == [
-        "deck-slide-001.png", "deck-slide-002.png", "deck-slide-003.png"
-    ]
+    assert [name for name, _ in screenshots] == ["deck-slide-001.png", "deck-slide-002.png", "deck-slide-003.png"]
     assert target_dir == out_dir
     # Temp html removed in the finally block.
     assert not (shots.WORKSPACE / "_adhoc_temp.html").exists()
@@ -543,9 +542,7 @@ def test_process_theme_runs_pipeline_and_cleans_temp(monkeypatch, tmp_path: Path
     assert build_calls[0][0] == config["slide"]
     assert len(captured) == 1
     _, _, screenshots, target_dir = captured[0]
-    assert screenshots == shots.resolve_screenshots(
-        Path(config["slide"]), config["screenshots"]
-    )
+    assert screenshots == shots.resolve_screenshots(Path(config["slide"]), config["screenshots"])
     assert target_dir == tmp_path / "out"
     assert not (shots.WORKSPACE / "_azure-clarity_temp.html").exists()
 
@@ -594,8 +591,7 @@ def test_every_screenshot_id_resolves_within_its_deck() -> None:
         slide_count = shots.count_markdown_slides(slide_md)
         for filename, index in shots.resolve_screenshots(slide_md, config["screenshots"]):
             assert 0 <= index < slide_count, (
-                f"{theme}/{filename}: resolved index {index} out of range "
-                f"(deck has {slide_count} slides)"
+                f"{theme}/{filename}: resolved index {index} out of range (deck has {slide_count} slides)"
             )
 
 
@@ -652,9 +648,7 @@ def test_slide_marker_indices_ignores_tilde_fences(tmp_path: Path) -> None:
 def test_slide_marker_indices_tolerates_bom_and_dot_close(tmp_path: Path) -> None:
     deck = tmp_path / "deck.md"
     deck.write_bytes(
-        "---\nmarp: true\n...\n\n# First\n\n---\n<!-- screenshot: target -->\n\n# Second\n".encode(
-            "utf-8-sig"
-        )
+        "---\nmarp: true\n...\n\n# First\n\n---\n<!-- screenshot: target -->\n\n# Second\n".encode("utf-8-sig")
     )
     assert shots.resolve_screenshots(deck, [("out.png", "target")]) == [("out.png", 1)]
     assert shots.count_markdown_slides(deck) == 2

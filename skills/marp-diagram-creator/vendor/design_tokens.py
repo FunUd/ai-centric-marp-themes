@@ -104,9 +104,7 @@ def normalize_color(value: str | None) -> str | None:
         except ValueError:
             return None
         return "#" + body.upper()
-    hsl = _re.match(
-        r"hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%", text
-    )
+    hsl = _re.match(r"hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%", text)
     if hsl:
         try:
             h, s, light = float(hsl.group(1)), float(hsl.group(2)), float(hsl.group(3))
@@ -164,9 +162,7 @@ def soften_mindmap_fill(hex_color: str, background: str | None) -> str | None:
     return "#%02X%02X%02X" % (round(r2 * 255), round(g2 * 255), round(b2 * 255))
 
 
-def ensure_graphical_contrast(
-    foreground: str | None, background: str | None, minimum: float = 3.0
-) -> str | None:
+def ensure_graphical_contrast(foreground: str | None, background: str | None, minimum: float = 3.0) -> str | None:
     """Nudge `foreground` lightness until it reaches `minimum` vs `background`.
 
     Preserves hue/saturation; darkens on light backgrounds and lightens on
@@ -325,8 +321,7 @@ def load_design_tokens(theme_name: str) -> dict[str, Any]:
     resolved = theme_name if theme_name in VALID_THEMES else DEFAULT_THEME
     if theme_name not in VALID_THEMES:
         print(
-            f"[WARN] unknown theme {theme_name!r}; falling back to {DEFAULT_THEME!r} "
-            f"(valid: {sorted(VALID_THEMES)})",
+            f"[WARN] unknown theme {theme_name!r}; falling back to {DEFAULT_THEME!r} (valid: {sorted(VALID_THEMES)})",
             file=sys.stderr,
         )
     theme_file = THEME_STYLES_DIR / f"{resolved}.json"

@@ -12,6 +12,7 @@ Exit codes:
     0  Validation passed (or warnings only in non-strict mode)
     1  One or more validation errors found
 """
+
 from __future__ import annotations
 
 import argparse
@@ -21,7 +22,14 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from diagram_routing import edge_endpoints, get_edge_waypoints, node_shape, route_edge, segment_intersects_rect, snap_edge_points  # noqa: E402
+from diagram_routing import (
+    edge_endpoints,
+    get_edge_waypoints,
+    node_shape,
+    route_edge,
+    segment_intersects_rect,
+    snap_edge_points,
+)  # noqa: E402
 
 from layout_spec import VALIDATOR_LIMITS as _VALIDATOR_LIMITS  # noqa: E402
 
@@ -68,7 +76,7 @@ def _svg_element_rect(elem: ET.Element) -> tuple[float, float, float, float] | N
             return cx - rx, cy - ry, rx * 2, ry * 2
         if tag == "polygon":
             points = []
-            for pair in (elem.get("points", "").replace(",", " ").split()):
+            for pair in elem.get("points", "").replace(",", " ").split():
                 points.append(float(pair))
             if len(points) >= 4:
                 xs, ys = points[::2], points[1::2]
@@ -82,7 +90,12 @@ def _svg_segments(elem: ET.Element) -> list[tuple[tuple[float, float], tuple[flo
     tag = elem.tag.split("}")[-1]
     if tag == "line":
         try:
-            return [((float(elem.get("x1", "0")), float(elem.get("y1", "0"))), (float(elem.get("x2", "0")), float(elem.get("y2", "0"))))]
+            return [
+                (
+                    (float(elem.get("x1", "0")), float(elem.get("y1", "0"))),
+                    (float(elem.get("x2", "0")), float(elem.get("y2", "0"))),
+                )
+            ]
         except (TypeError, ValueError):
             return []
     if tag != "path":
@@ -150,7 +163,9 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
             w, h = parts[2], parts[3]
         elif len(parts) == 4:
             # Malformed viewBox (non-numeric or non-positive) — report, don't crash.
-            return [f"Invalid viewBox '{view_box}' in {path.name}: expected 'min-x min-y width height' with positive dimensions"], []
+            return [
+                f"Invalid viewBox '{view_box}' in {path.name}: expected 'min-x min-y width height' with positive dimensions"
+            ], []
     if w is None or h is None:
         w, h = width_attr, height_attr
 
@@ -177,18 +192,17 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
         # Aspect ratio checks
         if aspect < limits["min_aspect"]:
             suggestions = (
-                f" Re-render with `--aspect {limits['min_aspect']}` (or a JSON `\"aspect\": "
+                f' Re-render with `--aspect {limits["min_aspect"]}` (or a JSON `"aspect": '
                 f"{limits['min_aspect']}` field / Mermaid `%% aspect: {limits['min_aspect']}` "
                 f"directive) to pad the canvas to a slide-safe ratio."
             )
             warnings.append(
                 f"Diagram is too tall/narrow (aspect ratio {aspect:.2f} < {limits['min_aspect']}). "
-                f"When placed on a slide, it will be heavily shrunk vertically, making fonts unreadable."
-                + suggestions
+                f"When placed on a slide, it will be heavily shrunk vertically, making fonts unreadable." + suggestions
             )
         elif aspect > limits["max_aspect"]:
             suggestions = (
-                f" Re-render with `--aspect {limits['max_aspect']}` (or a JSON `\"aspect\": "
+                f' Re-render with `--aspect {limits["max_aspect"]}` (or a JSON `"aspect": '
                 f"{limits['max_aspect']}` field / Mermaid `%% aspect: {limits['max_aspect']}` "
                 f"directive) to pad the canvas to a slide-safe ratio."
             )
@@ -228,7 +242,7 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
                     warnings.append(f"Label font size ({font_size:.1f}px) is below the recommended minimum of 8px")
 
         for index, first in enumerate(node_rects):
-            for second_index, second in enumerate(node_rects[index + 1:], start=index + 1):
+            for second_index, second in enumerate(node_rects[index + 1 :], start=index + 1):
                 if _rects_overlap(first, second):
                     errors.append(
                         f"JSON diagram nodes overlap (node #{index} at "
@@ -241,7 +255,7 @@ def validate_svg(path: Path, layout: str) -> tuple[list[str], list[str]]:
 
         for conn_index, (start, end) in enumerate(connectors):
             for node_index, node in enumerate(node_rects):
-                if (_point_in_rect(start, node) or _point_in_rect(end, node)):
+                if _point_in_rect(start, node) or _point_in_rect(end, node):
                     continue
                 if segment_intersects_rect(start, end, node):
                     errors.append(
@@ -348,13 +362,9 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
             if cell.get("vertex") == "1":
                 x, y, w, h = get_absolute_geom(cell)
                 if x + w > limits["max_w"]:
-                    errors.append(
-                        f"Cell id='{cid}' bounds ({x+w:.0f}px) exceed canvas width ({limits['max_w']}px)"
-                    )
+                    errors.append(f"Cell id='{cid}' bounds ({x + w:.0f}px) exceed canvas width ({limits['max_w']}px)")
                 if y + h > limits["max_h"]:
-                    errors.append(
-                        f"Cell id='{cid}' bounds ({y+h:.0f}px) exceed canvas height ({limits['max_h']}px)"
-                    )
+                    errors.append(f"Cell id='{cid}' bounds ({y + h:.0f}px) exceed canvas height ({limits['max_h']}px)")
 
         vertices = {
             cid: get_absolute_geom(cell)
@@ -405,7 +415,7 @@ def validate_drawio(path: Path, layout: str) -> tuple[list[str], list[str]]:
                             f"(segment ({start[0]:.0f}, {start[1]:.0f})->({end[0]:.0f}, {end[1]:.0f}) vs "
                             f"node at ({obstacle[0]:.0f}, {obstacle[1]:.0f}, "
                             f"{obstacle[2]:.0f}x{obstacle[3]:.0f}) in {path.name}). "
-                            f"Add <Array as=\"points\"> waypoints with exitX/exitY/entryX/entryY to route around it."
+                            f'Add <Array as="points"> waypoints with exitX/exitY/entryX/entryY to route around it.'
                         )
                         break
 

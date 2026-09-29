@@ -3,6 +3,7 @@
 The script shells out to render-slide-diagram.py for 6 themes x 3 engines.
 subprocess.run is mocked so no npx/Mermaid CLI is required.
 """
+
 from __future__ import annotations
 
 import importlib.util

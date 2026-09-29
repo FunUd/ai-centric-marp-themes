@@ -407,6 +407,7 @@ footer: "© 2026 Your Company"
 def calculate_growth(current, previous):
     return (current - previous) / previous * 100
 
+
 revenue_growth = calculate_growth(2100, 1200)
 print(f"Revenue Growth: {revenue_growth:.1f}%")
 ```

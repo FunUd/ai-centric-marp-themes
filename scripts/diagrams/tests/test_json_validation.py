@@ -24,14 +24,19 @@ def write_svg(tmp_path: Path, body: str) -> Path:
 
 
 def test_json_svg_out_of_bounds_is_rejected(tmp_path: Path) -> None:
-    errors, _ = validator.validate_svg(write_svg(tmp_path, '<rect data-diagram-role="node" x="90" y="1" width="20" height="10" />'), "col2")
+    errors, _ = validator.validate_svg(
+        write_svg(tmp_path, '<rect data-diagram-role="node" x="90" y="1" width="20" height="10" />'), "col2"
+    )
 
     assert any("outside" in error.lower() for error in errors)
 
 
 def test_json_svg_overlapping_nodes_are_rejected(tmp_path: Path) -> None:
     errors, _ = validator.validate_svg(
-        write_svg(tmp_path, '<rect data-diagram-role="node" x="1" y="1" width="20" height="20" /><rect data-diagram-role="node" x="10" y="10" width="20" height="20" />'),
+        write_svg(
+            tmp_path,
+            '<rect data-diagram-role="node" x="1" y="1" width="20" height="20" /><rect data-diagram-role="node" x="10" y="10" width="20" height="20" />',
+        ),
         "col2",
     )
 
@@ -40,7 +45,10 @@ def test_json_svg_overlapping_nodes_are_rejected(tmp_path: Path) -> None:
 
 def test_json_svg_connector_crossing_node_is_rejected(tmp_path: Path) -> None:
     errors, _ = validator.validate_svg(
-        write_svg(tmp_path, '<rect data-diagram-role="node" x="40" y="20" width="20" height="20" /><path data-diagram-role="connector" d="M 0 30 L 100 30" />'),
+        write_svg(
+            tmp_path,
+            '<rect data-diagram-role="node" x="40" y="20" width="20" height="20" /><path data-diagram-role="connector" d="M 0 30 L 100 30" />',
+        ),
         "col2",
     )
 
@@ -48,6 +56,8 @@ def test_json_svg_connector_crossing_node_is_rejected(tmp_path: Path) -> None:
 
 
 def test_json_svg_small_text_is_warned(tmp_path: Path) -> None:
-    _, warnings = validator.validate_svg(write_svg(tmp_path, '<text data-diagram-role="label" x="1" y="10" font-size="7">A</text>'), "col2")
+    _, warnings = validator.validate_svg(
+        write_svg(tmp_path, '<text data-diagram-role="label" x="1" y="10" font-size="7">A</text>'), "col2"
+    )
 
     assert any("font" in warning.lower() for warning in warnings)

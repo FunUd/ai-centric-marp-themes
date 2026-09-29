@@ -12,6 +12,7 @@ from a dependency bump. Three scripts shell out to npx:
 `scripts/tool-versions.py` is the single source; `package.json` mirrors it and
 is what npx actually reads.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -254,12 +255,22 @@ def test_vendored_renderer_degrades_gracefully_without_tool_versions(tmp_path: P
 
     result = subprocess.run(
         [
-            sys.executable, str(isolated / "render-slide-diagram.py"),
-            "-i", str(isolated / "templates/charts/revenue-pie.json"),
-            "-o", str(tmp_path / "out.svg"),
-            "--theme", "azure-clarity", "--layout", "full",
+            sys.executable,
+            str(isolated / "render-slide-diagram.py"),
+            "-i",
+            str(isolated / "templates/charts/revenue-pie.json"),
+            "-o",
+            str(tmp_path / "out.svg"),
+            "--theme",
+            "azure-clarity",
+            "--layout",
+            "full",
         ],
-        capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=str(tmp_path),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        cwd=str(tmp_path),
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert (tmp_path / "out.svg").is_file()
@@ -275,14 +286,18 @@ def test_vendored_renderer_is_pinned_in_a_complete_install(tmp_path: Path) -> No
 
     result = subprocess.run(
         [
-            sys.executable, "-c",
+            sys.executable,
+            "-c",
             f"import sys; sys.path.insert(0, {str(isolated)!r});"
             "import importlib.util as u;"
             f"s = u.spec_from_file_location('r', {str(isolated / 'render-slide-diagram.py')!r});"
             "m = u.module_from_spec(s); s.loader.exec_module(m);"
             "print(m.npx_command('@mermaid-js/mermaid-cli')[2])",
         ],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == f"@mermaid-js/mermaid-cli@{tv.PINNED_VERSIONS['@mermaid-js/mermaid-cli']}"
@@ -302,11 +317,14 @@ def test_repo_renderer_pins_the_mermaid_version(monkeypatch: pytest.MonkeyPatch,
         sys.path.pop(0)
 
     captured: list[list[str]] = []
-    monkeypatch.setattr(module.subprocess, "run", lambda cmd, **kw: captured.append(cmd) or type(
-        "R", (), {"returncode": 0, "stderr": "", "stdout": ""}
-    )())
+    monkeypatch.setattr(
+        module.subprocess,
+        "run",
+        lambda cmd, **kw: captured.append(cmd) or type("R", (), {"returncode": 0, "stderr": "", "stdout": ""})(),
+    )
 
     from design_tokens import load_design_tokens
+
     module.render_mermaid("flowchart LR; A-->B", tmp_path / "o.svg", load_design_tokens("azure-clarity"), "full")
 
     assert captured, "npx was never invoked"

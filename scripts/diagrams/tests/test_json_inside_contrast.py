@@ -8,6 +8,7 @@ routes inside labels through `design_tokens.ensure_inside_label`, which
 nudges the fill within its hue until the best ink clears 4.5:1, keeping
 segments and legend swatches identical.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -104,24 +105,49 @@ def _inside_texts(svg: str) -> list[tuple[str, str, str]]:
     q = r'["\']'
     boxes: list[tuple[float, float, float, float, str]] = []
     for m in re.finditer(
-        r"<rect [^>]*x=" + q + r"([\d.]+)" + q + r" y=" + q + r"([\d.]+)" + q
-        + r" width=" + q + r"([\d.]+)" + q + r" height=" + q + r"([\d.]+)" + q
-        + r" fill=" + q + r"(#[0-9A-Fa-f]{6})" + q,
+        r"<rect [^>]*x="
+        + q
+        + r"([\d.]+)"
+        + q
+        + r" y="
+        + q
+        + r"([\d.]+)"
+        + q
+        + r" width="
+        + q
+        + r"([\d.]+)"
+        + q
+        + r" height="
+        + q
+        + r"([\d.]+)"
+        + q
+        + r" fill="
+        + q
+        + r"(#[0-9A-Fa-f]{6})"
+        + q,
         svg,
     ):
         x, y, w, h, f = m.groups()
         boxes.append((float(x), float(y), float(w), float(h), f))
     found = []
     for m in re.finditer(
-        r"<text [^>]*x=" + q + r"([\d.]+)" + q + r" y=" + q + r"([\d.]+)" + q
-        + r"[^>]*fill=" + q + r"(#[0-9A-Fa-f]{6})" + q + r"[^>]*>([^<]*)<",
+        r"<text [^>]*x="
+        + q
+        + r"([\d.]+)"
+        + q
+        + r" y="
+        + q
+        + r"([\d.]+)"
+        + q
+        + r"[^>]*fill="
+        + q
+        + r"(#[0-9A-Fa-f]{6})"
+        + q
+        + r"[^>]*>([^<]*)<",
         svg,
     ):
         x, y, f, label = m.groups()
-        cand = [
-            b for b in boxes
-            if b[0] <= float(x) <= b[0] + b[2] and b[1] - 6 <= float(y) <= b[1] + b[3] + 6
-        ]
+        cand = [b for b in boxes if b[0] <= float(x) <= b[0] + b[2] and b[1] - 6 <= float(y) <= b[1] + b[3] + 6]
         if cand:
             box = sorted(cand, key=lambda b: b[2] * b[3])[0]
             found.append((label.strip(), f, box[4]))

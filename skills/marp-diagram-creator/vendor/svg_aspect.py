@@ -15,6 +15,7 @@ Padding is rejected when the padded canvas would exceed
 is part of the error message. The recommended aspect *band* stays a
 validator warning (with an actionable hint), not a render error.
 """
+
 from __future__ import annotations
 
 import math
@@ -57,9 +58,7 @@ def parse_aspect(value: object) -> float:
             try:
                 ratio = float(text)
             except ValueError as error:
-                raise ValueError(
-                    f"aspect '{value}' must be a number or a W:H ratio like '16:9'"
-                ) from error
+                raise ValueError(f"aspect '{value}' must be a number or a W:H ratio like '16:9'") from error
     else:
         raise ValueError("aspect must be a number or a W:H ratio like '16:9'")
     if not math.isfinite(ratio) or ratio <= 0:
@@ -97,9 +96,7 @@ def feasible_aspect_range(width: float, height: float, layout: str = "full") -> 
     return width / limits["max_h"], limits["max_w"] / height
 
 
-def check_aspect_feasible(
-    aspect: float, width: float, height: float, layout: str = "full"
-) -> str | None:
+def check_aspect_feasible(aspect: float, width: float, height: float, layout: str = "full") -> str | None:
     """Return an error message when ``aspect`` is unreachable by padding."""
     try:
         low, high = feasible_aspect_range(width, height, layout)
@@ -168,9 +165,7 @@ def pad_viewbox(svg_text: str, aspect: object, layout: str = "full") -> str:
         width_attr = _attr_number(tag, "width")
         height_attr = _attr_number(tag, "height")
         if width_attr is None or height_attr is None:
-            raise ValueError(
-                "SVG has neither a viewBox nor numeric width/height; cannot pad canvas"
-            )
+            raise ValueError("SVG has neither a viewBox nor numeric width/height; cannot pad canvas")
         view_box = [0.0, 0.0, width_attr, height_attr]
 
     min_x, min_y, width, height = view_box
@@ -193,9 +188,7 @@ def pad_viewbox(svg_text: str, aspect: object, layout: str = "full") -> str:
     if box_match:
         new_tag = _VIEWBOX_RE.sub(lambda _m: f'viewBox="{new_box}"', tag, count=1)
     else:
-        new_tag = _SVG_OPEN_RE.sub(
-            lambda m: m.group(0)[:-1] + f' viewBox="{new_box}">', tag, count=1
-        )
+        new_tag = _SVG_OPEN_RE.sub(lambda m: m.group(0)[:-1] + f' viewBox="{new_box}">', tag, count=1)
     new_tag = _set_dim(new_tag, "width", new_width)
     new_tag = _set_dim(new_tag, "height", new_height)
     # Mermaid sizes its root via style="max-width: Npx" — keep it in sync.

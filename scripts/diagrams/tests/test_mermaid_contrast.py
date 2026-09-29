@@ -11,6 +11,7 @@ Regression for `new-diagrams-showcase` findings:
 failures in `svg_theme_postprocessor` (`_fix_gantt_contrast`,
 `_fix_mindmap_contrast`), so future Mermaid defaults cannot regress this.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -56,6 +57,7 @@ def _ratio(first: str, second: str) -> float:
 
 
 # --- token helpers -----------------------------------------------------------
+
 
 def test_normalize_color_handles_mermaid_outputs() -> None:
     assert tokens.normalize_color("#fff") == "#FFFFFF"
@@ -103,6 +105,7 @@ def test_gantt_theme_variables_pin_visible_borders() -> None:
 
 # --- postprocessor unit guards (offline, no npx) ------------------------------
 
+
 def _gantt_fixture(active_fill: str = "hsl(213, 100%, 100%)", active_stroke: str = "#EDF5FF") -> str:
     return (
         '<svg aria-roledescription="gantt"><style>'
@@ -142,9 +145,7 @@ def test_fix_gantt_repairs_done_text_on_dark_theme() -> None:
     assert _ratio(_norm(fill.group(1)), "#D3D3D3") >= 4.5
 
 
-def _mindmap_fixture(
-    fill: str = "hsl(30, 100%, 73%)", edge: str = "hsl(30, 100%, 73%)", ink: str = "#4A4A4A"
-) -> str:
+def _mindmap_fixture(fill: str = "hsl(30, 100%, 73%)", edge: str = "hsl(30, 100%, 73%)", ink: str = "#4A4A4A") -> str:
     return (
         '<svg class="mindmapDiagram"><style>'
         f".section-0 rect{{fill:{fill};}}"
@@ -168,9 +169,7 @@ def test_fix_mindmap_lifts_pale_edge_to_graphical_floor() -> None:
 def test_fix_mindmap_repairs_thin_ink_to_text_floor() -> None:
     # slate sec0 pair was 4.1:1 with theme ink; postprocessor must reach 4.5.
     data = tokens.load_design_tokens("slate-minimal")
-    fixture = _mindmap_fixture(
-        fill="hsl(214.29, 31.8%, 66.37%)", edge="hsl(214.29, 31.8%, 66.37%)", ink="#334155"
-    )
+    fixture = _mindmap_fixture(fill="hsl(214.29, 31.8%, 66.37%)", edge="hsl(214.29, 31.8%, 66.37%)", ink="#334155")
     assert _ratio("#334155", _norm("hsl(214.29, 31.8%, 66.37%)")) < 4.5
     out = post._fix_mindmap_contrast(fixture, data)
     m = re.search(r"\.section-0 span\{[^}]*color:([^;!]+)", out)
@@ -214,6 +213,7 @@ def test_fix_mindmap_hides_brown_underlines() -> None:
 
 
 # --- full-pipeline integration (needs npx + mermaid-cli) ----------------------
+
 
 def _render(template: str, theme: str, out_dir: Path) -> Path:
     src = SCRIPT_DIR / "templates" / template
@@ -268,21 +268,14 @@ def test_gantt_bars_and_text_clear_floors_every_theme() -> None:
             # Active + task families: at least the boundary must clear 3:1,
             # inside text must clear 4.5:1 vs its own fill.
             for family, text_cls in (("active", "activeText"), ("task", "taskText")):
-                fill_m = re.search(
-                    rf"\.{family}0[^{{]*\{{[^}}]*fill:([^;!]+)", style
-                )
-                stroke_m = re.search(
-                    rf"\.{family}0[^{{]*\{{[^}}]*stroke:([^;!]+)", style
-                )
+                fill_m = re.search(rf"\.{family}0[^{{]*\{{[^}}]*fill:([^;!]+)", style)
+                stroke_m = re.search(rf"\.{family}0[^{{]*\{{[^}}]*stroke:([^;!]+)", style)
                 assert fill_m and stroke_m, f"{theme} {family} rule missing"
                 fill, stroke = _norm(fill_m.group(1)), _norm(stroke_m.group(1))
                 assert max(_ratio(fill, bg), _ratio(stroke, bg)) >= 3.0, (
-                    f"{theme} {family} invisible: fill {fill} "
-                    f"stroke {stroke} vs {bg}"
+                    f"{theme} {family} invisible: fill {fill} stroke {stroke} vs {bg}"
                 )
-                text_m = re.search(
-                    rf"\.{text_cls}0[^{{]*\{{[^}}]*fill:([^;!]+)", style
-                )
+                text_m = re.search(rf"\.{text_cls}0[^{{]*\{{[^}}]*fill:([^;!]+)", style)
                 if text_m:
                     assert _ratio(_norm(text_m.group(1)), fill) >= 4.5, (
                         f"{theme} {family} text {text_m.group(1)} on {fill}"
@@ -306,9 +299,7 @@ def test_mindmap_text_and_edges_clear_floors_every_theme() -> None:
             bg = tokens.theme_context(data)["background"]
             text = _style_of(_render("mermaid/mindmap-compact.mmd", theme, out_dir))
             fills: dict[str, str] = {}
-            for m in re.finditer(
-                r"\.section-(-?\d+)[^{]*\{[^}]*fill:([^;!]+)", text
-            ):
+            for m in re.finditer(r"\.section-(-?\d+)[^{]*\{[^}]*fill:([^;!]+)", text):
                 normed = _norm(m.group(2))
                 if normed and m.group(1) not in fills:
                     fills[m.group(1)] = normed
@@ -316,20 +307,14 @@ def test_mindmap_text_and_edges_clear_floors_every_theme() -> None:
             for sec, fill in fills.items():
                 if sec == "-1":
                     continue  # root shares the palette; branches carry the load
-                ink_m = re.search(
-                    r"\.section-" + re.escape(sec) + r"\s+span\{[^}]*color:([^;!]+)", text
-                )
+                ink_m = re.search(r"\.section-" + re.escape(sec) + r"\s+span\{[^}]*color:([^;!]+)", text)
                 if ink_m:
                     assert _ratio(_norm(ink_m.group(1)), fill) >= 4.5, (
                         f"{theme} sec{sec} ink {ink_m.group(1)} on {fill}"
                     )
-                edge_m = re.search(
-                    r"\.section-edge-" + re.escape(sec) + r"\{[^}]*stroke:([^;!]+)", text
-                )
+                edge_m = re.search(r"\.section-edge-" + re.escape(sec) + r"\{[^}]*stroke:([^;!]+)", text)
                 if edge_m:
-                    assert _ratio(_norm(edge_m.group(1)), bg) >= 3.0, (
-                        f"{theme} sec{sec} edge {edge_m.group(1)} vs {bg}"
-                    )
+                    assert _ratio(_norm(edge_m.group(1)), bg) >= 3.0, f"{theme} sec{sec} edge {edge_m.group(1)} vs {bg}"
                 node_m = re.search(
                     r"\.section-" + re.escape(sec) + r"\s+(?:rect|path|circle|polygon)[^{]*\{([^}]*)\}",
                     text,
@@ -344,9 +329,7 @@ def test_mindmap_text_and_edges_clear_floors_every_theme() -> None:
             # every theme; connectors (`section-edge-*`) are excluded by the
             # required whitespace before `line`. A zero-width line is already
             # invisible (Nebula root emits `stroke-width:0`), so accept it.
-            for line_m in re.finditer(
-                r"\.section-(?:-?\d+|root)\s+line\{([^}]*)\}", text
-            ):
+            for line_m in re.finditer(r"\.section-(?:-?\d+|root)\s+line\{([^}]*)\}", text):
                 body = line_m.group(1).replace(" ", "")
                 assert ("stroke:none" in body) or ("stroke-width:0" in body), (
                     f"{theme} underline not hidden: {line_m.group(0)[:80]}"

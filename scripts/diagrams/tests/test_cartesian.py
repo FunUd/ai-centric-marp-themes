@@ -1,4 +1,5 @@
 """test_cartesian.py — bar / line / stacked-bar validation and rendering."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -56,9 +57,7 @@ def test_bar_rejects_negative_value() -> None:
 
 def test_line_rejects_series_length_mismatch() -> None:
     with pytest.raises(ValueError, match="one entry per category"):
-        models.parse_diagram_data(
-            {"type": "line", "categories": ["A", "B"], "series": [{"label": "S", "values": [1]}]}
-        )
+        models.parse_diagram_data({"type": "line", "categories": ["A", "B"], "series": [{"label": "S", "values": [1]}]})
 
 
 def test_stacked_bar_requires_two_series() -> None:
@@ -70,9 +69,7 @@ def test_stacked_bar_requires_two_series() -> None:
 
 def test_too_many_categories_rejected() -> None:
     with pytest.raises(ValueError, match="between 2 and"):
-        models.parse_diagram_data(
-            {"type": "bar", "items": [{"label": f"C{i}", "value": 1} for i in range(11)]}
-        )
+        models.parse_diagram_data({"type": "bar", "items": [{"label": f"C{i}", "value": 1} for i in range(11)]})
 
 
 def test_y_max_below_data_rejected() -> None:
@@ -81,9 +78,7 @@ def test_y_max_below_data_rejected() -> None:
 
 
 def test_zero_values_allowed() -> None:
-    data = models.parse_diagram_data(
-        {"type": "bar", "items": [{"label": "A", "value": 0}, {"label": "B", "value": 0}]}
-    )
+    data = models.parse_diagram_data({"type": "bar", "items": [{"label": "A", "value": 0}, {"label": "B", "value": 0}]})
     svg = renderer.render_diagram(data, _ctx(), "full")
     assert ET.fromstring(svg) is not None
 
@@ -100,9 +95,7 @@ def test_y_scale_handles_negative_range() -> None:
     scale = renderer._y_scale(-50.0, 150.0)
     assert scale["min"] < 0 < scale["max"]
     assert any(tick < 0 for tick in scale["ticks"])
-    frame = renderer._cartesian_frame(
-        {"width": 1080, "height": 420}, _ctx(), ["A", "B"], -50.0, 150.0
-    )
+    frame = renderer._cartesian_frame({"width": 1080, "height": 420}, _ctx(), ["A", "B"], -50.0, 150.0)
     zero_y = frame["y"](0.0)
     assert frame["plot_top"] < zero_y < frame["plot_bottom"]
 
@@ -113,8 +106,11 @@ def test_y_scale_handles_negative_range() -> None:
 def test_left_gutter_fits_unit_tick_label() -> None:
     """Regression: top tick "200 百万円" must not clip at x=0 (warm-sunnyday case)."""
     frame = renderer._cartesian_frame(
-        {"width": 1080, "height": 420, "unit": "百万円"}, _ctx("warm-sunnyday"),
-        ["Q1", "Q2", "Q3", "Q4"], 0.0, 190.0,
+        {"width": 1080, "height": 420, "unit": "百万円"},
+        _ctx("warm-sunnyday"),
+        ["Q1", "Q2", "Q3", "Q4"],
+        0.0,
+        190.0,
     )
     caption = float(_ctx()["typography"]["captionSize"])
     for label in frame["tick_labels"]:

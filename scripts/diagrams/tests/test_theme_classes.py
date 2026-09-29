@@ -9,6 +9,7 @@ Two jobs:
    standalone into agent directories and reads that file; if it drifts, the
    installed linter disagrees with the repo.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -77,10 +78,7 @@ def _rule_bodies(theme: str, cls: str) -> str:
 
 def _centers(declarations: str) -> bool:
     squashed = re.sub(r"\s+", " ", declarations)
-    return bool(
-        re.search(r"text-align:\s*center", squashed)
-        or re.search(r"align-items:\s*center", squashed)
-    )
+    return bool(re.search(r"text-align:\s*center", squashed) or re.search(r"align-items:\s*center", squashed))
 
 
 def test_list_unsuitable_covers_every_title_and_message_layout() -> None:
@@ -93,8 +91,7 @@ def test_list_unsuitable_covers_every_title_and_message_layout() -> None:
     """
     implemented = classes.all_section_classes()
     expected = {
-        c for c in implemented
-        if c.startswith(("cover", "title-", "hero")) or c in {"key-message", "align-center"}
+        c for c in implemented if c.startswith(("cover", "title-", "hero")) or c in {"key-message", "align-center"}
     }
     missing = sorted(expected - classes.LIST_UNSUITABLE_CLASSES)
     assert missing == [], f"title/message layouts missing from LIST_UNSUITABLE_CLASSES: {missing}"
@@ -115,10 +112,27 @@ def test_glass_card_layout_is_correctly_excluded() -> None:
 
 def test_list_unsuitable_excludes_content_layouts() -> None:
     """A list is the point of these layouts, so they must not be flagged."""
-    content = {"cols-2", "cols-3", "split-2", "split-3", "split-asym",
-               "split-asym-reverse", "split-glass", "grid-quadrant", "grid-sharp",
-               "steps", "timeline", "checklist", "timetable", "profile", "dense",
-               "extra-dense", "with-header", "toc", "toc-focus"}
+    content = {
+        "cols-2",
+        "cols-3",
+        "split-2",
+        "split-3",
+        "split-asym",
+        "split-asym-reverse",
+        "split-glass",
+        "grid-quadrant",
+        "grid-sharp",
+        "steps",
+        "timeline",
+        "checklist",
+        "timetable",
+        "profile",
+        "dense",
+        "extra-dense",
+        "with-header",
+        "toc",
+        "toc-focus",
+    }
     assert not (content & classes.LIST_UNSUITABLE_CLASSES)
 
 
@@ -182,9 +196,7 @@ def test_asym_layouts_are_not_mapped_to_col2() -> None:
 
 
 def test_manifest_exists() -> None:
-    assert MANIFEST.is_file(), (
-        f"{MANIFEST.name} is missing — run python scripts/diagrams/sync-theme-classes.py"
-    )
+    assert MANIFEST.is_file(), f"{MANIFEST.name} is missing — run python scripts/diagrams/sync-theme-classes.py"
 
 
 def test_manifest_is_in_sync() -> None:

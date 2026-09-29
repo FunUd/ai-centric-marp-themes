@@ -1,4 +1,5 @@
 """test_new_diagrams.py — hbar / stacked-bar-100 / matrix validation and rendering."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -66,14 +67,22 @@ def test_stacked100_requires_two_series() -> None:
 def test_matrix_rejects_score_out_of_range() -> None:
     with pytest.raises(ValueError, match="0-5"):
         models.parse_diagram_data(
-            {"type": "matrix", "columns": ["A", "B"], "rows": [{"label": "R1", "scores": [6, 3]}, {"label": "R2", "scores": [2, 4]}]}
+            {
+                "type": "matrix",
+                "columns": ["A", "B"],
+                "rows": [{"label": "R1", "scores": [6, 3]}, {"label": "R2", "scores": [2, 4]}],
+            }
         )
 
 
 def test_matrix_rejects_column_mismatch() -> None:
     with pytest.raises(ValueError, match="one entry per column"):
         models.parse_diagram_data(
-            {"type": "matrix", "columns": ["A", "B"], "rows": [{"label": "R1", "scores": [5]}, {"label": "R2", "scores": [2, 4]}]}
+            {
+                "type": "matrix",
+                "columns": ["A", "B"],
+                "rows": [{"label": "R1", "scores": [5]}, {"label": "R2", "scores": [2, 4]}],
+            }
         )
 
 

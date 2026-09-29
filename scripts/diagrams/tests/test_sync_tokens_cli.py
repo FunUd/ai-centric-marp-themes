@@ -4,6 +4,7 @@ test_token_sync.py covers parse_root_vars / build_updates / resolve_value.
 This file adds the write path (apply_updates) and the CLI entry point
 (main), using temp copies of the real CSS/JSON inputs.
 """
+
 from __future__ import annotations
 
 import copy

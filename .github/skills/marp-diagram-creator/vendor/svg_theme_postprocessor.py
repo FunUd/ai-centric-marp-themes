@@ -20,7 +20,7 @@ from svg_filters import build_filter_defs
 def _replace_rect_radius(svg: str, radius: float, large_radius: float) -> str:
     def replacer(match: re.Match[str]) -> str:
         tag = match.group(0)
-        if "data-diagram-role=\"marker\"" in tag or "role=\"marker\"" in tag:
+        if 'data-diagram-role="marker"' in tag or 'role="marker"' in tag:
             rx = max(0, radius // 2) if radius else 0
         elif "swimlane" in tag.lower():
             rx = large_radius
@@ -78,7 +78,7 @@ def _inject_node_filters(svg: str, effects: dict[str, Any]) -> str:
 
     def add_filter(match: re.Match[str]) -> str:
         tag = match.group(0)
-        if "filter=" in tag or "data-diagram-role=\"connector\"" in tag:
+        if "filter=" in tag or 'data-diagram-role="connector"' in tag:
             return tag
         if "stroke=" not in tag and "fill=" not in tag:
             return tag
@@ -120,10 +120,7 @@ def _bolden_mindmap_labels(svg: str) -> str:
     """
     if "mindmapDiagram" not in svg or "</style>" not in svg:
         return svg
-    override = (
-        ".mindmapDiagram span.nodeLabel,"
-        ".mindmapDiagram span.nodeLabel p{font-weight:700 !important;}"
-    )
+    override = ".mindmapDiagram span.nodeLabel,.mindmapDiagram span.nodeLabel p{font-weight:700 !important;}"
     return svg.replace("</style>", override + "</style>", 1)
 
 
@@ -158,14 +155,10 @@ def _fix_gantt_contrast(svg: str, theme_data: dict[str, Any]) -> str:
     # Family fills for text-contrast anchors (done=lightgrey needs dark ink
     # on dark themes even when active/task are dark with light ink).
     def _family_fill(name: str) -> str | None:
-        m = re.search(
-            r"\." + name + r"\d[^{]*\{[^}]*fill:([^;!]+)", svg, re.IGNORECASE
-        )
+        m = re.search(r"\." + name + r"\d[^{]*\{[^}]*fill:([^;!]+)", svg, re.IGNORECASE)
         if not m:
             # `.done0` writes `stroke:...;fill:...` (stroke first).
-            m = re.search(
-                r"\." + name + r"\d[^{]*\{[^}]*?fill:([^;!]+)", svg, re.IGNORECASE
-            )
+            m = re.search(r"\." + name + r"\d[^{]*\{[^}]*?fill:([^;!]+)", svg, re.IGNORECASE)
         return normalize_color(m.group(1)) if m else None
 
     family_fills = {
@@ -178,9 +171,7 @@ def _fix_gantt_contrast(svg: str, theme_data: dict[str, Any]) -> str:
     def _repair_rule(match: re.Match[str]) -> str:
         selector, body = match.group(1), match.group(2)
         sel = selector.lower()
-        is_task_fill = any(
-            key in sel for key in (".active", ".task0", ".task1", ".task2", ".task3", ".done", ".crit")
-        )
+        is_task_fill = any(key in sel for key in (".active", ".task0", ".task1", ".task2", ".task3", ".done", ".crit"))
         is_task_text = "tasktext" in sel or "donetext" in sel or "crittext" in sel
         if not (is_task_fill or is_task_text):
             return match.group(0)
@@ -190,29 +181,19 @@ def _fix_gantt_contrast(svg: str, theme_data: dict[str, Any]) -> str:
         if is_task_fill:
             fill_hex = normalize_color(fill_m.group(1)) if fill_m else None
             stroke_hex = normalize_color(stroke_m.group(1)) if stroke_m else None
-            fill_ok = (
-                contrast_ratio(fill_hex, background) >= 3.0 if fill_hex else True
-            )
-            stroke_ok = (
-                contrast_ratio(stroke_hex, background) >= 3.0 if stroke_hex else True
-            )
+            fill_ok = contrast_ratio(fill_hex, background) >= 3.0 if fill_hex else True
+            stroke_ok = contrast_ratio(stroke_hex, background) >= 3.0 if stroke_hex else True
             # Both invisible -> the bar disappears; pin the boundary to ink.
             if fill_hex and stroke_hex and not fill_ok and not stroke_ok:
-                new_body = re.sub(
-                    r"stroke:[^;!]+", f"stroke:{ink}", new_body, count=1
-                )
+                new_body = re.sub(r"stroke:[^;!]+", f"stroke:{ink}", new_body, count=1)
             elif stroke_hex and not stroke_ok and not fill_m:
-                new_body = re.sub(
-                    r"stroke:[^;!]+", f"stroke:{ink}", new_body, count=1
-                )
+                new_body = re.sub(r"stroke:[^;!]+", f"stroke:{ink}", new_body, count=1)
             # Warm-sunnyday primary border (2.3:1) fails alone: lift any
             # task stroke below 3:1 to ink even when the fill is also pale.
             elif stroke_hex and not stroke_ok and ".active" not in sel:
                 # Only touch task-family strokes, never grid/section washes.
                 if any(k in sel for k in (".task", ".done", ".crit")):
-                    new_body = re.sub(
-                        r"stroke:[^;!]+", f"stroke:{ink}", new_body, count=1
-                    )
+                    new_body = re.sub(r"stroke:[^;!]+", f"stroke:{ink}", new_body, count=1)
         if is_task_text and fill_m:
             text_hex = normalize_color(fill_m.group(1))
             if text_hex:
@@ -234,9 +215,7 @@ def _fix_gantt_contrast(svg: str, theme_data: dict[str, Any]) -> str:
                     fixed = best_text_on(anchor, "#FFFFFF", FALLBACK_INK)
                     # Never regress: only replace when the pick is stronger.
                     if contrast_ratio(fixed, anchor) > contrast_ratio(text_hex, anchor):
-                        new_body = re.sub(
-                            r"fill:[^;!]+", f"fill:{fixed}", new_body, count=1
-                        )
+                        new_body = re.sub(r"fill:[^;!]+", f"fill:{fixed}", new_body, count=1)
         return f"{selector}{{{new_body}}}"
 
     return re.sub(r"([^{}]+)\{([^}]*)\}", _repair_rule, svg)
@@ -277,9 +256,7 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
 
     # Collect section fills: `.section-N rect,...{fill:...}` (first wins).
     fills: dict[str, str] = {}
-    for match in re.finditer(
-        r"\.section-(-?\d+)[^{]*\{[^}]*fill:([^;!]+)", svg
-    ):
+    for match in re.finditer(r"\.section-(-?\d+)[^{]*\{[^}]*fill:([^;!]+)", svg):
         sec, raw = match.group(1), match.group(2)
         norm = normalize_color(raw)
         if norm and sec not in fills:
@@ -292,15 +269,10 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
         soft = soften_mindmap_fill(fill_hex, background) or fill_hex
         if soft != fill_hex:
             for _pat_str in (
-                r"(\.section-" + re.escape(sec)
-                + r"\s+(?:rect|path|circle|polygon)[^{]*\{[^}]*?fill:)([^;!]+)",
-                r"(\[data-look=\"neo\"\]\.mindmap-node\.section-"
-                + re.escape(sec)
-                + r"[^{]*\{[^}]*?fill:)([^;!]+)",
+                r"(\.section-" + re.escape(sec) + r"\s+(?:rect|path|circle|polygon)[^{]*\{[^}]*?fill:)([^;!]+)",
+                r"(\[data-look=\"neo\"\]\.mindmap-node\.section-" + re.escape(sec) + r"[^{]*\{[^}]*?fill:)([^;!]+)",
             ):
-                svg = re.compile(_pat_str).sub(
-                    lambda m, _new=soft: m.group(1) + _new, svg
-                )
+                svg = re.compile(_pat_str).sub(lambda m, _new=soft: m.group(1) + _new, svg)
             fill_hex = soft
         # (a) label ink: `.section-N text{fill:...}` (SVG) and
         # `.section-N span{color:...}` (foreignObject HTML).
@@ -328,36 +300,26 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
             if target_fill != fill_hex:
                 # Rewrite only the node fills for this section, never the edge.
                 fill_pat = re.compile(
-                    r"(\.section-" + re.escape(sec)
-                    + r"\s+(?:rect|path|circle|polygon)[^{]*\{[^}]*?fill:)([^;!]+)",
+                    r"(\.section-" + re.escape(sec) + r"\s+(?:rect|path|circle|polygon)[^{]*\{[^}]*?fill:)([^;!]+)",
                 )
 
-                def _repair_fill(
-                    m: re.Match[str], _new: str = target_fill
-                ) -> str:
+                def _repair_fill(m: re.Match[str], _new: str = target_fill) -> str:
                     return m.group(1) + _new
 
                 svg = fill_pat.sub(_repair_fill, svg)
                 # Neo-look duplicate rules (`[data-look="neo"]...`) carry the
                 # same fill; repair them too so old and new engines agree.
                 neo_pat = re.compile(
-                    r"(\[data-look=\"neo\"\]\.mindmap-node\.section-"
-                    + re.escape(sec)
-                    + r"[^{]*\{[^}]*?fill:)([^;!]+)",
+                    r"(\[data-look=\"neo\"\]\.mindmap-node\.section-" + re.escape(sec) + r"[^{]*\{[^}]*?fill:)([^;!]+)",
                 )
-                svg = neo_pat.sub(
-                    lambda m, _new=target_fill: m.group(1) + _new, svg
-                )
+                svg = neo_pat.sub(lambda m, _new=target_fill: m.group(1) + _new, svg)
                 fill_hex = target_fill
         for kind, prop in (("text", "fill"), ("span", "color")):
             pat = re.compile(
-                r"(\.section-" + re.escape(sec) + r"\s+" + kind + r"\{[^}]*?"
-                + prop + r":)([^;!]+)",
+                r"(\.section-" + re.escape(sec) + r"\s+" + kind + r"\{[^}]*?" + prop + r":)([^;!]+)",
             )
 
-            def _repair_ink(
-                m: re.Match[str], _fill: str = fill_hex
-            ) -> str:
+            def _repair_ink(m: re.Match[str], _fill: str = fill_hex) -> str:
                 current = normalize_color(m.group(2))
                 if current is None:
                     return m.group(0)
@@ -372,13 +334,9 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
         # (b) edge stroke: `.section-edge-N{stroke:...}`.
         # Resolve the passing edge hue first so nodes can reuse it for their
         # own boundary (c) — one hue per branch for fill, edge, and border.
-        edge_pat = re.compile(
-            r"(\.section-edge-" + re.escape(sec) + r"\{[^}]*?stroke:)([^;!]+)"
-        )
+        edge_pat = re.compile(r"(\.section-edge-" + re.escape(sec) + r"\{[^}]*?stroke:)([^;!]+)")
         _edge_match = edge_pat.search(svg)
-        _edge_current = (
-            normalize_color(_edge_match.group(2)) if _edge_match else None
-        )
+        _edge_current = normalize_color(_edge_match.group(2)) if _edge_match else None
         if _edge_current is None:
             edge_fixed: str | None = graphical_ink(theme_data, 3.0)
         elif contrast_ratio(_edge_current, background) >= 3.0:
@@ -395,10 +353,7 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
 
         svg = edge_pat.sub(_repair_edge, svg)
         # Neo duplicate edge rules carry the same stroke; keep them in sync.
-        svg = re.compile(
-            r"(\[data-look=\"neo\"\]\.section-edge-" + re.escape(sec)
-            + r"\{[^}]*?stroke:)([^;!]+)"
-        ).sub(
+        svg = re.compile(r"(\[data-look=\"neo\"\]\.section-edge-" + re.escape(sec) + r"\{[^}]*?stroke:)([^;!]+)").sub(
             lambda m, _fixed=edge_fixed: m.group(1) + (_fixed or m.group(2)), svg
         )
 
@@ -408,13 +363,10 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
         # geometry. Dark canvases get the same light stroke for free.
         if edge_fixed and contrast_ratio(edge_fixed, background) >= 3.0:
             node_pat = re.compile(
-                r"(\.section-" + re.escape(sec)
-                + r"\s+(?:rect|path|circle|polygon)[^{]*\{)([^}]*?)(\})",
+                r"(\.section-" + re.escape(sec) + r"\s+(?:rect|path|circle|polygon)[^{]*\{)([^}]*?)(\})",
             )
 
-            def _repair_node(
-                m: re.Match[str], _stroke: str = edge_fixed
-            ) -> str:
+            def _repair_node(m: re.Match[str], _stroke: str = edge_fixed) -> str:
                 head, body, tail = m.group(1), m.group(2), m.group(3)
                 if re.search(r"stroke\s*:", body):
                     body = re.sub(r"stroke\s*:[^;!]+", f"stroke:{_stroke}", body, count=1)
@@ -424,16 +376,12 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
                         body += ";"
                     body += f"stroke:{_stroke};stroke-width:1.5"
                 if re.search(r"stroke-width\s*:", body):
-                    body = re.sub(
-                        r"stroke-width\s*:[^;!]+", "stroke-width:1.5", body, count=1
-                    )
+                    body = re.sub(r"stroke-width\s*:[^;!]+", "stroke-width:1.5", body, count=1)
                 return head + body + tail
 
             svg = node_pat.sub(_repair_node, svg)
             svg = re.compile(
-                r"(\[data-look=\"neo\"\]\.mindmap-node\.section-"
-                + re.escape(sec)
-                + r"[^{]*\{)([^}]*?)(\})",
+                r"(\[data-look=\"neo\"\]\.mindmap-node\.section-" + re.escape(sec) + r"[^{]*\{)([^}]*?)(\})",
             ).sub(
                 lambda m, _s=edge_fixed: (
                     m.group(1)
@@ -443,7 +391,11 @@ def _fix_mindmap_contrast(svg: str, theme_data: dict[str, Any]) -> str:
                         (
                             m.group(2)
                             if re.search(r"stroke\s*:", m.group(2))
-                            else (m.group(2).rstrip() + (";" if m.group(2).rstrip() and not m.group(2).rstrip().endswith(";") else "") + f"stroke:{_s};stroke-width:1.5")
+                            else (
+                                m.group(2).rstrip()
+                                + (";" if m.group(2).rstrip() and not m.group(2).rstrip().endswith(";") else "")
+                                + f"stroke:{_s};stroke-width:1.5"
+                            )
                         ),
                         count=1,
                     )

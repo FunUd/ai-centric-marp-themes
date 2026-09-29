@@ -15,7 +15,9 @@ def load_script():
     models = importlib.util.module_from_spec(models_spec)
     sys.modules["diagram_models"] = models
     models_spec.loader.exec_module(models)
-    renderer_spec = importlib.util.spec_from_file_location("svg_diagram_renderer", SCRIPT_DIR / "svg_diagram_renderer.py")
+    renderer_spec = importlib.util.spec_from_file_location(
+        "svg_diagram_renderer", SCRIPT_DIR / "svg_diagram_renderer.py"
+    )
     assert renderer_spec and renderer_spec.loader
     renderer = importlib.util.module_from_spec(renderer_spec)
     sys.modules["svg_diagram_renderer"] = renderer
@@ -68,5 +70,7 @@ def test_all_json_diagram_types_render(tmp_path: Path) -> None:
 
     for index, definition in enumerate(definitions):
         output = tmp_path / f"diagram-{index}.svg"
-        assert script.render_json_diagram_from_data(definition, output, script.load_theme_style("slate-minimal"), "col2")
-        assert 'viewBox=' in output.read_text(encoding="utf-8")
+        assert script.render_json_diagram_from_data(
+            definition, output, script.load_theme_style("slate-minimal"), "col2"
+        )
+        assert "viewBox=" in output.read_text(encoding="utf-8")

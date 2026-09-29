@@ -58,7 +58,11 @@ def test_automatic_route_avoids_intermediate_box() -> None:
         source_geometry=(0, 40, 40, 20),
         target_geometry=(140, 40, 40, 20),
         style="edgeStyle=orthogonalEdgeStyle;",
-        obstacles=[routing.geometry_to_rect(blocker), routing.geometry_to_rect(source), routing.geometry_to_rect(target)],
+        obstacles=[
+            routing.geometry_to_rect(blocker),
+            routing.geometry_to_rect(source),
+            routing.geometry_to_rect(target),
+        ],
     )
 
     assert len(points) >= 4
@@ -149,13 +153,14 @@ def test_system_architecture_template_has_no_routed_edge_crossings() -> None:
         )
         for start, end in zip(points, points[1:]):
             assert not any(
-                vertex_id not in (source_id, target_id)
-                and routing.segment_intersects_rect(start, end, obstacle)
+                vertex_id not in (source_id, target_id) and routing.segment_intersects_rect(start, end, obstacle)
                 for vertex_id, obstacle in vertices.items()
             ), edge.get("id")
 
 
-def _template_points(template_name: str) -> list[tuple[str, list[tuple[float, float]], tuple[float, float, float, float], tuple[float, float, float, float]]]:
+def _template_points(
+    template_name: str,
+) -> list[tuple[str, list[tuple[float, float]], tuple[float, float, float, float], tuple[float, float, float, float]]]:
     """Resolve every edge of a draw.io template exactly like the renderer does."""
     template = SCRIPT_DIR / "templates" / "drawio" / template_name
     root = ET.parse(template).getroot()
@@ -192,9 +197,7 @@ def _template_points(template_name: str) -> list[tuple[str, list[tuple[float, fl
                 vertices[source_id], vertices[target_id], style, [first, *waypoints, last]
             )
         else:
-            points = routing.route_edge(
-                vertices[source_id], vertices[target_id], style, list(vertices.values())
-            )
+            points = routing.route_edge(vertices[source_id], vertices[target_id], style, list(vertices.values()))
         resolved.append((edge.get("id") or "?", points, vertices[source_id], vertices[target_id]))
     return resolved
 
@@ -262,10 +265,12 @@ def test_cylinder_side_ports_stay_on_body() -> None:
 
 def test_diagonal_stubs_get_orthogonal_elbow() -> None:
     points = routing.snap_edge_points(
-        (630.0, 185.0, 180.0, 50.0), (220.0, 317.0, 180.0, 52.0),
+        (630.0, 185.0, 180.0, 50.0),
+        (220.0, 317.0, 180.0, 52.0),
         "edgeStyle=orthogonalEdgeStyle;",
         [(630.5, 235.0), (630.0, 243.0), (400.0, 243.0), (355.0, 317.0)],
-        "rect", "cylinder",
+        "rect",
+        "cylinder",
     )
     assert (355.0, 243.0) in points
     for start, end in zip(points, points[1:]):

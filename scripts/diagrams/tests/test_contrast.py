@@ -46,7 +46,7 @@ def test_best_text_on_keeps_light_for_dark_fills() -> None:
 
 def test_nebula_white_nodes_get_dark_text() -> None:
     styles = _recolored_styles("nebula-glass")
-    white_nodes = [s for s in styles if "fillColor=#FFFFFF" in s and 'vertex' not in s]
+    white_nodes = [s for s in styles if "fillColor=#FFFFFF" in s and "vertex" not in s]
     assert white_nodes, "template should contain white-fill nodes"
     for style in white_nodes:
         match = re.search(r"fontColor=([^;]+)", style)
@@ -83,7 +83,9 @@ def test_accent_nodes_clear_text_floor_on_every_theme() -> None:
                 if not font or not fill:
                     continue
                 ratio = _contrast_ratio(font.group(1), fill.group(1))
-                assert ratio >= 4.5, f"{theme} {template}: {font.group(1)} on {fill.group(1)} = {ratio:.1f}:1 ({style[:80]})"
+                assert ratio >= 4.5, (
+                    f"{theme} {template}: {font.group(1)} on {fill.group(1)} = {ratio:.1f}:1 ({style[:80]})"
+                )
 
 
 def _contrast_ratio(first: str, second: str) -> float:

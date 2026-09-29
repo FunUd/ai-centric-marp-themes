@@ -1,6 +1,7 @@
 """Branch-coverage tests for design_tokens.py (luminance parsing fallbacks,
 best_text_on guard clauses, and the missing-file fallback in
 load_design_tokens)."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -37,8 +38,8 @@ def test_luminance_expands_shorthand_hex() -> None:
 
 
 def test_luminance_rejects_malformed_hex() -> None:
-    assert tokens._luminance("#12345") is None          # wrong length
-    assert tokens._luminance("#zzzzzz") is None          # non-hex digits -> ValueError
+    assert tokens._luminance("#12345") is None  # wrong length
+    assert tokens._luminance("#zzzzzz") is None  # non-hex digits -> ValueError
     assert tokens._luminance("#1234567") is None
 
 

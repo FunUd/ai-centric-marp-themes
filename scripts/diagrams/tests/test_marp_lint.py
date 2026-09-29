@@ -13,6 +13,7 @@ Each `lint_*` function gets:
 
 Regression cases already found and fixed are named explicitly.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -96,14 +97,16 @@ def test_parse_ignores_content_inside_code_fences() -> None:
 
 
 def test_parse_collects_classes_images_headings_and_lists() -> None:
-    parsed = first_slide(deck(
-        "<!-- _class: cols-2 with-header -->\n\n"
-        "# Title\n\n"
-        "- one\n"
-        "2. two\n\n"
-        "![width:400px](assets/x.png)\n\n"
-        '<div class="columns"><div class="col">a</div></div>\n'
-    ))
+    parsed = first_slide(
+        deck(
+            "<!-- _class: cols-2 with-header -->\n\n"
+            "# Title\n\n"
+            "- one\n"
+            "2. two\n\n"
+            "![width:400px](assets/x.png)\n\n"
+            '<div class="columns"><div class="col">a</div></div>\n'
+        )
+    )
     assert parsed.classes == {"cols-2", "with-header"}
     assert parsed.list_items == ["one", "two"]
     assert parsed.headings == ["Title"]
@@ -140,21 +143,27 @@ def test_plain_text_unescapes_html_entities() -> None:
 # ============================================ lint_missing_class_directive
 
 
-@pytest.mark.parametrize("div_class,directive", [
-    ("columns", "cols-2"),
-    ("columns", "split-2"),
-    ("grid", "grid-quadrant"),
-    ("profile-layout", "profile"),
-])
+@pytest.mark.parametrize(
+    "div_class,directive",
+    [
+        ("columns", "cols-2"),
+        ("columns", "split-2"),
+        ("grid", "grid-quadrant"),
+        ("profile-layout", "profile"),
+    ],
+)
 def test_missing_class_directive_flags_layout_div_without_directive(div_class: str, directive: str) -> None:
     body = f'<div class="{div_class}">x</div>\n'
     assert "MISSING_CLASS_DIRECTIVE" in issue_codes(deck(body))
 
 
-@pytest.mark.parametrize("div_class,directive", [
-    ("columns", "cols-2"),
-    ("grid", "grid-sharp"),
-])
+@pytest.mark.parametrize(
+    "div_class,directive",
+    [
+        ("columns", "cols-2"),
+        ("grid", "grid-sharp"),
+    ],
+)
 def test_missing_class_directive_passes_with_directive(div_class: str, directive: str) -> None:
     body = f'<!-- _class: {directive} -->\n\n<div class="{div_class}">x</div>\n'
     assert "MISSING_CLASS_DIRECTIVE" not in issue_codes(deck(body))
@@ -179,22 +188,33 @@ def test_centered_list_flags_a_list_on_a_cover() -> None:
 
 def test_centered_list_respects_scoped_left_align_override() -> None:
     """The documented escape hatch for cover slides that genuinely need a list."""
-    body = (
-        "<!-- _class: cover -->\n\n# T\n\n- a\n- b\n\n"
-        "<style scoped>\nsection ul { text-align: left; }\n</style>\n"
-    )
+    body = "<!-- _class: cover -->\n\n# T\n\n- a\n- b\n\n<style scoped>\nsection ul { text-align: left; }\n</style>\n"
     assert "CENTERED_LIST" not in issue_codes(deck(body))
 
 
-@pytest.mark.parametrize("cls", [
-    "cols-2", "cols-3", "split-2", "split-3", "split-asym",
-    "grid-quadrant", "steps", "timeline", "checklist", "dense", "profile",
-])
+@pytest.mark.parametrize(
+    "cls",
+    [
+        "cols-2",
+        "cols-3",
+        "split-2",
+        "split-3",
+        "split-asym",
+        "grid-quadrant",
+        "steps",
+        "timeline",
+        "checklist",
+        "dense",
+        "profile",
+    ],
+)
 def test_centered_list_passes_on_content_layouts(cls: str) -> None:
     assert "CENTERED_LIST" not in issue_codes(deck(f"<!-- _class: {cls} -->\n\n# T\n\n- a\n- b\n"))
 
 
-@pytest.mark.parametrize("cls", ["cover", "cover-nebula", "cover-wave", "key-message", "hero", "title-only", "align-center"])
+@pytest.mark.parametrize(
+    "cls", ["cover", "cover-nebula", "cover-wave", "key-message", "hero", "title-only", "align-center"]
+)
 def test_centered_list_flags_every_title_layout(cls: str) -> None:
     assert "CENTERED_LIST" in issue_codes(deck(f"<!-- _class: {cls} -->\n\n# T\n\n- a\n- b\n"))
 
@@ -242,11 +262,20 @@ def test_oversized_icon_ignores_raster_images() -> None:
     assert "OVERSIZED_ICON" not in issue_codes(deck("![width:900px](assets/photo.png)\n"))
 
 
-@pytest.mark.parametrize("src", [
-    "assets/flow.svg", "assets/arch.svg", "assets/seq.svg", "assets/state.svg",
-    "assets/diagrams/flow.svg", "assets/chart.svg", "assets/drawio/x.svg",
-    "assets/render/out.svg", "assets/source.mmd.svg",
-])
+@pytest.mark.parametrize(
+    "src",
+    [
+        "assets/flow.svg",
+        "assets/arch.svg",
+        "assets/seq.svg",
+        "assets/state.svg",
+        "assets/diagrams/flow.svg",
+        "assets/chart.svg",
+        "assets/drawio/x.svg",
+        "assets/render/out.svg",
+        "assets/source.mmd.svg",
+    ],
+)
 def test_oversized_icon_does_not_flag_diagrams(src: str) -> None:
     """Regression: the icon check skipped only the hard-coded pair
     ("diagram", "chart") while the embedding check used nine keywords, so a
@@ -309,18 +338,21 @@ def test_diagram_overflow_width_is_an_error() -> None:
     assert issues[0].severity == "ERROR"
 
 
-@pytest.mark.parametrize("cls,width,max_width", [
-    ("", 1120, 1120),
-    ("cols-2", 520, 520),
-    ("split-glass", 520, 520),
-    ("split-asym", 710, 710),
-    ("cols-3", 340, 340),
-])
+@pytest.mark.parametrize(
+    "cls,width,max_width",
+    [
+        ("", 1120, 1120),
+        ("cols-2", 520, 520),
+        ("split-glass", 520, 520),
+        ("split-asym", 710, 710),
+        ("cols-3", 340, 340),
+    ],
+)
 def test_diagram_width_boundary_is_inclusive(cls: str, width: int, max_width: int) -> None:
     directive = f"<!-- _class: {cls} -->\n\n" if cls else ""
-    body = f'{directive}![width:{width}px](assets/diagrams/x.svg)\n'
+    body = f"{directive}![width:{width}px](assets/diagrams/x.svg)\n"
     assert "DIAGRAM_OVERFLOW_WIDTH" not in issue_codes(deck(body))
-    body_over = f'{directive}![width:{max_width + 1}px](assets/diagrams/x.svg)\n'
+    body_over = f"{directive}![width:{max_width + 1}px](assets/diagrams/x.svg)\n"
     assert "DIAGRAM_OVERFLOW_WIDTH" in issue_codes(deck(body_over))
 
 
@@ -348,7 +380,9 @@ def test_diagram_on_title_layout_is_a_warning() -> None:
 
 
 def test_missing_width_message_names_the_layout_budget() -> None:
-    issues = m.lint_diagram_embedding(first_slide(deck("<!-- _class: cols-3 -->\n\n![center](assets/diagrams/x.svg)\n")))
+    issues = m.lint_diagram_embedding(
+        first_slide(deck("<!-- _class: cols-3 -->\n\n![center](assets/diagrams/x.svg)\n"))
+    )
     assert "340px" in issues[0].message
     assert "col3" in issues[0].message
 
@@ -356,20 +390,23 @@ def test_missing_width_message_names_the_layout_budget() -> None:
 # ======================================================== _slide_layout_key
 
 
-@pytest.mark.parametrize("classes,expected", [
-    (set(), "full"),
-    ({"cover"}, "full"),
-    ({"cols-2"}, "col2"),
-    ({"split-2"}, "col2"),
-    ({"split-glass"}, "col2"),
-    ({"glass-card-layout"}, "col2"),
-    ({"split-asym"}, "asym"),
-    ({"split-asym-reverse"}, "asym"),
-    ({"cols-3"}, "col3"),
-    ({"split-3"}, "col3"),
-    ({"split-asym", "cols-2"}, "col2"),
-    ({"split-asym", "cols-3"}, "col3"),
-])
+@pytest.mark.parametrize(
+    "classes,expected",
+    [
+        (set(), "full"),
+        ({"cover"}, "full"),
+        ({"cols-2"}, "col2"),
+        ({"split-2"}, "col2"),
+        ({"split-glass"}, "col2"),
+        ({"glass-card-layout"}, "col2"),
+        ({"split-asym"}, "asym"),
+        ({"split-asym-reverse"}, "asym"),
+        ({"cols-3"}, "col3"),
+        ({"split-3"}, "col3"),
+        ({"split-asym", "cols-2"}, "col2"),
+        ({"split-asym", "cols-3"}, "col3"),
+    ],
+)
 def test_slide_layout_key(classes: set[str], expected: str) -> None:
     slide = m.SlideInfo(number=1, raw_content="", classes=set(classes))
     assert m._slide_layout_key(slide) == expected
@@ -382,9 +419,16 @@ def _bullets(n: int) -> str:
     return "".join(f"- item {i}\n" for i in range(n))
 
 
-@pytest.mark.parametrize("cls,allowed", [
-    ("", 4), ("cols-2", 6), ("split-glass", 6), ("split-asym", 6), ("cols-3", 9),
-])
+@pytest.mark.parametrize(
+    "cls,allowed",
+    [
+        ("", 4),
+        ("cols-2", 6),
+        ("split-glass", 6),
+        ("split-asym", 6),
+        ("cols-3", 9),
+    ],
+)
 def test_bullet_hell_threshold_per_layout(cls: str, allowed: int) -> None:
     directive = f"<!-- _class: {cls} -->\n\n" if cls else ""
     assert "BULLET_HELL" not in issue_codes(deck(f"{directive}# T\n\n" + _bullets(allowed)))
@@ -444,7 +488,9 @@ def test_weak_title_passes_a_heading_with_a_conclusion() -> None:
     assert "WEAK_TITLE" not in issue_codes(deck("#  microservices cut deploy time by 60%\n"))
 
 
-@pytest.mark.parametrize("cls", ["cover", "cover-nebula", "key-message", "hero", "title-only", "title-elegant", "toc", "toc-focus"])
+@pytest.mark.parametrize(
+    "cls", ["cover", "cover-nebula", "key-message", "hero", "title-only", "title-elegant", "toc", "toc-focus"]
+)
 def test_weak_title_exempts_title_layouts(cls: str) -> None:
     assert "WEAK_TITLE" not in issue_codes(deck(f"<!-- _class: {cls} -->\n\n# 概要\n"))
 
@@ -497,9 +543,8 @@ def test_unlabeled_list_needs_at_least_two_long_bullets() -> None:
 def test_unlabeled_list_skips_structural_layouts(cls: str) -> None:
     """TOC/checklist/steps/timeline entries are structural, not claims needing
     a takeaway label — same exemption lint_bullet_hell already honours."""
-    body = (
-        f"<!-- _class: {cls} -->\n\n# T\n\n"
-        + "".join(f"- a very long structural entry without a label here {i}\n" for i in range(3))
+    body = f"<!-- _class: {cls} -->\n\n# T\n\n" + "".join(
+        f"- a very long structural entry without a label here {i}\n" for i in range(3)
     )
     assert "UNLABELED_LIST" not in issue_codes(deck(body))
 
@@ -600,13 +645,13 @@ def test_structural_only_suppresses_readability_warnings() -> None:
 
 
 def test_structural_only_keeps_errors() -> None:
-    body = '<!-- _class: cover -->\n\n# T\n\n- a\n'
+    body = "<!-- _class: cover -->\n\n# T\n\n- a\n"
     structural = [i.code for i in m.lint_slide(first_slide(deck(body)), structural_only=True)]
     assert "CENTERED_LIST" in structural
 
 
 def test_clean_deck_produces_no_issues() -> None:
-    body = "<!-- _class: cols-2 -->\n\n# Two columns compared\n\n<div class=\"columns\">\n<div class=\"col\">\n- a\n</div>\n</div>\n"
+    body = '<!-- _class: cols-2 -->\n\n# Two columns compared\n\n<div class="columns">\n<div class="col">\n- a\n</div>\n</div>\n'
     assert issue_codes(deck(body)) == []
 
 
@@ -629,14 +674,19 @@ def _run_at(linter: Path, *args: str) -> subprocess.CompletedProcess:
 
 def test_main_exits_zero_for_a_clean_deck(tmp_path: Path) -> None:
     path = tmp_path / "deck.md"
-    path.write_text(deck("<!-- _class: cols-2 -->\n\n# Comparison\n\n<div class=\"columns\">\n<div class=\"col\">\n- a\n</div>\n</div>\n"), encoding="utf-8")
+    path.write_text(
+        deck(
+            '<!-- _class: cols-2 -->\n\n# Comparison\n\n<div class="columns">\n<div class="col">\n- a\n</div>\n</div>\n'
+        ),
+        encoding="utf-8",
+    )
     result = _run(str(path))
     assert result.returncode == 0, result.stdout
 
 
 def test_main_exits_two_on_error(tmp_path: Path) -> None:
     path = tmp_path / "deck.md"
-    path.write_text(deck('<!-- _class: cover -->\n\n# T\n\n- a\n- b\n'), encoding="utf-8")
+    path.write_text(deck("<!-- _class: cover -->\n\n# T\n\n- a\n- b\n"), encoding="utf-8")
     assert _run(str(path)).returncode == 2
 
 
@@ -703,6 +753,4 @@ def test_layout_widths_match_layout_spec() -> None:
     comment honest.
     """
     spec = load_module("layout_spec_parity", LAYOUT_SPEC)
-    assert m.DIAGRAM_LAYOUT_MAX_WIDTHS == {
-        key: value["max_w"] for key, value in spec.CANVAS_MAX.items()
-    }
+    assert m.DIAGRAM_LAYOUT_MAX_WIDTHS == {key: value["max_w"] for key, value in spec.CANVAS_MAX.items()}

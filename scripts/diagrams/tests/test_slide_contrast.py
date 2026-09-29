@@ -13,6 +13,7 @@ the hand-measured values previously kept only in the CHANGELOG:
   >= 3.0:1 floor (fills below 4.5, e.g. azure danger 4.5, are documented
   follow-ups, not silent passes).
 """
+
 from __future__ import annotations
 
 import importlib.util

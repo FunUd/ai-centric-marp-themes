@@ -17,6 +17,7 @@ Rules (enforced in both modes):
 - every section is used by at least two themes;
 - a theme lists a section iff its markers exist, and vice versa.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -102,9 +103,7 @@ def sync_theme(theme: str, sections: dict[str, tuple[list[str], str]], check: bo
     path = THEMES_DIR / f"{theme}.css"
     text = path.read_text(encoding="utf-8")
     regions = theme_markers(text)
-    expected = {
-        name for name, (themes, _body) in sections.items() if theme in themes
-    }
+    expected = {name for name, (themes, _body) in sections.items() if theme in themes}
     problems: list[str] = []
     for name in sorted(set(regions) - expected):
         problems.append(f"[STALE] {theme}.css carries <base:{name}> but _base.css does not list {theme}")
@@ -127,9 +126,7 @@ def sync_theme(theme: str, sections: dict[str, tuple[list[str], str]], check: bo
         import tempfile
 
         try:
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=str(path.parent), delete=False
-            ) as tmp:
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=str(path.parent), delete=False) as tmp:
                 tmp.write(rebuilt)
                 tmp_path = Path(tmp.name)
             tmp_path.replace(path)
@@ -158,8 +155,7 @@ def main() -> int:
         for line in problems:
             print(line, file=sys.stderr)
         print(
-            f"FAILED: {len(problems)} theme-base problem(s).\n"
-            f"       run: python scripts/sync-theme-base.py",
+            f"FAILED: {len(problems)} theme-base problem(s).\n       run: python scripts/sync-theme-base.py",
             file=sys.stderr,
         )
         return 1

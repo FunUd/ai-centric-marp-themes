@@ -6,6 +6,7 @@ fallbacks, _port_sides corner ports, all _elbow_for_stub outcomes,
 snap_edge_points' elbow insertion, the unreachable-end fallback in
 _grid_route, and _simplify's collinear collapse.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -39,9 +40,7 @@ def test_geometry_to_rect_without_geometry_is_zero() -> None:
     cell = ET.fromstring('<mxCell id="x"/>')
 
     assert routing.geometry_to_rect(cell) == (0.0, 0.0, 0.0, 0.0)
-    geometry_cell = ET.fromstring(
-        '<mxCell id="y"><mxGeometry x="1" y="2" width="3" height="4"/></mxCell>'
-    )
+    geometry_cell = ET.fromstring('<mxCell id="y"><mxGeometry x="1" y="2" width="3" height="4"/></mxCell>')
     assert routing.geometry_to_rect(geometry_cell) == (1.0, 2.0, 3.0, 4.0)
 
 
@@ -106,12 +105,12 @@ def test_port_sides_reports_corner_ports() -> None:
     "port, neighbor, expected",
     [
         ((100.0, 25.0), (160.0, 45.0), (160.0, 25.0)),  # E port, dx dominant
-        ((50.0, 0.0), (70.0, 40.0), (50.0, 40.0)),      # N port, dy dominant
-        ((50.0, 0.0), (90.0, 20.0), (50.0, 20.0)),      # N port, dx dominant -> N/S fallback
+        ((50.0, 0.0), (70.0, 40.0), (50.0, 40.0)),  # N port, dy dominant
+        ((50.0, 0.0), (90.0, 20.0), (50.0, 20.0)),  # N port, dx dominant -> N/S fallback
         ((100.0, 25.0), (130.0, 60.0), (130.0, 25.0)),  # E port, dy dominant -> E/W fallback
-        ((50.0, 25.0), (300.0, 400.0), None),           # interior port: no border side
-        ((100.0, 25.0), (160.0, 26.0), None),           # straight stub: |dy| <= 1
-        ((100.0, 25.0), (160.0, 25.0), None),           # perfectly horizontal
+        ((50.0, 25.0), (300.0, 400.0), None),  # interior port: no border side
+        ((100.0, 25.0), (160.0, 26.0), None),  # straight stub: |dy| <= 1
+        ((100.0, 25.0), (160.0, 25.0), None),  # perfectly horizontal
     ],
 )
 def test_elbow_for_stub_outcomes(port, neighbor, expected) -> None:

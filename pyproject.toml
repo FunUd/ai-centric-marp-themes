@@ -25,6 +25,7 @@ classifiers = [
 dev = [
     "pytest>=8.0.0",
     "playwright>=1.40.0",
+    "ruff>=0.8.0",
 ]
 
 [tool.pytest.ini_options]
@@ -34,3 +35,22 @@ addopts = "-q"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = [
+    # Generated mirrors: byte-identity with the SSoT sources is enforced by
+    # sync-skill-vendor.py / sync-skills.py --check, so lint the sources only.
+    "skills/marp-diagram-creator/vendor/",
+    ".github/skills/",
+]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# SSoT path-setup pattern: these CLIs append scripts/diagrams to sys.path at
+# runtime, so sibling imports intentionally sit below module-level constants.
+"scripts/diagrams/render-slide-diagram.py" = ["E402"]
+"scripts/diagrams/check-templates.py" = ["E402"]

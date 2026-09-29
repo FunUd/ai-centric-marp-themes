@@ -15,6 +15,7 @@ write — colors, shapes, effects, signature and the derived draw.io styles — 
 running the write path against a deep copy, so the gate can never disagree
 with what a real sync produces.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -132,7 +133,6 @@ def build_updates(theme: str, vars_: dict[str, str], css_text: str, existing: di
         bg = get("bg") or existing_colors.get("background", "#040712")
         # Keep curated glass borders: faint white 0.09 is too weak for diagram strokes.
         border = existing_colors.get("border", "#38BDF8")
-        border_light = existing_colors.get("borderLight", border)
         danger = get("accent") or existing_colors.get("danger", "#FB7185")
         colors = {
             "primary": primary,
@@ -270,9 +270,7 @@ def apply_updates(theme: str, updates: dict) -> tuple[bool, list[str]]:
 
     if changes:
         try:
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=str(path.parent), delete=False
-            ) as tmp:
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=str(path.parent), delete=False) as tmp:
                 json.dump(data, tmp, indent=2, ensure_ascii=False)
                 tmp.write("\n")
                 tmp_path = Path(tmp.name)

@@ -11,6 +11,7 @@ and reuse the result:
 
 Exits 0 and prints one line on success, 1 with a diagnostic on failure.
 """
+
 from __future__ import annotations
 
 import sys

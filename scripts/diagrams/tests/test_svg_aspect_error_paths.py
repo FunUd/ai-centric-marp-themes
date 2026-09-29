@@ -1,6 +1,7 @@
 """Error-path tests for svg_aspect.py not covered by test_aspect.py:
 non-scalar aspect values, non-positive content dimensions, and a
 malformed viewBox."""
+
 from __future__ import annotations
 
 import importlib.util

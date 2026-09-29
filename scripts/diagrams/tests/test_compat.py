@@ -8,6 +8,7 @@ instead of carrying its own try/except. These tests pin the consolidation:
   (compared as AST, so comments may differ);
 - no script outside those five touches `.reconfigure(` directly.
 """
+
 from __future__ import annotations
 
 import ast

@@ -13,6 +13,7 @@ cannot be reconfigured) are skipped silently. ``errors="replace"`` keeps
 output flowing rather than crashing mid-run; it can mask mojibake, so prefer
 fixing the emitter over widening this guard.
 """
+
 from __future__ import annotations
 
 import sys

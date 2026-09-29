@@ -6,6 +6,7 @@ A template that is on disk but missing from ALLOWED_LAYOUTS would be silently
 skipped, which is exactly the defect that let 3 broken Mermaid templates ship
 under a CI step that only echoed their filenames.
 """
+
 from __future__ import annotations
 
 import importlib.util

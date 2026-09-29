@@ -24,6 +24,7 @@ Usage:
     python scripts/sync-skill-vendor.py           # rewrite the vendored copy
     python scripts/sync-skill-vendor.py --check   # fail on drift
 """
+
 from __future__ import annotations
 
 import argparse
@@ -206,8 +207,7 @@ def write_vendor() -> int:
 def check_vendor() -> int:
     if not VENDOR_DIR.exists():
         print(
-            f"[DRIFT] {VENDOR_DIR.relative_to(ROOT_DIR)} is missing.\n"
-            f"        Run: python scripts/sync-skill-vendor.py",
+            f"[DRIFT] {VENDOR_DIR.relative_to(ROOT_DIR)} is missing.\n        Run: python scripts/sync-skill-vendor.py",
             file=sys.stderr,
         )
         return 1
@@ -232,8 +232,7 @@ def check_vendor() -> int:
         for line in problems:
             print(line, file=sys.stderr)
         print(
-            f"FAILED: {len(problems)} vendored file problem(s).\n"
-            f"       Run: python scripts/sync-skill-vendor.py",
+            f"FAILED: {len(problems)} vendored file problem(s).\n       Run: python scripts/sync-skill-vendor.py",
             file=sys.stderr,
         )
         return 1

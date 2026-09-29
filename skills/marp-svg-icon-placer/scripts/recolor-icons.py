@@ -27,12 +27,8 @@ from pathlib import Path
 SLIDES_BASE_DIR = Path("slides")
 
 # Attributes / properties that carry color values we want to replace
-_COLOR_ATTRS = re.compile(
-    r'(fill|stroke)\s*=\s*"(?!none)[^"]*"', re.IGNORECASE
-)
-_COLOR_STYLE = re.compile(
-    r'(fill|stroke)\s*:\s*(?!none)[^;}"\']+', re.IGNORECASE
-)
+_COLOR_ATTRS = re.compile(r'(fill|stroke)\s*=\s*"(?!none)[^"]*"', re.IGNORECASE)
+_COLOR_STYLE = re.compile(r'(fill|stroke)\s*:\s*(?!none)[^;}"\']+', re.IGNORECASE)
 
 
 def _recolor_svg(content: str, color: str) -> str:
@@ -64,10 +60,7 @@ def recolor_icons(project_name: str, color: str, icon_names: list[str]) -> None:
     assets_dir = SLIDES_BASE_DIR / project_name / "assets"
     if not assets_dir.exists():
         print(f"Error: assets directory not found: {assets_dir}", file=sys.stderr)
-        print(
-            f"Copy icons first: "
-            f"python skills/marp-svg-icon-placer/scripts/copy-icons.py {project_name} <icons>"
-        )
+        print(f"Copy icons first: python skills/marp-svg-icon-placer/scripts/copy-icons.py {project_name} <icons>")
         sys.exit(1)
 
     if icon_names == ["all"]:
@@ -101,9 +94,7 @@ def recolor_icons(project_name: str, color: str, icon_names: list[str]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Change SVG icon colors in a Marp slide project's assets directory."
-    )
+    parser = argparse.ArgumentParser(description="Change SVG icon colors in a Marp slide project's assets directory.")
     parser.add_argument(
         "project_name",
         nargs="?",

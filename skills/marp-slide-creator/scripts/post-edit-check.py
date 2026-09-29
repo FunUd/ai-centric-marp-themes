@@ -49,6 +49,7 @@ from pathlib import Path
 try:
     from compat import ensure_utf8_stdio
 except ImportError:  # pragma: no cover - single-file copy without compat.py
+
     def ensure_utf8_stdio() -> None:
         """Force UTF-8 on stdout/stderr; skip streams that cannot be reconfigured."""
         for stream in (sys.stdout, sys.stderr):
@@ -64,8 +65,7 @@ ensure_utf8_stdio()
 # Curated to avoid false positives on valid Japanese kanji
 # (e.g. 体/学/会/医/团/声/点/后 are shared or JP-standard -> excluded).
 ZH_CHARS = set(
-    "们这产现发对说时长从众语词计划边还处门题议认让应该图书网络话电"
-    "脑观权乐欢汉铁银买卖钱轮护实开关样无业个为进义户标"
+    "们这产现发对说时长从众语词计划边还处门题议认让应该图书网络话电脑观权乐欢汉铁银买卖钱轮护实开关样无业个为进义户标"
 )
 
 # Word-level patterns (mainly simplified-only compound words).
@@ -92,9 +92,9 @@ ZH_WORDS = [
 def _has_kana(ch: str) -> bool:
     """True for hiragana/katakana (Japanese-only; invalid in Chinese text)."""
     return (
-        "\u3040" <= ch <= "\u309F"  # hiragana
-        or "\u30A0" <= ch <= "\u30FF"  # katakana
-        or "\u31F0" <= ch <= "\u31FF"  # katakana extensions
+        "\u3040" <= ch <= "\u309f"  # hiragana
+        or "\u30a0" <= ch <= "\u30ff"  # katakana
+        or "\u31f0" <= ch <= "\u31ff"  # katakana extensions
     )
 
 
@@ -136,16 +136,15 @@ def check(
         if "|" in ln:
             continue
         errors.append(
-                f"SLIDE_SEPARATOR_GLUED line {i}: `---` is glued to text -> "
-                f"the following slide silently merges into this one. "
-                f"Put `---` alone on its own line. (content: {ln.strip()[:60]!r})"
-            )
+            f"SLIDE_SEPARATOR_GLUED line {i}: `---` is glued to text -> "
+            f"the following slide silently merges into this one. "
+            f"Put `---` alone on its own line. (content: {ln.strip()[:60]!r})"
+        )
 
     # --- 2. Expected slide count ---------------------------------------
     if expect is not None and slide_count != expect:
         errors.append(
-            f"SLIDE_COUNT_MISMATCH: file structure implies {slide_count} slide(s) "
-            f"but --expect {expect} was given."
+            f"SLIDE_COUNT_MISMATCH: file structure implies {slide_count} slide(s) but --expect {expect} was given."
         )
 
     # --- 3. EOF newline --------------------------------------------------
@@ -173,8 +172,7 @@ def check(
             if kana:
                 preview = "".join(kana)
                 errors.append(
-                    f"LANGUAGE_CONTAMINATION line {i}: Japanese kana "
-                    f"({preview}) in Chinese content (--lang zh)."
+                    f"LANGUAGE_CONTAMINATION line {i}: Japanese kana ({preview}) in Chinese content (--lang zh)."
                 )
     # lang is None -> language check skipped (e.g. English decks)
 
@@ -211,14 +209,20 @@ def check(
 def main(argv: list[str]) -> int:
     p = argparse.ArgumentParser(description="Post-edit sanity checks for Marp Markdown.")
     p.add_argument("markdown", type=Path, help="Path to the .md file")
-    p.add_argument("--expect", type=int, default=None,
-                   help="Expected number of slides (e.g. from the approved outline)")
-    p.add_argument("--html", type=Path, default=None,
-                   help="Optional rendered preview.html to cross-check <section> count")
-    p.add_argument("--lang", choices=["ja", "zh"], default=None,
-                   help="Expected deck language; enables the contamination check "
-                        "(ja: flag simplified-Chinese, zh: flag kana). "
-                        "Omit to skip language checking (e.g. English decks).")
+    p.add_argument(
+        "--expect", type=int, default=None, help="Expected number of slides (e.g. from the approved outline)"
+    )
+    p.add_argument(
+        "--html", type=Path, default=None, help="Optional rendered preview.html to cross-check <section> count"
+    )
+    p.add_argument(
+        "--lang",
+        choices=["ja", "zh"],
+        default=None,
+        help="Expected deck language; enables the contamination check "
+        "(ja: flag simplified-Chinese, zh: flag kana). "
+        "Omit to skip language checking (e.g. English decks).",
+    )
     args = p.parse_args(argv)
 
     if not args.markdown.exists():

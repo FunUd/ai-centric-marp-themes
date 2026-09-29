@@ -4,6 +4,7 @@ Guards the ADD_NEW_DIAGRAM_TYPE.md procedure: every type in DIAGRAM_TYPES must
 have a renderer, a validation branch, at least one template, and documentation
 in both template-catalog.md and README.md.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -75,7 +76,9 @@ def test_every_type_has_template() -> None:
 
 
 def test_every_type_documented() -> None:
-    catalog = (ROOT_DIR / "skills" / "marp-diagram-creator" / "references" / "template-catalog.md").read_text(encoding="utf-8")
+    catalog = (ROOT_DIR / "skills" / "marp-diagram-creator" / "references" / "template-catalog.md").read_text(
+        encoding="utf-8"
+    )
     readme = (ROOT_DIR / "docs" / "diagrams.md").read_text(encoding="utf-8")
     by_type = _templates_by_type()
     for kind in models.DIAGRAM_TYPES:

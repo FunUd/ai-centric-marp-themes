@@ -14,6 +14,7 @@ any *structural* difference shows up as a failure.
 design divergence (larger radii, looser letter-spacing, a different step-badge
 treatment), so a structural comparison would be noise.
 """
+
 from __future__ import annotations
 
 import difflib
@@ -74,21 +75,24 @@ def test_paired_themes_have_no_structural_drift(left: str, right: str) -> None:
 
 
 @pytest.mark.parametrize("left,right", SEMI_FORKED_THEMES)
-@pytest.mark.parametrize("component", [
-    "callout.blue",
-    "callout.green",
-    "callout.orange",
-    "callout.red",
-    "callout.blue h4",
-    "callout.green h4",
-    "callout.orange h4",
-    "callout.red h4",
-    "badge",
-    "badge.blue",
-    "badge.green",
-    "badge.orange",
-    "badge.red",
-])
+@pytest.mark.parametrize(
+    "component",
+    [
+        "callout.blue",
+        "callout.green",
+        "callout.orange",
+        "callout.red",
+        "callout.blue h4",
+        "callout.green h4",
+        "callout.orange h4",
+        "callout.red h4",
+        "badge",
+        "badge.blue",
+        "badge.green",
+        "badge.orange",
+        "badge.red",
+    ],
+)
 def test_semi_forked_themes_agree_on_components(left: str, right: str, component: str) -> None:
     """warm-sunnyday diverges on radii and step badges by design, but the
     alert and badge components must stay in sync — they carry meaning, not
@@ -103,11 +107,14 @@ def test_semi_forked_themes_agree_on_components(left: str, right: str, component
     )
 
 
-@pytest.mark.parametrize("theme,prefix", [
-    ("azure-clarity", "--ac-"),
-    ("crimson-clarity", "--cc-"),
-    ("warm-sunnyday", "--ws-"),
-])
+@pytest.mark.parametrize(
+    "theme,prefix",
+    [
+        ("azure-clarity", "--ac-"),
+        ("crimson-clarity", "--cc-"),
+        ("warm-sunnyday", "--ws-"),
+    ],
+)
 def test_callout_blue_uses_theme_tokens(theme: str, prefix: str) -> None:
     """The regression: crimson's blue callout was three hard-coded hex values,
     so the documented "edit :root to retheme" workflow silently did nothing."""

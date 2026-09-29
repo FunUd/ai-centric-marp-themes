@@ -105,11 +105,17 @@ def local_image_exists(html_path: Path, src: str) -> bool:
 # (e.g. three short cards in cols-3 yield 20+ "lines" with only ~200 chars).
 # Scale the line-based thresholds by the column count instead.
 THREE_COL_LAYOUTS = frozenset({"cols-3", "split-3"})
-TWO_COL_LAYOUTS = frozenset({
-    "cols-2", "split-2", "split-glass",
-    "split-asym", "split-asym-reverse",
-    "grid-quadrant", "grid-sharp",
-})
+TWO_COL_LAYOUTS = frozenset(
+    {
+        "cols-2",
+        "split-2",
+        "split-glass",
+        "split-asym",
+        "split-asym-reverse",
+        "grid-quadrant",
+        "grid-sharp",
+    }
+)
 
 BASE_MANY_LINES = 20
 BASE_OVERFLOW_LINES = 24
@@ -206,9 +212,7 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
                 }
 
                 # Detect hidden / overflow-hidden elements
-                overflow = child.evaluate(
-                    "el => window.getComputedStyle(el).overflow"
-                )
+                overflow = child.evaluate("el => window.getComputedStyle(el).overflow")
                 clip = child.evaluate(
                     "el => { const s = window.getComputedStyle(el); return s.clipPath !== 'none' || s.clip !== 'auto'; }"
                 )
@@ -221,16 +225,12 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
 
             # Slide overflow: total content height exceeds slide height
             # Skip if the slide itself clips overflow (Marp themes typically do this)
-            slide_overflow = slide.evaluate(
-                "el => window.getComputedStyle(el).overflow"
-            )
+            slide_overflow = slide.evaluate("el => window.getComputedStyle(el).overflow")
             slide_clips = slide_overflow in ("hidden", "clip", "scroll", "auto")
             if elements and not slide_clips:
                 max_bottom = max(el["top"] + el["height"] for el in elements)
                 if max_bottom > slide_h + 5:  # 5px tolerance
-                    flags.append(
-                        f"CONTENT_OVERFLOW: content bottom at {max_bottom}px exceeds slide height {slide_h}px"
-                    )
+                    flags.append(f"CONTENT_OVERFLOW: content bottom at {max_bottom}px exceeds slide height {slide_h}px")
 
             # Dense text risk (line threshold scales with parallel columns)
             if char_count > 600:
@@ -243,11 +243,7 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
             # zone is still visually overlapped. Measure slide-relative so
             # scrolling does not skew it; header/footer chrome is excluded.
             if elements:
-                content_tops = [
-                    el["top"] + el["height"]
-                    for el in elements
-                    if el["tag"] not in ("header", "footer")
-                ]
+                content_tops = [el["top"] + el["height"] for el in elements if el["tag"] not in ("header", "footer")]
                 if content_tops:
                     content_bottom = max(content_tops) - slide_top
                     footer_limit = slide_h - FOOTER_CLEARANCE_PX
@@ -262,7 +258,7 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
             for img in imgs:
                 src = img.get_attribute("src") or ""
                 if not src:
-                    flags.append(f"IMAGE_NO_SRC: <img> without src")
+                    flags.append("IMAGE_NO_SRC: <img> without src")
                 else:
                     natural_w = img.evaluate("el => el.naturalWidth")
                     if natural_w == 0:
@@ -354,15 +350,12 @@ def extract_slide_metrics(html_path: Path, screenshot_dir: Path | None = None) -
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Extract DOM metrics from Marp HTML files for text-only review."
-    )
+    parser = argparse.ArgumentParser(description="Extract DOM metrics from Marp HTML files for text-only review.")
     parser.add_argument("html_file", help="Path to the Marp-generated HTML file")
+    parser.add_argument("-o", "--output", default="-", help="Output file (default: stdout)")
     parser.add_argument(
-        "-o", "--output", default="-", help="Output file (default: stdout)"
-    )
-    parser.add_argument(
-        "-s", "--screenshot-dir",
+        "-s",
+        "--screenshot-dir",
         help="Directory to save slide screenshots (requires Playwright)",
     )
     parser.add_argument(

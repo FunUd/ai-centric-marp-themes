@@ -3,6 +3,7 @@ validate_svg / validate_drawio branches that previous tests never reach
 (parse errors, root-element checks, dimension fallbacks, draw.io cell
 structure, waypoint edges, main()'s exit-code contract).
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -267,7 +268,7 @@ def test_validate_drawio_walks_unknown_parent_refs(tmp_path: Path) -> None:
     # geometry instead of raising.
     path = _drawio(
         tmp_path,
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="0"/><mxCell id="1" parent="0"/>'
         '<mxCell id="v1" vertex="1" parent="ghost" style="rounded=0;">'
         '<mxGeometry x="10" y="10" width="80" height="40"/></mxCell>'
@@ -321,7 +322,7 @@ def test_validate_drawio_requires_root_element(tmp_path: Path) -> None:
 def test_validate_drawio_cell_structure_and_bounds(tmp_path: Path) -> None:
     path = _drawio(
         tmp_path,
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="0"/><mxCell id="1" parent="0"/>'
         # exceeds canvas width (1000+200 > 1140)
         '<mxCell id="wide" vertex="1" parent="1">'
@@ -370,7 +371,7 @@ def test_validate_drawio_cell_structure_and_bounds(tmp_path: Path) -> None:
 def test_validate_drawio_requires_root_cells(tmp_path: Path) -> None:
     path = _drawio(
         tmp_path,
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="n" vertex="1" parent="1">'
         '<mxGeometry x="10" y="10" width="50" height="50"/></mxCell>'
         "</root></mxGraphModel></diagram></mxfile>",
@@ -453,7 +454,7 @@ def test_main_warning_passes_unless_strict(monkeypatch, tmp_path: Path, capsys) 
 def test_main_accepts_drawio_and_xml_extensions(monkeypatch, tmp_path: Path, capsys) -> None:
     drawio = _drawio(
         tmp_path,
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="0"/><mxCell id="1" parent="0"/>'
         '<mxCell id="n1" vertex="1" parent="1"><mxGeometry x="10" y="10" width="100" height="60"/></mxCell>'
         '<mxCell id="n2" vertex="1" parent="1"><mxGeometry x="300" y="10" width="100" height="60"/></mxCell>'

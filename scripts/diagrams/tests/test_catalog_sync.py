@@ -7,6 +7,7 @@ docs/diagrams.md table) and fails on any mismatch. Covered here:
 - main() against the real repository (the CI gate)
 - every mismatch branch (CATALOG / DOCS / STALE) against fixtures
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -69,8 +70,7 @@ def test_templates_on_disk_reads_disk(monkeypatch, tmp_path: Path) -> None:
 def test_mentions_in_extracts_template_filenames(tmp_path: Path) -> None:
     doc = tmp_path / "doc.md"
     doc.write_text(
-        "See charts/revenue-pie.json and alpha.mmd plus beta.drawio.\n"
-        "Ignored: diagrams.md, image.png, script.js\n",
+        "See charts/revenue-pie.json and alpha.mmd plus beta.drawio.\nIgnored: diagrams.md, image.png, script.js\n",
         encoding="utf-8",
     )
 

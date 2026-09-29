@@ -32,12 +32,15 @@ tokens, renderer = load_modules()
 CYCLE = {"type": "cycle", "items": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}
 
 
-@pytest.mark.parametrize("theme,expected_rx", [
-    ("azure-clarity", None),
-    ("warm-sunnyday", 12),
-    ("slate-minimal", 4),
-    ("nebula-glass", 14),
-])
+@pytest.mark.parametrize(
+    "theme,expected_rx",
+    [
+        ("azure-clarity", None),
+        ("warm-sunnyday", 12),
+        ("slate-minimal", 4),
+        ("nebula-glass", 14),
+    ],
+)
 def test_cycle_node_radius_matches_theme(theme: str, expected_rx: int | None) -> None:
     theme_data = tokens.load_design_tokens(theme)
     svg = renderer.render_diagram(CYCLE, theme_data, "full")

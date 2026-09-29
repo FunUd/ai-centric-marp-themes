@@ -7,6 +7,7 @@
 - P0-2: the CLIs force UTF-8 on stdout/stderr so Japanese file names and text
   survive Windows consoles/pipes that default to cp932.
 """
+
 from __future__ import annotations
 
 import json
@@ -42,8 +43,14 @@ def test_render_exits_nonzero_when_validation_fails(tmp_path: Path) -> None:
     result = _run(
         [
             str(SCRIPT_DIR / "render-slide-diagram.py"),
-            "-i", str(source), "-o", str(output),
-            "--theme", "azure-clarity", "--layout", "full",
+            "-i",
+            str(source),
+            "-o",
+            str(output),
+            "--theme",
+            "azure-clarity",
+            "--layout",
+            "full",
         ]
     )
 
@@ -64,8 +71,14 @@ def test_render_exits_zero_for_valid_diagram(tmp_path: Path) -> None:
     result = _run(
         [
             str(SCRIPT_DIR / "render-slide-diagram.py"),
-            "-i", str(source), "-o", str(output),
-            "--theme", "azure-clarity", "--layout", "full",
+            "-i",
+            str(source),
+            "-o",
+            str(output),
+            "--theme",
+            "azure-clarity",
+            "--layout",
+            "full",
         ]
     )
 
@@ -85,8 +98,15 @@ def test_no_validate_remains_the_escape_hatch(tmp_path: Path) -> None:
     result = _run(
         [
             str(SCRIPT_DIR / "render-slide-diagram.py"),
-            "-i", str(source), "-o", str(output),
-            "--theme", "azure-clarity", "--layout", "full", "--no-validate",
+            "-i",
+            str(source),
+            "-o",
+            str(output),
+            "--theme",
+            "azure-clarity",
+            "--layout",
+            "full",
+            "--no-validate",
         ]
     )
 

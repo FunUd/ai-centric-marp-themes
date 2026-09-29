@@ -19,6 +19,7 @@ All three consumers must import from here instead of hardcoding copies.
 ``sync-skills.py``) so it keeps a local mirror — the values below are
 authoritative when they disagree.
 """
+
 from __future__ import annotations
 
 LAYOUTS = ("full", "col2", "asym", "col3")

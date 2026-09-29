@@ -5,6 +5,7 @@ Covers the still-uncovered branches: _top_border_width/_top_accent_bar
 funnel overflow labels + conversion-rate guards, _fmt_tick abbreviations,
 single-level org charts, and line charts with show_values.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -56,7 +57,7 @@ def test_svg_helper_functions_and_fallbacks() -> None:
     group = renderer.svg_group(["<a/>"], transform="translate(0 0)")
     assert group.startswith("<g ") and group.endswith("><a/></g>")
     assert 'transform="translate(0 0)"' in group
-    assert "<g data-diagram-role=\"group\">" in renderer.svg_group(["<a/>"])
+    assert '<g data-diagram-role="group">' in renderer.svg_group(["<a/>"])
 
     ellipse = renderer.svg_ellipse(5, 6, 3, 2, fill="#FFF")
     assert ellipse.startswith("<ellipse ") and 'rx="3"' in ellipse and 'ry="2"' in ellipse
@@ -114,10 +115,7 @@ def test_pyramid_outside_label_renders_description_below_it() -> None:
         {
             "width": 1080,
             "height": 420,
-            "levels": [
-                {"label": long_label, "description": "A description goes here"}
-                for _ in range(3)
-            ],
+            "levels": [{"label": long_label, "description": "A description goes here"} for _ in range(3)],
         },
         CTX,
     )
@@ -233,12 +231,18 @@ def test_funnel_conversion_rate_guards() -> None:
 
     # Non-numeric current value -> float() fails and the pair is skipped.
     renderer._funnel(
-        {**base, "levels": [{"label": "A", "value": "abc"}, {"label": "B", "value": 100}, {"label": "C", "value": "xyz"}]},
+        {
+            **base,
+            "levels": [{"label": "A", "value": "abc"}, {"label": "B", "value": 100}, {"label": "C", "value": "xyz"}],
+        },
         CTX,
     )
     # Non-numeric following value -> rate computation fails and is skipped.
     renderer._funnel(
-        {**base, "levels": [{"label": "A", "value": 100}, {"label": "B", "value": "abc"}, {"label": "C", "value": "xyz"}]},
+        {
+            **base,
+            "levels": [{"label": "A", "value": 100}, {"label": "B", "value": "abc"}, {"label": "C", "value": "xyz"}],
+        },
         CTX,
     )
     # Zero base -> division guard.

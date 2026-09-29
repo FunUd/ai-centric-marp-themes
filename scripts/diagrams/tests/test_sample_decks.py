@@ -8,6 +8,7 @@ This runs the real `marp-lint.py` and `post-edit-check.py` against
 `slides/sample-slide/*.md` so CI fails when a sample breaks a rule the toolkit
 itself enforces.
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -90,9 +91,7 @@ def test_sample_only_uses_classes_its_theme_implements(deck: Path) -> None:
     try:
         import importlib.util
 
-        spec = importlib.util.spec_from_file_location(
-            "tc_for_samples", ROOT / "scripts/diagrams/theme_classes.py"
-        )
+        spec = importlib.util.spec_from_file_location("tc_for_samples", ROOT / "scripts/diagrams/theme_classes.py")
         module = importlib.util.module_from_spec(spec)
         _sys.modules["tc_for_samples"] = module
         spec.loader.exec_module(module)
@@ -113,7 +112,10 @@ def test_sample_only_uses_classes_its_theme_implements(deck: Path) -> None:
         used |= set(match.group(1).split())
 
     unknown = sorted(
-        c for c in used
-        if c not in available and not c.startswith("section-") and c not in {"columns", "col", "cell", "grid", "content", "card"}
+        c
+        for c in used
+        if c not in available
+        and not c.startswith("section-")
+        and c not in {"columns", "col", "cell", "grid", "content", "card"}
     )
     assert unknown == [], f"{deck.name} uses classes {theme}.css does not implement: {unknown}"

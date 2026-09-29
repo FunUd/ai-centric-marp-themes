@@ -31,6 +31,7 @@ EXTRACTOR_SCRIPT = SCRIPT_DIR / "marp-dom-extractor.py"
 try:
     from compat import ensure_utf8_stdio
 except ImportError:  # pragma: no cover - single-file copy without compat.py
+
     def ensure_utf8_stdio() -> None:
         """Force UTF-8 on stdout/stderr; skip streams that cannot be reconfigured."""
         for stream in (sys.stdout, sys.stderr):
@@ -134,7 +135,16 @@ def export_html(markdown_path: Path, html_path: Path, marp_bin: str, theme: str 
     except (FileNotFoundError, subprocess.CalledProcessError):
         # Fallback to npx if primary failed
         fallback_bin = resolve_executable("npx") or "npx"
-        fallback = [fallback_bin, "--yes", _marp_cli_spec(), "--no-stdin", "--allow-local-files", str(markdown_path), "-o", str(html_path)]
+        fallback = [
+            fallback_bin,
+            "--yes",
+            _marp_cli_spec(),
+            "--no-stdin",
+            "--allow-local-files",
+            str(markdown_path),
+            "-o",
+            str(html_path),
+        ]
         if theme:
             fallback.extend(["--theme", theme])
         run_command(fallback, env=npm_cache_env())
@@ -232,9 +242,7 @@ def print_summary(metrics: list[dict[str, Any]], html_path: Path, json_path: Pat
 
 def main() -> int:
     ensure_utf8_stdio()
-    parser = argparse.ArgumentParser(
-        description="Export a Marp deck to HTML and run DOM-based diagnostics."
-    )
+    parser = argparse.ArgumentParser(description="Export a Marp deck to HTML and run DOM-based diagnostics.")
     parser.add_argument("markdown_file", help="Path to the Marp Markdown deck")
     parser.add_argument(
         "--html-out",
@@ -297,7 +305,7 @@ def main() -> int:
         )
         print(f"Marp command: {' '.join(command_used)}")
         print_theme_ref_note(args.theme)
-        
+
         screenshot_dir = Path(args.screenshot_dir) if args.screenshot_dir else None
         extract_metrics(html_path.resolve(), json_path.resolve(), screenshot_dir)
         metrics = load_metrics(json_path.resolve())

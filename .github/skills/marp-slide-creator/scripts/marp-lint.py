@@ -27,6 +27,7 @@ from pathlib import Path
 try:
     from compat import ensure_utf8_stdio
 except ImportError:  # pragma: no cover - single-file copy without compat.py
+
     def ensure_utf8_stdio() -> None:
         """Force UTF-8 on stdout/stderr; skip streams that cannot be reconfigured."""
         for stream in (sys.stdout, sys.stderr):
@@ -82,18 +83,18 @@ LIST_EXEMPT_CLASSES = set(_THEME_CLASSES["list_exempt"])
 ICON_MAX_WIDTH_PX = 200
 
 # Readability thresholds
-MAX_RECOMMENDED_BULLETS = 4   # single-column bullet limit; see BULLET_MAX_PER_LAYOUT
-MIN_LABELLED_CHARS = 35       # bullet length above which a bold key label is expected
-UNLABELLED_LIST_MIN = 2       # report once this many long bullets lack labels
-MAX_RECOMMENDED_CHARS = 400   # total plain text chars before DENSE_CONTENT
+MAX_RECOMMENDED_BULLETS = 4  # single-column bullet limit; see BULLET_MAX_PER_LAYOUT
+MIN_LABELLED_CHARS = 35  # bullet length above which a bold key label is expected
+UNLABELLED_LIST_MIN = 2  # report once this many long bullets lack labels
+MAX_RECOMMENDED_CHARS = 400  # total plain text chars before DENSE_CONTENT
 
 # Layout class -> diagram width budget (px), from the generated manifest.
 # Canonical values: scripts/diagrams/layout_spec.py::CANVAS_MAX
 DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
-    "full":  1120,   # full-width single column
-    "col2":  520,    # 2-column layouts
-    "col3":  340,    # 3-column layouts
-    "asym":  710,    # asymmetric split
+    "full": 1120,  # full-width single column
+    "col2": 520,  # 2-column layouts
+    "col3": 340,  # 3-column layouts
+    "asym": 710,  # asymmetric split
 }
 
 # Re-prevention for small-diagram regression (2026-09-28 SmartOps fix):
@@ -192,7 +193,7 @@ def parse_slides(markdown: str) -> list[SlideInfo]:
     if markdown.startswith("---"):
         end = markdown.find("---", 3)
         if end != -1:
-            markdown = markdown[end + 3:]
+            markdown = markdown[end + 3 :]
 
     raw_slides = SLIDE_SEPARATOR.split(markdown)
     slides: list[SlideInfo] = []
@@ -250,6 +251,7 @@ def parse_slides(markdown: str) -> list[SlideInfo]:
 # 1. Structural Lint Checks (Severity: ERROR)
 # ==========================================
 
+
 def lint_missing_class_directive(slide: SlideInfo) -> list[LintIssue]:
     """Check for layout divs without matching _class directive."""
     issues: list[LintIssue] = []
@@ -257,16 +259,18 @@ def lint_missing_class_directive(slide: SlideInfo) -> list[LintIssue]:
         if div_class in slide.div_classes:
             if not slide.classes.intersection(required_classes):
                 required_str = " / ".join(required_classes)
-                issues.append(LintIssue(
-                    slide=slide.number,
-                    severity="ERROR",
-                    code="MISSING_CLASS_DIRECTIVE",
-                    message=(
-                        f'Found <div class="{div_class}"> without matching '
-                        f'<!-- _class: {required_str} --> directive. '
-                        f"Layout will NOT activate and content will stack vertically."
-                    ),
-                ))
+                issues.append(
+                    LintIssue(
+                        slide=slide.number,
+                        severity="ERROR",
+                        code="MISSING_CLASS_DIRECTIVE",
+                        message=(
+                            f'Found <div class="{div_class}"> without matching '
+                            f"<!-- _class: {required_str} --> directive. "
+                            f"Layout will NOT activate and content will stack vertically."
+                        ),
+                    )
+                )
     return issues
 
 
@@ -281,17 +285,19 @@ def lint_centered_lists(slide: SlideInfo) -> list[LintIssue]:
     if slide.list_items and not slide.has_scoped_list_override:
         unsuitable = slide.classes.intersection(LIST_UNSUITABLE_CLASSES)
         if unsuitable:
-            issues.append(LintIssue(
-                slide=slide.number,
-                severity="ERROR",
-                code="CENTERED_LIST",
-                message=(
-                    f'Slide uses class "{", ".join(sorted(unsuitable))}", a title or '
-                    f"single-message layout that does not suit a bullet list: the list "
-                    f"either renders centered or dilutes the message. Move the list to a "
-                    f"standard content slide, or add a scoped left-align override."
-                ),
-            ))
+            issues.append(
+                LintIssue(
+                    slide=slide.number,
+                    severity="ERROR",
+                    code="CENTERED_LIST",
+                    message=(
+                        f'Slide uses class "{", ".join(sorted(unsuitable))}", a title or '
+                        f"single-message layout that does not suit a bullet list: the list "
+                        f"either renders centered or dilutes the message. Move the list to a "
+                        f"standard content slide, or add a scoped left-align override."
+                    ),
+                )
+            )
     return issues
 
 
@@ -320,26 +326,30 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
 
         if width_match:
             if width > ICON_MAX_WIDTH_PX:
-                issues.append(LintIssue(
+                issues.append(
+                    LintIssue(
+                        slide=slide.number,
+                        severity="ERROR",
+                        code="OVERSIZED_ICON",
+                        message=(
+                            f"SVG icon '{src_path.name}' is used at width:{width}px "
+                            f"(max {ICON_MAX_WIDTH_PX}px for icons). Icons are for small "
+                            f"inline/card accents. For large visuals, use diagrams."
+                        ),
+                    )
+                )
+        elif "center" in alt and "icon" not in alt.lower():
+            issues.append(
+                LintIssue(
                     slide=slide.number,
                     severity="ERROR",
                     code="OVERSIZED_ICON",
                     message=(
-                        f"SVG icon '{src_path.name}' is used at width:{width}px "
-                        f"(max {ICON_MAX_WIDTH_PX}px for icons). Icons are for small "
-                        f"inline/card accents. For large visuals, use diagrams."
+                        f"SVG '{src_path.name}' is centered without a width constraint. "
+                        f"Catalog icons will render too large. Specify width:48px or similar."
                     ),
-                ))
-        elif "center" in alt and "icon" not in alt.lower():
-            issues.append(LintIssue(
-                slide=slide.number,
-                severity="ERROR",
-                code="OVERSIZED_ICON",
-                message=(
-                    f"SVG '{src_path.name}' is centered without a width constraint. "
-                    f"Catalog icons will render too large. Specify width:48px or similar."
-                ),
-            ))
+                )
+            )
     return issues
 
 
@@ -351,9 +361,7 @@ def lint_oversized_icons(slide: SlideInfo) -> list[LintIssue]:
 # ---------------------------------------------------------------------------
 
 # Keywords that identify a path as a diagram (not an icon)
-DIAGRAM_PATH_KEYWORDS = frozenset(
-    ["diagram", "chart", "flow", "arch", "seq", "state", "drawio", "mmd", "render"]
-)
+DIAGRAM_PATH_KEYWORDS = frozenset(["diagram", "chart", "flow", "arch", "seq", "state", "drawio", "mmd", "render"])
 
 # Catalog icons live under an `icons/` directory (e.g. `assets/icons/`).
 # A directory segment is a stronger signal than a filename substring, so it
@@ -454,7 +462,7 @@ def _svg_right_slack(svg_path: Path) -> tuple[int, int] | None:
         return None
     xs: list[float] = []
     for attr in ('x="', 'cx="', 'x1="', 'x2="'):
-        for v in re.findall(attr + r'([\d.]+)', text):
+        for v in re.findall(attr + r"([\d.]+)", text):
             try:
                 xs.append(float(v))
             except ValueError:
@@ -488,9 +496,7 @@ def _svg_right_slack(svg_path: Path) -> tuple[int, int] | None:
     return vb_w, max(0, vb_w - int(max(xs)))
 
 
-def lint_diagram_embedding(
-    slide: SlideInfo, base_dir: Path | None = None
-) -> list[LintIssue]:
+def lint_diagram_embedding(slide: SlideInfo, base_dir: Path | None = None) -> list[LintIssue]:
     """Check diagram images for missing width, oversized width, and centered-layout placement.
 
     Checks:
@@ -530,45 +536,51 @@ def lint_diagram_embedding(
 
         # --- Check 1: missing width on diagram ---
         if not width_match:
-            issues.append(LintIssue(
-                slide=slide.number,
-                severity="WARNING",
-                code="DIAGRAM_MISSING_WIDTH",
-                message=(
-                    f"Diagram '{src_path.name}' is embedded without a width constraint "
-                    f"(e.g. width:900px). Without it the diagram may expand to full slide "
-                    f"width and push other content off the slide. "
-                    f"Recommended max for '{layout_key}' layout: {max_width}px."
-                ),
-            ))
+            issues.append(
+                LintIssue(
+                    slide=slide.number,
+                    severity="WARNING",
+                    code="DIAGRAM_MISSING_WIDTH",
+                    message=(
+                        f"Diagram '{src_path.name}' is embedded without a width constraint "
+                        f"(e.g. width:900px). Without it the diagram may expand to full slide "
+                        f"width and push other content off the slide. "
+                        f"Recommended max for '{layout_key}' layout: {max_width}px."
+                    ),
+                )
+            )
         else:
             # --- Check 2: width exceeds layout max ---
             width = int(width_match.group(1))
             if width > max_width:
-                issues.append(LintIssue(
-                    slide=slide.number,
-                    severity="ERROR",
-                    code="DIAGRAM_OVERFLOW_WIDTH",
-                    message=(
-                        f"Diagram '{src_path.name}' width:{width}px exceeds the safe maximum "
-                        f"for '{layout_key}' layout ({max_width}px). "
-                        f"This will cause horizontal overflow or push content off the slide. "
-                        f"Reduce to width:{max_width}px or less."
-                    ),
-                ))
+                issues.append(
+                    LintIssue(
+                        slide=slide.number,
+                        severity="ERROR",
+                        code="DIAGRAM_OVERFLOW_WIDTH",
+                        message=(
+                            f"Diagram '{src_path.name}' width:{width}px exceeds the safe maximum "
+                            f"for '{layout_key}' layout ({max_width}px). "
+                            f"This will cause horizontal overflow or push content off the slide. "
+                            f"Reduce to width:{max_width}px or less."
+                        ),
+                    )
+                )
             # --- Check 2b: width far below budget wastes space ---
             elif width < int(max_width * DIAGRAM_MIN_WIDTH_RATIO):
-                issues.append(LintIssue(
-                    slide=slide.number,
-                    severity="WARNING",
-                    code="DIAGRAM_UNDERSIZED_WIDTH",
-                    message=(
-                        f"Diagram '{src_path.name}' width:{width}px is well below the "
-                        f"'{layout_key}' budget ({max_width}px). The diagram will look "
-                        f"small with wasted whitespace. Embed near the max "
-                        f"(e.g. width:{max_width - 70}px for full, {max_width}px for columns)."
-                    ),
-                ))
+                issues.append(
+                    LintIssue(
+                        slide=slide.number,
+                        severity="WARNING",
+                        code="DIAGRAM_UNDERSIZED_WIDTH",
+                        message=(
+                            f"Diagram '{src_path.name}' width:{width}px is well below the "
+                            f"'{layout_key}' budget ({max_width}px). The diagram will look "
+                            f"small with wasted whitespace. Embed near the max "
+                            f"(e.g. width:{max_width - 70}px for full, {max_width}px for columns)."
+                        ),
+                    )
+                )
 
             # --- Check 2c: short SVG canvas in a split column ---
             if base_dir is not None and layout_key in ("col2", "asym"):
@@ -577,57 +589,60 @@ def lint_diagram_embedding(
                     # Guard against absolute URLs / parent traversal outside deck
                     if svg_file.is_file():
                         canvas_h = _svg_canvas_height(svg_file)
-                        if (
-                            canvas_h is not None
-                            and canvas_h < DIAGRAM_MIN_CANVAS_HEIGHT
-                        ):
-                            issues.append(LintIssue(
-                                slide=slide.number,
-                                severity="WARNING",
-                                code="DIAGRAM_SHORT_CANVAS",
-                                message=(
-                                    f"Diagram '{src_path.name}' canvas height {canvas_h}px "
-                                    f"is short for a '{layout_key}' column (budget 460px). "
-                                    f"A 520x360 diagram centers in a ~505px column and leaves "
-                                    f"~150px of vertical whitespace. Regenerate at full layout "
-                                    f"(1080x420) and use a full-width slide instead."
-                                ),
-                            ))
+                        if canvas_h is not None and canvas_h < DIAGRAM_MIN_CANVAS_HEIGHT:
+                            issues.append(
+                                LintIssue(
+                                    slide=slide.number,
+                                    severity="WARNING",
+                                    code="DIAGRAM_SHORT_CANVAS",
+                                    message=(
+                                        f"Diagram '{src_path.name}' canvas height {canvas_h}px "
+                                        f"is short for a '{layout_key}' column (budget 460px). "
+                                        f"A 520x360 diagram centers in a ~505px column and leaves "
+                                        f"~150px of vertical whitespace. Regenerate at full layout "
+                                        f"(1080x420) and use a full-width slide instead."
+                                    ),
+                                )
+                            )
                         # --- Check 2d: slack between content and viewBox edge ---
                         slack = _svg_right_slack(svg_file)
                         if slack is not None:
                             vb_w, right_slack = slack
                             if right_slack > DIAGRAM_MAX_RIGHT_SLACK:
-                                issues.append(LintIssue(
-                                    slide=slide.number,
-                                    severity="WARNING",
-                                    code="DIAGRAM_SLACK_CANVAS",
-                                    message=(
-                                        f"Diagram '{src_path.name}' content ends {right_slack}px "
-                                        f"before the viewBox right edge ({vb_w}px wide). "
-                                        f"That padding stacks with the column gap and looks like "
-                                        f"wasted whitespace next to the text. Trim the viewBox "
-                                        f"(e.g. 710 -> {vb_w - right_slack + 25}) and keep height."
-                                    ),
-                                ))
+                                issues.append(
+                                    LintIssue(
+                                        slide=slide.number,
+                                        severity="WARNING",
+                                        code="DIAGRAM_SLACK_CANVAS",
+                                        message=(
+                                            f"Diagram '{src_path.name}' content ends {right_slack}px "
+                                            f"before the viewBox right edge ({vb_w}px wide). "
+                                            f"That padding stacks with the column gap and looks like "
+                                            f"wasted whitespace next to the text. Trim the viewBox "
+                                            f"(e.g. 710 -> {vb_w - right_slack + 25}) and keep height."
+                                        ),
+                                    )
+                                )
                 except (OSError, ValueError):
                     pass
 
         # --- Check 3: diagram on a title / single-message layout ---
         unsuitable = slide.classes.intersection(LIST_UNSUITABLE_CLASSES)
         if unsuitable:
-            issues.append(LintIssue(
-                slide=slide.number,
-                severity="WARNING",
-                code="DIAGRAM_ON_CENTERED_LAYOUT",
-                message=(
-                    f"Diagram '{src_path.name}' is placed on a title or single-message "
-                    f"layout (class: '{', '.join(sorted(unsuitable))}'). A diagram needs "
-                    f"a content slide with room to breathe; here it will be cramped or "
-                    f"misaligned. Use a standard content slide, or a cols-2 layout with "
-                    f"the diagram in one column."
-                ),
-            ))
+            issues.append(
+                LintIssue(
+                    slide=slide.number,
+                    severity="WARNING",
+                    code="DIAGRAM_ON_CENTERED_LAYOUT",
+                    message=(
+                        f"Diagram '{src_path.name}' is placed on a title or single-message "
+                        f"layout (class: '{', '.join(sorted(unsuitable))}'). A diagram needs "
+                        f"a content slide with room to breathe; here it will be cramped or "
+                        f"misaligned. Use a standard content slide, or a cols-2 layout with "
+                        f"the diagram in one column."
+                    ),
+                )
+            )
 
     return issues
 
@@ -642,7 +657,7 @@ def lint_diagram_embedding(
 BULLET_MAX_PER_LAYOUT: dict[str, int] = {
     "full": 4,
     "col2": 6,
-    "asym": 6,   # 65/35 split still has two text columns
+    "asym": 6,  # 65/35 split still has two text columns
     "col3": 9,
 }
 
@@ -683,16 +698,18 @@ def lint_bullet_hell(slide: SlideInfo) -> list[LintIssue]:
             scope = " in the densest grid cell"
 
     if count > max_allowed:
-        issues.append(LintIssue(
-            slide=slide.number,
-            severity="WARNING",
-            code="BULLET_HELL",
-            message=(
-                f"Slide contains {count} bullet points{scope} (recommended max is {max_allowed} for this layout). "
-                f"High cognitive load: consider reducing items, converting to steps/timeline, "
-                f"or splitting across multiple slides."
-            ),
-        ))
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="WARNING",
+                code="BULLET_HELL",
+                message=(
+                    f"Slide contains {count} bullet points{scope} (recommended max is {max_allowed} for this layout). "
+                    f"High cognitive load: consider reducing items, converting to steps/timeline, "
+                    f"or splitting across multiple slides."
+                ),
+            )
+        )
     return issues
 
 
@@ -708,16 +725,18 @@ def lint_weak_title(slide: SlideInfo) -> list[LintIssue]:
 
         for pattern in WEAK_TITLE_REGEXES:
             if pattern.search(clean_heading):
-                issues.append(LintIssue(
-                    slide=slide.number,
-                    severity="WARNING",
-                    code="WEAK_TITLE",
-                    message=(
-                        f"Heading '{clean_heading}' appears to be a generic topic noun. "
-                        f"State the conclusion or takeaway (So What?) directly in the title "
-                        f"(e.g., instead of 'Architecture', use 'Microservices reduce deploy time by 60%')."
-                    ),
-                ))
+                issues.append(
+                    LintIssue(
+                        slide=slide.number,
+                        severity="WARNING",
+                        code="WEAK_TITLE",
+                        message=(
+                            f"Heading '{clean_heading}' appears to be a generic topic noun. "
+                            f"State the conclusion or takeaway (So What?) directly in the title "
+                            f"(e.g., instead of 'Architecture', use 'Microservices reduce deploy time by 60%')."
+                        ),
+                    )
+                )
                 break
     return issues
 
@@ -741,16 +760,18 @@ def lint_unlabeled_list(slide: SlideInfo) -> list[LintIssue]:
             unlabeled_long_items += 1
 
     if unlabeled_long_items >= UNLABELLED_LIST_MIN:
-        issues.append(LintIssue(
-            slide=slide.number,
-            severity="WARNING",
-            code="UNLABELED_LIST",
-            message=(
-                f"Found {unlabeled_long_items} long bullet items without bold key labels. "
-                f"Structure bullets with bold labels (e.g., `- **[Key Label]**: Brief explanation`) "
-                f"so the audience can scan in under 3 seconds."
-            ),
-        ))
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="WARNING",
+                code="UNLABELED_LIST",
+                message=(
+                    f"Found {unlabeled_long_items} long bullet items without bold key labels. "
+                    f"Structure bullets with bold labels (e.g., `- **[Key Label]**: Brief explanation`) "
+                    f"so the audience can scan in under 3 seconds."
+                ),
+            )
+        )
     return issues
 
 
@@ -761,17 +782,19 @@ def lint_dense_content(slide: SlideInfo) -> list[LintIssue]:
         return issues
 
     if slide.plain_text_len > MAX_RECOMMENDED_CHARS:
-        issues.append(LintIssue(
-            slide=slide.number,
-            severity="WARNING",
-            code="DENSE_CONTENT",
-            message=(
-                f"Slide body has ~{slide.plain_text_len} plain characters "
-                f"(recommended {int(MAX_RECOMMENDED_CHARS * 0.5)}-{int(MAX_RECOMMENDED_CHARS * 0.875)} max). "
-                f"Excess text reduces presentation impact. Trim filler words, move background "
-                f"to presenter notes (<!-- ... -->), or split the slide."
-            ),
-        ))
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="WARNING",
+                code="DENSE_CONTENT",
+                message=(
+                    f"Slide body has ~{slide.plain_text_len} plain characters "
+                    f"(recommended {int(MAX_RECOMMENDED_CHARS * 0.5)}-{int(MAX_RECOMMENDED_CHARS * 0.875)} max). "
+                    f"Excess text reduces presentation impact. Trim filler words, move background "
+                    f"to presenter notes (<!-- ... -->), or split the slide."
+                ),
+            )
+        )
     return issues
 
 
@@ -792,31 +815,35 @@ def lint_split_glass_structure(slide: SlideInfo) -> list[LintIssue]:
         '<div class="glass-panel">\n\n### Points\n\n</div>'
     )
     if slide.div_classes != ["content", "glass-panel"]:
-        issues.append(LintIssue(
-            slide=slide.number,
-            severity="ERROR",
-            code="SPLIT_GLASS_STRUCTURE",
-            message=(
-                f'split-glass needs exactly <div class="content"> + '
-                f'<div class="glass-panel"> (got: {", ".join(slide.div_classes)}). '
-                f"Extra grid children collapse the 50/50 split. Canonical form:\n{canonical}"
-            ),
-        ))
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="ERROR",
+                code="SPLIT_GLASS_STRUCTURE",
+                message=(
+                    f'split-glass needs exactly <div class="content"> + '
+                    f'<div class="glass-panel"> (got: {", ".join(slide.div_classes)}). '
+                    f"Extra grid children collapse the 50/50 split. Canonical form:\n{canonical}"
+                ),
+            )
+        )
         return issues
     body = CODE_FENCE_RE.sub("", slide.raw_content)
     div_at = body.find("<div")
     head_match = HEADING_RE.search(body)
     if head_match is not None and head_match.start() < div_at:
-        issues.append(LintIssue(
-            slide=slide.number,
-            severity="ERROR",
-            code="SPLIT_GLASS_STRUCTURE",
-            message=(
-                "split-glass heading sits above the divs, so it becomes grid "
-                "column 1 and pushes the glass panel to row 2. Move the heading "
-                "INSIDE <div class=\"content\">:\n" + canonical
-            ),
-        ))
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="ERROR",
+                code="SPLIT_GLASS_STRUCTURE",
+                message=(
+                    "split-glass heading sits above the divs, so it becomes grid "
+                    "column 1 and pushes the glass panel to row 2. Move the heading "
+                    'INSIDE <div class="content">:\n' + canonical
+                ),
+            )
+        )
     return issues
 
 
@@ -878,17 +905,20 @@ def main() -> int:
 
     all_issues: list[LintIssue] = []
     for slide in slides:
-        all_issues.extend(lint_slide(
-            slide,
-            structural_only=args.structural_only,
-            base_dir=md_path.parent,
-        ))
+        all_issues.extend(
+            lint_slide(
+                slide,
+                structural_only=args.structural_only,
+                base_dir=md_path.parent,
+            )
+        )
 
     errors = [i for i in all_issues if i.severity == "ERROR"]
     warnings = [i for i in all_issues if i.severity == "WARNING"]
 
     if args.json:
         import json
+
         data = [
             {
                 "slide": i.slide,

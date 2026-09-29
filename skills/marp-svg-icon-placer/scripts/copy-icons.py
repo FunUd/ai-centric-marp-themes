@@ -58,7 +58,9 @@ def copy_icons(project_name: str, icon_names: list[str]) -> None:
 
     if not assets_dir.exists():
         print(f"Error: assets directory not found: {assets_dir}", file=sys.stderr)
-        print(f"Create the project first: python skills/marp-slide-creator/scripts/setup-slide-project.py {project_name}")
+        print(
+            f"Create the project first: python skills/marp-slide-creator/scripts/setup-slide-project.py {project_name}"
+        )
         sys.exit(1)
 
     if icon_names == ["all"]:
@@ -92,9 +94,7 @@ def copy_icons(project_name: str, icon_names: list[str]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Copy SVG icons to a Marp slide project's assets directory."
-    )
+    parser = argparse.ArgumentParser(description="Copy SVG icons to a Marp slide project's assets directory.")
     parser.add_argument(
         "project_name",
         nargs="?",

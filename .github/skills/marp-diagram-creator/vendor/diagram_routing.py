@@ -1,4 +1,5 @@
 """Shared orthogonal routing helpers for draw.io diagrams."""
+
 from __future__ import annotations
 
 from heapq import heappop, heappush
@@ -45,10 +46,7 @@ def get_edge_waypoints(edge: ET.Element) -> list[Point]:
     points = geometry.find("Array[@as='points']")
     if points is None:
         return []
-    return [
-        (_safe_float(point.get("x", "0")), _safe_float(point.get("y", "0")))
-        for point in points.findall("mxPoint")
-    ]
+    return [(_safe_float(point.get("x", "0")), _safe_float(point.get("y", "0"))) for point in points.findall("mxPoint")]
 
 
 def _inflate(rect: Rect, margin: float) -> Rect:
@@ -298,13 +296,9 @@ def snap_edge_points(
     values = parse_style(style)
     snapped = list(points)
     if not _has_port(values, "exit"):
-        snapped[0] = _best_port(
-            source_geometry, _first_outside(points, source_geometry, True), source_shape
-        )
+        snapped[0] = _best_port(source_geometry, _first_outside(points, source_geometry, True), source_shape)
     if not _has_port(values, "entry"):
-        snapped[-1] = _best_port(
-            target_geometry, _first_outside(points, target_geometry, False), target_shape
-        )
+        snapped[-1] = _best_port(target_geometry, _first_outside(points, target_geometry, False), target_shape)
     snapped = _trim_inside(snapped, source_geometry, True)
     snapped = _trim_inside(snapped, target_geometry, False)
     if len(snapped) >= 2:
@@ -334,7 +328,15 @@ def _grid_route(start: Point, end: Point, obstacles: list[Rect]) -> list[Point]:
         y_values.update((y, y + height))
 
     points = [(x, y) for x in sorted(x_values) for y in sorted(y_values)]
-    usable = [point for point in points if all(point not in ((x, y), (x + width, y + height)) and not (x < point[0] < x + width and y < point[1] < y + height) for x, y, width, height in obstacles)]
+    usable = [
+        point
+        for point in points
+        if all(
+            point not in ((x, y), (x + width, y + height))
+            and not (x < point[0] < x + width and y < point[1] < y + height)
+            for x, y, width, height in obstacles
+        )
+    ]
     neighbors: dict[Point, list[Point]] = {point: [] for point in usable}
     for point in usable:
         for candidate in usable:
@@ -400,6 +402,4 @@ def route_edge(
     ]
     points = _simplify(_grid_route(source, target, blocked))
     # Re-snap ends so stubs stab perpendicular into the approached side.
-    return snap_edge_points(
-        source_geometry, target_geometry, style, points, source_shape, target_shape
-    )
+    return snap_edge_points(source_geometry, target_geometry, style, points, source_shape, target_shape)

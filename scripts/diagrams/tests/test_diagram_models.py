@@ -41,7 +41,9 @@ def test_layout_defaults_use_slide_safe_widths() -> None:
 
 
 def test_col3_default_height_is_compact_for_embedded_diagrams() -> None:
-    diagram = models.parse_diagram_data({"type": "cycle", "layout": "col3", "items": [{"label": "A"}, {"label": "B"}, {"label": "C"}]})
+    diagram = models.parse_diagram_data(
+        {"type": "cycle", "layout": "col3", "items": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}
+    )
 
     assert diagram["height"] == 300
 
@@ -61,7 +63,7 @@ def test_invalid_common_fields_are_rejected(data: dict, message: str) -> None:
 
 
 def test_xml_text_is_escaped() -> None:
-    assert renderer.escape_xml("A & <B> \"C\"") == "A &amp; &lt;B&gt; &quot;C&quot;"
+    assert renderer.escape_xml('A & <B> "C"') == "A &amp; &lt;B&gt; &quot;C&quot;"
 
 
 def test_svg_document_has_viewbox_and_roles() -> None:

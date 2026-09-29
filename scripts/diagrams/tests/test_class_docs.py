@@ -10,6 +10,7 @@ that claim honest in both directions:
 Plus the mechanics of the checker itself, since a checker that cannot fail is
 worse than no checker.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -51,10 +52,7 @@ def test_no_unscoped_theme_gaps_in_the_readme() -> None:
     text = README.read_text(encoding="utf-8")
     gaps = docs.missing_per_theme(docs.readme_documented_table_classes(text))
     scoped = docs.theme_specific_markers(text)
-    unclaimed = {
-        theme: [c for c in items if c not in scoped]
-        for theme, items in gaps.items()
-    }
+    unclaimed = {theme: [c for c in items if c not in scoped] for theme, items in gaps.items()}
     unclaimed = {t: items for t, items in unclaimed.items() if items}
     assert unclaimed == {}, f"documented as universal but theme-specific: {unclaimed}"
 
@@ -68,14 +66,32 @@ def test_script_exits_zero_for_the_real_repository(monkeypatch, capsys) -> None:
 # --- universal utilities really are universal -------------------------------
 
 
-@pytest.mark.parametrize("cls", [
-    "v-center", "v-middle", "v-top", "v-bottom",
-    "text-left", "text-center", "text-right",
-    "align-left", "align-center", "align-right",
-    "no-pagination", "no-header", "no-footer",
-    "pagination-left", "with-header",
-    "text-accent", "text-sub", "text-blue", "text-green", "text-orange", "text-red",
-])
+@pytest.mark.parametrize(
+    "cls",
+    [
+        "v-center",
+        "v-middle",
+        "v-top",
+        "v-bottom",
+        "text-left",
+        "text-center",
+        "text-right",
+        "align-left",
+        "align-center",
+        "align-right",
+        "no-pagination",
+        "no-header",
+        "no-footer",
+        "pagination-left",
+        "with-header",
+        "text-accent",
+        "text-sub",
+        "text-blue",
+        "text-green",
+        "text-orange",
+        "text-red",
+    ],
+)
 def test_utility_exists_in_every_theme(cls: str) -> None:
     """Regression guard for the drift this checker was written for.
 
@@ -88,12 +104,30 @@ def test_utility_exists_in_every_theme(cls: str) -> None:
     assert missing == [], f"{cls} missing from: {missing}"
 
 
-@pytest.mark.parametrize("cls", [
-    "cover", "toc", "toc-focus", "cols-2", "cols-3", "split-2", "split-3",
-    "grid-quadrant", "grid-sharp", "steps", "timeline", "checklist",
-    "timetable", "key-message", "profile", "dense", "extra-dense",
-    "callout", "badge",
-])
+@pytest.mark.parametrize(
+    "cls",
+    [
+        "cover",
+        "toc",
+        "toc-focus",
+        "cols-2",
+        "cols-3",
+        "split-2",
+        "split-3",
+        "grid-quadrant",
+        "grid-sharp",
+        "steps",
+        "timeline",
+        "checklist",
+        "timetable",
+        "key-message",
+        "profile",
+        "dense",
+        "extra-dense",
+        "callout",
+        "badge",
+    ],
+)
 def test_core_layout_class_exists_in_every_theme(cls: str) -> None:
     missing = [t for t in classes.THEMES if cls not in classes.theme_all_classes(t)]
     assert missing == [], f"{cls} missing from: {missing}"
@@ -125,12 +159,7 @@ def test_readme_backticked_classes_reads_html_spans() -> None:
 def test_readme_backticked_classes_ignores_fenced_blocks() -> None:
     """Regression: ``` fences paired with inline backticks, scrambling every
     span in the document and reporting all 80 classes as undocumented."""
-    text = (
-        "Documented: `cols-2`.\n"
-        "```yaml\n"
-        "---\ntheme: azure-clarity\n```\n"
-        "Also `cover`.\n"
-    )
+    text = "Documented: `cols-2`.\n```yaml\n---\ntheme: azure-clarity\n```\nAlso `cover`.\n"
     found = docs.readme_backticked_classes(text)
     assert "cols-2" in found
     assert "cover" in found
@@ -139,10 +168,12 @@ def test_readme_backticked_classes_ignores_fenced_blocks() -> None:
 
 
 def test_theme_specific_markers_only_reads_marked_rows() -> None:
-    text = "\n".join([
-        "| `cover-aurora` | *(Prism Edge)* aurora background |",
-        "| `cover` | Title slide with gradient background |",
-    ])
+    text = "\n".join(
+        [
+            "| `cover-aurora` | *(Prism Edge)* aurora background |",
+            "| `cover` | Title slide with gradient background |",
+        ]
+    )
     scoped = docs.theme_specific_markers(text)
     assert "cover-aurora" in scoped
     assert "cover" not in scoped

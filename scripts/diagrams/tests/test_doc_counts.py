@@ -5,6 +5,7 @@ Regression: the README tree said "17 templates" and the vendor paragraph
 files. Counts in prose rot silently, so this gate derives both numbers
 from disk and requires the documented values to agree.
 """
+
 from __future__ import annotations
 
 import re
@@ -21,9 +22,7 @@ def templates_on_disk() -> int:
 
 
 def vendored_files() -> int:
-    return sum(
-        1 for p in VENDOR_DIR.rglob("*") if p.is_file() and "__pycache__" not in p.parts
-    )
+    return sum(1 for p in VENDOR_DIR.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
 
 
 def test_readme_template_count_matches_disk() -> None:

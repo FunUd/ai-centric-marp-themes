@@ -165,19 +165,13 @@ def test_pad_viewbox_noop_at_target_ratio() -> None:
 
 
 def test_pad_viewbox_infeasible_aspect_raises_with_range() -> None:
-    at_limit = (
-        '<svg viewBox="0 0 1140 470" width="1140" height="470">'
-        '<rect x="0" y="0" width="5" height="5"/></svg>'
-    )
+    at_limit = '<svg viewBox="0 0 1140 470" width="1140" height="470"><rect x="0" y="0" width="5" height="5"/></svg>'
     with pytest.raises(ValueError, match="feasible range"):
         svg_aspect.pad_viewbox(at_limit, 1.0, "full")
 
 
 def test_pad_viewbox_oversized_content_raises() -> None:
-    oversized = (
-        '<svg viewBox="0 0 1200 470" width="1200" height="470">'
-        '<rect x="0" y="0" width="5" height="5"/></svg>'
-    )
+    oversized = '<svg viewBox="0 0 1200 470" width="1200" height="470"><rect x="0" y="0" width="5" height="5"/></svg>'
     with pytest.raises(ValueError, match="already exceeds"):
         svg_aspect.pad_viewbox(oversized, 2.4, "full")
 
@@ -219,9 +213,7 @@ def test_model_aspect_accepts_ratio_string_and_layout_width() -> None:
 
 def test_model_rejects_aspect_with_explicit_height() -> None:
     with pytest.raises(ValueError, match="mutually exclusive"):
-        models.parse_diagram_data(
-            {"type": "pie", "aspect": 2.4, "height": 420, "items": [{"label": "A", "value": 1}]}
-        )
+        models.parse_diagram_data({"type": "pie", "aspect": 2.4, "height": 420, "items": [{"label": "A", "value": 1}]})
 
 
 # --- validator aspect hint --------------------------------------------------
@@ -293,9 +285,7 @@ def test_render_json_diagram_cli_aspect_overrides_source_height(tmp_path: Path) 
         encoding="utf-8",
     )
 
-    assert script.render_json_diagram(
-        source, output, script.load_theme_style("azure-clarity"), "full", aspect=2.0
-    )
+    assert script.render_json_diagram(source, output, script.load_theme_style("azure-clarity"), "full", aspect=2.0)
     assert _viewbox(output.read_text(encoding="utf-8"))[2:] == pytest.approx([1080, 540])
 
 

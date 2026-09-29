@@ -45,4 +45,4 @@ def test_radial_parent_and_children_do_not_overlap() -> None:
         if element.tag.endswith("rect") and element.get("data-diagram-role") == "node":
             rects.append(tuple(float(element.get(key, "0")) for key in ("x", "y", "width", "height")))
 
-    assert all(not _rects_overlap(first, second) for index, first in enumerate(rects) for second in rects[index + 1:])
+    assert all(not _rects_overlap(first, second) for index, first in enumerate(rects) for second in rects[index + 1 :])

@@ -6,6 +6,7 @@ where kind is flowchart (Mermaid), architecture (draw.io), pie (JSON).
 
 Use --check in CI to fail on drift without overwriting fixtures.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -72,8 +73,16 @@ def main(argv: list[str] | None = None) -> int:
 
 def _render(theme: str, kind: str, src: Path, dest: Path) -> bool:
     cmd = [
-        sys.executable, str(SCRIPTS / "render-slide-diagram.py"),
-        "-i", str(src), "-o", str(dest), "--theme", theme, "--layout", "full",
+        sys.executable,
+        str(SCRIPTS / "render-slide-diagram.py"),
+        "-i",
+        str(src),
+        "-o",
+        str(dest),
+        "--theme",
+        theme,
+        "--layout",
+        "full",
     ]
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300)

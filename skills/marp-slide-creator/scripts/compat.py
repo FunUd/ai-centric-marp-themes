@@ -6,6 +6,7 @@ travel with the scripts that call it. ``scripts/sync-skills.py`` copies this
 directory as a whole; ``scripts/diagrams/tests/test_compat.py`` fails if this
 function drifts from the canonical one.
 """
+
 from __future__ import annotations
 
 import sys

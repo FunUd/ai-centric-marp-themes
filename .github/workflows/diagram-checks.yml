@@ -72,6 +72,12 @@ jobs:
           pip install -r requirements-dev.txt
           python -m playwright install --with-deps chromium
 
+      - name: Check Python lint (Ruff)
+        run: python -m ruff check .
+
+      - name: Check Python formatting (Ruff)
+        run: python -m ruff format --check .
+
       - name: Run test suite
         run: python -m pytest scripts/diagrams/tests/ -q --junitxml=pytest-results.xml
 

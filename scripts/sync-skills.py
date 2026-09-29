@@ -35,6 +35,7 @@ def _is_within_root(path: Path, root: Path) -> bool:
     except ValueError:
         return False
 
+
 def _dirs_differ(src: Path, dst: Path) -> str | None:
     """Return a reason when dst is missing or differs from src, else None."""
     if not dst.exists():
@@ -92,7 +93,7 @@ def sync_skills(check: bool = False) -> int:
         if target_root.exists():
             for target_item in target_root.iterdir():
                 if target_item.is_dir() and target_item.name not in source_skill_names:
-                    # Only remove directories with project-specific prefixes to avoid 
+                    # Only remove directories with project-specific prefixes to avoid
                     # deleting unrelated or system-provided skills.
                     if target_item.name.startswith(STALE_NAMES):
                         if check:
@@ -149,6 +150,7 @@ def sync_skills(check: bool = False) -> int:
         return 1
     print("Done.")
     return 0
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Sync skills/ to agent directories.")

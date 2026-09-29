@@ -6,6 +6,7 @@ tables and requires every diagram keyword to resolve to the same engine
 set on both sides, so an insertion, rename, or engine reassignment in one
 table fails loudly instead of rotting the other.
 """
+
 from __future__ import annotations
 
 import re
@@ -83,8 +84,6 @@ def test_engine_tables_agree() -> None:
         mentioning = [(dtype, engines) for dtype, engines in patterns if re.search(keyword, dtype, re.IGNORECASE)]
         assert mentioning, f"patterns table lost keyword {keyword!r}"
         union = set().union(*(engines for _, engines in mentioning))
-        assert union == expected, (
-            f"patterns engines for {keyword!r}: {sorted(union)} != {sorted(expected)}"
-        )
+        assert union == expected, f"patterns engines for {keyword!r}: {sorted(union)} != {sorted(expected)}"
         hits = [name for name in expected if re.search(keyword, skill[name], re.IGNORECASE)]
         assert hits, f"SKILL Best-For lost keyword {keyword!r} (expected in {sorted(expected)})"

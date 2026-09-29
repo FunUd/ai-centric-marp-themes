@@ -108,7 +108,7 @@ def test_gradient_defs_present_for_light_themes() -> None:
 def test_drawio_status_fill_preserved() -> None:
     theme = _theme("azure-clarity")
     root = ET.fromstring(
-        '<mxfile><diagram><mxGraphModel><root>'
+        "<mxfile><diagram><mxGraphModel><root>"
         '<mxCell id="0"/><mxCell id="1" parent="0"/>'
         '<mxCell id="2" vertex="1" parent="1" '
         'style="rounded=1;fillColor=#27AE60;strokeColor=#27AE60;fontColor=#FFFFFF;"/>'

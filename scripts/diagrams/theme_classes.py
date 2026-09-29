@@ -24,6 +24,7 @@ The generated ``skills/marp-slide-creator/scripts/theme-classes.json`` is what
 directories and cannot import from ``scripts/``).
 ``test_theme_classes.py`` fails if the JSON drifts from this module.
 """
+
 from __future__ import annotations
 
 import re
@@ -59,49 +60,55 @@ THEMES = (
 # `glass-card-layout` is deliberately absent: it centres the slide but the
 # inner `.card` inherits the section's left alignment, so a bulleted feature
 # list inside it renders correctly (see the nebula-glass sample, slide 2).
-LIST_UNSUITABLE_CLASSES = frozenset({
-    "align-center",
-    "cover",
-    "cover-aurora",
-    "cover-diagonal",
-    "cover-nebula",
-    "cover-noir",
-    "cover-wave",
-    "hero",
-    "key-message",
-    "title-elegant",
-    "title-only",
-})
+LIST_UNSUITABLE_CLASSES = frozenset(
+    {
+        "align-center",
+        "cover",
+        "cover-aurora",
+        "cover-diagonal",
+        "cover-nebula",
+        "cover-noir",
+        "cover-wave",
+        "hero",
+        "key-message",
+        "title-elegant",
+        "title-only",
+    }
+)
 
 # Layouts where a generic heading is the intended usage: covers carry a product
 # or deck name, and title slides exist precisely to state one thing. Exempting
 # these from `lint_weak_title` avoids demanding a "So What?" takeaway from a
 # slide that has no other content to support one.
-TITLE_EXEMPT_CLASSES = frozenset({
-    "cover",
-    "cover-aurora",
-    "cover-diagonal",
-    "cover-nebula",
-    "cover-noir",
-    "cover-wave",
-    "glass-card-layout",
-    "hero",
-    "key-message",
-    "title-elegant",
-    "title-only",
-    "toc",
-    "toc-focus",
-})
+TITLE_EXEMPT_CLASSES = frozenset(
+    {
+        "cover",
+        "cover-aurora",
+        "cover-diagonal",
+        "cover-nebula",
+        "cover-noir",
+        "cover-wave",
+        "glass-card-layout",
+        "hero",
+        "key-message",
+        "title-elegant",
+        "title-only",
+        "toc",
+        "toc-focus",
+    }
+)
 
 # Layouts where many list items are structural, not a readability problem.
-LIST_EXEMPT_CLASSES = frozenset({
-    "checklist",
-    "steps",
-    "timeline",
-    "timetable",
-    "toc",
-    "toc-focus",
-})
+LIST_EXEMPT_CLASSES = frozenset(
+    {
+        "checklist",
+        "steps",
+        "timeline",
+        "timetable",
+        "toc",
+        "toc-focus",
+    }
+)
 
 
 def _layout_classes() -> dict[str, str]:

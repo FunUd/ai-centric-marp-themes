@@ -36,4 +36,4 @@ def test_compact_donut_moves_chart_above_legend() -> None:
     ctx = design_tokens.theme_context({"colors": {}})
     elements = renderer._chart(data, ctx, donut=True)
 
-    assert not any('M 108.8 86.8' in element for element in elements)
+    assert not any("M 108.8 86.8" in element for element in elements)

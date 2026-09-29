@@ -20,12 +20,12 @@ Exit codes:
     0  Success
     1  Render or validation error
 """
+
 from __future__ import annotations
 
 import argparse
 import html
 import json
-import os
 import re
 import subprocess
 import sys
@@ -57,9 +57,9 @@ def npx_command(package: str, *args: str) -> list[str]:
     )
     return ["npx", "--yes", package, *args]
 
+
 from design_tokens import best_text_on, drawio_rect_radius, ensure_inside_label, load_design_tokens
 from compat import ensure_utf8_stdio
-from diagram_models import parse_diagram_data
 from svg_aspect import extract_mermaid_aspect, pad_viewbox, parse_aspect
 from svg_diagram_renderer import render_diagram
 from svg_filters import build_filter_defs
@@ -99,9 +99,7 @@ def _write_svg(output_path: Path, svg_content: str, theme_data: dict, postproces
     if postprocess:
         svg_content = postprocess_svg(svg_content, theme_data)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False
-    ) as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False) as tmp:
         tmp.write(svg_content)
         tmp_path = Path(tmp.name)
     tmp_path.replace(output_path)
@@ -116,7 +114,7 @@ def render_mermaid(
 ) -> bool:
     """Render Mermaid syntax to SVG using @mermaid-js/mermaid-cli with theme injection."""
     mermaid_config = theme_data.get("mermaid", {})
-    
+
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
         cfg_file = tmp_path / "mermaid-config.json"
@@ -198,8 +196,18 @@ def _recolor_drawio_xml(root: ET.Element, theme_data: dict) -> None:
         (colors.get("success", "#27AE60") or "").lower(),
         (colors.get("warning", "#F39C12") or "").lower(),
         (colors.get("danger", "#E74C3C") or "").lower(),
-        "#27ae60", "#f39c12", "#e74c3c", "#10b981", "#f59e0b", "#ef4444",
-        "#78c2ad", "#ffc074", "#f38181", "#34d399", "#fbbf24", "#fb7185",
+        "#27ae60",
+        "#f39c12",
+        "#e74c3c",
+        "#10b981",
+        "#f59e0b",
+        "#ef4444",
+        "#78c2ad",
+        "#ffc074",
+        "#f38181",
+        "#34d399",
+        "#fbbf24",
+        "#fb7185",
     }
 
     def _fill_of(style: str) -> str:
@@ -268,7 +276,7 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
     svg_elements: list[str] = []
     container_elements: list[str] = []  # swimlane boxes (bottom layer)
     chrome_elements: list[str] = []  # header bars, titles (above edges)
-    edge_elements: list[str] = []   # connectors (above containers, below nodes)
+    edge_elements: list[str] = []  # connectors (above containers, below nodes)
     # Collect styles
     font_fam = theme_data.get("fontFamily", "sans-serif")
     text_color = theme_data.get("colors", {}).get("text", "#1A1A2E")
@@ -368,10 +376,10 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
         if "shape=cylinder3" in cell.get("style", "") or "cylinder3" in st:
             r_h = 10
             svg_elements.append(
-                f"<path d='M {x} {y + r_h} A {w/2} {r_h} 0 0 1 {x + w} {y + r_h} L {x + w} {y + h - r_h} A {w/2} {r_h} 0 0 1 {x} {y + h - r_h} Z' fill='{fill}' stroke='{stroke}' stroke-width='{stroke_w}' />"
+                f"<path d='M {x} {y + r_h} A {w / 2} {r_h} 0 0 1 {x + w} {y + r_h} L {x + w} {y + h - r_h} A {w / 2} {r_h} 0 0 1 {x} {y + h - r_h} Z' fill='{fill}' stroke='{stroke}' stroke-width='{stroke_w}' />"
             )
             svg_elements.append(
-                f"<ellipse cx='{x + w/2}' cy='{y + r_h}' rx='{w/2}' ry='{r_h}' fill='{fill}' stroke='{stroke}' stroke-width='{stroke_w}' />"
+                f"<ellipse cx='{x + w / 2}' cy='{y + r_h}' rx='{w / 2}' ry='{r_h}' fill='{fill}' stroke='{stroke}' stroke-width='{stroke_w}' />"
             )
         # Standard Rect / Card
         else:
@@ -440,13 +448,15 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             )
         else:
             points = route_edge(
-                source_geometry, target_geometry, edge_style, vertex_obstacles, source_shape=source_shape, target_shape=target_shape
+                source_geometry,
+                target_geometry,
+                edge_style,
+                vertex_obstacles,
+                source_shape=source_shape,
+                target_shape=target_shape,
             )
 
-        path_d = " ".join(
-            [f"M {points[0][0]:.1f} {points[0][1]:.1f}"]
-            + [f"L {x:.1f} {y:.1f}" for x, y in points[1:]]
-        )
+        path_d = " ".join([f"M {points[0][0]:.1f} {points[0][1]:.1f}"] + [f"L {x:.1f} {y:.1f}" for x, y in points[1:]])
 
         previous, current = points[-2], points[-1]
         if abs(current[0] - previous[0]) >= abs(current[1] - previous[1]):
@@ -455,21 +465,19 @@ def _convert_drawio_to_svg(tree: ET.ElementTree, theme_data: dict) -> str:
             arrow_dir = "down" if current[1] > previous[1] else "up"
 
         # Edge path (no fill, so it never covers boxes visually)
-        edge_elements.append(
-            f"<path d='{path_d}' fill='none' stroke='{stroke}' stroke-width='{stroke_w}' />"
-        )
+        edge_elements.append(f"<path d='{path_d}' fill='none' stroke='{stroke}' stroke-width='{stroke_w}' />")
 
         # Arrowhead at the (snapped) path end, stabbing along travel direction
         ax, ay = current[0], current[1]
         sz = 5
         if arrow_dir == "right":
-            arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz*1.5:.1f},{ay-sz:.1f} {ax-sz*1.5:.1f},{ay+sz:.1f}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax - sz * 1.5:.1f},{ay - sz:.1f} {ax - sz * 1.5:.1f},{ay + sz:.1f}"
         elif arrow_dir == "left":
-            arrow_pts = f"{ax:.1f},{ay:.1f} {ax+sz*1.5:.1f},{ay-sz:.1f} {ax+sz*1.5:.1f},{ay+sz:.1f}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax + sz * 1.5:.1f},{ay - sz:.1f} {ax + sz * 1.5:.1f},{ay + sz:.1f}"
         elif arrow_dir == "down":
-            arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz:.1f},{ay-sz*1.5:.1f} {ax+sz:.1f},{ay-sz*1.5:.1f}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax - sz:.1f},{ay - sz * 1.5:.1f} {ax + sz:.1f},{ay - sz * 1.5:.1f}"
         else:
-            arrow_pts = f"{ax:.1f},{ay:.1f} {ax-sz:.1f},{ay+sz*1.5:.1f} {ax+sz:.1f},{ay+sz*1.5:.1f}"
+            arrow_pts = f"{ax:.1f},{ay:.1f} {ax - sz:.1f},{ay + sz * 1.5:.1f} {ax + sz:.1f},{ay + sz * 1.5:.1f}"
         edge_elements.append(f"<polygon points='{arrow_pts}' fill='{stroke}' />")
 
     # Wrap in SVG — z-order: container boxes < edges < header chrome < nodes < text
@@ -528,10 +536,7 @@ def _advisory_note(data: dict, layout: str) -> str:
     kind = data.get("type")
     if kind == "funnel" and layout == "col3":
         if any("value" in level for level in data.get("levels", [])):
-            return (
-                "value pills share a narrow gutter on col3. "
-                "Prefer label-only levels and put figures in slide text."
-            )
+            return "value pills share a narrow gutter on col3. Prefer label-only levels and put figures in slide text."
     return ""
 
 
@@ -549,9 +554,7 @@ def render_json_diagram_from_data(
         return False
     try:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False
-        ) as tmp:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=str(output_path.parent), delete=False) as tmp:
             tmp.write(svg_content)
             tmp_path = Path(tmp.name)
         tmp_path.replace(output_path)
@@ -616,8 +619,8 @@ def main():
         type=str,
         default=None,
         help="Target canvas ratio as decimal (2.4) or W:H (16:9). JSON sources reflow "
-             "(height = width / aspect); Mermaid/draw.io canvases are padded — content "
-             "is centered, never scaled. Overrides source aspect/height.",
+        "(height = width / aspect); Mermaid/draw.io canvases are padded — content "
+        "is centered, never scaled. Overrides source aspect/height.",
     )
 
     args = parser.parse_args()
@@ -690,8 +693,7 @@ def main():
             sys.exit(1)
         if val_res.returncode != 0:
             print(
-                "[ERROR] Rendered SVG failed layout validation "
-                "(see validator output above); not reporting success.",
+                "[ERROR] Rendered SVG failed layout validation (see validator output above); not reporting success.",
                 file=sys.stderr,
             )
             sys.exit(val_res.returncode)

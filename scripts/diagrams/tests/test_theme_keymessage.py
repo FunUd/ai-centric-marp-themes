@@ -7,6 +7,7 @@ contract with `font-size: inherit; color: inherit` on the inner ``p``;
 tests verify the contract in a real browser (skipped when Playwright or its
 Chromium build is unavailable); the static tests always run.
 """
+
 from __future__ import annotations
 
 import re

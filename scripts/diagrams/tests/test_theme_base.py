@@ -11,6 +11,7 @@ theme carries its prefix-substituted copy between `<base:name>` markers, and
   missing — with content equal to the substituted base (i.e. `--check` passes);
 - nebula-glass / slate-minimal intentionally stay fully local.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -43,13 +44,28 @@ def test_base_file_parses_into_sections() -> None:
     sections = sync.parse_base()
     assert len(sections) == 22
     assert set(sections) == {
-        "pagination", "display-control",
-        "cols-2", "cols-3", "col-card", "col-h3", "split-2", "split-3",
-        "grid-quadrant", "grid-cells-core", "grid-cells-side",
-        "grid-axes", "grid-sharp",
-        "callout-base", "callout-blue", "callout-alerts", "badge-base",
-        "align-h", "align-v", "centered-lists",
-        "reduced-motion", "focus-visible",
+        "pagination",
+        "display-control",
+        "cols-2",
+        "cols-3",
+        "col-card",
+        "col-h3",
+        "split-2",
+        "split-3",
+        "grid-quadrant",
+        "grid-cells-core",
+        "grid-cells-side",
+        "grid-axes",
+        "grid-sharp",
+        "callout-base",
+        "callout-blue",
+        "callout-alerts",
+        "badge-base",
+        "align-h",
+        "align-v",
+        "centered-lists",
+        "reduced-motion",
+        "focus-visible",
     }
 
 

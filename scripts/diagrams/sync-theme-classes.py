@@ -11,6 +11,7 @@ This script is the only writer of that manifest. Run it after changing
     python scripts/diagrams/sync-theme-classes.py           # rewrite
     python scripts/diagrams/sync-theme-classes.py --check   # fail on drift
 """
+
 from __future__ import annotations
 
 import argparse
@@ -38,7 +39,9 @@ def main() -> int:
 
     if args.check:
         if not path.exists():
-            print(f"[DRIFT] {path.name} is missing. Run: python scripts/diagrams/sync-theme-classes.py", file=sys.stderr)
+            print(
+                f"[DRIFT] {path.name} is missing. Run: python scripts/diagrams/sync-theme-classes.py", file=sys.stderr
+            )
             return 1
         current = path.read_text(encoding="utf-8")
         if current != payload:

@@ -1,6 +1,7 @@
 """Branch tests for svg_theme_postprocessor.py:
 marker/swimlane radius rules, rx/ry replacement & insertion, radius-zero
 cleanup, and _inject_node_filters guard clauses."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -32,8 +33,8 @@ post = load_module("svg_theme_postprocessor_branches", "svg_theme_postprocessor.
 def test_radius_rules_per_rect_role() -> None:
     svg = (
         "<svg>"
-        '<rect data-diagram-role="marker" rx=\'9\' ry=\'9\'/>'
-        '<rect style="swimlane" rx=\'9\' ry=\'9\'/>'
+        "<rect data-diagram-role=\"marker\" rx='9' ry='9'/>"
+        "<rect style=\"swimlane\" rx='9' ry='9'/>"
         '<rect rx="9" ry="8"/>'
         "</svg>"
     )
@@ -55,8 +56,8 @@ def test_radius_inserted_into_tag_without_rx() -> None:
 
     out = post._replace_rect_radius(svg, 6.0, 12.0)
 
-    assert 'rx=\'6\' ry=\'6\'>' in out or 'rx="6"' in out
-    assert "<rect x=\"1\" y=\"2\" width=\"3\" height=\"4\" rx='6' ry='6'>" in out
+    assert "rx='6' ry='6'>" in out or 'rx="6"' in out
+    assert '<rect x="1" y="2" width="3" height="4" rx=\'6\' ry=\'6\'>' in out
 
 
 def test_zero_radius_strips_existing_rx_ry() -> None:
@@ -112,8 +113,8 @@ def test_postprocess_svg_end_to_end() -> None:
     theme = load_module("design_tokens_for_post", "design_tokens.py").load_design_tokens("azure-clarity")
     svg = (
         '<svg xmlns="http://www.w3.org/2000/svg">'
-        '<style>.edgePath .path { stroke:#333; stroke-width:1px; }</style>'
-        '<style>.arrowheadPath { fill: #abcdef; }</style>'
+        "<style>.edgePath .path { stroke:#333; stroke-width:1px; }</style>"
+        "<style>.arrowheadPath { fill: #abcdef; }</style>"
         "</svg>"
     )
 

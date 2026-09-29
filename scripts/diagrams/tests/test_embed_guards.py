@@ -15,6 +15,7 @@ Locks in three lessons so they cannot silently regress:
 4. Showcase decks themselves must fit: every SVG embed in ``slides/``
    is scaled by its committed viewBox and must stay within the canvas.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -76,9 +77,9 @@ def _font_sizes(svg: str) -> list[tuple[str, float]]:
 def test_embed_map_covers_every_mermaid_and_drawio_template() -> None:
     on_disk = checker.templates_on_disk()
     missing = [
-        name for name in sorted(on_disk)
-        if checker._engine_of(name) in ("mermaid", "drawio")
-        and name not in checker.RECOMMENDED_EMBED_WIDTH
+        name
+        for name in sorted(on_disk)
+        if checker._engine_of(name) in ("mermaid", "drawio") and name not in checker.RECOMMENDED_EMBED_WIDTH
     ]
     assert missing == []
 

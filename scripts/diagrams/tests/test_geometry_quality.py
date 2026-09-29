@@ -32,16 +32,16 @@ def test_compact_chart_is_centered_on_canvas() -> None:
     ctx = design_tokens.theme_context({"colors": {}})
     svg = "".join(renderer._chart(data, ctx, donut=True))
 
-    assert 'cx="170"' in svg or 'M 170' in svg
+    assert 'cx="170"' in svg or "M 170" in svg
 
 
 def test_org_chart_leaf_boxes_have_a_gap() -> None:
-    data = models.parse_diagram_data({"type": "org-chart", "layout": "col3", "root": {"label": "Root", "children": [{"label": "A"}, {"label": "B"}]}})
+    data = models.parse_diagram_data(
+        {"type": "org-chart", "layout": "col3", "root": {"label": "Root", "children": [{"label": "A"}, {"label": "B"}]}}
+    )
     svg = renderer.render_diagram(data, {"colors": {}}, "col3")
     root = ET.fromstring(svg)
-    boxes = [
-        element for element in root if element.tag.endswith("rect") and element.get("data-diagram-role") == "node"
-    ]
+    boxes = [element for element in root if element.tag.endswith("rect") and element.get("data-diagram-role") == "node"]
     child_boxes = sorted(boxes[1:], key=lambda element: float(element.get("x", "0")))
 
     first_end = float(child_boxes[0].get("x", "0")) + float(child_boxes[0].get("width", "0"))
@@ -50,7 +50,9 @@ def test_org_chart_leaf_boxes_have_a_gap() -> None:
 
 
 def test_pyramid_labels_use_contrast_and_middle_alignment() -> None:
-    data = models.parse_diagram_data({"type": "pyramid", "levels": [{"label": "成果"}, {"label": "協働"}, {"label": "基盤"}]})
+    data = models.parse_diagram_data(
+        {"type": "pyramid", "levels": [{"label": "成果"}, {"label": "協働"}, {"label": "基盤"}]}
+    )
     ctx = design_tokens.theme_context({"colors": {}})
     svg = "".join(renderer._pyramid(data, ctx))
 
@@ -59,9 +61,20 @@ def test_pyramid_labels_use_contrast_and_middle_alignment() -> None:
 
 
 def test_radial_connectors_end_at_box_edges() -> None:
-    data = models.parse_diagram_data({"type": "radial", "layout": "asym", "width": 710, "height": 300, "center": "成果", "items": [{"label": "目的"}, {"label": "役割"}, {"label": "対話"}]})
+    data = models.parse_diagram_data(
+        {
+            "type": "radial",
+            "layout": "asym",
+            "width": 710,
+            "height": 300,
+            "center": "成果",
+            "items": [{"label": "目的"}, {"label": "役割"}, {"label": "対話"}],
+        }
+    )
     svg = renderer.render_diagram(data, {"colors": {}}, "asym")
-    line = re.search(r'<line data-diagram-role="connector" x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"', svg)
+    line = re.search(
+        r'<line data-diagram-role="connector" x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"', svg
+    )
     assert line
     x1, y1, x2, y2 = (float(value) for value in line.groups())
 

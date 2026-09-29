@@ -18,6 +18,7 @@ columns rotted silently.
 Usage:
     python scripts/diagrams/check-catalog-sync.py
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -68,7 +69,7 @@ def mentions_in(path: Path) -> set[str]:
         if start == -1:
             return set()
         # The table runs until the next heading of any level.
-        rest = text[start + len(DOCS_TABLE_HEADING):]
+        rest = text[start + len(DOCS_TABLE_HEADING) :]
         end = re.search(r"^#{1,6}\s", rest, re.MULTILINE)
         section = rest[: end.start()] if end else rest
         return set(TEMPLATE_RE.findall(section))
@@ -180,9 +181,7 @@ def _docs_matrix_layouts(text: str) -> dict[str, set[str]]:
         name_match = TEMPLATE_RE.search(cells[0])
         if not name_match:
             continue
-        out[name_match.group(0)] = {
-            layout for layout, cell in zip(columns, cells[1:]) if "✅" in cell
-        }
+        out[name_match.group(0)] = {layout for layout, cell in zip(columns, cells[1:]) if "✅" in cell}
     return out
 
 
@@ -207,10 +206,7 @@ def check_layout_columns() -> list[str]:
             if found is None:
                 errors.append(f"[LAYOUT] {base}: no layouts listed in {source}")
             elif found != expected:
-                errors.append(
-                    f"[LAYOUT] {base}: {source} lists {sorted(found)}, "
-                    f"authority is {sorted(expected)}"
-                )
+                errors.append(f"[LAYOUT] {base}: {source} lists {sorted(found)}, authority is {sorted(expected)}")
     return errors
 
 

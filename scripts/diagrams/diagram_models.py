@@ -16,7 +16,21 @@ from svg_aspect import parse_aspect
 
 
 LAYOUTS = set(_LAYOUT_ORDER)
-DIAGRAM_TYPES = {"pie", "donut", "pyramid", "cycle", "org-chart", "radial", "funnel", "bar", "hbar", "line", "stacked-bar", "stacked-bar-100", "matrix"}
+DIAGRAM_TYPES = {
+    "pie",
+    "donut",
+    "pyramid",
+    "cycle",
+    "org-chart",
+    "radial",
+    "funnel",
+    "bar",
+    "hbar",
+    "line",
+    "stacked-bar",
+    "stacked-bar-100",
+    "matrix",
+}
 # Cartesian (axis-based) types share the categories/series vocabulary.
 # hbar uses items (not categories/series); matrix uses columns/rows.
 CARTESIAN_TYPES = {"bar", "line", "stacked-bar", "stacked-bar-100"}
@@ -192,6 +206,7 @@ def _validate_type(data: dict[str, Any]) -> None:
         root = data.get("root")
         if not isinstance(root, dict) or not str(root.get("label", "")).strip():
             raise ValueError("root.label must not be empty")
+
         def visit(node: dict[str, Any], depth: int) -> None:
             if depth > 4:
                 raise ValueError("root depth must not exceed 4")
@@ -202,6 +217,7 @@ def _validate_type(data: dict[str, Any]) -> None:
                 if not isinstance(child, dict) or not str(child.get("label", "")).strip():
                     raise ValueError("every organization node needs a label")
                 visit(child, depth + 1)
+
         visit(root, 1)
     elif kind == "radial":
         if not str(data.get("center", "")).strip():

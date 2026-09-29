@@ -5,6 +5,7 @@ unreferenced 9 MB TTF is committed, shipped and never rendered, and the
 NOTICE.md attribution quietly rots. This test keeps the directory honest in
 both directions.
 """
+
 from __future__ import annotations
 
 import re
@@ -50,8 +51,7 @@ def test_no_unreferenced_fonts_are_bundled() -> None:
     were committed but no theme ever referenced them."""
     orphans = sorted(bundled_fonts() - referenced_fonts() - KNOWN_UNUSED)
     assert orphans == [], (
-        f"unreferenced font files are bundled ({', '.join(orphans)}); "
-        f"either wire them into a theme or delete them"
+        f"unreferenced font files are bundled ({', '.join(orphans)}); either wire them into a theme or delete them"
     )
 
 

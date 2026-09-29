@@ -22,6 +22,7 @@ Usage:
     python scripts/diagrams/check-templates.py --skip-mermaid   # offline / no npx
     python scripts/diagrams/check-templates.py --engine json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -108,6 +109,7 @@ EMBED_HEIGHT_BUDGET = 460.0
 
 GLOBS = ("mermaid/*.mmd", "drawio/*.drawio", "charts/*.json", "concepts/*.json", "organization/*.json")
 
+
 # Engine per glob, used by --engine / --skip-mermaid.
 def _engine_of(rel: str) -> str:
     return rel.split("/", 1)[0]
@@ -165,11 +167,7 @@ def render_and_validate(source: Path, layout: str, out_dir: Path) -> tuple[bool,
 
 
 def _relevant_lines(output: str) -> list[str]:
-    return [
-        line.strip()
-        for line in output.splitlines()
-        if "[ERROR]" in line or "[WARN]" in line
-    ][:6]
+    return [line.strip() for line in output.splitlines() if "[ERROR]" in line or "[WARN]" in line][:6]
 
 
 def _viewbox_size(svg_path: Path) -> tuple[float, float] | None:
@@ -252,9 +250,7 @@ def main() -> int:
             f"it would never be validated. Add it with the layouts it fits."
         )
     for name in stale_entries(on_disk):
-        problems.append(
-            f"[STALE] ALLOWED_LAYOUTS lists templates/{name} but the file does not exist."
-        )
+        problems.append(f"[STALE] ALLOWED_LAYOUTS lists templates/{name} but the file does not exist.")
     for name in sorted(on_disk):
         if _engine_of(name) in ("mermaid", "drawio") and name not in RECOMMENDED_EMBED_WIDTH:
             problems.append(
