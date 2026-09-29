@@ -124,17 +124,48 @@ def test_callout_blue_heading_rule_exists(theme: str) -> None:
     """azure-clarity was missing the rule crimson-clarity had, so a blue
     callout heading rendered in the body colour there."""
     css = (THEMES / f"{theme}.css").read_text(encoding="utf-8")
-    assert re.search(r"section \.callout\.blue h4\s*\{", css), (
-        f"{theme}: missing `.callout.blue h4` rule"
-    )
+    assert re.search(r"section \.callout\.blue h4\s*\{", css), f"{theme}: missing `.callout.blue h4` rule"
 
 
-@pytest.mark.parametrize("theme,prefix", [
-    ("azure-clarity", "--ac-"),
-    ("crimson-clarity", "--cc-"),
-    ("warm-sunnyday", "--ws-"),
-])
+@pytest.mark.parametrize(
+    "theme,prefix",
+    [
+        ("azure-clarity", "--ac-"),
+        ("crimson-clarity", "--cc-"),
+        ("warm-sunnyday", "--ws-"),
+    ],
+)
 def test_info_tokens_are_declared(theme: str, prefix: str) -> None:
     css = (THEMES / f"{theme}.css").read_text(encoding="utf-8")
     assert f"{prefix}info:" in css, f"{theme}: {prefix}info not declared"
     assert f"{prefix}info-pale:" in css, f"{theme}: {prefix}info-pale not declared"
+
+
+ALL_THEMES = [
+    "azure-clarity",
+    "crimson-clarity",
+    "prism-edge",
+    "nebula-glass",
+    "warm-sunnyday",
+    "slate-minimal",
+]
+
+
+@pytest.mark.parametrize("theme", ALL_THEMES)
+@pytest.mark.parametrize(
+    "utility_pattern,desc",
+    [
+        (r"section\.no-header\s+header", "no-header utility"),
+        (r"section\.no-footer\s+footer", "no-footer utility"),
+        (r"section\.no-pagination(?:::after|\s*\{)", "no-pagination utility"),
+        (r"section\.pagination-left(?:::after|\s*\{)", "pagination-left utility"),
+        (r"section\.align-center", "align-center utility"),
+        (r"section\.dense", "dense layout class"),
+        (r"section\.extra-dense", "extra-dense layout class"),
+    ],
+)
+def test_all_themes_declare_core_utility_classes(theme: str, utility_pattern: str, desc: str) -> None:
+    """Core display and density utilities must be implemented across all 6 themes,
+    including structural forks (nebula-glass, slate-minimal) that do not use _base.css sync."""
+    css = (THEMES / f"{theme}.css").read_text(encoding="utf-8")
+    assert re.search(utility_pattern, css), f"{theme}.css is missing {desc} ({utility_pattern})"
