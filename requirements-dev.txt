@@ -1,0 +1,4 @@
+# Development dependencies for ai-centric-marp-themes
+# Install with: pip install -r requirements-dev.txt
+pytest>=8.0.0
+playwright>=1.40.0

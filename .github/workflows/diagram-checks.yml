@@ -69,7 +69,7 @@ jobs:
       - name: Install Python test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest playwright
+          pip install -r requirements-dev.txt
           python -m playwright install --with-deps chromium
 
       - name: Run test suite
@@ -125,11 +125,11 @@ jobs:
         # regenerated PNGs are mislabelled. No browser needed.
         run: python scripts/take-screenshots.py --list-themes
 
-      - name: Lint the sample decks
+      - name: Lint all slide decks
         # The samples are the reference decks. The test suite already lints
         # them structurally; this surfaces the readability view in the log.
         run: |
-          for deck in slides/sample-slide/*.md; do
+          find slides -type f -name "*.md" | while read -r deck; do
             echo "--- $deck"
             python skills/marp-slide-creator/scripts/marp-lint.py "$deck" --structural-only
           done
@@ -198,9 +198,9 @@ jobs:
       - name: Check screenshot registry matches the sample decks
         run: python scripts/take-screenshots.py --list-themes
 
-      - name: Lint the sample decks
+      - name: Lint all slide decks
         run: |
-          foreach ($deck in Get-ChildItem slides/sample-slide/*.md) {
+          foreach ($deck in Get-ChildItem -Recurse slides/*.md) {
             echo "--- $($deck.FullName)"
             python skills/marp-slide-creator/scripts/marp-lint.py "$($deck.FullName)" --structural-only
           }

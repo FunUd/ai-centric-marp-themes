@@ -204,3 +204,25 @@ paginate: true
 ![Slate Minimal Key Message](../assets/screenshots/slate-minimal-key-message.png)
 
 </details>
+
+---
+
+## Font Setup & Portability
+
+Themes with custom typography (`prism-edge`, `nebula-glass`, `warm-sunnyday`, `slate-minimal`) reference local font files in `assets/fonts/` by default.
+
+### Portable Usage Options
+
+When using these themes outside this repository:
+
+1. **Option A: Copy `assets/fonts/` (Recommended)**
+   - Copy `assets/fonts/` alongside your slides so the relative path `../assets/fonts/` or `./assets/fonts/` resolves cleanly.
+2. **Option B: Install Fonts System-Wide**
+   - Install the required fonts (`Space Grotesk`, `Poppins`, `Caladea`, `Noto Sans JP`, `Zen Maru Gothic`, `JetBrains Mono`) on your OS. The themes' updated font stacks prioritize installed system fonts automatically without requiring bundled files.
+3. **Option C: Add WebFont Import**
+   - If internet access is available, prepend a Google Fonts `@import` inside a `<style>` block in your Markdown frontmatter:
+     ```html
+     <style>
+     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap');
+     </style>
+     ```

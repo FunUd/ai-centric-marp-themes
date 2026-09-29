@@ -26,3 +26,6 @@ pytest-results.xml
 # Take-screenshots scratch output (scripts/take-screenshots.py)
 _*_temp.html
 _list_temp.html
+
+# Temporary notes and scratchpads
+docs/improvement-backlog.md

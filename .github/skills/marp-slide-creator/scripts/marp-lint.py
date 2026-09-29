@@ -96,6 +96,19 @@ DIAGRAM_LAYOUT_MAX_WIDTHS: dict[str, int] = {
     "asym":  710,    # asymmetric split
 }
 
+# Re-prevention for small-diagram regression (2026-09-28 SmartOps fix):
+# col2/asym diagrams rendered at 520x360 leave ~150px vertical whitespace
+# inside a ~505px column. Full-width 1080x420 fills the slide instead.
+# Warn when the SVG canvas itself is short or the embed is far below budget.
+DIAGRAM_MIN_CANVAS_HEIGHT = 400
+DIAGRAM_MIN_WIDTH_RATIO = 0.9
+
+# Re-prevention for slack-canvas regression (2026-09-29 SmartOps fix):
+# pyramid/funnel asym templates center content in a 710px canvas, leaving
+# ~115-140px of empty right padding that stacks with the column gap.
+# Warn when content ends well before the viewBox right edge.
+DIAGRAM_MAX_RIGHT_SLACK = 80
+
 # Regex patterns
 CLASS_DIRECTIVE_RE = re.compile(r"<!--\s*_class:\s*(.+?)\s*-->")
 DIV_CLASS_RE = re.compile(r'<div\s+class="([^"]*)"', re.I)
@@ -354,15 +367,19 @@ def _is_diagram_src(src: str, width: int | None = None) -> bool:
 
     Classification order (strongest signal first):
     1. `icons/` directory -> never a diagram (catalog icon).
-    2. Explicit embed width above `ICON_MAX_WIDTH_PX` -> diagram-sized;
-       no icon is ever embedded that large, whatever the filename.
-    3. Filename keyword heuristic (fallback for width-less embeds).
+    2. `diagrams/` directory -> always a diagram (rendered output).
+    3. Explicit embed width decides: above `ICON_MAX_WIDTH_PX` (200px) is
+       diagram-sized; at or below is icon-sized. No icon is ever embedded
+       larger, no diagram is ever embedded that small.
+    4. Filename keyword heuristic (fallback for width-less embeds).
     """
     if _ICON_DIR_RE.search(src):
         return False
-    if width is not None and width > ICON_MAX_WIDTH_PX:
-        return True
     src_lower = src.lower()
+    if "diagrams/" in src_lower or "diagrams\\" in src_lower:
+        return True
+    if width is not None:
+        return width > ICON_MAX_WIDTH_PX
     return any(kw in src_lower for kw in DIAGRAM_PATH_KEYWORDS)
 
 
@@ -389,7 +406,91 @@ def _slide_layout_key(slide: SlideInfo) -> str:
     return "full"
 
 
-def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
+def _svg_canvas_height(svg_path: Path) -> int | None:
+    """Return the SVG canvas height in px, or None when unreadable.
+
+    Parses `height="NNN"` first, then falls back to the viewBox height
+    (`viewBox="0 0 W H"`). Only the first 2KB are read for speed.
+    """
+    try:
+        head = svg_path.read_text(encoding="utf-8", errors="ignore")[:2048]
+    except OSError:
+        return None
+    m = re.search(r'height="(\d+)', head)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            pass
+    m = re.search(r'viewBox="[^"]*?\s(\d+(?:\.\d+)?)\s*$', head)
+    # viewBox may be "0 0 W H" — capture the last number via a second pass
+    m2 = re.search(r'viewBox="\s*[\d.]+\s+[\d.]+\s+([\d.]+)\s+([\d.]+)\s*"', head)
+    if m2:
+        try:
+            return int(float(m2.group(2)))
+        except ValueError:
+            return None
+    return None
+
+
+def _svg_right_slack(svg_path: Path) -> tuple[int, int] | None:
+    """Return (viewBox_width, right_slack_px), or None when unreadable.
+
+    Estimates content extent from polygon points, rect right edges, and
+    text/line x positions. Middle-anchored short labels stay within the
+    rect/polygon edges for our templates, so positions alone suffice.
+    Only the first 64KB are scanned (single-line SVG files).
+    """
+    try:
+        text = svg_path.read_text(encoding="utf-8", errors="ignore")[:65536]
+    except OSError:
+        return None
+    vb = re.search(r'viewBox="\s*[\d.]+\s+[\d.]+\s+([\d.]+)\s+([\d.]+)\s*"', text)
+    if not vb:
+        return None
+    try:
+        vb_w = int(float(vb.group(1)))
+    except ValueError:
+        return None
+    xs: list[float] = []
+    for attr in ('x="', 'cx="', 'x1="', 'x2="'):
+        for v in re.findall(attr + r'([\d.]+)', text):
+            try:
+                xs.append(float(v))
+            except ValueError:
+                pass
+    # Middle-anchored labels extend right of x; add a flat estimate so short
+    # value badges (x=553) do not under-report the true ink edge.
+    for mm in re.finditer(r'<text[^>]*x="([\d.]+)"[^>]*text-anchor="middle"[^>]*>', text):
+        try:
+            xs.append(float(mm.group(1)) + 20.0)
+        except ValueError:
+            pass
+    for pts in re.findall(r'points="([^"]+)"', text):
+        for pair in pts.strip().split():
+            if "," in pair:
+                try:
+                    xs.append(float(pair.split(",")[0]))
+                except ValueError:
+                    pass
+    for mm in re.finditer(r'<rect[^>]*\sx="([\d.]+)"[^>]*\swidth="([\d.]+)"', text):
+        try:
+            xs.append(float(mm.group(1)) + float(mm.group(2)))
+        except ValueError:
+            pass
+    for mm in re.finditer(r'<rect[^>]*\swidth="([\d.]+)"[^>]*\sx="([\d.]+)"', text):
+        try:
+            xs.append(float(mm.group(2)) + float(mm.group(1)))
+        except ValueError:
+            pass
+    if not xs:
+        return None
+    return vb_w, max(0, vb_w - int(max(xs)))
+
+
+def lint_diagram_embedding(
+    slide: SlideInfo, base_dir: Path | None = None
+) -> list[LintIssue]:
     """Check diagram images for missing width, oversized width, and centered-layout placement.
 
     Checks:
@@ -397,6 +498,11 @@ def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
     - DIAGRAM_OVERFLOW_WIDTH (ERROR):  Diagram width exceeds the max for the slide layout.
     - DIAGRAM_ON_CENTERED_LAYOUT (WARNING): Diagram placed on a centered layout
       (cover, key-message, etc.) where it may render oddly.
+    - DIAGRAM_UNDERSIZED_WIDTH (WARNING): Embed far below budget leaves whitespace.
+    - DIAGRAM_SHORT_CANVAS (WARNING): col2/asym SVG canvas is short, leaving
+      vertical whitespace — prefer a full-width diagram instead.
+    - DIAGRAM_SLACK_CANVAS (WARNING): Content ends well before the viewBox
+      right edge — trim the viewBox instead of shipping padding.
     """
     issues: list[LintIssue] = []
 
@@ -414,11 +520,13 @@ def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
         if src_path.suffix.lower() != ".svg":
             continue
 
-        # Only process paths that look like diagrams
-        if not _is_diagram_src(src):
-            continue
-
         width_match = IMG_WIDTH_RE.search(alt)
+        width_hint = int(width_match.group(1)) if width_match else None
+
+        # Only process paths that look like diagrams (size-aware: 32px icons
+        # like bar-chart.svg must not count even though the name matches).
+        if not _is_diagram_src(src, width_hint):
+            continue
 
         # --- Check 1: missing width on diagram ---
         if not width_match:
@@ -448,6 +556,62 @@ def lint_diagram_embedding(slide: SlideInfo) -> list[LintIssue]:
                         f"Reduce to width:{max_width}px or less."
                     ),
                 ))
+            # --- Check 2b: width far below budget wastes space ---
+            elif width < int(max_width * DIAGRAM_MIN_WIDTH_RATIO):
+                issues.append(LintIssue(
+                    slide=slide.number,
+                    severity="WARNING",
+                    code="DIAGRAM_UNDERSIZED_WIDTH",
+                    message=(
+                        f"Diagram '{src_path.name}' width:{width}px is well below the "
+                        f"'{layout_key}' budget ({max_width}px). The diagram will look "
+                        f"small with wasted whitespace. Embed near the max "
+                        f"(e.g. width:{max_width - 70}px for full, {max_width}px for columns)."
+                    ),
+                ))
+
+            # --- Check 2c: short SVG canvas in a split column ---
+            if base_dir is not None and layout_key in ("col2", "asym"):
+                try:
+                    svg_file = (base_dir / src_path).resolve()
+                    # Guard against absolute URLs / parent traversal outside deck
+                    if svg_file.is_file():
+                        canvas_h = _svg_canvas_height(svg_file)
+                        if (
+                            canvas_h is not None
+                            and canvas_h < DIAGRAM_MIN_CANVAS_HEIGHT
+                        ):
+                            issues.append(LintIssue(
+                                slide=slide.number,
+                                severity="WARNING",
+                                code="DIAGRAM_SHORT_CANVAS",
+                                message=(
+                                    f"Diagram '{src_path.name}' canvas height {canvas_h}px "
+                                    f"is short for a '{layout_key}' column (budget 460px). "
+                                    f"A 520x360 diagram centers in a ~505px column and leaves "
+                                    f"~150px of vertical whitespace. Regenerate at full layout "
+                                    f"(1080x420) and use a full-width slide instead."
+                                ),
+                            ))
+                        # --- Check 2d: slack between content and viewBox edge ---
+                        slack = _svg_right_slack(svg_file)
+                        if slack is not None:
+                            vb_w, right_slack = slack
+                            if right_slack > DIAGRAM_MAX_RIGHT_SLACK:
+                                issues.append(LintIssue(
+                                    slide=slide.number,
+                                    severity="WARNING",
+                                    code="DIAGRAM_SLACK_CANVAS",
+                                    message=(
+                                        f"Diagram '{src_path.name}' content ends {right_slack}px "
+                                        f"before the viewBox right edge ({vb_w}px wide). "
+                                        f"That padding stacks with the column gap and looks like "
+                                        f"wasted whitespace next to the text. Trim the viewBox "
+                                        f"(e.g. 710 -> {vb_w - right_slack + 25}) and keep height."
+                                    ),
+                                ))
+                except (OSError, ValueError):
+                    pass
 
         # --- Check 3: diagram on a title / single-message layout ---
         unsuitable = slide.classes.intersection(LIST_UNSUITABLE_CLASSES)
@@ -656,14 +820,18 @@ def lint_split_glass_structure(slide: SlideInfo) -> list[LintIssue]:
     return issues
 
 
-def lint_slide(slide: SlideInfo, structural_only: bool = False) -> list[LintIssue]:
+def lint_slide(
+    slide: SlideInfo,
+    structural_only: bool = False,
+    base_dir: Path | None = None,
+) -> list[LintIssue]:
     """Run all lint checks on a single slide."""
     issues: list[LintIssue] = []
     # Structural checks (Errors)
     issues.extend(lint_missing_class_directive(slide))
     issues.extend(lint_centered_lists(slide))
     issues.extend(lint_oversized_icons(slide))
-    issues.extend(lint_diagram_embedding(slide))
+    issues.extend(lint_diagram_embedding(slide, base_dir))
     issues.extend(lint_split_glass_structure(slide))
 
     # Readability checks (Warnings)
@@ -710,7 +878,11 @@ def main() -> int:
 
     all_issues: list[LintIssue] = []
     for slide in slides:
-        all_issues.extend(lint_slide(slide, structural_only=args.structural_only))
+        all_issues.extend(lint_slide(
+            slide,
+            structural_only=args.structural_only,
+            base_dir=md_path.parent,
+        ))
 
     errors = [i for i in all_issues if i.severity == "ERROR"]
     warnings = [i for i in all_issues if i.severity == "WARNING"]

@@ -162,3 +162,9 @@ def test_sync_replaces_existing_skill_directory(monkeypatch, tmp_path: Path, cap
     assert not (target / "gamma" / "obsolete.md").exists()
     assert (target / "gamma" / "extra.md").read_text(encoding="utf-8") == "new file"
     assert out.strip().endswith("Done.")
+
+
+def test_github_skills_synced_with_source() -> None:
+    """The tracked .github/skills root must never drift from skills/ source of truth."""
+    code = sync_skills_mod.sync_skills(check=True)
+    assert code == 0, "Tracked skill directories have drifted from skills/. Run `python scripts/sync-skills.py` to sync."
