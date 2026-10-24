@@ -41,7 +41,9 @@ on:
 
 jobs:
   diagram-checks:
-    runs-on: ubuntu-latest
+    # Keep the screenshot rendering OS release stable; refresh visual baselines
+    # from this runner's artifact rather than from a developer workstation.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -63,9 +65,9 @@ jobs:
       - name: Install pinned Node tools
         run: npm install --no-audit --no-fund
 
-      # Playwright is required by the browser-backed contract tests
-      # (test_theme_keymessage.py computes real styles in Chromium). Without
-      # this, those tests silently skip and the theme guard is a no-op.
+      # Playwright is pinned in requirements-dev.txt. Its Chromium revision is
+      # installed by `playwright install`, keeping browser and Python driver in sync.
+      # Without Playwright these browser-backed tests silently skip.
       - name: Install Python test dependencies
         run: |
           python -m pip install --upgrade pip
@@ -130,6 +132,31 @@ jobs:
         # gains or loses a slide, every later index silently shifts and the
         # regenerated PNGs are mislabelled. No browser needed.
         run: python scripts/take-screenshots.py --list-themes
+
+      - name: Capture sample slides for visual regression
+        run: python scripts/take-screenshots.py all --output "$RUNNER_TEMP/visual-regression/actual"
+
+      - name: Compare sample slides with checked-in previews
+        run: |
+          python scripts/check-visual-regression.py \
+            --baseline-dir assets/screenshots \
+            --actual-dir "$RUNNER_TEMP/visual-regression/actual" \
+            --diff-dir "$RUNNER_TEMP/visual-regression/diff" \
+            --report "$RUNNER_TEMP/visual-regression/report.md" \
+            --warn-only
+          cat "$RUNNER_TEMP/visual-regression/report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload visual regression report and images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/visual-regression/actual/
+            ${{ runner.temp }}/visual-regression/diff/
+            ${{ runner.temp }}/visual-regression/report.md
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Lint all slide decks
         # The samples are the reference decks. The test suite already lints

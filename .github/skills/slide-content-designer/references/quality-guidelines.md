@@ -49,6 +49,38 @@ and impact for the audience.
 
 ---
 
+### 1.4 Enforce the 3-Layer Slide Structure: [Conclusion + Contrast + Concrete Proof]
+Never create flat, monochrome slides where everything has the same visual and semantic weight.
+Every substantive slide must establish clear hierarchy across three distinct layers:
+
+1. **Conclusion (Primary Anchor / So What?)**:
+   - State the single core takeaway in the slide title or hero lead.
+   - The audience should grasp 80% of the message immediately.
+2. **Contrast or Architecture (The "Why it matters" structure)**:
+   - Show *what changed* or *how parts interact*.
+   - Preferred patterns: **Before vs After** (Problem vs Solution), **Orchestrator vs Workers** (Core model vs Tools), or **Input ➔ Transformation ➔ Output**.
+3. **Concrete Proof / Data (The "Believe it" details)**:
+   - Specific numbers, API parameter examples, code snippets, or real-world use cases.
+   - ❌ Ban: `Input ➔ Weather ➔ Packing List` (Too obvious and abstract).
+   - ✅ Good: `API Query: "Reykjavik 3 days" ➔ Forecast: Rain 80% ➔ Function: Recommend waterproof gear`.
+
+---
+
+### 1.5 Ban "So What?" Feature Dumps & Naked Flowcharts
+A slide that only lists product names or specs without answering "So What?" is a failure.
+
+- **Anti-pattern 1: The Naked Flowchart**
+  - Sticking a 4-box sequence (`A ➔ B ➔ C ➔ D`) in the middle of a blank canvas with no data or explanation.
+  - **Remedy**: Pair the flow with real examples, or use a 3-column card/step layout where each phase explains its concrete input, logic, and output.
+- **Anti-pattern 2: The Spec Sheet Dump**
+  - Listing feature bullets (e.g., "Model A: does X, 1M context. Model B: does Y") without explaining their synergy.
+  - **Remedy**: Highlight the central orchestrator (the brain) and show how specialized tools branch from it, explaining *why* 1M context matters to the user.
+- **Anti-pattern 3: Text-Only Visual Description**
+  - Describing visual processes ("edit images, combine layers") with bullet points only.
+  - **Remedy**: Use Before/After comparison columns, flow diagrams, or structured cards.
+
+---
+
 ## 2. Structure Quality Criteria: Persuasive Storylines
 
 Presentation success is decided not by individual slides but by "how the logic connects."

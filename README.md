@@ -342,11 +342,15 @@ Slide dimensions: **1280 x 720 px** (16:9)
 Playwright is required to extract slide DOM metrics (enabling layout overflow detection) and to generate clean, bespoke-UI-free slide screenshots for AI visual inspection:
 
 ```bash
-pip install playwright
+pip install "playwright==1.59.0"
 playwright install chromium
 ```
 
 This enables the diagnostics and screenshot capture pipeline described in `skills/marp-slide-creator/SKILL.md` and `skills/marp-slide-creator/scripts/marp-diagnostics.py`.
+
+### Visual Regression Baselines
+
+The CI visual comparison runs on `ubuntu-24.04` with the exact Playwright and Pillow versions in `requirements-dev.txt`; Playwright installs the matching Chromium revision. `assets/screenshots/` also serves as the visual-regression baseline, so do not refresh it from an arbitrary OS/browser environment. After an intentional visual change, inspect the CI artifact's `actual/` screenshots and copy the reviewed images into `assets/screenshots/` in place of the old versions. The next CI run then verifies the new baseline in the same runner environment.
 
 ### Offline Execution Policy
 

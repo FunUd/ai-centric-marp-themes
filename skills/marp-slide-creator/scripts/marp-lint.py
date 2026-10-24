@@ -847,6 +847,118 @@ def lint_split_glass_structure(slide: SlideInfo) -> list[LintIssue]:
     return issues
 
 
+def lint_misused_key_message(slide: SlideInfo) -> list[LintIssue]:
+    """Check for elements that corrupt key-message layout (headings, lists, badges, images)."""
+    issues: list[LintIssue] = []
+    if "key-message" not in slide.classes:
+        return issues
+
+    # key-message allows blockquote (> ...) or a single H2 quote (## ... in some themes like Slate).
+    # H1 (#), multiple headings, bullet lists, badges, and diagrams corrupt layout.
+    has_h1 = bool(re.search(r"^\s*#\s+", CODE_FENCE_RE.sub("", slide.raw_content), re.MULTILINE))
+    has_multiple_headings = len(slide.headings) > 1
+    has_list = bool(slide.list_items)
+    has_img = bool(slide.images)
+    has_badge = bool(re.search(r'<span\s+class="[^"]*badge[^"]*"', slide.raw_content, re.I))
+
+    if has_h1 or has_multiple_headings or has_list or has_img or has_badge:
+        elements = []
+        if has_h1:
+            elements.append("H1 heading (#)")
+        if has_multiple_headings:
+            elements.append("multiple headings")
+        if has_list:
+            elements.append("lists (-/*)")
+        if has_img:
+            elements.append("images/diagrams")
+        if has_badge:
+            elements.append("badges")
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="ERROR",
+                code="MISUSED_KEY_MESSAGE",
+                message=(
+                    f"Slide uses class 'key-message' with unsupported elements: {', '.join(elements)}. "
+                    f"key-message is strictly for a single blockquote (> Quote) and an optional "
+                    f"subtitle sentence. For complex messages or multi-step content, use cols-2 or a standard content slide."
+                ),
+            )
+        )
+    return issues
+
+
+def lint_sparse_diagram_slide(slide: SlideInfo) -> list[LintIssue]:
+    """Warn when a full-width slide contains a diagram with almost no supporting content, risking dead space."""
+    issues: list[LintIssue] = []
+    if _slide_layout_key(slide) != "full" or not slide.images:
+        return issues
+
+    has_diagram = False
+    for alt, src in slide.images:
+        width_m = IMG_WIDTH_RE.search(alt)
+        width_val = int(width_m.group(1)) if width_m else None
+        if src.lower().endswith(".svg") and _is_diagram_src(src, width_val):
+            has_diagram = True
+            break
+
+    if not has_diagram:
+        return issues
+
+    if "columns" in slide.div_classes or "grid" in slide.div_classes:
+        return issues
+
+    body_plain = extract_plain_text(HEADING_RE.sub("", CODE_FENCE_RE.sub("", slide.raw_content)))
+    if len(body_plain) < 60 and len(slide.list_items) == 0:
+        issues.append(
+            LintIssue(
+                slide=slide.number,
+                severity="WARNING",
+                code="SPARSE_DIAGRAM_SLIDE",
+                message=(
+                    f"Slide contains a full-width diagram with minimal supporting content (~{len(body_plain)} chars). "
+                    f"If the diagram has <=4 nodes/steps, it will appear tiny and isolated with large dead space. "
+                    f"Consider: 1) using CSS-native 'steps'/'cols-3' cards, or 2) adding concrete proof cards below the diagram."
+                ),
+            )
+        )
+    return issues
+
+
+def lint_unbalanced_columns(slide: SlideInfo) -> list[LintIssue]:
+    """Check for extreme visual/content imbalance between columns in cols-2/split-2."""
+    issues: list[LintIssue] = []
+    if not ({"cols-2", "split-2"} & slide.classes):
+        return issues
+
+    raw_no_code = CODE_FENCE_RE.sub("", slide.raw_content)
+    cols_block_match = re.search(r'<div\s+class="columns"[^>]*>(.*?)</div>\s*$', raw_no_code, re.S | re.I)
+    if not cols_block_match:
+        return issues
+
+    cols_inner = cols_block_match.group(1)
+    parts = re.split(r'<div\b[^>]*>', cols_inner)
+    col_texts = [extract_plain_text(p) for p in parts if extract_plain_text(p)]
+
+    if len(col_texts) == 2:
+        len1, len2 = len(col_texts[0]), len(col_texts[1])
+        if len1 > 0 and len2 > 0:
+            min_len, max_len = min(len1, len2), max(len1, len2)
+            if max_len >= 120 and (max_len / max(min_len, 1)) > 3.5:
+                issues.append(
+                    LintIssue(
+                        slide=slide.number,
+                        severity="WARNING",
+                        code="UNBALANCED_COLUMNS",
+                        message=(
+                            f"Slide 2-column layout is severely unbalanced (~{len1} chars vs ~{len2} chars, "
+                            f"ratio {max_len/max(min_len,1):.1f}:1). Balance column content heights and visual weights."
+                        ),
+                    )
+                )
+    return issues
+
+
 def lint_slide(
     slide: SlideInfo,
     structural_only: bool = False,
@@ -860,6 +972,7 @@ def lint_slide(
     issues.extend(lint_oversized_icons(slide))
     issues.extend(lint_diagram_embedding(slide, base_dir))
     issues.extend(lint_split_glass_structure(slide))
+    issues.extend(lint_misused_key_message(slide))
 
     # Readability checks (Warnings)
     if not structural_only:
@@ -867,6 +980,8 @@ def lint_slide(
         issues.extend(lint_weak_title(slide))
         issues.extend(lint_unlabeled_list(slide))
         issues.extend(lint_dense_content(slide))
+        issues.extend(lint_sparse_diagram_slide(slide))
+        issues.extend(lint_unbalanced_columns(slide))
 
     return issues
 

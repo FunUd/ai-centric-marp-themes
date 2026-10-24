@@ -238,7 +238,9 @@ To avoid misidentifying slide numbers during visual inspection:
 Use your file viewing tool (`view_file`) on the specific generated image(s) you need to check. This will load the image into your context. Inspect the slide against the following visual quality criteria:
 - **Contrast**: Is there sufficient color contrast between the text and background/background-image? (Particularly check pale text on light backgrounds or keycards).
 - **Overlap**: Are text elements, SVG icons, background shapes, or Mermaid diagrams overlapping or blocking each other?
-- **Alignment & Balance**: For column/grid layouts (e.g., `cols-2`, `cols-3`, `grid-quadrant`), is the height and layout of content balanced? Are the margins symmetrical?
+- **Dead Space & Scale (No Sparse Slides)**: Does the slide look unnaturally empty or sparse? Is a tiny diagram or a single horizontal sequence floating in the center of a blank 1280x720 canvas with >50% dead space? If so, enrich it with concrete proof cards or switch to CSS-native `steps`/`cols-3`.
+- **Alignment & Visual Weight (Column Balance)**: For column/grid layouts (e.g., `cols-2`, `cols-3`, `grid-quadrant`), is the height and layout of content balanced? If one column has a giant number (e.g. `1M`), does the other column have corresponding substance, or does the slide look lopsided?
+- **Visual Hierarchy & "So What?" (Visual Contrast)**: Does the most critical conclusion jump out in 3 seconds? Or is the slide a flat, monochrome wall of text without emphasis?
 - **Typography**: Are Japanese/English fonts rendering correctly without ugly fallback fonts (like default Mincho or broken character rendering)?
 
 **Step 4: Cleanup (MANDATORY)**

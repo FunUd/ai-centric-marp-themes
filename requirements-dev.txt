@@ -1,5 +1,6 @@
 # Development dependencies for ai-centric-marp-themes
 # Install with: pip install -r requirements-dev.txt
 pytest>=8.0.0
-playwright>=1.40.0
+playwright==1.59.0
 ruff>=0.8.0
+Pillow==12.2.0

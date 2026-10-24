@@ -124,3 +124,90 @@ section {
 }
 </style>
 ```
+
+## Before / After Comparison Cards (cols-2)
+Use for architectural shifts, feature upgrades, or problem-vs-solution contrasts:
+
+```markdown
+<!-- _class: cols-2 -->
+
+# Core Shift: From Reactive Answers to Proactive Action
+
+<div class="columns">
+<div class="col">
+
+### 🔴 Conventional: "Chat & Wait"
+- **User burden**: Repeated prompt adjustments
+- **Output**: Static text answers only
+- **Tool gap**: Cannot take action on external APIs
+- **Limitation**: Stops at answering
+
+</div>
+<div class="col">
+
+### 🟢 Next-Gen: "Plan & Execute"
+- **Autonomous**: Proactively plans multi-step logic
+- **Action-first**: Directly calls APIs and creates output
+- **Context memory**: 1M context retains complex state
+- **Value**: Advances the user's next step
+
+</div>
+</div>
+```
+
+## Input / Logic / Output Flow (cols-3)
+Use for API examples or automated workflows instead of bare flowcharts:
+
+```markdown
+<!-- _class: cols-3 with-header -->
+
+# API in Action: "Reykjavik 3-Day Trip" Automatically Suggests Rain Gear
+
+<div class="columns">
+<div class="col">
+
+### 1. Request Input
+<span class="badge blue">User Intent</span>
+
+- **Destination**: Reykjavik
+- **Duration**: 3 days
+- **Prompt**: "What should I pack?"
+
+</div>
+<div class="col">
+
+### 2. Live Weather Logic
+<span class="badge orange">Tool Calling</span>
+
+- **Weather API query**: 80% rain forecast
+- **Condition evaluation**: Cold & wet
+- **Parameter match**: Trigger rain gear logic
+
+</div>
+<div class="col">
+
+### 3. Concrete Result
+<span class="badge green">API Response</span>
+
+- **Packing checklist**: Waterproof jacket & boots
+- **Rationale**: High rain probability
+- **Next action**: Booking & itinerary sync
+
+</div>
+</div>
+```
+
+## Key Message (key-message)
+Use ONLY for a strong single quote or section divider. Never put headings or lists inside:
+
+```markdown
+<!-- _class: key-message no-pagination -->
+<!-- _header: "" -->
+<!-- _footer: "" -->
+
+> The true value of AI lies not in answering,
+> but in advancing the next action.
+
+Beyond passive conversation: orchestrating tools to get real work done.
+```
+

@@ -76,6 +76,12 @@ Load it only when you need the generic class syntax or when a theme skill explic
 - `<!-- _class: split-2 -->` and `<!-- _class: split-3 -->` for simple split layouts
 - Prefer symmetry unless one side is clearly the dominant visual
 
+> **⚠️ Visual Balance & Weight Rule in `cols-2`:**
+> Both columns MUST share a similar vertical height and visual weight.
+> - ❌ **Unbalanced**: Left column has a single giant number `1M` and 1 sentence; right column has 8 lines of text across 2 models. (Renders lopsided and amateur).
+> - ✅ **Balanced**: If left column features a big number/hero visual, pair it with structured supporting context, or give the right column an equivalent visual card.
+> - Ratio limit: Neither column should exceed 2.5x the text line count or character count of the other.
+
 > **⚠️ `cols-*` / `split-*` must appear in `_class`.**
 > When combining with other classes (e.g. `with-header`), the column class must still be present.
 > `<!-- _class: with-header -->` alone will NOT activate the column layout.
@@ -117,9 +123,49 @@ Load it only when you need the generic class syntax or when a theme skill explic
 
 ### Key Message
 
-- `<!-- _class: key-message no-pagination -->` for a section divider or single takeaway slide
+- `<!-- _class: key-message no-pagination -->` for a section divider or single takeaway slide.
+- **Strict Format:** Must contain ONLY a blockquote (`> ...`) and an optional 1-sentence subtitle.
+  ```markdown
+  <!-- _class: key-message no-pagination -->
+  <!-- _header: "" -->
+  <!-- _footer: "" -->
 
-### Header / Footer / Pagination
+  > True transformation begins with workflow,
+  > not just introducing tools.
+
+  Technology is an enabler. The real leverage comes from process redesign.
+  ```
+- ❌ **Prohibition:** NEVER put raw headings (`# Title`), multiple paragraphs, bullet lists, badges, or diagrams inside `key-message`. Doing so corrupts font scaling and renders a broken, unstyled mess.
+
+### Before / After Contrast Layout
+Use `cols-2` with comparison cards for feature changes, refactoring gains, or paradigm shifts:
+
+```markdown
+<!-- _class: cols-2 -->
+
+# Paradigm Shift: From Chatbot Answers to Autonomous Action
+
+<div class="columns">
+<div class="col">
+
+### 🔴 Conventional: "Chat & Wait"
+- **User burden**: Must prompt repeatedly
+- **Static output**: Text answers only
+- **Tool gap**: Cannot call external APIs
+- **Result**: Manual follow-up needed
+
+</div>
+<div class="col">
+
+### 🟢 Next-Gen: "Plan & Execute"
+- **Proactive**: Synthesizes multi-step plans
+- **Multi-tool**: Executes live API calls & tasks
+- **Context memory**: Tracks state across 1M tokens
+- **Result**: Delivers the completed task
+
+</div>
+</div>
+```
 
 - `no-header`, `no-footer`, `no-pagination`, `pagination-left`, and `with-header` are the main utilities
 - Combine them carefully when you need a clean cover or section divider

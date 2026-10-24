@@ -24,23 +24,59 @@ footer: "© 2026"
 
 <!-- _class: cols-2 -->
 
-# 2カラム比較で差分を一目で示す
+# Before / After：従来の手法から新手法への進化
 
 <div class="columns">
 <div class="col">
 
-### 案Aの強み
-
-- **速度**: 処理を3倍に短縮
-- **費用**: 追加コストなし
+### 🔴 従来手法の課題
+- **手作業**: 毎回手動でパラメータ設定
+- **遅延**: 処理完了まで数時間待機
+- **属人化**: 担当者しか触れない
 
 </div>
 <div class="col">
 
-### 案Bの強み
+### 🟢 新手法の価値
+- **自動化**: API連携で即時判定
+- **高速化**: わずか3秒で完了
+- **平準化**: チーム全員が共通利用
 
-- **柔軟性**: 構成を自由に変更
-- **拡張性**: 将来の増設に対応
+</div>
+</div>
+
+---
+
+<!-- _class: cols-3 with-header -->
+
+# 入力・判定・出力の3ステップで具体化する
+
+<div class="columns">
+<div class="col">
+
+### 1. 入力データ
+<span class="badge blue">Trigger</span>
+
+- **対象**: 東京・3日間
+- **目的**: 週末出張の準備
+
+</div>
+<div class="col">
+
+### 2. 外部API判定
+<span class="badge orange">Process</span>
+
+- **気象API**: 降水確率 85%
+- **条件分岐**: 雨具リスト呼出
+
+</div>
+<div class="col">
+
+### 3. 具体的な提案
+<span class="badge green">Output</span>
+
+- **結果**: 折りたたみ傘を推奨
+- **次の一手**: リマインド送信
 
 </div>
 </div>

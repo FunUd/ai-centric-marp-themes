@@ -252,8 +252,21 @@ def extract_slide_metrics_browser(html_path: Path, screenshot_dir: Path | None =
                             f"FOOTER_COLLISION_RISK: content reaches {content_bottom}px, "
                             f"footer zone starts at {footer_limit}px"
                         )
-
-            # Image missing / broken
+            # Sparse content check (detect isolated tiny diagrams or empty slides)
+            SPARSE_EXEMPT = {"cover", "title-only", "title-elegant", "key-message", "hero", "section-divider"}
+            slide_class_set = set(slide_classes.split())
+            if not (slide_class_set & SPARSE_EXEMPT) and elements:
+                content_boxes = [el for el in elements if el["tag"] not in ("header", "footer")]
+                if content_boxes:
+                    min_t = min(el["top"] for el in content_boxes) - slide_top
+                    max_b = max(el["top"] + el["height"] for el in content_boxes) - slide_top
+                    occupied_h = max_b - min_t
+                    # If occupied height is under 220px and text is scarce
+                    if occupied_h < 220 and char_count < 100:
+                        flags.append(
+                            f"SPARSE_CONTENT: content occupies only {occupied_h}px vertically (~{char_count} chars). "
+                            f"High dead space risk: enrich with concrete proof cards or switch to native layout"
+                        )
             imgs = slide.locator("img").all()
             for img in imgs:
                 src = img.get_attribute("src") or ""
@@ -319,6 +332,14 @@ def extract_slide_metrics_heuristic(html_path: Path) -> list[dict[str, Any]]:
             flags.append(f"MANY_LINES: {line_count} lines may overflow")
         if char_count > 900 or line_count > BASE_OVERFLOW_LINES * col_factor:
             flags.append("CONTENT_OVERFLOW: heuristic density suggests overflow risk")
+
+        SPARSE_EXEMPT = {"cover", "title-only", "title-elegant", "key-message", "hero", "section-divider"}
+        slide_class_set = set(attrs.get("class", "").split())
+        if not (slide_class_set & SPARSE_EXEMPT) and char_count < 80 and image_count <= 1:
+            flags.append(
+                f"SPARSE_CONTENT: very low text density ({char_count} chars). "
+                f"Slide may look empty or unbalanced; consider enriching with concrete proof cards."
+            )
 
         results.append(
             {

@@ -54,6 +54,29 @@ Quick ref: data-viz → JSON SVG; process/steps/matrix/timeline (≤5 items) →
    - `asym`: Split asymmetric layout (`max 710px × 460px`, aspect ratio ~1.55:1)
    - `col3`: 3-column layout (`max 340px × 460px`, aspect ratio ~0.75:1)
 
+### Step 1.1: Make the Visual Large Enough to Read
+
+The canvas dimensions above are **maximum bounds, not a target size**. A wide SVG can still contain a tiny, centered diagram with large empty margins; setting its Markdown image to `width:1050px` only enlarges that empty canvas. Choose the slide composition and diagram geometry based on the **visible artwork**, not just its SVG `viewBox` or embed width.
+
+- **Give the main idea room.** If the diagram is the slide's key message, prefer a full-width slide over a 2- or 3-column card. Avoid putting the primary diagram in `cols-3`, a sidebar, or beside several paragraphs: those layouts can reduce the actual visual to a thumbnail.
+- **Check artwork against the usable slide area.** In the rendered 1280×720 slide, the diagram should be a focal element, not a small island amid blank space. As a practical starting point, let a landscape hero diagram use about 70–90% of the available content width and enough height for its labels and relationships to read immediately. Treat this as an art-direction guide, not a requirement to stretch or distort artwork.
+- **Distinguish canvas from content.** Inspect the rendered screenshot for unused margins *inside* the SVG as well as around the image. If artwork occupies only a small portion of its viewBox, regenerate with geometry/layout suited to the content, or trim excess viewBox padding while preserving the aspect ratio and canvas limits. Increasing the Markdown width alone does not fix internal whitespace.
+- **Use a shape that fits the message.** A compact 3-node radial concept often reads better as a large native `steps`, `cols-3`, or typographic layout than as a small centered radial SVG. Use a radial chart when the relationships are genuinely radial; do not force it into a wide canvas that leaves the nodes tiny.
+- **Tune density before shrinking.** Shorten labels, remove secondary nodes, or split the content across slides before accepting unreadably small text. Keep all labels legible in the full-slide PNG at normal presentation size.
+
+**Weak:** A 1050px-wide SVG whose three radial nodes and center occupy only a small central patch, leaving 60% of the slide blank.
+
+**Better:** Dedicate the slide to the main concept and use a large, deliberately composed diagram—or replace a sparse radial with three large, labeled steps/cards. Keep any explanation to a short caption.
+
+#### 🚨 Prohibition: No Orphaned Low-Density SVG Diagrams
+- **Never embed a low-density diagram (<=4 nodes/steps) as the sole visual on a full slide.**
+  A 4-box flowchart (`A ➔ B ➔ C ➔ D`) or a simple 3-branch radial centered on a 1280x720 canvas leaves massive dead space and feels empty and unfinished.
+- **Enforce one of these two alternatives for <=4 elements:**
+  1. **CSS Native Layout**: Use `steps`, `timeline`, or `cols-3` cards with bold titles and explanatory text.
+  2. **Hybrid Layout (Top Diagram + Bottom Proof Cards)**: Place a compact diagram in the upper half (`max-height: 180px`), and place 2–3 concrete cards/examples directly below it to ground the flow in reality.
+
+---
+
 ### Step 2: Generate the Diagram File
 
 #### Locating the Engine
@@ -178,6 +201,10 @@ Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed 
 > catalog Embed width (`c4-context-compact` 900px, `mindmap-compact` 680px,
 > `state-machine-col2` 460px). A 1050px embed of those overflows vertically —
 > `check-templates.py::RECOMMENDED_EMBED_WIDTH` gates this in CI.
+>
+> These widths prevent canvas overflow; they do not guarantee that the artwork
+> itself appears large. Apply **Step 1.1** and inspect the diagram's visible
+> footprint and label size in the rendered slide.
 
 #### Pattern 2: 2-Column (Diagram + Key Points)
 ```markdown
@@ -203,6 +230,48 @@ Recommended embed widths by layout (`layout_spec.py::EMBED_WIDTH`; never exceed 
 </div>
 ```
 
+#### Pattern 3: Hybrid (Compact Diagram + Concrete 3-Column Cards)
+For process flows or architecture pipelines where the flow alone leaves empty space:
+
+```markdown
+<!-- _class: cols-3 with-header -->
+
+# API Execution Flow: Rain Forecast Triggers Weather-Wear Advice
+
+<div class="text-center" style="margin-bottom: 20px;">
+
+![width:950px center](./assets/compact-api-flow.svg)
+
+</div>
+
+<div class="columns">
+<div class="col">
+
+### 1. Context Intake
+`"Reykjavik 3 days"`
+- Analyzes travel duration
+- Extracts location context
+
+</div>
+<div class="col">
+
+### 2. Live Weather Query
+`precipitation: 85%`
+- Calls Weather API
+- Flags high rain likelihood
+
+</div>
+<div class="col">
+
+### 3. Dynamic Packing
+`gear: "waterproof"`
+- Recommends rain jacket
+- Omits sun umbrella
+
+</div>
+</div>
+```
+
 ---
 
 ## 4. Visual Quality Checklist
@@ -213,6 +282,7 @@ Before completing your task:
 3. [ ] **Canvas Fit**: Does the image fit comfortably within the slide without pushing the footer down or overlapping headers?
 4. [ ] **Contrast**: Do Gantt bars keep a visible boundary (>=3:1 vs canvas) with inside text >=4.5:1 vs its fill, do mindmap labels/edges clear the same floors, do JSON inside values (hbar/stacked/matrix) clear 4.5:1 vs their segment, and do draw.io accent nodes clear 4.5:1? The renderer enforces this (`ensure_inside_label` fills, Gantt `themeVariables`, `_fix_gantt_contrast`/`_fix_mindmap_contrast`); never bypass with `--no-postprocess`.
 5. [ ] **Visual Inspection**: If Playwright / Vision is active, check the rendered screenshot using `marp-diagnostics.py`.
+6. [ ] **Visual prominence**: In the final-size slide image, does the visible diagram—not merely its SVG canvas—occupy enough of the content area to be the obvious focal point? Are labels readable without zooming? If not, recompose, enlarge/crop the artwork, simplify it, or use a more suitable native layout.
 
 ### Art Direction (anti-cheap rules)
 - **60-30-10**: base (pale/surface) 60%, primary 30%, accent/status 10%. Never place two saturated hues side-by-side in pies.
