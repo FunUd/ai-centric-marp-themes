@@ -13,6 +13,7 @@ import subprocess
 import sys
 from contextlib import contextmanager
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 
@@ -110,7 +111,9 @@ def install_playwright(monkeypatch, page: FakePage) -> FakeBrowser:
 
     monkeypatch.setattr(shots, "sync_playwright", fake_sync_playwright)
     # __main__ re-imports the symbol from the source module (runpy tests).
-    monkeypatch.setattr(sys.modules["playwright.sync_api"], "sync_playwright", fake_sync_playwright)
+    sync_api = ModuleType("playwright.sync_api")
+    sync_api.sync_playwright = fake_sync_playwright
+    monkeypatch.setitem(sys.modules, "playwright.sync_api", sync_api)
     return browser
 
 
