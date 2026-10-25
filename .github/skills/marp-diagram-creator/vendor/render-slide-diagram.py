@@ -74,6 +74,22 @@ VALIDATOR_PATH = SCRIPT_DIR / "validate-slide-diagram.py"
 SUBPROCESS_TIMEOUT = 300
 
 
+def _mermaid_puppeteer_config_path(base_dir: Path) -> Path:
+    """Create a Puppeteer config that disables Chromium sandboxing in CI.
+
+    Mermaid CLI uses Puppeteer to launch Chromium. In GitHub-hosted Ubuntu 24.04 the
+    default sandbox setup is rejected in containerized CI, so we pass a config with
+    "args": ["--no-sandbox", "--disable-setuid-sandbox"]. The file must survive the
+    render call long enough for Mermaid CLI to read it, so we create it outside the
+    ephemeral temp directory used for the source diagram itself.
+    """
+    base_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json", dir=str(base_dir), delete=False) as fh:
+        json.dump({"args": ["--no-sandbox", "--disable-setuid-sandbox"]}, fh)
+        config_path = Path(fh.name)
+    return config_path
+
+
 def _safe_float(value: object, default: float = 0.0) -> float:
     """Parse a draw.io/SVG numeric attribute without raising on garbage."""
     try:
@@ -119,6 +135,7 @@ def render_mermaid(
         tmp_path = Path(tmp_dir)
         cfg_file = tmp_path / "mermaid-config.json"
         mmd_file = tmp_path / "diagram.mmd"
+        puppeteer_cfg = _mermaid_puppeteer_config_path(output_path.parent)
 
         with open(cfg_file, "w", encoding="utf-8") as f:
             json.dump(mermaid_config, f, indent=2, ensure_ascii=False)
@@ -136,6 +153,8 @@ def render_mermaid(
             str(cfg_file),
             "-b",
             "transparent",
+            "-p",
+            str(puppeteer_cfg),
         )
 
         print(f"Rendering Mermaid diagram with theme '{theme_data.get('theme')}'...")

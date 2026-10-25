@@ -81,9 +81,9 @@ def npm_cache_env() -> dict[str, str]:
 
     Previously hard-coded to ``C:\\tmp\\npm-cache`` on Windows, which silently
     created a directory at the drive root and failed outright for a user without
-    write access there. Now it prefers an explicit override or the user's local
-    AppData cache, and only falls back to the system temp folder when no explicit
-    cache location is configured.
+    write access there. ``NPM_CONFIG_CACHE`` wins when set; otherwise we prefer
+    ``LOCALAPPDATA`` whenever it is present, then fall back to the platform temp
+    directory.
     """
     env = os.environ.copy()
     override = env.get("NPM_CONFIG_CACHE")
@@ -92,18 +92,17 @@ def npm_cache_env() -> dict[str, str]:
         env["npm_config_cache"] = str(cache_dir)
         return env
 
-    if os.name == "nt":
-        local_appdata = env.get("LOCALAPPDATA")
-        if local_appdata:
-            cache_dir = Path(local_appdata) / "npm-cache"
-            env["npm_config_cache"] = str(cache_dir)
-            try:
-                cache_dir.mkdir(parents=True, exist_ok=True)
-            except OSError:
-                # Keep the user-configured location even when the drive is not yet
-                # available in this environment (e.g. a fake LOCALAPPDATA path in tests).
-                pass
-            return env
+    local_appdata = env.get("LOCALAPPDATA")
+    if local_appdata:
+        cache_dir = Path(local_appdata) / "npm-cache"
+        env["npm_config_cache"] = str(cache_dir)
+        try:
+            cache_dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            # Keep the user-configured location even when the path is not writable in
+            # a transient CI/test environment.
+            pass
+        return env
 
     cache_dir = Path(tempfile.gettempdir()) / "npm-cache"
     try:
