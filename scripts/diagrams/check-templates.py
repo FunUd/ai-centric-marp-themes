@@ -85,12 +85,13 @@ ALLOWED_LAYOUTS: dict[str, tuple[str, ...]] = {
 # Mermaid/draw.io SVGs keep their native viewBox ratio, so embedding a
 # narrow-native SVG at the 1050px JSON default overflows vertically
 # (e.g. mindmap 618x388 -> 660px tall at 1050px). The width here keeps the
-# scaled height within the 460px slide canvas at `full`; narrower layouts
-# only scale further down. Verified by _check_embed_height() below.
+# scaled height within the 460px slide canvas at `full`; widths leave headroom
+# for font/platform metric differences. Narrower layouts only scale further
+# down. Verified by check_embed_height() below.
 RECOMMENDED_EMBED_WIDTH: dict[str, int] = {
     "mermaid/flowchart-linear.mmd": 1050,
     "mermaid/flowchart-col2.mmd": 570,
-    "mermaid/sequence-api.mmd": 950,
+    "mermaid/sequence-api.mmd": 900,
     "mermaid/sequence-api-asym.mmd": 770,
     "mermaid/architecture-3tier.mmd": 1050,
     "mermaid/architecture-3tier-col2.mmd": 210,

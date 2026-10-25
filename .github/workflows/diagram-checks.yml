@@ -25,6 +25,7 @@ on:
       - "README.md"
       - "CHANGELOG.md"
       - "package.json"
+      - "package-lock.json"
   pull_request:
     paths:
       - "themes/**"
@@ -37,6 +38,7 @@ on:
       - "README.md"
       - "CHANGELOG.md"
       - "package.json"
+      - "package-lock.json"
   workflow_dispatch:
 
 jobs:
@@ -56,14 +58,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-          # No `cache: npm`: the repo pins exact versions in package.json but
-          # ships no lockfile, and setup-node's npm cache requires one.
+          cache: npm
 
-      # Pinned so npx resolves the exact versions in package.json rather than
-      # downloading whatever is newest. Keep in sync with
-      # scripts/diagrams/tool_versions.py::PINNED_VERSIONS.
+      # npm ci installs the complete dependency tree from package-lock.json.
+      # Keep direct pins in sync with scripts/diagrams/tool_versions.py.
       - name: Install pinned Node tools
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       # Playwright is pinned in requirements-dev.txt. Its Chromium revision is
       # installed by `playwright install`, keeping browser and Python driver in sync.

@@ -30,7 +30,7 @@ This catalog lists the preset templates available for immediate use when creatin
 |---|---|---|---|---|
 | `flowchart-linear.mmd` | Flowchart | Full | 1050px | Standard left-to-right business/process flow. Pinned to `%% aspect: 2.4` (embeds at 1050x437). |
 | `flowchart-col2.mmd` | Flowchart | Full, Col2, Asym | 570px | Top-to-bottom flow with a decision branch. Compact enough for half-width columns. |
-| `sequence-api.mmd` | Sequence diagram | Full | 950px | Request/response round-trips between client, API Gateway, auth, and DB. With autonumber. |
+| `sequence-api.mmd` | Sequence diagram | Full | 900px | Request/response round-trips between client, API Gateway, auth, and DB. With autonumber. |
 | `sequence-api-asym.mmd` | Sequence diagram | Full, Asym | 770px | Compact 3-party sequence (client/API/DB). Fits asym; too wide for col2 — use asym or full. |
 | `architecture-3tier.mmd` | Architecture diagram | Full | 1050px | Classic 3-tier web architecture (presentation / application / data) with service interactions. |
 | `architecture-3tier-col2.mmd` | Architecture diagram | Full, Col2, Asym, Col3 | 210px | Compact vertical 3-tier (Web/API-GW/logic/DB). Portrait canvas: embed narrow. |

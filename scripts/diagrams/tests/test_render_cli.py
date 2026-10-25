@@ -77,11 +77,16 @@ def _install_fake_mermaid(monkeypatch, svg_text: str, returncode: int = 0):
 
 
 def test_render_mermaid_passes_no_sandbox_puppeteer_config(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("CI", "true")
+    monkeypatch.setattr(render.sys, "platform", "linux")
     out = tmp_path / "diagram.svg"
     calls: list[list[str]] = []
+    config_values: list[dict] = []
 
     def fake_run(cmd, **kwargs):
         calls.append(list(cmd))
+        config = Path(cmd[cmd.index("-p") + 1])
+        config_values.append(json.loads(config.read_text(encoding="utf-8")))
         dest = Path(cmd[cmd.index("-o") + 1])
         dest.write_text("<svg xmlns='http://www.w3.org/2000/svg'></svg>", encoding="utf-8")
         return subprocess.CompletedProcess(cmd, 0, "", "")
@@ -92,11 +97,28 @@ def test_render_mermaid_passes_no_sandbox_puppeteer_config(monkeypatch, tmp_path
 
     assert result is True
     assert calls and "-p" in calls[0]
-    config = Path(calls[0][calls[0].index("-p") + 1])
-    assert json.loads(config.read_text(encoding="utf-8"))["args"] == [
+    assert config_values[0]["args"] == [
         "--no-sandbox",
         "--disable-setuid-sandbox",
     ]
+    assert not Path(calls[0][calls[0].index("-p") + 1]).exists()
+
+
+def test_render_mermaid_keeps_chromium_sandbox_outside_linux_ci(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("CI", raising=False)
+    monkeypatch.setattr(render.sys, "platform", "linux")
+    calls: list[list[str]] = []
+
+    def fake_run(cmd, **kwargs):
+        calls.append(list(cmd))
+        dest = Path(cmd[cmd.index("-o") + 1])
+        dest.write_text("<svg xmlns='http://www.w3.org/2000/svg'></svg>", encoding="utf-8")
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(render.subprocess, "run", fake_run)
+
+    assert render.render_mermaid("flowchart LR; A-->B", tmp_path / "diagram.svg", AZURE, "full")
+    assert calls and "-p" not in calls[0]
 
 
 # --- main(): argument & error branches ---------------------------------------
