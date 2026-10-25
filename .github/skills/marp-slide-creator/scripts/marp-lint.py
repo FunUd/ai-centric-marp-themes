@@ -937,7 +937,7 @@ def lint_unbalanced_columns(slide: SlideInfo) -> list[LintIssue]:
         return issues
 
     cols_inner = cols_block_match.group(1)
-    parts = re.split(r'<div\b[^>]*>', cols_inner)
+    parts = re.split(r"<div\b[^>]*>", cols_inner)
     col_texts = [extract_plain_text(p) for p in parts if extract_plain_text(p)]
 
     if len(col_texts) == 2:
@@ -952,7 +952,7 @@ def lint_unbalanced_columns(slide: SlideInfo) -> list[LintIssue]:
                         code="UNBALANCED_COLUMNS",
                         message=(
                             f"Slide 2-column layout is severely unbalanced (~{len1} chars vs ~{len2} chars, "
-                            f"ratio {max_len/max(min_len,1):.1f}:1). Balance column content heights and visual weights."
+                            f"ratio {max_len / max(min_len, 1):.1f}:1). Balance column content heights and visual weights."
                         ),
                     )
                 )

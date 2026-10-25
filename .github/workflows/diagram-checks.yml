@@ -193,7 +193,7 @@ jobs:
       # value is the cp932 console itself — PYTHONIOENCODING is deliberately
       # *not* set so the scripts' own UTF-8 forcing is what gets exercised.
       - name: Run test suite (stdlib only, no browser)
-        run: python -m pytest scripts/diagrams/tests/ -q --ignore=scripts/diagrams/tests/test_theme_keymessage.py --junitxml=pytest-results.xml
+        run: python -m pytest scripts/diagrams/tests/ -q --ignore=scripts/diagrams/tests/test_theme_keymessage.py --ignore=scripts/diagrams/tests/test_visual_regression.py --junitxml=pytest-results.xml
 
       - name: Upload test results on failure
         if: failure()

@@ -4,6 +4,9 @@ import importlib.util
 from pathlib import Path
 import sys
 
+import pytest
+
+pytest.importorskip("PIL")
 from PIL import Image
 
 SCRIPT = Path(__file__).resolve().parents[2] / "check-visual-regression.py"
