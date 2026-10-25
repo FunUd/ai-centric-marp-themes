@@ -52,6 +52,18 @@ def search_icons(query: str) -> None:
         print("Tip: run --list to see all available icons.")
 
 
+def copy_license_notice(assets_dir: Path) -> None:
+    """Copy the Phosphor license notice alongside the icons."""
+    license_source = ICONS_SOURCE_DIR / "LICENSE"
+    if not license_source.is_file():
+        print(f"Error: Phosphor license notice not found: {license_source}", file=sys.stderr)
+        sys.exit(1)
+
+    license_dest = assets_dir / "PHOSPHOR-LICENSE.txt"
+    shutil.copy2(license_source, license_dest)
+    print(f"Copied license notice: {license_dest}")
+
+
 def copy_icons(project_name: str, icon_names: list[str]) -> None:
     """Copy SVG icons from the icon catalog to the project's assets directory."""
     assets_dir = SLIDES_BASE_DIR / project_name / "assets"
@@ -71,6 +83,7 @@ def copy_icons(project_name: str, icon_names: list[str]) -> None:
         if not icon_files:
             print("No SVG icons found in source directory.")
             return
+        copy_license_notice(assets_dir)
         for icon_file in icon_files:
             dest = assets_dir / icon_file.name
             shutil.copy2(icon_file, dest)
@@ -78,6 +91,7 @@ def copy_icons(project_name: str, icon_names: list[str]) -> None:
         print(f"\nCopied {len(icon_files)} icons to {assets_dir}/")
     else:
         copied = 0
+        license_copied = False
         for icon_name in icon_names:
             # Allow specifying with or without .svg extension
             if not icon_name.endswith(".svg"):
@@ -86,6 +100,9 @@ def copy_icons(project_name: str, icon_names: list[str]) -> None:
             if not src.exists():
                 print(f"Warning: icon not found: {src}", file=sys.stderr)
                 continue
+            if not license_copied:
+                copy_license_notice(assets_dir)
+                license_copied = True
             dest = assets_dir / icon_name
             shutil.copy2(src, dest)
             print(f"Copied: {icon_name} -> {dest}")

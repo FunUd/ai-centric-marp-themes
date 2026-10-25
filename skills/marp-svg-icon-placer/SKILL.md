@@ -36,12 +36,13 @@ python skills/marp-svg-icon-placer/scripts/copy-icons.py my-presentation all
 python skills/marp-svg-icon-placer/scripts/copy-icons.py --list
 ```
 
-The script copies from `skills/marp-svg-icon-placer/references/icons/` to `slides/[project-name]/assets/`
+The script copies from `skills/marp-svg-icon-placer/references/icons/` to `slides/[project-name]/assets/`. When it copies one or more icons, it also places the required Phosphor license notice at `slides/[project-name]/assets/PHOSPHOR-LICENSE.txt`; include this file when distributing the slide project.
 
 ### Manual Copy (Alternative)
 
 - Source: `skills/marp-svg-icon-placer/references/icons/[icon-name].svg`
 - Target: `slides/[slide-name]/assets/[icon-name].svg`
+- Also copy `skills/marp-svg-icon-placer/references/icons/LICENSE` to `slides/[slide-name]/assets/PHOSPHOR-LICENSE.txt` and include it when distributing the slide project.
 - Create `assets/` directory if needed
 
 ## 3. Customize the Icon (Optional)
@@ -160,6 +161,7 @@ If catalog lacks a suitable icon:
 ## 6. Self-Review Checklist
 
 - [ ] All icon SVG files copied to slide's `assets/` directory
+- [ ] `PHOSPHOR-LICENSE.txt` included when distributing copied catalog icons
 - [ ] Icon references use correct relative paths (e.g., `./assets/icon-name.svg`)
 - [ ] Icons in headings use appropriate size (e.g., `width:32px`)
 - [ ] Icons in column cards properly sized (typically `width:48px`)
