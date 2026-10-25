@@ -76,6 +76,29 @@ def _install_fake_mermaid(monkeypatch, svg_text: str, returncode: int = 0):
     return calls
 
 
+def test_render_mermaid_passes_no_sandbox_puppeteer_config(monkeypatch, tmp_path: Path) -> None:
+    out = tmp_path / "diagram.svg"
+    calls: list[list[str]] = []
+
+    def fake_run(cmd, **kwargs):
+        calls.append(list(cmd))
+        dest = Path(cmd[cmd.index("-o") + 1])
+        dest.write_text("<svg xmlns='http://www.w3.org/2000/svg'></svg>", encoding="utf-8")
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(render.subprocess, "run", fake_run)
+
+    result = render.render_mermaid("flowchart LR; A-->B", out, AZURE, "full")
+
+    assert result is True
+    assert calls and "-p" in calls[0]
+    config = Path(calls[0][calls[0].index("-p") + 1])
+    assert json.loads(config.read_text(encoding="utf-8"))["args"] == [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+    ]
+
+
 # --- main(): argument & error branches ---------------------------------------
 
 
